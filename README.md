@@ -6,8 +6,9 @@ Small static PWA built from `/Users/johnmoore/Desktop/guatemala_spanish_3000_stu
 
 - Loads the main 3,000-word list plus coffee-shop phrases and Guatemala notes
 - Works as a mobile-first study app
-- Stores progress and favorites in browser local storage
+- Stores progress, quiz history, spaced repetition, and favorites in browser local storage
 - Supports offline use through a service worker
+- Adds pronunciation, quiz mode, due-today review, weak-card resurfacing, and progress import/export
 
 ## Regenerate the app data
 

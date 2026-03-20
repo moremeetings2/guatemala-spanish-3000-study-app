@@ -25,9 +25,12 @@
         <div class="panel-head">
           <div>
             <p class="panel-kicker">Study</p>
-            <h2>Flashcards</h2>
+            <h2>Flashcards + review queue</h2>
           </div>
-          <button class="ghost-button" id="shuffle-button" type="button">Shuffle</button>
+          <div class="panel-head-actions">
+            <button class="ghost-button" id="speak-button" type="button">Speak</button>
+            <button class="ghost-button" id="shuffle-button" type="button">Shuffle</button>
+          </div>
         </div>
 
         <div class="study-controls">
@@ -38,6 +41,15 @@
               <option value="mainWords">Main 3000</option>
               <option value="coffeePhrases">Coffee phrases</option>
               <option value="guatemalaBonus">Guatemala bonus</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Session</span>
+            <select id="session-filter">
+              <option value="all">All cards</option>
+              <option value="due">Due today</option>
+              <option value="weak">Weak spots</option>
             </select>
           </label>
 
@@ -53,6 +65,8 @@
           </label>
         </div>
 
+        <p id="study-summary" class="support-copy">Loading study queue...</p>
+
         <button id="flashcard" class="flashcard" type="button" aria-live="polite">
           <span class="flashcard-face flashcard-front">
             <span class="card-label">Spanish</span>
@@ -67,11 +81,52 @@
         </button>
 
         <div class="card-actions">
-          <button class="status-button" data-status="new" type="button">New</button>
+          <button class="status-button" data-status="new" type="button">Reset</button>
           <button class="status-button" data-status="learning" type="button">Learning</button>
           <button class="status-button" data-status="known" type="button">Known</button>
           <button class="ghost-button" id="favorite-button" type="button">Favorite</button>
           <button class="primary-button" id="next-button" type="button">Next</button>
+        </div>
+      </section>
+
+      <section class="panel quiz-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Quiz</p>
+            <h2>Answer check + spaced repetition</h2>
+          </div>
+        </div>
+
+        <div class="quiz-controls">
+          <label>
+            <span>Quiz source</span>
+            <select id="quiz-scope">
+              <option value="due">Due today</option>
+              <option value="weak">Weak spots</option>
+              <option value="filtered">Current filter</option>
+              <option value="all">All cards</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Direction</span>
+            <select id="quiz-direction">
+              <option value="es-en">Spanish to English</option>
+              <option value="en-es">English to Spanish</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="quiz-card">
+          <p class="card-label">Question</p>
+          <h3 id="quiz-prompt" class="quiz-prompt">Loading quiz...</h3>
+          <p id="quiz-meta" class="support-copy"></p>
+          <div id="quiz-options" class="quiz-options"></div>
+          <p id="quiz-feedback" class="quiz-feedback"></p>
+          <div class="quiz-actions">
+            <button class="ghost-button" id="quiz-speak-button" type="button">Speak</button>
+            <button class="primary-button" id="quiz-next-button" type="button">Next question</button>
+          </div>
         </div>
       </section>
 
@@ -112,7 +167,7 @@
 
         <div class="list-meta">
           <p id="results-summary">Loading list...</p>
-          <button class="ghost-button" id="clear-filters-button" type="button">Reset</button>
+          <button class="ghost-button" id="clear-filters-button" type="button">Reset filters</button>
         </div>
 
         <div class="entry-list" id="entry-list"></div>
@@ -122,11 +177,20 @@
         <div class="panel-head">
           <div>
             <p class="panel-kicker">Progress</p>
-            <h2>Keep moving</h2>
+            <h2>Daily review + backup</h2>
           </div>
         </div>
 
+        <p id="review-summary" class="support-copy">Loading progress...</p>
         <div class="progress-grid" id="progress-grid"></div>
+
+        <div class="portability-actions">
+          <button class="ghost-button" id="export-progress-button" type="button">Export progress</button>
+          <label class="file-button" for="import-progress-input">Import progress</label>
+          <input id="import-progress-input" type="file" accept="application/json" hidden>
+        </div>
+
+        <p id="import-status" class="support-copy"></p>
       </section>
     </main>
   </div>
