@@ -1,0 +1,9 @@
+{
+  "name": "Guatemala Spanish 3000",
+  "short_name": "Spanish 3000",
+  "description": "Offline-friendly Spanish study app for iPhone and other mobile devices.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f1e8",
+  "theme_color": "#d96c28"
+}

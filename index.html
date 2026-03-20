@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#d96c28">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Spanish 3000">
+  <title>Guatemala Spanish 3000</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">iPhone-friendly study app</p>
+      <h1>Guatemala Spanish 3000</h1>
+      <p id="hero-description" class="hero-copy">Loading workbook data...</p>
+      <div class="hero-stats" id="hero-stats"></div>
+    </header>
+
+    <main class="main-content">
+      <section class="panel study-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Study</p>
+            <h2>Flashcards</h2>
+          </div>
+          <button class="ghost-button" id="shuffle-button" type="button">Shuffle</button>
+        </div>
+
+        <div class="study-controls">
+          <label>
+            <span>Deck</span>
+            <select id="deck-select">
+              <option value="all">All cards</option>
+              <option value="mainWords">Main 3000</option>
+              <option value="coffeePhrases">Coffee phrases</option>
+              <option value="guatemalaBonus">Guatemala bonus</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Filter</span>
+            <select id="status-filter">
+              <option value="all">All progress</option>
+              <option value="new">New</option>
+              <option value="learning">Learning</option>
+              <option value="known">Known</option>
+              <option value="favorite">Favorites</option>
+            </select>
+          </label>
+        </div>
+
+        <button id="flashcard" class="flashcard" type="button" aria-live="polite">
+          <span class="flashcard-face flashcard-front">
+            <span class="card-label">Spanish</span>
+            <strong id="card-front-text">Loading...</strong>
+            <small id="card-front-meta"></small>
+          </span>
+          <span class="flashcard-face flashcard-back">
+            <span class="card-label">English</span>
+            <strong id="card-back-text"></strong>
+            <small id="card-back-meta"></small>
+          </span>
+        </button>
+
+        <div class="card-actions">
+          <button class="status-button" data-status="new" type="button">New</button>
+          <button class="status-button" data-status="learning" type="button">Learning</button>
+          <button class="status-button" data-status="known" type="button">Known</button>
+          <button class="ghost-button" id="favorite-button" type="button">Favorite</button>
+          <button class="primary-button" id="next-button" type="button">Next</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Browse</p>
+            <h2>Search and filter</h2>
+          </div>
+        </div>
+
+        <div class="browse-controls">
+          <label class="search-input">
+            <span>Search</span>
+            <input id="search-input" type="search" placeholder="Search Spanish or English">
+          </label>
+
+          <label>
+            <span>Band</span>
+            <select id="band-filter">
+              <option value="all">All bands</option>
+              <option value="1K">1K</option>
+              <option value="2K">2K</option>
+              <option value="3K">3K</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Type</span>
+            <select id="type-filter">
+              <option value="all">Everything</option>
+              <option value="word">Words</option>
+              <option value="phrase">Phrases</option>
+              <option value="bonus">Guatemala bonus</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="list-meta">
+          <p id="results-summary">Loading list...</p>
+          <button class="ghost-button" id="clear-filters-button" type="button">Reset</button>
+        </div>
+
+        <div class="entry-list" id="entry-list"></div>
+      </section>
+
+      <section class="panel progress-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Progress</p>
+            <h2>Keep moving</h2>
+          </div>
+        </div>
+
+        <div class="progress-grid" id="progress-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <template id="entry-template">
+    <article class="entry-card">
+      <div class="entry-main">
+        <div>
+          <p class="entry-type"></p>
+          <h3 class="entry-spanish"></h3>
+          <p class="entry-english"></p>
+        </div>
+        <button class="mini-favorite" type="button" aria-label="Toggle favorite">Star</button>
+      </div>
+      <div class="entry-meta"></div>
+      <div class="entry-footer">
+        <div class="status-pill-row"></div>
+      </div>
+    </article>
+  </template>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

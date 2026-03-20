@@ -1,0 +1,376 @@
+:root {
+  --bg: #f7f1e8;
+  --paper: rgba(255, 251, 245, 0.92);
+  --panel: rgba(255, 248, 239, 0.9);
+  --ink: #2f241d;
+  --muted: #756255;
+  --line: rgba(91, 63, 42, 0.12);
+  --accent: #d96c28;
+  --accent-deep: #9f4411;
+  --accent-soft: rgba(217, 108, 40, 0.12);
+  --olive: #607a3f;
+  --sage: #dfe6cf;
+  --known: #3d7f4b;
+  --learning: #cf8d1b;
+  --new: #86705f;
+  --shadow: 0 18px 40px rgba(68, 43, 21, 0.12);
+  --radius: 22px;
+  --font-body: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--font-body);
+  background:
+    radial-gradient(circle at top left, rgba(217, 108, 40, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(96, 122, 63, 0.16), transparent 24%),
+    linear-gradient(180deg, #fff8ef 0%, #f2eadf 100%);
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(100%, 56rem);
+  margin: 0 auto;
+  padding: max(1.25rem, env(safe-area-inset-top)) 1rem max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.hero {
+  background: var(--paper);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: calc(var(--radius) + 4px);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.eyebrow,
+.panel-kicker,
+.entry-type,
+.card-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.74rem;
+  color: var(--accent-deep);
+  font-weight: 700;
+}
+
+.hero h1,
+.panel h2,
+.entry-spanish {
+  font-family: var(--font-display);
+}
+
+.hero h1 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 0.95;
+}
+
+.hero-copy {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--muted);
+}
+
+.hero-stats,
+.progress-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  margin-top: 1.2rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.stat-card span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.main-content {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel-head h2 {
+  margin: 0.2rem 0 0;
+  font-size: 1.5rem;
+}
+
+.study-controls,
+.browse-controls {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  margin-bottom: 1rem;
+}
+
+label span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+select,
+input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+  padding: 0.9rem 1rem;
+}
+
+.flashcard {
+  width: 100%;
+  min-height: 19rem;
+  border: 0;
+  border-radius: calc(var(--radius) + 2px);
+  background:
+    linear-gradient(135deg, rgba(217, 108, 40, 0.16), rgba(255, 255, 255, 0.82)),
+    #fffaf4;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.76);
+  padding: 1.2rem;
+  position: relative;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.flashcard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(217, 108, 40, 0.04) 100%);
+  pointer-events: none;
+}
+
+.flashcard-face {
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+
+.flashcard:not(.is-flipped) .flashcard-front,
+.flashcard.is-flipped .flashcard-back {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.flashcard strong {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 1;
+}
+
+.flashcard small {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.card-actions {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.primary-button,
+.ghost-button,
+.status-button,
+.mini-favorite {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.78rem 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-button {
+  background: var(--accent);
+  color: #fff8f0;
+}
+
+.ghost-button,
+.mini-favorite {
+  background: rgba(255, 255, 255, 0.66);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.status-button {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.status-button[data-status="new"].is-active,
+.status-pill[data-status="new"] {
+  background: rgba(134, 112, 95, 0.18);
+  color: #5c4a3e;
+}
+
+.status-button[data-status="learning"].is-active,
+.status-pill[data-status="learning"] {
+  background: rgba(207, 141, 27, 0.18);
+  color: #8a5d0b;
+}
+
+.status-button[data-status="known"].is-active,
+.status-pill[data-status="known"] {
+  background: rgba(61, 127, 75, 0.16);
+  color: #21542b;
+}
+
+.list-meta,
+.entry-main,
+.entry-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.entry-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.entry-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  padding: 1rem;
+}
+
+.entry-spanish {
+  margin: 0.25rem 0 0;
+  font-size: 1.55rem;
+}
+
+.entry-english,
+.entry-meta,
+#results-summary {
+  margin: 0;
+  color: var(--muted);
+}
+
+.entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  font-size: 0.9rem;
+}
+
+.status-pill-row {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.progress-item {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+}
+
+.progress-item strong {
+  display: block;
+  font-size: 1.55rem;
+}
+
+.progress-item span {
+  color: var(--muted);
+}
+
+.empty-state {
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 42rem) {
+  .app-shell {
+    padding-inline: 0.85rem;
+  }
+
+  .panel,
+  .hero {
+    padding: 1rem;
+  }
+
+  .card-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card-actions .primary-button {
+    grid-column: span 2;
+  }
+
+  .panel-head,
+  .list-meta,
+  .entry-main,
+  .entry-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
