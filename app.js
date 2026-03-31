@@ -1,8 +1,16 @@
 const DATA_URL = "./data/guatemala_spanish_study_pack.json";
-const STORAGE_KEY = "guatemala-spanish-3000-progress-v2";
+const LOCAL_STORAGE_PROGRESS_KEY = "guatemala-spanish-3000-progress-v2";
 const LEGACY_STORAGE_KEY = "guatemala-spanish-3000-progress-v1";
+const LOCAL_STORAGE_PREFERENCES_KEY = "guatemala-spanish-3000-preferences-v1";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const SHORT_REVIEW_DAYS = 3 / 24;
+const DATABASE_NAME = "guatemala-spanish-study-app-db";
+const DATABASE_VERSION = 1;
+const DATABASE_STORE = "appState";
+const DATABASE_KEYS = {
+  progress: "progress",
+  preferences: "preferences",
+};
 const COLLECTION_ORDER = {
   mainWords: 0,
   coffeePhrases: 1,
@@ -10,27 +18,39 @@ const COLLECTION_ORDER = {
   guatemalaBonus: 3,
 };
 
-const state = {
-  data: null,
-  entries: [],
-  filteredEntries: [],
-  currentIndex: 0,
-  progress: loadProgress(),
-  quiz: {
-    scope: "due",
-    direction: "es-en",
-    current: null,
-    total: 0,
-    correct: 0,
-  },
-  ui: {
+let databasePromise = null;
+let progressSaveTimer = null;
+let preferencesSaveTimer = null;
+
+function defaultUiState() {
+  return {
     deck: "all",
     session: "all",
     statusFilter: "all",
     band: "all",
     type: "all",
     search: "",
-  },
+  };
+}
+
+function defaultQuizState() {
+  return {
+    scope: "due",
+    direction: "es-en",
+    current: null,
+    total: 0,
+    correct: 0,
+  };
+}
+
+const state = {
+  data: null,
+  entries: [],
+  filteredEntries: [],
+  currentIndex: 0,
+  progress: {},
+  quiz: defaultQuizState(),
+  ui: defaultUiState(),
 };
 
 const elements = {
@@ -78,6 +98,7 @@ async function bootstrap() {
   registerServiceWorker();
 
   try {
+    await hydratePersistedState();
     const response = await fetch(DATA_URL);
     if (!response.ok) {
       throw new Error(`Failed to load data (${response.status})`);
@@ -99,26 +120,31 @@ async function bootstrap() {
 function bindEvents() {
   elements.deckSelect.addEventListener("change", (event) => {
     state.ui.deck = event.target.value;
+    queuePreferencesSave();
     applyFilters(true);
   });
 
   elements.sessionFilter.addEventListener("change", (event) => {
     state.ui.session = event.target.value;
+    queuePreferencesSave();
     applyFilters(true);
   });
 
   elements.statusFilter.addEventListener("change", (event) => {
     state.ui.statusFilter = event.target.value;
+    queuePreferencesSave();
     applyFilters(true);
   });
 
   elements.bandFilter.addEventListener("change", (event) => {
     state.ui.band = event.target.value;
+    queuePreferencesSave();
     applyFilters(true);
   });
 
   elements.typeFilter.addEventListener("change", (event) => {
     state.ui.type = event.target.value;
+    queuePreferencesSave();
     applyFilters(true);
   });
 
@@ -165,11 +191,13 @@ function bindEvents() {
 
   elements.quizScope.addEventListener("change", (event) => {
     state.quiz.scope = event.target.value;
+    queuePreferencesSave();
     ensureQuizQuestion(true);
   });
 
   elements.quizDirection.addEventListener("change", (event) => {
     state.quiz.direction = event.target.value;
+    queuePreferencesSave();
     ensureQuizQuestion(true);
   });
 
@@ -185,23 +213,39 @@ function bindEvents() {
   elements.importProgressInput.addEventListener("change", importProgress);
 
   elements.clearFiltersButton.addEventListener("click", () => {
-    state.ui = {
-      deck: "all",
-      session: "all",
-      statusFilter: "all",
-      band: "all",
-      type: "all",
-      search: "",
-    };
-
-    elements.deckSelect.value = "all";
-    elements.sessionFilter.value = "all";
-    elements.statusFilter.value = "all";
-    elements.bandFilter.value = "all";
-    elements.typeFilter.value = "all";
-    elements.searchInput.value = "";
+    state.ui = defaultUiState();
+    syncControlsFromState();
+    queuePreferencesSave();
     applyFilters(true);
   });
+}
+
+async function hydratePersistedState() {
+  const persisted = await loadPersistedState();
+  state.progress = persisted.progress;
+  state.ui = {
+    ...defaultUiState(),
+    ...persisted.preferences.ui,
+  };
+  state.quiz = {
+    ...defaultQuizState(),
+    ...persisted.preferences.quiz,
+    current: null,
+    total: 0,
+    correct: 0,
+  };
+  syncControlsFromState();
+}
+
+function syncControlsFromState() {
+  elements.deckSelect.value = state.ui.deck;
+  elements.sessionFilter.value = state.ui.session;
+  elements.statusFilter.value = state.ui.statusFilter;
+  elements.bandFilter.value = state.ui.band;
+  elements.typeFilter.value = state.ui.type;
+  elements.searchInput.value = state.ui.search;
+  elements.quizScope.value = state.quiz.scope;
+  elements.quizDirection.value = state.quiz.direction;
 }
 
 function applyFilters(resetIndex = false, options = {}) {
@@ -773,27 +817,231 @@ function getDailyTarget() {
   return Number.isFinite(target) && target > 0 ? target : 25;
 }
 
-function loadProgress() {
-  try {
-    const raw =
-      localStorage.getItem(STORAGE_KEY) ||
-      localStorage.getItem(LEGACY_STORAGE_KEY);
+async function loadPersistedState() {
+  const fallback = loadLocalStorageState();
+  const database = await openAppDatabase();
 
-    if (!raw) {
-      return {};
+  if (!database) {
+    return {
+      progress: fallback.progress,
+      preferences: fallback.preferences,
+    };
+  }
+
+  try {
+    const [storedProgress, storedPreferences] = await Promise.all([
+      readDatabaseValue(DATABASE_KEYS.progress),
+      readDatabaseValue(DATABASE_KEYS.preferences),
+    ]);
+
+    const progress = normalizeProgressMap(storedProgress ?? fallback.progress);
+    const preferences = normalizePersistedPreferences(storedPreferences ?? fallback.preferences);
+
+    if (storedProgress == null && fallback.hasProgress) {
+      await persistValue(DATABASE_KEYS.progress, progress, LOCAL_STORAGE_PROGRESS_KEY);
     }
 
-    const parsed = JSON.parse(raw);
-    const normalized = normalizeProgressMap(parsed.progress || parsed);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-    return normalized;
+    if (storedPreferences == null && fallback.hasPreferences) {
+      await persistValue(DATABASE_KEYS.preferences, preferences, LOCAL_STORAGE_PREFERENCES_KEY);
+    }
+
+    return {
+      progress,
+      preferences,
+    };
   } catch (error) {
-    return {};
+    console.error("Failed to hydrate IndexedDB state, using local storage fallback.", error);
+    return {
+      progress: fallback.progress,
+      preferences: fallback.preferences,
+    };
   }
 }
 
+function loadLocalStorageState() {
+  let progress = {};
+  let preferences = normalizePersistedPreferences({});
+  let hasProgress = false;
+  let hasPreferences = false;
+
+  try {
+    const raw =
+      localStorage.getItem(LOCAL_STORAGE_PROGRESS_KEY) ||
+      localStorage.getItem(LEGACY_STORAGE_KEY);
+
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      progress = normalizeProgressMap(parsed.progress || parsed);
+      hasProgress = Object.keys(progress).length > 0;
+    }
+  } catch (error) {
+    progress = {};
+  }
+
+  try {
+    const rawPreferences = localStorage.getItem(LOCAL_STORAGE_PREFERENCES_KEY);
+    if (rawPreferences) {
+      preferences = normalizePersistedPreferences(JSON.parse(rawPreferences));
+      hasPreferences = true;
+    }
+  } catch (error) {
+    preferences = normalizePersistedPreferences({});
+  }
+
+  return {
+    progress,
+    preferences,
+    hasProgress,
+    hasPreferences,
+  };
+}
+
+function normalizePersistedPreferences(raw) {
+  const defaults = {
+    ui: defaultUiState(),
+    quiz: {
+      scope: defaultQuizState().scope,
+      direction: defaultQuizState().direction,
+    },
+  };
+
+  const ui = raw?.ui || {};
+  const quiz = raw?.quiz || {};
+
+  return {
+    ui: {
+      deck: allowedValue(ui.deck, ["all", "mainWords", "coffeePhrases", "conversationVerbs", "guatemalaBonus"], defaults.ui.deck),
+      session: allowedValue(ui.session, ["all", "due", "weak"], defaults.ui.session),
+      statusFilter: allowedValue(ui.statusFilter, ["all", "new", "learning", "known", "favorite"], defaults.ui.statusFilter),
+      band: allowedValue(ui.band, ["all", "1K", "2K", "3K"], defaults.ui.band),
+      type: allowedValue(ui.type, ["all", "word", "phrase", "bonus"], defaults.ui.type),
+      search: "",
+    },
+    quiz: {
+      scope: allowedValue(quiz.scope, ["due", "weak", "filtered", "all"], defaults.quiz.scope),
+      direction: allowedValue(quiz.direction, ["es-en", "en-es"], defaults.quiz.direction),
+    },
+  };
+}
+
+function buildPersistedPreferences() {
+  return normalizePersistedPreferences({
+    ui: state.ui,
+    quiz: {
+      scope: state.quiz.scope,
+      direction: state.quiz.direction,
+    },
+  });
+}
+
+function queueProgressSave() {
+  if (progressSaveTimer) {
+    clearTimeout(progressSaveTimer);
+  }
+
+  progressSaveTimer = window.setTimeout(() => {
+    progressSaveTimer = null;
+    void persistValue(DATABASE_KEYS.progress, state.progress, LOCAL_STORAGE_PROGRESS_KEY);
+  }, 0);
+}
+
+function queuePreferencesSave() {
+  if (preferencesSaveTimer) {
+    clearTimeout(preferencesSaveTimer);
+  }
+
+  preferencesSaveTimer = window.setTimeout(() => {
+    preferencesSaveTimer = null;
+    void persistValue(
+      DATABASE_KEYS.preferences,
+      buildPersistedPreferences(),
+      LOCAL_STORAGE_PREFERENCES_KEY
+    );
+  }, 0);
+}
+
+async function openAppDatabase() {
+  if (!("indexedDB" in window)) {
+    return null;
+  }
+
+  if (!databasePromise) {
+    databasePromise = new Promise((resolve, reject) => {
+      const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
+
+      request.onupgradeneeded = () => {
+        const database = request.result;
+        if (!database.objectStoreNames.contains(DATABASE_STORE)) {
+          database.createObjectStore(DATABASE_STORE, { keyPath: "key" });
+        }
+      };
+
+      request.onsuccess = () => {
+        const database = request.result;
+        database.onversionchange = () => database.close();
+        resolve(database);
+      };
+
+      request.onerror = () => reject(request.error);
+    }).catch((error) => {
+      console.error("Failed to open IndexedDB.", error);
+      databasePromise = null;
+      return null;
+    });
+  }
+
+  return databasePromise;
+}
+
+async function readDatabaseValue(key) {
+  const database = await openAppDatabase();
+  if (!database) {
+    return null;
+  }
+
+  const transaction = database.transaction(DATABASE_STORE, "readonly");
+  const request = transaction.objectStore(DATABASE_STORE).get(key);
+  const record = await requestToPromise(request);
+  await transactionToPromise(transaction);
+  return record?.value ?? null;
+}
+
+async function persistValue(key, value, mirrorLocalStorageKey = null) {
+  if (mirrorLocalStorageKey) {
+    try {
+      localStorage.setItem(mirrorLocalStorageKey, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Failed to mirror ${key} to localStorage.`, error);
+    }
+  }
+
+  const database = await openAppDatabase();
+  if (!database) {
+    return;
+  }
+
+  const transaction = database.transaction(DATABASE_STORE, "readwrite");
+  transaction.objectStore(DATABASE_STORE).put({ key, value });
+  await transactionToPromise(transaction);
+}
+
+function requestToPromise(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function transactionToPromise(transaction) {
+  return new Promise((resolve, reject) => {
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+    transaction.onabort = () => reject(transaction.error);
+  });
+}
+
 function saveProgress() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
+  queueProgressSave();
 }
 
 function defaultProgress() {
@@ -1080,6 +1328,10 @@ function quizDirectionLabel(direction) {
   return direction === "es-en" ? "Spanish to English" : "English to Spanish";
 }
 
+function allowedValue(value, allowed, fallback) {
+  return allowed.includes(value) ? value : fallback;
+}
+
 function safeNumber(value, fallback = 0) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -1159,9 +1411,10 @@ function speakEntry(entry) {
 
 function exportProgress() {
   const payload = {
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
     progress: state.progress,
+    preferences: buildPersistedPreferences(),
   };
 
   const blob = new Blob([JSON.stringify(payload, null, 2)], {
@@ -1175,7 +1428,7 @@ function exportProgress() {
   link.download = `guatemala-spanish-progress-${stamp}.json`;
   link.click();
   URL.revokeObjectURL(url);
-  elements.importStatus.textContent = "Progress exported.";
+  elements.importStatus.textContent = "Study data exported.";
 }
 
 async function importProgress(event) {
@@ -1188,8 +1441,22 @@ async function importProgress(event) {
     const text = await file.text();
     const parsed = JSON.parse(text);
     const imported = normalizeProgressMap(parsed.progress || parsed);
+    const importedPreferences = normalizePersistedPreferences(parsed.preferences || {});
     state.progress = imported;
+    state.ui = {
+      ...defaultUiState(),
+      ...importedPreferences.ui,
+    };
+    state.quiz = {
+      ...state.quiz,
+      ...importedPreferences.quiz,
+      current: null,
+      total: 0,
+      correct: 0,
+    };
+    syncControlsFromState();
     saveProgress();
+    queuePreferencesSave();
     elements.importStatus.textContent = `Imported ${Object.keys(imported).length} progress records.`;
     applyFilters(true);
   } catch (error) {

@@ -6,7 +6,7 @@ Small static PWA built from the study-pack dataset plus CSV-fed phrase content.
 
 - Loads the main 3,000-word list plus coffee-shop phrases and Guatemala notes
 - Works as a mobile-first study app
-- Stores progress, quiz history, spaced repetition, and favorites in browser local storage
+- Stores progress, spaced repetition, favorites, and app preferences in an internal browser database using IndexedDB
 - Supports offline use through a service worker
 - Adds pronunciation, quiz mode, due-today review, weak-card resurfacing, and progress import/export
 
