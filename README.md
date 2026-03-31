@@ -1,6 +1,6 @@
 # Guatemala Spanish 3000 Study App
 
-Small static PWA built from `/Users/johnmoore/Desktop/guatemala_spanish_3000_study_pack.xlsx`.
+Small static PWA built from the study-pack dataset plus CSV-fed phrase content.
 
 ## What it does
 
@@ -13,10 +13,24 @@ Small static PWA built from `/Users/johnmoore/Desktop/guatemala_spanish_3000_stu
 ## Regenerate the app data
 
 ```bash
+python3 ./tools/build_study_pack_from_csv_sources.py \
+  ./data/guatemala_spanish_study_pack.json \
+  /Users/johnmoore/Downloads/guatemala_fluency_phrases.csv \
+  /Users/johnmoore/Downloads/spanish_3000_phrasebank.csv \
+  ./data/guatemala_spanish_study_pack.json
+```
+
+This rebuild keeps the existing `mainWords` and `guatemalaBonus` base content, replaces the coffee deck from the fluency CSV, adds the conversation-verbs deck, and enriches all 3,000 words with mini-phrase data.
+
+Legacy bootstrapping:
+
+```bash
 python3 ./tools/extract_guatemala_spanish_workbook.py \
   /Users/johnmoore/Desktop/guatemala_spanish_3000_study_pack.xlsx \
   ./data/guatemala_spanish_study_pack.json
 ```
+
+Use the workbook extractor only when the base word deck or Guatemala bonus content changes. The CSV merge step above is the required modern build path for phrase content.
 
 ## Run locally
 

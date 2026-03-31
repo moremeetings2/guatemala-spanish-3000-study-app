@@ -3,6 +3,12 @@ const STORAGE_KEY = "guatemala-spanish-3000-progress-v2";
 const LEGACY_STORAGE_KEY = "guatemala-spanish-3000-progress-v1";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const SHORT_REVIEW_DAYS = 3 / 24;
+const COLLECTION_ORDER = {
+  mainWords: 0,
+  coffeePhrases: 1,
+  conversationVerbs: 2,
+  guatemalaBonus: 3,
+};
 
 const state = {
   data: null,
@@ -255,7 +261,13 @@ function matchesBaseFilters(entry) {
       entry.english,
       entry.partOfSpeech,
       entry.context,
+      entry.focus,
+      entry.miniPhrase,
+      entry.miniPhraseEnglish,
+      entry.phrasePattern,
       entry.note,
+      entry.tags?.join(" "),
+      collectionLabel(entry.collection),
     ]
       .filter(Boolean)
       .join(" ")
@@ -283,9 +295,10 @@ function renderHero() {
   const accuracy = counts.quizSeen ? `${Math.round((counts.quizCorrect / counts.quizSeen) * 100)}%` : "0%";
   const cards = [
     ["Words", meta.counts.words],
+    ["Coffee phrases", meta.counts.coffeePhrases ?? 0],
+    ["Conversation verbs", meta.counts.conversationVerbs ?? 0],
+    ["Guatemala notes", meta.counts.bonus ?? 0],
     ["Due today", counts.due],
-    ["Weak cards", counts.weak],
-    ["Favorites", counts.favorite],
     ["Quiz accuracy", accuracy],
   ];
 
@@ -372,14 +385,8 @@ function renderList() {
       refreshAfterProgressChange();
     });
 
-    const meta = [];
-    if (entry.rank) meta.push(`Rank ${entry.rank}`);
-    if (entry.band) meta.push(entry.band);
-    if (entry.partOfSpeech) meta.push(entry.partOfSpeech);
-    if (entry.context) meta.push(entry.context);
-    if (entry.note) meta.push(entry.note);
-    meta.push(formatDueSummary(progress));
-    node.querySelector(".entry-meta").textContent = meta.filter(Boolean).join(" • ");
+    const meta = buildListMetaBits(entry, progress);
+    node.querySelector(".entry-meta").textContent = meta.join(" • ");
 
     const pills = node.querySelector(".status-pill-row");
     pills.appendChild(makePill(progress.status, progress.status));
@@ -651,6 +658,19 @@ function sortEntries(entries) {
     if (leftRank !== rightRank) {
       return leftRank - rightRank;
     }
+
+    const leftCollectionOrder = COLLECTION_ORDER[left.collection] ?? Number.MAX_SAFE_INTEGER;
+    const rightCollectionOrder = COLLECTION_ORDER[right.collection] ?? Number.MAX_SAFE_INTEGER;
+    if (leftCollectionOrder !== rightCollectionOrder) {
+      return leftCollectionOrder - rightCollectionOrder;
+    }
+
+    const leftSortOrder = left.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    const rightSortOrder = right.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    if (leftSortOrder !== rightSortOrder) {
+      return leftSortOrder - rightSortOrder;
+    }
+
     return left.spanish.localeCompare(right.spanish);
   });
 }
@@ -922,13 +942,62 @@ function makePill(kind, label) {
 }
 
 function buildFrontMeta(entry, progress) {
-  const bits = [entry.band, entry.partOfSpeech, entry.context, formatDueSummary(progress)];
+  const bits = [];
+
+  if (entry.type === "word") {
+    bits.push(entry.band, entry.partOfSpeech);
+  } else if (entry.type === "phrase") {
+    bits.push(collectionLabel(entry.collection), entry.focus, entry.context);
+  } else {
+    bits.push("Guatemala note");
+  }
+
+  bits.push(formatDueSummary(progress));
   return bits.filter(Boolean).join(" • ");
 }
 
 function buildBackMeta(entry, progress) {
-  const bits = [entry.commonForms, entry.note, reviewScoreSummary(progress)];
+  const bits = [];
+
+  if (entry.type === "word") {
+    bits.push(entry.commonForms, phrasebankSummary(entry));
+  } else if (entry.type === "phrase") {
+    if (entry.focus) {
+      bits.push(`Focus: ${entry.focus}`);
+    }
+    if (entry.context) {
+      bits.push(`Use: ${entry.context}`);
+    }
+    if (entry.note) {
+      bits.push(entry.note);
+    }
+  } else {
+    bits.push(entry.note);
+  }
+
+  bits.push(reviewScoreSummary(progress));
   return bits.filter(Boolean).join(" • ");
+}
+
+function buildListMetaBits(entry, progress) {
+  const bits = [];
+
+  if (entry.type === "word") {
+    bits.push(`Rank ${entry.rank}`, entry.band, entry.partOfSpeech, phrasebankSummary(entry));
+  } else if (entry.type === "phrase") {
+    bits.push(collectionLabel(entry.collection));
+    if (entry.focus) {
+      bits.push(`Focus: ${entry.focus}`);
+    }
+    if (entry.context) {
+      bits.push(`Use: ${entry.context}`);
+    }
+  } else {
+    bits.push("Guatemala note", entry.note);
+  }
+
+  bits.push(formatDueSummary(progress));
+  return bits.filter(Boolean);
 }
 
 function reviewScoreSummary(progress) {
@@ -974,9 +1043,28 @@ function entryLabel(entry) {
     return entry.band || "Word";
   }
   if (entry.type === "phrase") {
-    return "Coffee phrase";
+    return collectionLabel(entry.collection);
   }
   return "Guatemala note";
+}
+
+function collectionLabel(collection) {
+  return {
+    mainWords: "Main word",
+    coffeePhrases: "Coffee phrase",
+    conversationVerbs: "Conversation verb",
+    guatemalaBonus: "Guatemala bonus",
+  }[collection] || "Study card";
+}
+
+function phrasebankSummary(entry) {
+  if (!entry.miniPhrase) {
+    return "";
+  }
+
+  const english = entry.miniPhraseEnglish ? ` -> ${entry.miniPhraseEnglish}` : "";
+  const pattern = entry.phrasePattern ? ` (${entry.phrasePattern})` : "";
+  return `Phrase: ${entry.miniPhrase}${english}${pattern}`;
 }
 
 function quizScopeLabel(scope) {
