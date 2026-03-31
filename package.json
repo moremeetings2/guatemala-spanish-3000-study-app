@@ -1,0 +1,14 @@
+{
+  "name": "guatemala-spanish-3000-study-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static PWA for Guatemala Spanish study with Playwright integration tests.",
+  "scripts": {
+    "test:integration": "playwright test",
+    "test:integration:headed": "playwright test --headed",
+    "test:integration:debug": "playwright test --debug"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

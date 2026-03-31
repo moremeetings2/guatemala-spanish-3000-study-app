@@ -44,6 +44,23 @@ Then open:
 
 `http://localhost:8000`
 
+## Integration tests
+
+Install dependencies:
+
+```bash
+npm install
+npx playwright install chromium
+```
+
+Run the Playwright integration suite:
+
+```bash
+npm run test:integration
+```
+
+The suite validates deck rendering, phrasebank search, study/review actions, quiz flow, pronunciation controls, IndexedDB-backed persistence, and import/export.
+
 ## iPhone use
 
 Serve the folder from any static host, open it in Safari on iPhone, then use `Share -> Add to Home Screen`.
