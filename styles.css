@@ -169,6 +169,13 @@ input {
   margin-bottom: 1rem;
 }
 
+.speech-controls {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  margin-bottom: 0.75rem;
+}
+
 label span {
   display: block;
   margin-bottom: 0.35rem;
@@ -184,6 +191,21 @@ input {
   background: rgba(255, 255, 255, 0.82);
   color: var(--ink);
   padding: 0.9rem 1rem;
+}
+
+.range-control {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.range-control input[type="range"] {
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+.range-value {
+  color: var(--accent-deep);
+  font-size: 0.9rem;
 }
 
 .flashcard,

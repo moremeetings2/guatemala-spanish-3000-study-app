@@ -1,4 +1,4 @@
-const CACHE_NAME = "guatemala-spanish-3000-v4";
+const CACHE_NAME = "guatemala-spanish-3000-v5";
 const APP_ASSETS = [
   "./",
   "./index.html",

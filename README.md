@@ -9,6 +9,7 @@ Small static PWA built from the study-pack dataset plus CSV-fed phrase content.
 - Stores progress, spaced repetition, favorites, and app preferences in an internal browser database using IndexedDB
 - Supports offline use through a service worker
 - Adds pronunciation, quiz mode, due-today review, weak-card resurfacing, and progress import/export
+- Lets you slow pronunciation down and choose the clearest available Spanish voice on the device
 
 ## Regenerate the app data
 
@@ -64,3 +65,5 @@ The suite validates deck rendering, phrasebank search, study/review actions, qui
 ## iPhone use
 
 Serve the folder from any static host, open it in Safari on iPhone, then use `Share -> Add to Home Screen`.
+
+For better pronunciation quality on iPhone, install an enhanced Spanish voice in `Settings -> Accessibility -> Spoken Content -> Voices`, then select it in the app.

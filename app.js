@@ -4,6 +4,10 @@ const LEGACY_STORAGE_KEY = "guatemala-spanish-3000-progress-v1";
 const LOCAL_STORAGE_PREFERENCES_KEY = "guatemala-spanish-3000-preferences-v1";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const SHORT_REVIEW_DAYS = 3 / 24;
+const AUDIO_RATE_MIN = 0.6;
+const AUDIO_RATE_MAX = 1.0;
+const LEGACY_AUDIO_DEFAULT_RATE = 0.72;
+const AUDIO_PREFERENCES_VERSION = 2;
 const DATABASE_NAME = "guatemala-spanish-study-app-db";
 const DATABASE_VERSION = 1;
 const DATABASE_STORE = "appState";
@@ -21,6 +25,7 @@ const COLLECTION_ORDER = {
 let databasePromise = null;
 let progressSaveTimer = null;
 let preferencesSaveTimer = null;
+let speechVoicesReady = false;
 
 function defaultUiState() {
   return {
@@ -43,6 +48,14 @@ function defaultQuizState() {
   };
 }
 
+function defaultAudioState() {
+  return {
+    version: AUDIO_PREFERENCES_VERSION,
+    voiceURI: "auto",
+    rate: 0.68,
+  };
+}
+
 const state = {
   data: null,
   entries: [],
@@ -51,6 +64,8 @@ const state = {
   progress: {},
   quiz: defaultQuizState(),
   ui: defaultUiState(),
+  audio: defaultAudioState(),
+  speechVoices: [],
 };
 
 const elements = {
@@ -80,6 +95,10 @@ const elements = {
   exportProgressButton: document.querySelector("#export-progress-button"),
   importProgressInput: document.querySelector("#import-progress-input"),
   importStatus: document.querySelector("#import-status"),
+  voiceSelect: document.querySelector("#voice-select"),
+  speechRateInput: document.querySelector("#speech-rate-input"),
+  speechRateValue: document.querySelector("#speech-rate-value"),
+  speechStatus: document.querySelector("#speech-status"),
   quizScope: document.querySelector("#quiz-scope"),
   quizDirection: document.querySelector("#quiz-direction"),
   quizPrompt: document.querySelector("#quiz-prompt"),
@@ -95,10 +114,12 @@ bootstrap();
 
 async function bootstrap() {
   bindEvents();
+  bindLifecycleEvents();
   registerServiceWorker();
 
   try {
     await hydratePersistedState();
+    initializeSpeechControls();
     const response = await fetch(DATA_URL);
     if (!response.ok) {
       throw new Error(`Failed to load data (${response.status})`);
@@ -115,6 +136,15 @@ async function bootstrap() {
     elements.quizPrompt.textContent = "Quiz unavailable";
     elements.quizMeta.textContent = error.message;
   }
+}
+
+function bindLifecycleEvents() {
+  window.addEventListener("pagehide", flushPendingPersistence);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      flushPendingPersistence();
+    }
+  });
 }
 
 function bindEvents() {
@@ -151,6 +181,18 @@ function bindEvents() {
   elements.searchInput.addEventListener("input", (event) => {
     state.ui.search = event.target.value.trim().toLowerCase();
     applyFilters(true);
+  });
+
+  elements.voiceSelect.addEventListener("change", (event) => {
+    state.audio.voiceURI = event.target.value;
+    queuePreferencesSave();
+    renderSpeechControls();
+  });
+
+  elements.speechRateInput.addEventListener("input", (event) => {
+    state.audio.rate = clamp(Number(event.target.value), AUDIO_RATE_MIN, AUDIO_RATE_MAX);
+    queuePreferencesSave();
+    renderSpeechControls();
   });
 
   elements.flashcard.addEventListener("click", () => {
@@ -234,6 +276,10 @@ async function hydratePersistedState() {
     total: 0,
     correct: 0,
   };
+  state.audio = {
+    ...defaultAudioState(),
+    ...persisted.preferences.audio,
+  };
   syncControlsFromState();
 }
 
@@ -246,6 +292,83 @@ function syncControlsFromState() {
   elements.searchInput.value = state.ui.search;
   elements.quizScope.value = state.quiz.scope;
   elements.quizDirection.value = state.quiz.direction;
+  elements.speechRateInput.value = String(state.audio.rate);
+  elements.speechRateValue.textContent = formatSpeechRate(state.audio.rate);
+}
+
+function initializeSpeechControls() {
+  renderSpeechControls();
+
+  if (!("speechSynthesis" in window)) {
+    speechVoicesReady = false;
+    renderSpeechControls();
+    return;
+  }
+
+  const loadVoices = () => {
+    const availableVoices = window.speechSynthesis.getVoices();
+    state.speechVoices = rankSpanishVoices(availableVoices);
+    speechVoicesReady = true;
+
+    if (
+      state.audio.voiceURI !== "auto" &&
+      !state.speechVoices.some((voice) => voice.voiceURI === state.audio.voiceURI)
+    ) {
+      state.audio.voiceURI = "auto";
+      queuePreferencesSave();
+    }
+
+    renderSpeechControls();
+  };
+
+  loadVoices();
+  if (typeof window.speechSynthesis.addEventListener === "function") {
+    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+  } else {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  window.setTimeout(loadVoices, 300);
+}
+
+function renderSpeechControls() {
+  elements.speechRateValue.textContent = formatSpeechRate(state.audio.rate);
+
+  if (!("speechSynthesis" in window)) {
+    elements.voiceSelect.innerHTML = '<option value="auto">Speech unavailable</option>';
+    elements.voiceSelect.disabled = true;
+    elements.speechRateInput.disabled = true;
+    elements.speechStatus.textContent = "Speech synthesis is not available in this browser.";
+    return;
+  }
+
+  const options = [
+    '<option value="auto">Auto (best Spanish voice)</option>',
+    ...state.speechVoices.map(
+      (voice) =>
+        `<option value="${escapeHtml(voice.voiceURI)}">${escapeHtml(formatVoiceLabel(voice))}</option>`
+    ),
+  ];
+
+  elements.voiceSelect.innerHTML = options.join("");
+  elements.voiceSelect.value = state.audio.voiceURI;
+  elements.voiceSelect.disabled = false;
+  elements.speechRateInput.disabled = false;
+
+  const activeVoice = getActiveSpeechVoice();
+  if (!speechVoicesReady) {
+    elements.speechStatus.textContent = "Loading Spanish voices...";
+  } else if (!state.speechVoices.length) {
+    elements.speechStatus.textContent =
+      "No Spanish voices were found. The browser will fall back to its default voice.";
+  } else if (state.audio.voiceURI === "auto") {
+    elements.speechStatus.textContent =
+      `Auto voice: ${formatVoiceLabel(activeVoice)} at ${formatSpeechRate(state.audio.rate)}. ` +
+      "For best clarity on iPhone, install an enhanced Spanish voice in Settings > Accessibility > Spoken Content > Voices.";
+  } else {
+    elements.speechStatus.textContent =
+      `Selected voice: ${formatVoiceLabel(activeVoice)} at ${formatSpeechRate(state.audio.rate)}.`;
+  }
 }
 
 function applyFilters(resetIndex = false, options = {}) {
@@ -834,14 +957,29 @@ async function loadPersistedState() {
       readDatabaseValue(DATABASE_KEYS.preferences),
     ]);
 
-    const progress = normalizeProgressMap(storedProgress ?? fallback.progress);
-    const preferences = normalizePersistedPreferences(storedPreferences ?? fallback.preferences);
+    const normalizedStoredProgress = normalizeProgressMap(storedProgress ?? {});
+    const normalizedStoredPreferences = normalizePersistedPreferences(storedPreferences ?? {});
+    const useFallbackProgress =
+      fallback.hasProgress && !serializedValueEquals(normalizedStoredProgress, fallback.progress);
+    const useFallbackPreferences =
+      fallback.hasPreferences &&
+      !serializedValueEquals(normalizedStoredPreferences, fallback.preferences);
+    const progress = useFallbackProgress
+      ? fallback.progress
+      : storedProgress == null
+        ? fallback.progress
+        : normalizedStoredProgress;
+    const preferences = useFallbackPreferences
+      ? fallback.preferences
+      : storedPreferences == null
+        ? fallback.preferences
+        : normalizedStoredPreferences;
 
-    if (storedProgress == null && fallback.hasProgress) {
+    if ((storedProgress == null && fallback.hasProgress) || useFallbackProgress) {
       await persistValue(DATABASE_KEYS.progress, progress, LOCAL_STORAGE_PROGRESS_KEY);
     }
 
-    if (storedPreferences == null && fallback.hasPreferences) {
+    if ((storedPreferences == null && fallback.hasPreferences) || useFallbackPreferences) {
       await persistValue(DATABASE_KEYS.preferences, preferences, LOCAL_STORAGE_PREFERENCES_KEY);
     }
 
@@ -903,10 +1041,17 @@ function normalizePersistedPreferences(raw) {
       scope: defaultQuizState().scope,
       direction: defaultQuizState().direction,
     },
+    audio: defaultAudioState(),
   };
 
   const ui = raw?.ui || {};
   const quiz = raw?.quiz || {};
+  const audio = raw?.audio || {};
+  const audioRate = clamp(safeNumber(audio.rate, defaults.audio.rate), AUDIO_RATE_MIN, AUDIO_RATE_MAX);
+  const hasLegacyAudioDefaults =
+    safeNumber(audio.version, 0) < AUDIO_PREFERENCES_VERSION &&
+    (audio.voiceURI == null || audio.voiceURI === "auto") &&
+    Math.abs(audioRate - LEGACY_AUDIO_DEFAULT_RATE) < 0.001;
 
   return {
     ui: {
@@ -921,6 +1066,11 @@ function normalizePersistedPreferences(raw) {
       scope: allowedValue(quiz.scope, ["due", "weak", "filtered", "all"], defaults.quiz.scope),
       direction: allowedValue(quiz.direction, ["es-en", "en-es"], defaults.quiz.direction),
     },
+    audio: {
+      version: AUDIO_PREFERENCES_VERSION,
+      voiceURI: typeof audio.voiceURI === "string" && audio.voiceURI ? audio.voiceURI : defaults.audio.voiceURI,
+      rate: hasLegacyAudioDefaults ? defaults.audio.rate : audioRate,
+    },
   };
 }
 
@@ -931,10 +1081,17 @@ function buildPersistedPreferences() {
       scope: state.quiz.scope,
       direction: state.quiz.direction,
     },
+    audio: {
+      version: AUDIO_PREFERENCES_VERSION,
+      voiceURI: state.audio.voiceURI,
+      rate: state.audio.rate,
+    },
   });
 }
 
 function queueProgressSave() {
+  writeLocalStorageMirror(LOCAL_STORAGE_PROGRESS_KEY, state.progress, DATABASE_KEYS.progress);
+
   if (progressSaveTimer) {
     clearTimeout(progressSaveTimer);
   }
@@ -946,6 +1103,12 @@ function queueProgressSave() {
 }
 
 function queuePreferencesSave() {
+  writeLocalStorageMirror(
+    LOCAL_STORAGE_PREFERENCES_KEY,
+    buildPersistedPreferences(),
+    DATABASE_KEYS.preferences
+  );
+
   if (preferencesSaveTimer) {
     clearTimeout(preferencesSaveTimer);
   }
@@ -958,6 +1121,24 @@ function queuePreferencesSave() {
       LOCAL_STORAGE_PREFERENCES_KEY
     );
   }, 0);
+}
+
+function flushPendingPersistence() {
+  if (progressSaveTimer) {
+    clearTimeout(progressSaveTimer);
+    progressSaveTimer = null;
+    void persistValue(DATABASE_KEYS.progress, state.progress, LOCAL_STORAGE_PROGRESS_KEY);
+  }
+
+  if (preferencesSaveTimer) {
+    clearTimeout(preferencesSaveTimer);
+    preferencesSaveTimer = null;
+    void persistValue(
+      DATABASE_KEYS.preferences,
+      buildPersistedPreferences(),
+      LOCAL_STORAGE_PREFERENCES_KEY
+    );
+  }
 }
 
 async function openAppDatabase() {
@@ -1008,11 +1189,7 @@ async function readDatabaseValue(key) {
 
 async function persistValue(key, value, mirrorLocalStorageKey = null) {
   if (mirrorLocalStorageKey) {
-    try {
-      localStorage.setItem(mirrorLocalStorageKey, JSON.stringify(value));
-    } catch (error) {
-      console.error(`Failed to mirror ${key} to localStorage.`, error);
-    }
+    writeLocalStorageMirror(mirrorLocalStorageKey, value, key);
   }
 
   const database = await openAppDatabase();
@@ -1023,6 +1200,14 @@ async function persistValue(key, value, mirrorLocalStorageKey = null) {
   const transaction = database.transaction(DATABASE_STORE, "readwrite");
   transaction.objectStore(DATABASE_STORE).put({ key, value });
   await transactionToPromise(transaction);
+}
+
+function writeLocalStorageMirror(storageKey, value, label = storageKey) {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Failed to mirror ${label} to localStorage.`, error);
+  }
 }
 
 function requestToPromise(request) {
@@ -1332,6 +1517,79 @@ function allowedValue(value, allowed, fallback) {
   return allowed.includes(value) ? value : fallback;
 }
 
+function serializedValueEquals(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function formatSpeechRate(rate) {
+  return `${rate.toFixed(2)}x`;
+}
+
+function normalizeSpeechText(text) {
+  return String(text)
+    .replace(/\[word\]/gi, "palabra")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function formatVoiceLabel(voice) {
+  if (!voice) {
+    return "Browser default Spanish voice";
+  }
+
+  return `${voice.name} (${voice.lang})`;
+}
+
+function getActiveSpeechVoice() {
+  if (!state.speechVoices.length) {
+    return null;
+  }
+
+  if (state.audio.voiceURI !== "auto") {
+    return state.speechVoices.find((voice) => voice.voiceURI === state.audio.voiceURI) || state.speechVoices[0];
+  }
+
+  return state.speechVoices[0];
+}
+
+function rankSpanishVoices(voices) {
+  return voices
+    .filter((voice) => typeof voice.lang === "string" && voice.lang.toLowerCase().startsWith("es"))
+    .slice()
+    .sort((left, right) => scoreVoice(right) - scoreVoice(left));
+}
+
+function scoreVoice(voice) {
+  const lang = (voice.lang || "").toLowerCase();
+  const name = (voice.name || "").toLowerCase();
+  let score = 0;
+
+  if (lang === "es-gt") score += 140;
+  else if (lang === "es-mx") score += 130;
+  else if (lang === "es-us") score += 120;
+  else if (lang === "es-419") score += 115;
+  else if (lang.startsWith("es-")) score += 100;
+  else if (lang === "es") score += 90;
+
+  if (name.includes("siri")) score += 50;
+  if (name.includes("premium")) score += 35;
+  if (name.includes("enhanced")) score += 30;
+  if (name.includes("natural")) score += 25;
+  if (name.includes("neural")) score += 25;
+  if (name.includes("high quality")) score += 20;
+  if (voice.localService) score += 5;
+
+  return score;
+}
+
 function safeNumber(value, fallback = 0) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -1392,15 +1650,12 @@ function speakEntry(entry) {
   }
 
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(entry.spanish);
-  utterance.lang = "es-GT";
-  utterance.rate = 0.9;
-
-  const voices = window.speechSynthesis.getVoices();
-  const voice =
-    voices.find((item) => item.lang === "es-GT") ||
-    voices.find((item) => item.lang.startsWith("es")) ||
-    null;
+  const utterance = new SpeechSynthesisUtterance(normalizeSpeechText(entry.spanish));
+  const voice = getActiveSpeechVoice();
+  utterance.lang = voice?.lang || "es-GT";
+  utterance.rate = state.audio.rate;
+  utterance.pitch = 1;
+  utterance.volume = 1;
 
   if (voice) {
     utterance.voice = voice;
@@ -1454,7 +1709,12 @@ async function importProgress(event) {
       total: 0,
       correct: 0,
     };
+    state.audio = {
+      ...defaultAudioState(),
+      ...importedPreferences.audio,
+    };
     syncControlsFromState();
+    renderSpeechControls();
     saveProgress();
     queuePreferencesSave();
     elements.importStatus.textContent = `Imported ${Object.keys(imported).length} progress records.`;

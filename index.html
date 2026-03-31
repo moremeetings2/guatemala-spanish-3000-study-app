@@ -66,6 +66,24 @@
           </label>
         </div>
 
+        <div class="speech-controls">
+          <label>
+            <span>Voice</span>
+            <select id="voice-select">
+              <option value="auto">Auto (best Spanish voice)</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Pronunciation speed</span>
+            <div class="range-control">
+              <input id="speech-rate-input" type="range" min="0.6" max="1.0" step="0.02" value="0.68">
+              <strong id="speech-rate-value" class="range-value">0.68x</strong>
+            </div>
+          </label>
+        </div>
+
+        <p id="speech-status" class="support-copy">Loading Spanish voices...</p>
         <p id="study-summary" class="support-copy">Loading study queue...</p>
 
         <button id="flashcard" class="flashcard" type="button" aria-live="polite">

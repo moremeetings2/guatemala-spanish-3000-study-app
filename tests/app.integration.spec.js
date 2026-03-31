@@ -56,6 +56,7 @@ test("supports study actions and review filters", async ({ page }) => {
 test("runs quiz interactions and pronunciation controls", async ({ page }) => {
   await page.locator("#quiz-scope").selectOption("all");
   await expect(page.locator("#quiz-prompt")).not.toHaveText(/Loading quiz/);
+  await expect(page.locator("#speech-rate-input")).toHaveValue("0.68");
 
   const firstOption = page.locator("#quiz-options .quiz-option").first();
   const optionCount = await page.locator("#quiz-options .quiz-option").count();
@@ -64,18 +65,28 @@ test("runs quiz interactions and pronunciation controls", async ({ page }) => {
 
   await expect(page.locator("#quiz-feedback")).not.toHaveText("");
   await expect(page.locator("#quiz-meta")).toContainText("Score");
+  await page.locator("#speech-rate-input").evaluate((node) => {
+    node.value = "0.64";
+    node.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  await expect(page.locator("#speech-rate-value")).toHaveText("0.64x");
 
   await page.locator("#speak-button").click();
   await page.locator("#quiz-speak-button").click();
 
   const speechCalls = await page.evaluate(() => window.__speechCalls);
   expect(speechCalls.length).toBeGreaterThanOrEqual(2);
-  expect(speechCalls[0].lang).toBe("es-GT");
+  expect(speechCalls[0].rate).toBe(0.64);
+  expect(speechCalls[0].voiceURI).toBe("auto");
 });
 
 test("persists preferences and progress across reload and supports export/import", async ({ browser, page }) => {
   await page.locator("#deck-select").selectOption("conversationVerbs");
   await page.locator("#quiz-direction").selectOption("en-es");
+  await page.locator("#speech-rate-input").evaluate((node) => {
+    node.value = "0.64";
+    node.dispatchEvent(new Event("input", { bubbles: true }));
+  });
   await page.locator("#favorite-button").click();
 
   await page.reload();
@@ -83,6 +94,7 @@ test("persists preferences and progress across reload and supports export/import
 
   await expect(page.locator("#deck-select")).toHaveValue("conversationVerbs");
   await expect(page.locator("#quiz-direction")).toHaveValue("en-es");
+  await expect(page.locator("#speech-rate-input")).toHaveValue("0.64");
   await expect(page.locator("#favorite-button")).toHaveText("Favorited");
 
   const downloadPromise = page.waitForEvent("download");
@@ -91,6 +103,7 @@ test("persists preferences and progress across reload and supports export/import
   const exportJson = JSON.parse(await download.path().then((path) => require("fs").readFileSync(path, "utf8")));
   expect(exportJson.preferences.ui.deck).toBe("conversationVerbs");
   expect(exportJson.preferences.quiz.direction).toBe("en-es");
+  expect(exportJson.preferences.audio.rate).toBe(0.64);
   expect(exportJson.progress["conversation-001-soy-nuevo-aqu"].favorite).toBe(true);
 
   const importedPayload = {
@@ -125,6 +138,10 @@ test("persists preferences and progress across reload and supports export/import
         scope: "all",
         direction: "es-en",
       },
+      audio: {
+        voiceURI: "auto",
+        rate: 0.6,
+      },
     },
   };
 
@@ -145,12 +162,14 @@ test("persists preferences and progress across reload and supports export/import
   await expect(cleanPage.locator("#status-filter")).toHaveValue("favorite");
   await expect(cleanPage.locator("#band-filter")).toHaveValue("1K");
   await expect(cleanPage.locator("#type-filter")).toHaveValue("word");
+  await expect(cleanPage.locator("#speech-rate-input")).toHaveValue("0.6");
   await expect(cleanPage.locator("#card-front-text")).toHaveText("de");
   await expect(cleanPage.locator("#favorite-button")).toHaveText("Favorited");
 
   const importedPreferences = await readDatabaseRecord(cleanPage, "preferences");
   expect(importedPreferences.ui.deck).toBe("mainWords");
   expect(importedPreferences.quiz.scope).toBe("all");
+  expect(importedPreferences.audio.rate).toBe(0.6);
 
   await cleanContext.close();
 });
@@ -171,8 +190,8 @@ async function installSpeechStub(page) {
 
       window.__speechCalls.push({
         text: entry.spanish,
-        lang: "es-GT",
-        rate: 0.9,
+        voiceURI: document.querySelector("#voice-select")?.value || "auto",
+        rate: Number(document.querySelector("#speech-rate-input")?.value || "0"),
       });
     };
   });
