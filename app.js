@@ -8,6 +8,7 @@ const AUDIO_RATE_MIN = 0.6;
 const AUDIO_RATE_MAX = 1.0;
 const LEGACY_AUDIO_DEFAULT_RATE = 0.72;
 const AUDIO_PREFERENCES_VERSION = 2;
+const PERSISTENCE_SCHEMA_VERSION = 1;
 const DATABASE_NAME = "guatemala-spanish-study-app-db";
 const DATABASE_VERSION = 1;
 const DATABASE_STORE = "appState";
@@ -25,6 +26,8 @@ const COLLECTION_ORDER = {
 let databasePromise = null;
 let progressSaveTimer = null;
 let preferencesSaveTimer = null;
+let pendingProgressEnvelope = null;
+let pendingPreferencesEnvelope = null;
 let speechVoicesReady = false;
 
 function defaultUiState() {
@@ -941,97 +944,210 @@ function getDailyTarget() {
 }
 
 async function loadPersistedState() {
-  const fallback = loadLocalStorageState();
   const database = await openAppDatabase();
+  const progressRecords = [
+    readLocalStorageRecord(LOCAL_STORAGE_PROGRESS_KEY, "localStorage", true),
+    readLocalStorageRecord(LEGACY_STORAGE_KEY, "legacyLocalStorage", false),
+    await readDatabaseRecord(DATABASE_KEYS.progress, Boolean(database)),
+  ];
+  const preferencesRecords = [
+    readLocalStorageRecord(LOCAL_STORAGE_PREFERENCES_KEY, "localStorage", true),
+    await readDatabaseRecord(DATABASE_KEYS.preferences, Boolean(database)),
+  ];
+  const progressResolution = resolvePersistedKind(DATABASE_KEYS.progress, progressRecords);
+  const preferencesResolution = resolvePersistedKind(DATABASE_KEYS.preferences, preferencesRecords);
 
-  if (!database) {
+  await repairPersistedKind(
+    DATABASE_KEYS.progress,
+    progressResolution,
+    Boolean(database),
+    LOCAL_STORAGE_PROGRESS_KEY
+  );
+  await repairPersistedKind(
+    DATABASE_KEYS.preferences,
+    preferencesResolution,
+    Boolean(database),
+    LOCAL_STORAGE_PREFERENCES_KEY
+  );
+
+  return {
+    progress: progressResolution.value,
+    preferences: preferencesResolution.value,
+  };
+}
+
+function readLocalStorageRecord(storageKey, source, requiredStore) {
+  const raw = localStorage.getItem(storageKey);
+  if (raw == null) {
     return {
-      progress: fallback.progress,
-      preferences: fallback.preferences,
+      source,
+      storageKey,
+      requiredStore,
+      exists: false,
+      raw: null,
+      invalid: false,
     };
   }
 
   try {
-    const [storedProgress, storedPreferences] = await Promise.all([
-      readDatabaseValue(DATABASE_KEYS.progress),
-      readDatabaseValue(DATABASE_KEYS.preferences),
-    ]);
-
-    const normalizedStoredProgress = normalizeProgressMap(storedProgress ?? {});
-    const normalizedStoredPreferences = normalizePersistedPreferences(storedPreferences ?? {});
-    const useFallbackProgress =
-      fallback.hasProgress && !serializedValueEquals(normalizedStoredProgress, fallback.progress);
-    const useFallbackPreferences =
-      fallback.hasPreferences &&
-      !serializedValueEquals(normalizedStoredPreferences, fallback.preferences);
-    const progress = useFallbackProgress
-      ? fallback.progress
-      : storedProgress == null
-        ? fallback.progress
-        : normalizedStoredProgress;
-    const preferences = useFallbackPreferences
-      ? fallback.preferences
-      : storedPreferences == null
-        ? fallback.preferences
-        : normalizedStoredPreferences;
-
-    if ((storedProgress == null && fallback.hasProgress) || useFallbackProgress) {
-      await persistValue(DATABASE_KEYS.progress, progress, LOCAL_STORAGE_PROGRESS_KEY);
-    }
-
-    if ((storedPreferences == null && fallback.hasPreferences) || useFallbackPreferences) {
-      await persistValue(DATABASE_KEYS.preferences, preferences, LOCAL_STORAGE_PREFERENCES_KEY);
-    }
-
     return {
-      progress,
-      preferences,
+      source,
+      storageKey,
+      requiredStore,
+      exists: true,
+      raw: JSON.parse(raw),
+      invalid: false,
     };
   } catch (error) {
-    console.error("Failed to hydrate IndexedDB state, using local storage fallback.", error);
     return {
-      progress: fallback.progress,
-      preferences: fallback.preferences,
+      source,
+      storageKey,
+      requiredStore,
+      exists: true,
+      raw: null,
+      invalid: true,
     };
   }
 }
 
-function loadLocalStorageState() {
-  let progress = {};
-  let preferences = normalizePersistedPreferences({});
-  let hasProgress = false;
-  let hasPreferences = false;
-
-  try {
-    const raw =
-      localStorage.getItem(LOCAL_STORAGE_PROGRESS_KEY) ||
-      localStorage.getItem(LEGACY_STORAGE_KEY);
-
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      progress = normalizeProgressMap(parsed.progress || parsed);
-      hasProgress = Object.keys(progress).length > 0;
-    }
-  } catch (error) {
-    progress = {};
+async function readDatabaseRecord(key, databaseAvailable) {
+  if (!databaseAvailable) {
+    return {
+      source: "indexedDB",
+      storageKey: null,
+      requiredStore: true,
+      exists: false,
+      raw: null,
+      invalid: false,
+    };
   }
 
   try {
-    const rawPreferences = localStorage.getItem(LOCAL_STORAGE_PREFERENCES_KEY);
-    if (rawPreferences) {
-      preferences = normalizePersistedPreferences(JSON.parse(rawPreferences));
-      hasPreferences = true;
-    }
+    const raw = await readDatabaseValue(key);
+    return {
+      source: "indexedDB",
+      storageKey: null,
+      requiredStore: true,
+      exists: raw != null,
+      raw,
+      invalid: false,
+    };
   } catch (error) {
-    preferences = normalizePersistedPreferences({});
+    console.error(`Failed to read ${key} from IndexedDB.`, error);
+    return {
+      source: "indexedDB",
+      storageKey: null,
+      requiredStore: true,
+      exists: true,
+      raw: null,
+      invalid: true,
+    };
+  }
+}
+
+function resolvePersistedKind(kind, records) {
+  const normalizedRecords = records.map((record) => normalizePersistedRecord(kind, record));
+  const validRecords = normalizedRecords.filter((record) => record.valid);
+
+  if (!validRecords.length) {
+    return {
+      value: defaultPersistedValue(kind),
+      envelope: null,
+      shouldRepair: false,
+    };
+  }
+
+  const winner = validRecords.slice().sort(comparePersistedRecords)[0];
+  const envelope = winner.isEnvelope
+    ? winner.envelope
+    : buildPersistenceEnvelope(kind, winner.value);
+  const shouldRepair = normalizedRecords.some((record) => shouldRepairPersistedRecord(record, envelope));
+
+  return {
+    value: winner.value,
+    envelope,
+    shouldRepair,
+  };
+}
+
+function normalizePersistedRecord(kind, record) {
+  if (!record.exists) {
+    return {
+      ...record,
+      valid: false,
+      isEnvelope: false,
+      envelope: null,
+      value: null,
+      score: -1,
+      updatedAtMs: null,
+    };
+  }
+
+  if (record.invalid) {
+    return {
+      ...record,
+      valid: false,
+      isEnvelope: false,
+      envelope: null,
+      value: null,
+      score: -1,
+      updatedAtMs: null,
+    };
+  }
+
+  const envelope = extractPersistenceEnvelope(kind, record.raw);
+  if (envelope) {
+    return {
+      ...record,
+      valid: true,
+      isEnvelope: true,
+      envelope,
+      value: envelope.value,
+      score: persistedValueScore(kind, envelope.value),
+      updatedAtMs: Date.parse(envelope.updatedAt),
+    };
+  }
+
+  const legacyValue = extractLegacyPersistedValue(kind, record.raw);
+  if (legacyValue == null) {
+    return {
+      ...record,
+      valid: false,
+      isEnvelope: false,
+      envelope: null,
+      value: null,
+      score: -1,
+      updatedAtMs: null,
+    };
   }
 
   return {
-    progress,
-    preferences,
-    hasProgress,
-    hasPreferences,
+    ...record,
+    valid: true,
+    isEnvelope: false,
+    envelope: null,
+    value: legacyValue,
+    score: persistedValueScore(kind, legacyValue),
+    updatedAtMs: null,
   };
+}
+
+async function repairPersistedKind(kind, resolution, databaseAvailable, localStorageKey) {
+  if (!resolution.shouldRepair || !resolution.envelope) {
+    return;
+  }
+
+  if (!databaseAvailable) {
+    writeLocalStorageMirror(localStorageKey, resolution.envelope, kind);
+    return;
+  }
+
+  try {
+    await persistValue(kind, resolution.envelope, localStorageKey);
+  } catch (error) {
+    console.error(`Failed to repair ${kind} persistence stores.`, error);
+    writeLocalStorageMirror(localStorageKey, resolution.envelope, kind);
+  }
 }
 
 function normalizePersistedPreferences(raw) {
@@ -1074,6 +1190,174 @@ function normalizePersistedPreferences(raw) {
   };
 }
 
+function defaultPersistedValue(kind) {
+  if (kind === DATABASE_KEYS.progress) {
+    return {};
+  }
+
+  return normalizePersistedPreferences({});
+}
+
+function buildPersistenceEnvelope(kind, value, updatedAt = new Date().toISOString()) {
+  const normalizedUpdatedAt = normalizeDate(updatedAt) || new Date().toISOString();
+  return {
+    schemaVersion: PERSISTENCE_SCHEMA_VERSION,
+    kind,
+    updatedAt: normalizedUpdatedAt,
+    value,
+  };
+}
+
+function extractPersistenceEnvelope(kind, raw) {
+  if (
+    !isPlainObject(raw) ||
+    raw.schemaVersion !== PERSISTENCE_SCHEMA_VERSION ||
+    raw.kind !== kind ||
+    !("value" in raw)
+  ) {
+    return null;
+  }
+
+  const updatedAt = normalizeDate(raw.updatedAt);
+  if (!updatedAt) {
+    return null;
+  }
+
+  const value = normalizePersistenceValue(kind, raw.value);
+  if (value == null) {
+    return null;
+  }
+
+  return buildPersistenceEnvelope(kind, value, updatedAt);
+}
+
+function extractLegacyPersistedValue(kind, raw) {
+  const payload = extractLegacyPersistencePayload(kind, raw);
+  if (payload == null) {
+    return null;
+  }
+
+  return normalizePersistenceValue(kind, payload);
+}
+
+function extractLegacyPersistencePayload(kind, raw) {
+  if (!isPlainObject(raw)) {
+    return null;
+  }
+
+  if (
+    "schemaVersion" in raw &&
+    "kind" in raw &&
+    "updatedAt" in raw &&
+    "value" in raw
+  ) {
+    return null;
+  }
+
+  if (kind === DATABASE_KEYS.progress) {
+    const payload = isPlainObject(raw.progress) ? raw.progress : raw;
+    if (!Object.keys(payload).length) {
+      return {};
+    }
+
+    return Object.values(payload).some((value) => isPlainObject(value)) ? payload : null;
+  }
+
+  const payload = isPlainObject(raw.preferences) ? raw.preferences : raw;
+  if (!Object.keys(payload).length) {
+    return {};
+  }
+
+  return ["ui", "quiz", "audio"].some((key) => key in payload) ? payload : null;
+}
+
+function normalizePersistenceValue(kind, raw) {
+  if (kind === DATABASE_KEYS.progress) {
+    return normalizeProgressMap(raw);
+  }
+
+  if (kind === DATABASE_KEYS.preferences) {
+    return normalizePersistedPreferences(raw);
+  }
+
+  return null;
+}
+
+function persistedValueScore(kind, value) {
+  if (kind === DATABASE_KEYS.progress) {
+    return Object.values(value).reduce(
+      (score, progress) => score + (isMeaningfulProgress(progress) ? 1 : 0),
+      0
+    );
+  }
+
+  const defaults = normalizePersistedPreferences({});
+  let score = 0;
+  if (!serializedValueEquals(value.ui, defaults.ui)) score += 1;
+  if (!serializedValueEquals(value.quiz, defaults.quiz)) score += 1;
+  if (!serializedValueEquals(value.audio, defaults.audio)) score += 1;
+  return score;
+}
+
+function isMeaningfulProgress(progress) {
+  return (
+    progress.favorite ||
+    progress.status !== "new" ||
+    progress.reviewCount > 0 ||
+    progress.quizSeen > 0 ||
+    progress.quizCorrect > 0 ||
+    progress.correctStreak > 0 ||
+    progress.wrongCount > 0 ||
+    progress.intervalDays > 0 ||
+    progress.dueAt != null ||
+    progress.lastReviewedAt != null ||
+    progress.lastOutcome != null
+  );
+}
+
+function comparePersistedRecords(left, right) {
+  const leftHasTimestamp = Number.isFinite(left.updatedAtMs);
+  const rightHasTimestamp = Number.isFinite(right.updatedAtMs);
+
+  if (leftHasTimestamp && rightHasTimestamp && left.updatedAtMs !== right.updatedAtMs) {
+    return right.updatedAtMs - left.updatedAtMs;
+  }
+
+  if (leftHasTimestamp !== rightHasTimestamp) {
+    return leftHasTimestamp ? -1 : 1;
+  }
+
+  if (left.score !== right.score) {
+    return right.score - left.score;
+  }
+
+  return persistedSourcePriority(right.source) - persistedSourcePriority(left.source);
+}
+
+function shouldRepairPersistedRecord(record, resolvedEnvelope) {
+  if (!record.requiredStore) {
+    return false;
+  }
+
+  if (!record.exists || !record.valid || !record.isEnvelope || !record.envelope) {
+    return true;
+  }
+
+  return !serializedValueEquals(record.envelope, resolvedEnvelope);
+}
+
+function persistedSourcePriority(source) {
+  if (source === "localStorage") {
+    return 3;
+  }
+
+  if (source === "legacyLocalStorage") {
+    return 2;
+  }
+
+  return 1;
+}
+
 function buildPersistedPreferences() {
   return normalizePersistedPreferences({
     ui: state.ui,
@@ -1090,7 +1374,12 @@ function buildPersistedPreferences() {
 }
 
 function queueProgressSave() {
-  writeLocalStorageMirror(LOCAL_STORAGE_PROGRESS_KEY, state.progress, DATABASE_KEYS.progress);
+  pendingProgressEnvelope = buildPersistenceEnvelope(DATABASE_KEYS.progress, state.progress);
+  writeLocalStorageMirror(
+    LOCAL_STORAGE_PROGRESS_KEY,
+    pendingProgressEnvelope,
+    DATABASE_KEYS.progress
+  );
 
   if (progressSaveTimer) {
     clearTimeout(progressSaveTimer);
@@ -1098,14 +1387,22 @@ function queueProgressSave() {
 
   progressSaveTimer = window.setTimeout(() => {
     progressSaveTimer = null;
-    void persistValue(DATABASE_KEYS.progress, state.progress, LOCAL_STORAGE_PROGRESS_KEY);
+    const envelope = pendingProgressEnvelope;
+    pendingProgressEnvelope = null;
+    if (envelope) {
+      void persistValue(DATABASE_KEYS.progress, envelope, LOCAL_STORAGE_PROGRESS_KEY);
+    }
   }, 0);
 }
 
 function queuePreferencesSave() {
+  pendingPreferencesEnvelope = buildPersistenceEnvelope(
+    DATABASE_KEYS.preferences,
+    buildPersistedPreferences()
+  );
   writeLocalStorageMirror(
     LOCAL_STORAGE_PREFERENCES_KEY,
-    buildPersistedPreferences(),
+    pendingPreferencesEnvelope,
     DATABASE_KEYS.preferences
   );
 
@@ -1115,11 +1412,15 @@ function queuePreferencesSave() {
 
   preferencesSaveTimer = window.setTimeout(() => {
     preferencesSaveTimer = null;
-    void persistValue(
-      DATABASE_KEYS.preferences,
-      buildPersistedPreferences(),
-      LOCAL_STORAGE_PREFERENCES_KEY
-    );
+    const envelope = pendingPreferencesEnvelope;
+    pendingPreferencesEnvelope = null;
+    if (envelope) {
+      void persistValue(
+        DATABASE_KEYS.preferences,
+        envelope,
+        LOCAL_STORAGE_PREFERENCES_KEY
+      );
+    }
   }, 0);
 }
 
@@ -1127,15 +1428,23 @@ function flushPendingPersistence() {
   if (progressSaveTimer) {
     clearTimeout(progressSaveTimer);
     progressSaveTimer = null;
-    void persistValue(DATABASE_KEYS.progress, state.progress, LOCAL_STORAGE_PROGRESS_KEY);
+  }
+  const progressEnvelope = pendingProgressEnvelope;
+  pendingProgressEnvelope = null;
+  if (progressEnvelope) {
+    void persistValue(DATABASE_KEYS.progress, progressEnvelope, LOCAL_STORAGE_PROGRESS_KEY);
   }
 
   if (preferencesSaveTimer) {
     clearTimeout(preferencesSaveTimer);
     preferencesSaveTimer = null;
+  }
+  const preferencesEnvelope = pendingPreferencesEnvelope;
+  pendingPreferencesEnvelope = null;
+  if (preferencesEnvelope) {
     void persistValue(
       DATABASE_KEYS.preferences,
-      buildPersistedPreferences(),
+      preferencesEnvelope,
       LOCAL_STORAGE_PREFERENCES_KEY
     );
   }
@@ -1519,6 +1828,10 @@ function allowedValue(value, allowed, fallback) {
 
 function serializedValueEquals(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
 function formatSpeechRate(rate) {

@@ -51,7 +51,7 @@ Install dependencies:
 
 ```bash
 npm install
-npx playwright install chromium
+npx playwright install chromium webkit
 ```
 
 Run the Playwright integration suite:
@@ -60,7 +60,7 @@ Run the Playwright integration suite:
 npm run test:integration
 ```
 
-The suite validates deck rendering, phrasebank search, study/review actions, quiz flow, pronunciation controls, IndexedDB-backed persistence, and import/export.
+The suite validates deck rendering, phrasebank search, study/review actions, quiz flow, pronunciation controls, IndexedDB-backed persistence, full relaunch durability, storage reconciliation, and import/export.
 
 ## iPhone use
 
