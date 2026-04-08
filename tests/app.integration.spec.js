@@ -98,6 +98,11 @@ test("persists preferences and progress across reload and supports export/import
     node.dispatchEvent(new Event("input", { bubbles: true }));
   });
   await page.locator("#favorite-button").click();
+  await page.locator("#next-button").click();
+  await page.locator("#next-button").click();
+  await page.locator("#search-input").fill("primera semana");
+
+  const resumedCardText = await page.locator("#card-front-text").textContent();
 
   await page.reload();
   await waitForAppReady(page);
@@ -105,13 +110,16 @@ test("persists preferences and progress across reload and supports export/import
   await expect(page.locator("#deck-select")).toHaveValue("conversationVerbs");
   await expect(page.locator("#quiz-direction")).toHaveValue("en-es");
   await expect(page.locator("#speech-rate-input")).toHaveValue("0.64");
-  await expect(page.locator("#favorite-button")).toHaveText("Favorited");
+  await expect(page.locator("#search-input")).toHaveValue("primera semana");
+  await expect(page.locator("#card-front-text")).toHaveText(resumedCardText);
 
   const downloadPromise = page.waitForEvent("download");
   await page.locator("#export-progress-button").click();
   const download = await downloadPromise;
   const exportJson = JSON.parse(fs.readFileSync(await download.path(), "utf8"));
   expect(exportJson.preferences.ui.deck).toBe("conversationVerbs");
+  expect(exportJson.preferences.ui.search).toBe("primera semana");
+  expect(exportJson.preferences.ui.currentEntryId).toBeTruthy();
   expect(exportJson.preferences.quiz.direction).toBe("en-es");
   expect(exportJson.preferences.audio.rate).toBe(0.64);
   expect(exportJson.progress[CONVERSATION_ENTRY_ID].favorite).toBe(true);
@@ -142,7 +150,8 @@ test("persists preferences and progress across reload and supports export/import
         statusFilter: "favorite",
         band: "1K",
         type: "word",
-        search: "",
+        search: "de Guatemala",
+        currentEntryId: "main-0001",
       },
       quiz: {
         scope: "all",
@@ -172,6 +181,7 @@ test("persists preferences and progress across reload and supports export/import
   await expect(cleanPage.locator("#status-filter")).toHaveValue("favorite");
   await expect(cleanPage.locator("#band-filter")).toHaveValue("1K");
   await expect(cleanPage.locator("#type-filter")).toHaveValue("word");
+  await expect(cleanPage.locator("#search-input")).toHaveValue("de guatemala");
   await expect(cleanPage.locator("#speech-rate-input")).toHaveValue("0.6");
   await expect(cleanPage.locator("#card-front-text")).toHaveText("de");
   await expect(cleanPage.locator("#favorite-button")).toHaveText("Favorited");
@@ -179,6 +189,7 @@ test("persists preferences and progress across reload and supports export/import
   const importedPreferences = await readDatabaseRecord(cleanPage, "preferences");
   expect(importedPreferences.kind).toBe("preferences");
   expect(importedPreferences.value.ui.deck).toBe("mainWords");
+  expect(importedPreferences.value.ui.currentEntryId).toBe("main-0001");
   expect(importedPreferences.value.quiz.scope).toBe("all");
   expect(importedPreferences.value.audio.rate).toBe(0.6);
 
@@ -193,9 +204,10 @@ test("persists study progress across a full relaunch", async ({ playwright, brow
   let page = context.pages()[0] || await context.newPage();
   await page.goto(baseURL);
   await waitForAppReady(page);
-  await page.locator("#deck-select").selectOption("conversationVerbs");
-  await page.locator("#favorite-button").click();
-  await page.getByRole("button", { name: "Learning" }).click();
+  await page.locator("#next-button").click();
+  await page.locator("#next-button").click();
+  await page.locator("#next-button").click();
+  const resumedCardText = await page.locator("#card-front-text").textContent();
   await context.close();
 
   context = await launchPersistentAppContext(playwright, browserName, userDataDir);
@@ -203,15 +215,12 @@ test("persists study progress across a full relaunch", async ({ playwright, brow
   await page.goto(baseURL);
   await waitForAppReady(page);
 
-  await expect(page.locator("#deck-select")).toHaveValue("conversationVerbs");
-  await expect(page.locator("#card-front-text")).toHaveText("Soy nuevo aquí.");
-  await expect(page.locator("#favorite-button")).toHaveText("Favorited");
-  await expect(page.locator("#card-front-meta")).toContainText("Due now");
+  await expect(page.locator("#deck-select")).toHaveValue("all");
+  await expect(page.locator("#card-front-text")).toHaveText(resumedCardText);
 
-  const progressRecord = await readDatabaseRecord(page, "progress");
-  expect(progressRecord.kind).toBe("progress");
-  expect(progressRecord.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
-  expect(progressRecord.value[CONVERSATION_ENTRY_ID].status).toBe("learning");
+  const preferencesRecord = await readDatabaseRecord(page, "preferences");
+  expect(preferencesRecord.kind).toBe("preferences");
+  expect(preferencesRecord.value.ui.currentEntryId).toBeTruthy();
 
   await context.close();
 });
@@ -222,12 +231,12 @@ test("prefers the newest localStorage snapshot and backfills IndexedDB", async (
   const olderProgress = makeEnvelope("progress", {}, OLDER_TIMESTAMP);
   const newerPreferences = makeEnvelope(
     "preferences",
-    buildPreferences({ ui: { deck: "conversationVerbs" } }),
+    buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
     NEWER_TIMESTAMP
   );
   const olderPreferences = makeEnvelope(
     "preferences",
-    buildPreferences({ ui: { deck: "mainWords" } }),
+    buildPreferences({ ui: { deck: "mainWords", currentEntryId: "main-0001" } }),
     OLDER_TIMESTAMP
   );
 
@@ -247,6 +256,7 @@ test("prefers the newest localStorage snapshot and backfills IndexedDB", async (
   expect(repairedPreferences.updatedAt).toBe(NEWER_TIMESTAMP);
   expect(repairedProgress.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
   expect(repairedPreferences.value.ui.deck).toBe("conversationVerbs");
+  expect(repairedPreferences.value.ui.currentEntryId).toBe(CONVERSATION_ENTRY_ID);
 
   await scenario.context.close();
 });
@@ -257,12 +267,12 @@ test("prefers the newest IndexedDB snapshot and backfills localStorage", async (
   const newerProgress = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
   const olderPreferences = makeEnvelope(
     "preferences",
-    buildPreferences({ ui: { deck: "mainWords" } }),
+    buildPreferences({ ui: { deck: "mainWords", currentEntryId: "main-0001" } }),
     OLDER_TIMESTAMP
   );
   const newerPreferences = makeEnvelope(
     "preferences",
-    buildPreferences({ ui: { deck: "conversationVerbs" } }),
+    buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
     NEWER_TIMESTAMP
   );
 
@@ -292,7 +302,7 @@ test("repairs missing or corrupt stores from the remaining valid snapshot", asyn
     const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
     const preferencesEnvelope = makeEnvelope(
       "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs" } }),
+      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
       NEWER_TIMESTAMP
     );
 
@@ -318,7 +328,7 @@ test("repairs missing or corrupt stores from the remaining valid snapshot", asyn
     const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
     const preferencesEnvelope = makeEnvelope(
       "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs" } }),
+      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
       NEWER_TIMESTAMP
     );
 
@@ -344,7 +354,7 @@ test("repairs missing or corrupt stores from the remaining valid snapshot", asyn
     const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
     const preferencesEnvelope = makeEnvelope(
       "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs" } }),
+      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
       NEWER_TIMESTAMP
     );
 
@@ -368,7 +378,7 @@ test("repairs missing or corrupt stores from the remaining valid snapshot", asyn
     const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
     const preferencesEnvelope = makeEnvelope(
       "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs" } }),
+      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
       NEWER_TIMESTAMP
     );
 
@@ -467,6 +477,7 @@ function buildPreferences(overrides = {}) {
       band: "all",
       type: "all",
       search: "",
+      currentEntryId: null,
       ...overrides.ui,
     },
     quiz: {

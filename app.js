@@ -30,6 +30,10 @@ let pendingProgressEnvelope = null;
 let pendingPreferencesEnvelope = null;
 let speechVoicesReady = false;
 
+function normalizeSearchQuery(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
 function defaultUiState() {
   return {
     deck: "all",
@@ -38,6 +42,7 @@ function defaultUiState() {
     band: "all",
     type: "all",
     search: "",
+    currentEntryId: null,
   };
 }
 
@@ -182,7 +187,8 @@ function bindEvents() {
   });
 
   elements.searchInput.addEventListener("input", (event) => {
-    state.ui.search = event.target.value.trim().toLowerCase();
+    state.ui.search = normalizeSearchQuery(event.target.value);
+    queuePreferencesSave();
     applyFilters(true);
   });
 
@@ -228,6 +234,7 @@ function bindEvents() {
     shuffleFilteredEntries();
     state.currentIndex = 0;
     renderFlashcard();
+    syncCurrentEntryPreference();
   });
 
   elements.speakButton.addEventListener("click", () => {
@@ -375,7 +382,8 @@ function renderSpeechControls() {
 }
 
 function applyFilters(resetIndex = false, options = {}) {
-  const { syncQuiz = true } = options;
+  const { syncQuiz = true, persistSelection = true } = options;
+  const preferredEntryId = currentEntry()?.id || state.ui.currentEntryId || null;
   const basicFiltered = state.entries.filter(matchesBaseFilters);
   let filtered = basicFiltered;
 
@@ -386,9 +394,8 @@ function applyFilters(resetIndex = false, options = {}) {
   }
 
   state.filteredEntries = sortEntries(filtered.slice());
-  if (resetIndex || state.currentIndex >= state.filteredEntries.length) {
-    state.currentIndex = 0;
-  }
+  restoreCurrentSelection(preferredEntryId, resetIndex);
+  syncCurrentEntryPreference(persistSelection);
 
   renderHero();
   renderStudySummary(basicFiltered);
@@ -400,6 +407,39 @@ function applyFilters(resetIndex = false, options = {}) {
     ensureQuizQuestion(false);
   } else {
     renderQuiz();
+  }
+}
+
+function restoreCurrentSelection(preferredEntryId, resetIndex) {
+  if (!state.filteredEntries.length) {
+    state.currentIndex = 0;
+    return;
+  }
+
+  if (preferredEntryId) {
+    const preferredIndex = state.filteredEntries.findIndex((entry) => entry.id === preferredEntryId);
+    if (preferredIndex >= 0) {
+      state.currentIndex = preferredIndex;
+      return;
+    }
+  }
+
+  if (!resetIndex && state.currentIndex >= 0 && state.currentIndex < state.filteredEntries.length) {
+    return;
+  }
+
+  state.currentIndex = 0;
+}
+
+function syncCurrentEntryPreference(persist = true) {
+  const nextEntryId = currentEntry()?.id || null;
+  if (state.ui.currentEntryId === nextEntryId) {
+    return;
+  }
+
+  state.ui.currentEntryId = nextEntryId;
+  if (persist) {
+    queuePreferencesSave();
   }
 }
 
@@ -578,6 +618,7 @@ function renderList() {
       if (position >= 0) {
         state.currentIndex = position;
         renderFlashcard();
+        syncCurrentEntryPreference();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
@@ -802,6 +843,7 @@ function nextCard() {
 
   state.currentIndex = (state.currentIndex + 1) % state.filteredEntries.length;
   renderFlashcard();
+  syncCurrentEntryPreference();
 }
 
 function currentEntry() {
@@ -1176,7 +1218,11 @@ function normalizePersistedPreferences(raw) {
       statusFilter: allowedValue(ui.statusFilter, ["all", "new", "learning", "known", "favorite"], defaults.ui.statusFilter),
       band: allowedValue(ui.band, ["all", "1K", "2K", "3K"], defaults.ui.band),
       type: allowedValue(ui.type, ["all", "word", "phrase", "bonus"], defaults.ui.type),
-      search: "",
+      search: normalizeSearchQuery(ui.search),
+      currentEntryId:
+        typeof ui.currentEntryId === "string" && ui.currentEntryId.trim()
+          ? ui.currentEntryId.trim()
+          : null,
     },
     quiz: {
       scope: allowedValue(quiz.scope, ["due", "weak", "filtered", "all"], defaults.quiz.scope),
