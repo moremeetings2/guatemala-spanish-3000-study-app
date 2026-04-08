@@ -1,4 +1,4 @@
-const CACHE_NAME = "guatemala-spanish-3000-v7";
+const CACHE_NAME = "guatemala-spanish-3000-v8";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -7,10 +7,16 @@ const APP_ASSETS = [
   "./manifest.webmanifest",
   "./data/guatemala_spanish_study_pack.json",
 ];
+const APP_ASSET_URLS = new Set(
+  APP_ASSETS.map((assetPath) => new URL(assetPath, self.location.href).href)
+);
+const OFFLINE_FALLBACK_URL = new URL("./index.html", self.location.href).href;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_ASSETS))
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(APP_ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -22,23 +28,66 @@ self.addEventListener("activate", (event) => {
           .filter((key) => key !== CACHE_NAME)
           .map((key) => caches.delete(key))
       )
-    )
+    ).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) {
-        return cached;
-      }
-      return fetch(event.request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-          return response;
-        })
-        .catch(() => caches.match("./index.html"));
-    })
-  );
+  if (event.request.method !== "GET") {
+    return;
+  }
+
+  const requestUrl = new URL(event.request.url);
+
+  if (event.request.mode === "navigate") {
+    event.respondWith(networkFirst(event.request, OFFLINE_FALLBACK_URL));
+    return;
+  }
+
+  if (requestUrl.origin === self.location.origin && APP_ASSET_URLS.has(requestUrl.href)) {
+    event.respondWith(networkFirst(event.request));
+    return;
+  }
+
+  event.respondWith(cacheFirst(event.request));
 });
+
+async function networkFirst(request, fallbackUrl = null) {
+  const cache = await caches.open(CACHE_NAME);
+
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      await cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    const cached = await caches.match(request);
+    if (cached) {
+      return cached;
+    }
+
+    if (fallbackUrl) {
+      const fallback = await caches.match(fallbackUrl);
+      if (fallback) {
+        return fallback;
+      }
+    }
+
+    throw error;
+  }
+}
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) {
+    return cached;
+  }
+
+  const response = await fetch(request);
+  if (response.ok && new URL(request.url).origin === self.location.origin) {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(request, response.clone());
+  }
+  return response;
+}

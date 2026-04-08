@@ -4,6 +4,8 @@ const { test, expect } = require("@playwright/test");
 
 const DB_NAME = "guatemala-spanish-study-app-db";
 const DB_STORE = "appState";
+const APP_JS_PATH = "app.js";
+const SW_PATH = "sw.js";
 const PROGRESS_STORAGE_KEY = "guatemala-spanish-3000-progress-v2";
 const PREFERENCES_STORAGE_KEY = "guatemala-spanish-3000-preferences-v1";
 const PERSISTENCE_SCHEMA_VERSION = 1;
@@ -11,6 +13,7 @@ const CONVERSATION_ENTRY_ID = "conversation-001-soy-nuevo-aqu";
 const BASE_PROGRESS_TIMESTAMP = "2026-04-01T12:00:00.000Z";
 const OLDER_TIMESTAMP = "2026-04-01T12:00:00.000Z";
 const NEWER_TIMESTAMP = "2026-04-01T12:10:00.000Z";
+const SERVICE_WORKER_CACHE_NAME = extractServiceWorkerCacheName();
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -225,6 +228,49 @@ test("persists study progress across a full relaunch", async ({ playwright, brow
   await context.close();
 });
 
+test("refreshes a stale cached app shell instead of pinning the old app.js", async ({ browser }) => {
+  const scenario = await openScenarioPage(browser);
+  await ensureServiceWorkerControlsPage(scenario.page);
+
+  const staleAppJs =
+    'document.documentElement.dataset.cachedAppVariant = "stale-shell";\n' +
+    fs.readFileSync(APP_JS_PATH, "utf8");
+
+  await scenario.page.evaluate(
+    async ({ cacheName, scriptText }) => {
+      const cache = await caches.open(cacheName);
+      const appJsUrl = new URL("./app.js", location.href).href;
+      await cache.put(
+        appJsUrl,
+        new Response(scriptText, {
+          headers: { "Content-Type": "application/javascript" },
+        })
+      );
+    },
+    {
+      cacheName: SERVICE_WORKER_CACHE_NAME,
+      scriptText: staleAppJs,
+    }
+  );
+
+  await scenario.page.close();
+  const reopenedPage = await scenario.context.newPage();
+  await reopenedPage.goto("/");
+  await waitForAppReady(reopenedPage);
+
+  await expect.poll(async () => {
+    return reopenedPage.evaluate(() => ({
+      cachedAppVariant: document.documentElement.dataset.cachedAppVariant || null,
+      hasController: Boolean(navigator.serviceWorker?.controller),
+    }));
+  }).toEqual({
+    cachedAppVariant: null,
+    hasController: true,
+  });
+
+  await scenario.context.close();
+});
+
 test("prefers the newest localStorage snapshot and backfills IndexedDB", async ({ browser }) => {
   const scenario = await openScenarioPage(browser);
   const newerProgress = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
@@ -423,6 +469,26 @@ async function installSpeechStub(page) {
   });
 }
 
+async function ensureServiceWorkerControlsPage(page) {
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const hasController = await page.evaluate(() => Boolean(navigator.serviceWorker?.controller));
+    if (hasController) {
+      return;
+    }
+
+    await page.reload();
+    await waitForAppReady(page);
+  }
+
+  await expect.poll(async () => {
+    return page.evaluate(() => Boolean(navigator.serviceWorker?.controller));
+  }).toBe(true);
+}
+
 async function launchPersistentAppContext(playwright, browserName, userDataDir) {
   return playwright[browserName].launchPersistentContext(userDataDir, {
     acceptDownloads: true,
@@ -495,30 +561,51 @@ function buildPreferences(overrides = {}) {
 }
 
 async function readDatabaseRecord(page, key) {
-  return page.evaluate(
-    async ({ databaseName, storeName, recordKey }) => {
-      const database = await new Promise((resolve, reject) => {
-        const request = indexedDB.open(databaseName);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
+  let lastError = null;
 
-      const transaction = database.transaction(storeName, "readonly");
-      const store = transaction.objectStore(storeName);
-      const record = await new Promise((resolve, reject) => {
-        const request = store.get(recordKey);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      return await page.evaluate(
+        async ({ databaseName, storeName, recordKey }) => {
+          const database = await new Promise((resolve, reject) => {
+            const request = indexedDB.open(databaseName);
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
 
-      return record?.value ?? null;
-    },
-    {
-      databaseName: DB_NAME,
-      storeName: DB_STORE,
-      recordKey: key,
+          const transaction = database.transaction(storeName, "readonly");
+          const store = transaction.objectStore(storeName);
+          const record = await new Promise((resolve, reject) => {
+            const request = store.get(recordKey);
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
+
+          return record?.value ?? null;
+        },
+        {
+          databaseName: DB_NAME,
+          storeName: DB_STORE,
+          recordKey: key,
+        }
+      );
+    } catch (error) {
+      lastError = error;
+      const message = String(error);
+      const isTransientIndexedDbError =
+        message.includes("Error looking up record in object store by key range") ||
+        message.includes("The database connection is closing") ||
+        message.includes("One of the specified object stores was not found");
+
+      if (!isTransientIndexedDbError || attempt === 4) {
+        throw error;
+      }
+
+      await page.waitForTimeout(100);
     }
-  );
+  }
+
+  throw lastError;
 }
 
 async function readLocalStorageJson(page, storageKey) {
@@ -601,4 +688,13 @@ async function deleteDatabaseValue(page, key) {
       recordKey: key,
     }
   );
+}
+
+function extractServiceWorkerCacheName() {
+  const swSource = fs.readFileSync(SW_PATH, "utf8");
+  const match = swSource.match(/const CACHE_NAME = "([^"]+)"/);
+  if (!match) {
+    throw new Error("Unable to determine the service worker cache name.");
+  }
+  return match[1];
 }
