@@ -21,6 +21,7 @@ const COLLECTION_ORDER = {
   coffeePhrases: 1,
   conversationVerbs: 2,
   guatemalaBonus: 3,
+  guatemalaLexicon: 4,
 };
 
 let databasePromise = null;
@@ -476,6 +477,16 @@ function matchesBaseFilters(entry) {
       entry.miniPhraseEnglish,
       entry.phrasePattern,
       entry.note,
+      entry.lexiconEntryType,
+      entry.lexiconCategory,
+      entry.lexiconMeaningEsNeutral,
+      entry.lexiconExampleEs,
+      entry.lexiconExampleEn,
+      entry.lexiconRegister,
+      entry.lexiconSpecificity,
+      entry.lexiconConfidence,
+      entry.lexiconCaution,
+      entry.lexiconNotes,
       entry.tags?.join(" "),
       collectionLabel(entry.collection),
     ]
@@ -508,6 +519,7 @@ function renderHero() {
     ["Coffee phrases", meta.counts.coffeePhrases ?? 0],
     ["Conversation verbs", meta.counts.conversationVerbs ?? 0],
     ["Guatemala notes", meta.counts.bonus ?? 0],
+    ["Guatemalan lexicon", meta.counts.guatemalaLexicon ?? 0],
     ["Due today", counts.due],
     ["Quiz accuracy", accuracy],
   ];
@@ -1213,7 +1225,7 @@ function normalizePersistedPreferences(raw) {
 
   return {
     ui: {
-      deck: allowedValue(ui.deck, ["all", "mainWords", "coffeePhrases", "conversationVerbs", "guatemalaBonus"], defaults.ui.deck),
+      deck: allowedValue(ui.deck, ["all", "mainWords", "coffeePhrases", "conversationVerbs", "guatemalaBonus", "guatemalaLexicon"], defaults.ui.deck),
       session: allowedValue(ui.session, ["all", "due", "weak"], defaults.ui.session),
       statusFilter: allowedValue(ui.statusFilter, ["all", "new", "learning", "known", "favorite"], defaults.ui.statusFilter),
       band: allowedValue(ui.band, ["all", "1K", "2K", "3K"], defaults.ui.band),
@@ -1732,7 +1744,13 @@ function makePill(kind, label) {
 function buildFrontMeta(entry, progress) {
   const bits = [];
 
-  if (entry.type === "word") {
+  if (isLexiconEntry(entry)) {
+    bits.push(
+      "Guatemalan lexicon",
+      formatLexiconEntryType(entry.lexiconEntryType),
+      formatLexiconCategory(entry.lexiconCategory)
+    );
+  } else if (entry.type === "word") {
     bits.push(entry.band, entry.partOfSpeech);
   } else if (entry.type === "phrase") {
     bits.push(collectionLabel(entry.collection), entry.focus, entry.context);
@@ -1747,7 +1765,29 @@ function buildFrontMeta(entry, progress) {
 function buildBackMeta(entry, progress) {
   const bits = [];
 
-  if (entry.type === "word") {
+  if (isLexiconEntry(entry)) {
+    if (entry.lexiconMeaningEsNeutral) {
+      bits.push(`Neutral Spanish: ${entry.lexiconMeaningEsNeutral}`);
+    }
+    if (entry.lexiconExampleEs) {
+      bits.push(`Example: ${entry.lexiconExampleEs}`);
+    }
+    if (entry.lexiconRegister) {
+      bits.push(`Register: ${formatLexiconValue(entry.lexiconRegister)}`);
+    }
+    if (entry.lexiconSpecificityScore) {
+      bits.push(formatLexiconSpecificityScore(entry.lexiconSpecificityScore));
+    }
+    if (entry.lexiconConfidence) {
+      bits.push(`Confidence: ${formatLexiconValue(entry.lexiconConfidence)}`);
+    }
+    if (entry.lexiconCaution) {
+      bits.push(`Caution: ${entry.lexiconCaution}`);
+    }
+    if (entry.lexiconNotes) {
+      bits.push(entry.lexiconNotes);
+    }
+  } else if (entry.type === "word") {
     bits.push(entry.commonForms, phrasebankSummary(entry));
   } else if (entry.type === "phrase") {
     if (entry.focus) {
@@ -1770,7 +1810,19 @@ function buildBackMeta(entry, progress) {
 function buildListMetaBits(entry, progress) {
   const bits = [];
 
-  if (entry.type === "word") {
+  if (isLexiconEntry(entry)) {
+    bits.push(
+      "Guatemalan lexicon",
+      formatLexiconEntryType(entry.lexiconEntryType),
+      formatLexiconCategory(entry.lexiconCategory)
+    );
+    if (entry.lexiconRegister) {
+      bits.push(`Register: ${formatLexiconValue(entry.lexiconRegister)}`);
+    }
+    if (entry.lexiconSpecificityScore) {
+      bits.push(formatLexiconSpecificityScore(entry.lexiconSpecificityScore));
+    }
+  } else if (entry.type === "word") {
     bits.push(`Rank ${entry.rank}`, entry.band, entry.partOfSpeech, phrasebankSummary(entry));
   } else if (entry.type === "phrase") {
     bits.push(collectionLabel(entry.collection));
@@ -1827,6 +1879,9 @@ function formatDistance(deltaMs) {
 }
 
 function entryLabel(entry) {
+  if (isLexiconEntry(entry)) {
+    return formatLexiconEntryType(entry.lexiconEntryType);
+  }
   if (entry.type === "word") {
     return entry.band || "Word";
   }
@@ -1842,7 +1897,37 @@ function collectionLabel(collection) {
     coffeePhrases: "Coffee phrase",
     conversationVerbs: "Conversation verb",
     guatemalaBonus: "Guatemala bonus",
+    guatemalaLexicon: "Guatemalan lexicon",
   }[collection] || "Study card";
+}
+
+function isLexiconEntry(entry) {
+  return entry.collection === "guatemalaLexicon";
+}
+
+function formatLexiconEntryType(value) {
+  if (value === "coffee_phrase") {
+    return "Coffee phrase";
+  }
+  if (value === "phrase") {
+    return "Phrase";
+  }
+  return "Word";
+}
+
+function formatLexiconCategory(value) {
+  return value ? `Category: ${formatLexiconValue(value)}` : "";
+}
+
+function formatLexiconSpecificityScore(value) {
+  const score = Number(value);
+  return Number.isFinite(score) ? `Specificity ${score}/5` : "";
+}
+
+function formatLexiconValue(value) {
+  return String(value)
+    .replaceAll("_", " ")
+    .trim();
 }
 
 function phrasebankSummary(entry) {

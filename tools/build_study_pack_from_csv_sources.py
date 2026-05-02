@@ -31,6 +31,21 @@ def load_csv_rows(path: Path):
         return [{key: clean(value) for key, value in row.items()} for row in csv.DictReader(handle)]
 
 
+def load_lexicon_entries(path: Path):
+    payload = load_json(path)
+    if isinstance(payload, dict):
+        entries = payload.get("entries", [])
+    elif isinstance(payload, list):
+        entries = payload
+    else:
+        raise ValueError("Unsupported lexicon payload.")
+
+    if not isinstance(entries, list):
+        raise ValueError("Lexicon entries must be a list.")
+
+    return entries
+
+
 def enrich_main_words(main_words, phrasebank_rows):
     if len(phrasebank_rows) != len(main_words):
         raise ValueError(
@@ -108,7 +123,76 @@ def build_fluency_entries(rows, sheet_name, prefix):
     return entries
 
 
-def build_payload(base_payload, fluency_rows, phrasebank_rows, base_path, fluency_path, phrasebank_path):
+def build_lexicon_entries(rows):
+    entries = []
+
+    for index, row in enumerate(rows, start=1):
+        source_id = clean(row.get("id")) or f"gt_{index:04d}"
+        entry_type = clean(row.get("entry_type")) or "word"
+        card_type = "word" if entry_type == "word" else "phrase"
+        category = clean(row.get("category"))
+        register = clean(row.get("register"))
+        specificity = clean(row.get("guatemala_specificity"))
+        specificity_score = row.get("guatemala_specificity_score_1_to_5")
+        confidence = clean(row.get("confidence"))
+        meaning_es_neutral = clean(row.get("meaning_es_neutral"))
+        example_es = clean(row.get("example_es"))
+        example_en = clean(row.get("example_en"))
+        caution = clean(row.get("caution"))
+        notes = clean(row.get("notes"))
+        source_urls = row.get("source_urls") if isinstance(row.get("source_urls"), list) else []
+        tags = [clean(tag) for tag in row.get("tags", []) if clean(tag)]
+
+        lexicon_tags = [
+            "guatemala",
+            "lexicon",
+            entry_type,
+            category,
+            register,
+            specificity,
+            confidence,
+            *tags,
+        ]
+
+        entries.append(
+            {
+                "id": f"lexicon-{source_id}",
+                "type": card_type,
+                "sheet": "Guatemalan_Lexicon",
+                "sortOrder": index,
+                "spanish": clean(row.get("term")),
+                "english": clean(row.get("meaning_en")),
+                "context": category,
+                "focus": "",
+                "source": ", ".join(source_urls),
+                "tags": [value for value in lexicon_tags if value],
+                "lexiconEntryType": entry_type,
+                "lexiconCategory": category,
+                "lexiconMeaningEsNeutral": meaning_es_neutral,
+                "lexiconExampleEs": example_es,
+                "lexiconExampleEn": example_en,
+                "lexiconRegister": register,
+                "lexiconSpecificity": specificity,
+                "lexiconSpecificityScore": specificity_score,
+                "lexiconConfidence": confidence,
+                "lexiconCaution": caution,
+                "lexiconNotes": notes,
+            }
+        )
+
+    return entries
+
+
+def build_payload(
+    base_payload,
+    fluency_rows,
+    phrasebank_rows,
+    lexicon_rows,
+    base_path,
+    fluency_path,
+    phrasebank_path,
+    lexicon_path,
+):
     base_collections = base_payload["collections"]
     main_words = enrich_main_words(base_collections["mainWords"], phrasebank_rows)
     coffee_phrases = build_fluency_entries(fluency_rows, "Coffee_Shop_Phrases", "phrase")
@@ -116,23 +200,31 @@ def build_payload(base_payload, fluency_rows, phrasebank_rows, base_path, fluenc
         fluency_rows, "Basic_Conversation_Verbs", "conversation"
     )
     guatemala_bonus = base_collections["guatemalaBonus"]
+    guatemala_lexicon = build_lexicon_entries(lexicon_rows)
 
     phrase_total = len(coffee_phrases) + len(conversation_verbs)
-    total = len(main_words) + phrase_total + len(guatemala_bonus)
+    total = len(main_words) + phrase_total + len(guatemala_bonus) + len(guatemala_lexicon)
     meta = {
         **base_payload.get("meta", {}),
+        "description": (
+            "Mobile-friendly vocabulary tracker: 3,000 high-frequency words, "
+            "coffee-shop phrases, conversation verbs, a curated Guatemalan lexicon, "
+            "and Guatemala notes."
+        ),
         "counts": {
             "words": len(main_words),
             "coffeePhrases": len(coffee_phrases),
             "conversationVerbs": len(conversation_verbs),
             "phrases": phrase_total,
             "bonus": len(guatemala_bonus),
+            "guatemalaLexicon": len(guatemala_lexicon),
             "total": total,
         },
         "sources": {
             "baseDataset": base_path.name,
             "fluencyCsv": fluency_path.name,
             "phrasebankCsv": phrasebank_path.name,
+            "guatemalaLexiconJson": lexicon_path.name,
         },
     }
 
@@ -143,32 +235,41 @@ def build_payload(base_payload, fluency_rows, phrasebank_rows, base_path, fluenc
             "coffeePhrases": coffee_phrases,
             "conversationVerbs": conversation_verbs,
             "guatemalaBonus": guatemala_bonus,
+            "guatemalaLexicon": guatemala_lexicon,
         },
     }
 
 
 def main():
-    if len(sys.argv) != 5:
+    if len(sys.argv) not in (5, 6):
         raise SystemExit(
-            "Usage: build_study_pack_from_csv_sources.py <base.json> <fluency.csv> <phrasebank.csv> <output.json>"
+            "Usage: build_study_pack_from_csv_sources.py <base.json> <fluency.csv> <phrasebank.csv> [lexicon.json] <output.json>"
         )
 
     base_path = Path(sys.argv[1]).expanduser()
     fluency_path = Path(sys.argv[2]).expanduser()
     phrasebank_path = Path(sys.argv[3]).expanduser()
-    output_path = Path(sys.argv[4]).expanduser()
+    if len(sys.argv) == 6:
+        lexicon_path = Path(sys.argv[4]).expanduser()
+        output_path = Path(sys.argv[5]).expanduser()
+    else:
+        lexicon_path = Path(__file__).resolve().parent.parent / "data" / "guatemala_spanish_lexicon.json"
+        output_path = Path(sys.argv[4]).expanduser()
 
     base_payload = load_json(base_path)
     fluency_rows = load_csv_rows(fluency_path)
     phrasebank_rows = load_csv_rows(phrasebank_path)
+    lexicon_rows = load_lexicon_entries(lexicon_path)
 
     payload = build_payload(
         base_payload,
         fluency_rows,
         phrasebank_rows,
+        lexicon_rows,
         base_path,
         fluency_path,
         phrasebank_path,
+        lexicon_path,
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

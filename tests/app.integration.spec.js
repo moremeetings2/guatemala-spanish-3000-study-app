@@ -42,6 +42,21 @@ test("renders the expanded phrase content and supports search across phrasebank 
   await expect(page.locator("#card-back-meta")).toContainText("Focus: ser");
 });
 
+test("loads the Guatemalan lexicon deck and searches lexicon metadata", async ({ page }) => {
+  await expect(page.locator("#hero-stats")).toContainText("Guatemalan lexicon");
+
+  await page.locator("#deck-select").selectOption("guatemalaLexicon");
+  await expect(page.locator("#study-summary")).toContainText("356 cards");
+  await expect(page.locator("#card-front-text")).toHaveText("chapín / chapina");
+  await expect(page.locator("#card-front-meta")).toContainText("Guatemalan lexicon");
+  await expect(page.locator("#card-back-meta")).toContainText("Neutral Spanish: guatemalteco; propio de Guatemala");
+
+  await page.locator("#search-input").fill("near_unique_guatemala");
+  await expect(page.locator("#results-summary")).toContainText("matching cards");
+  await expect(page.locator("#entry-list")).toContainText("chapín / chapina");
+  await expect(page.locator("#entry-list")).toContainText("Specificity 5/5");
+});
+
 test("supports study actions and review filters", async ({ page }) => {
   await page.locator("#deck-select").selectOption("conversationVerbs");
   await expect(page.locator("#card-front-text")).toHaveText("Soy nuevo aquí.");
