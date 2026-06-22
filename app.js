@@ -20,8 +20,9 @@ const COLLECTION_ORDER = {
   mainWords: 0,
   coffeePhrases: 1,
   conversationVerbs: 2,
-  guatemalaBonus: 3,
-  guatemalaLexicon: 4,
+  everydayGuatemalaPhrases: 3,
+  guatemalaBonus: 4,
+  guatemalaLexicon: 5,
 };
 
 let databasePromise = null;
@@ -518,6 +519,7 @@ function renderHero() {
     ["Words", meta.counts.words],
     ["Coffee phrases", meta.counts.coffeePhrases ?? 0],
     ["Conversation verbs", meta.counts.conversationVerbs ?? 0],
+    ["Everyday Guatemalan phrases", meta.counts.everydayGuatemalaPhrases ?? 0],
     ["Guatemala notes", meta.counts.bonus ?? 0],
     ["Guatemalan lexicon", meta.counts.guatemalaLexicon ?? 0],
     ["Due today", counts.due],
@@ -1225,7 +1227,7 @@ function normalizePersistedPreferences(raw) {
 
   return {
     ui: {
-      deck: allowedValue(ui.deck, ["all", "mainWords", "coffeePhrases", "conversationVerbs", "guatemalaBonus", "guatemalaLexicon"], defaults.ui.deck),
+      deck: allowedValue(ui.deck, ["all", "mainWords", "coffeePhrases", "conversationVerbs", "everydayGuatemalaPhrases", "guatemalaBonus", "guatemalaLexicon"], defaults.ui.deck),
       session: allowedValue(ui.session, ["all", "due", "weak"], defaults.ui.session),
       statusFilter: allowedValue(ui.statusFilter, ["all", "new", "learning", "known", "favorite"], defaults.ui.statusFilter),
       band: allowedValue(ui.band, ["all", "1K", "2K", "3K"], defaults.ui.band),
@@ -1896,6 +1898,7 @@ function collectionLabel(collection) {
     mainWords: "Main word",
     coffeePhrases: "Coffee phrase",
     conversationVerbs: "Conversation verb",
+    everydayGuatemalaPhrases: "Everyday Guatemalan phrase",
     guatemalaBonus: "Guatemala bonus",
     guatemalaLexicon: "Guatemalan lexicon",
   }[collection] || "Study card";

@@ -57,6 +57,22 @@ test("loads the Guatemalan lexicon deck and searches lexicon metadata", async ({
   await expect(page.locator("#entry-list")).toContainText("Specificity 5/5");
 });
 
+test("loads the everyday Guatemalan phrases deck and flips Spanish cards to English", async ({ page }) => {
+  await expect(page.locator("#hero-stats")).toContainText("Everyday Guatemalan phrases");
+
+  await page.locator("#deck-select").selectOption("everydayGuatemalaPhrases");
+  await expect(page.locator("#study-summary")).toContainText("100 cards");
+  await expect(page.locator("#card-front-text")).toHaveText("¿Cómo va todo?");
+
+  await page.locator("#flashcard").click();
+  await expect(page.locator("#card-back-text")).toHaveText("How's it going?");
+
+  await page.locator("#search-input").fill("Buen punto");
+  await expect(page.locator("#results-summary")).toContainText("matching cards");
+  await expect(page.locator("#entry-list")).toContainText("Buen punto.");
+  await expect(page.locator("#entry-list")).toContainText("That's a good point.");
+});
+
 test("supports study actions and review filters", async ({ page }) => {
   await page.locator("#deck-select").selectOption("conversationVerbs");
   await expect(page.locator("#card-front-text")).toHaveText("Soy nuevo aquí.");

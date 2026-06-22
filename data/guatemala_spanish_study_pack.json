@@ -1,16 +1,17 @@
 {
   "meta": {
     "title": "Guatemala Spanish 3000 Study Pack",
-    "description": "Mobile-friendly vocabulary tracker: 3,000 high-frequency words, coffee-shop phrases, conversation verbs, a curated Guatemalan lexicon, and Guatemala notes.",
+    "description": "Mobile-friendly vocabulary tracker: 3,000 high-frequency words, coffee-shop phrases, conversation verbs, everyday Guatemalan phrases, a curated Guatemalan lexicon, and Guatemala notes.",
     "sourceWorkbook": "guatemala_spanish_3000_study_pack.xlsx",
     "counts": {
       "words": 3000,
       "coffeePhrases": 57,
       "conversationVerbs": 73,
-      "phrases": 130,
+      "everydayGuatemalaPhrases": 100,
+      "phrases": 230,
       "bonus": 13,
       "guatemalaLexicon": 356,
-      "total": 3499
+      "total": 3599
     },
     "dashboardStats": {
       "Words/day target": 25,
@@ -26,7 +27,8 @@
       "baseDataset": "guatemala_spanish_study_pack.json",
       "fluencyCsv": "guatemala_fluency_phrases.csv",
       "phrasebankCsv": "spanish_3000_phrasebank.csv",
-      "guatemalaLexiconJson": "guatemala_spanish_lexicon.json"
+      "guatemalaLexiconJson": "guatemala_spanish_lexicon.json",
+      "everydayGuatemalaPhrasesJson": "everyday_guatemalan_phrases.json"
     }
   },
   "collections": {
@@ -65186,6 +65188,1732 @@
           "Basic_Conversation_Verbs",
           "parecer",
           "Observation"
+        ]
+      }
+    ],
+    "everydayGuatemalaPhrases": [
+      {
+        "id": "everyday-001-c-mo-va-todo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 1,
+        "spanish": "\u00bfC\u00f3mo va todo?",
+        "english": "How's it going?",
+        "context": "Checking in",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Checking in",
+          "casual",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-002-qu-onda",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 2,
+        "spanish": "\u00bfQu\u00e9 onda?",
+        "english": "What's up?",
+        "context": "Greeting",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Greeting",
+          "casual",
+          "guatemala"
+        ]
+      },
+      {
+        "id": "everyday-003-qu-tal-vos",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 3,
+        "spanish": "\u00bfQu\u00e9 tal vos?",
+        "english": "How are you?",
+        "context": "Greeting",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Greeting",
+          "casual",
+          "voseo"
+        ]
+      },
+      {
+        "id": "everyday-004-c-mo-amaneciste",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 4,
+        "spanish": "\u00bfC\u00f3mo amaneciste?",
+        "english": "How are you this morning?",
+        "context": "Checking in",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Checking in",
+          "morning",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-005-todo-bien-gracias",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 5,
+        "spanish": "Todo bien, gracias.",
+        "english": "Everything's good, thanks.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-006-aqu-tranquilo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 6,
+        "spanish": "Aqu\u00ed, tranquilo.",
+        "english": "Just here, taking it easy.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-007-todo-en-orden",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 7,
+        "spanish": "Todo en orden.",
+        "english": "Everything's in order.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-008-solo-estoy-viendo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 8,
+        "spanish": "Solo estoy viendo.",
+        "english": "I'm just looking.",
+        "context": "Shopping",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Shopping",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-009-a-la-orden",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 9,
+        "spanish": "A la orden.",
+        "english": "At your service.",
+        "context": "Politeness",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Politeness",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-010-con-gusto",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 10,
+        "spanish": "Con gusto.",
+        "english": "My pleasure.",
+        "context": "Politeness",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Politeness",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-011-va-pues",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 11,
+        "spanish": "Va pues.",
+        "english": "Sounds good.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "guatemala",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-012-de-una",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 12,
+        "spanish": "De una.",
+        "english": "Absolutely.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "casual",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-013-cabal",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 13,
+        "spanish": "Cabal.",
+        "english": "Exactly.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-014-tiene-sentido",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 14,
+        "spanish": "Tiene sentido.",
+        "english": "That makes sense.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-015-no-estoy-seguro-todav-a",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 15,
+        "spanish": "No estoy seguro todav\u00eda.",
+        "english": "I'm not sure yet.",
+        "context": "Uncertainty",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Uncertainty",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-016-dame-un-segundo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 16,
+        "spanish": "Dame un segundo.",
+        "english": "Give me a second.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-017-se-me-hizo-tarde",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 17,
+        "spanish": "Se me hizo tarde.",
+        "english": "I'm running late.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-018-buen-punto",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 18,
+        "spanish": "Buen punto.",
+        "english": "That's a good point.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-019-no-te-entend",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 19,
+        "spanish": "No te entend\u00ed.",
+        "english": "I didn't catch that.",
+        "context": "Clarifying",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Clarifying",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-020-podr-a-repetir-eso",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 20,
+        "spanish": "\u00bfPodr\u00eda repetir eso?",
+        "english": "Could you repeat that?",
+        "context": "Clarifying",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Clarifying",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-021-estoy-totalmente-de-acue",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 21,
+        "spanish": "Estoy totalmente de acuerdo.",
+        "english": "I totally agree.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-022-no-precisamente",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 22,
+        "spanish": "No precisamente.",
+        "english": "Not really.",
+        "context": "Disagreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Disagreement",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-023-me-sirve",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 23,
+        "spanish": "Me sirve.",
+        "english": "That works for me.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-024-ahorita-voy",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 24,
+        "spanish": "Ahorita voy.",
+        "english": "I'm coming in a minute.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-025-ya-casi",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 25,
+        "spanish": "Ya casi.",
+        "english": "Almost there.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-026-ah-nos-vemos",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 26,
+        "spanish": "Ah\u00ed nos vemos.",
+        "english": "See you there.",
+        "context": "Goodbye",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Goodbye",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-027-nos-hablamos",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 27,
+        "spanish": "Nos hablamos.",
+        "english": "We'll talk.",
+        "context": "Goodbye",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Goodbye",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-028-te-aviso",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 28,
+        "spanish": "Te aviso.",
+        "english": "I'll let you know.",
+        "context": "Planning",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Planning",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-029-qu-plan-hay",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 29,
+        "spanish": "\u00bfQu\u00e9 plan hay?",
+        "english": "What's the plan?",
+        "context": "Planning",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Planning",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-030-vamos-o-qu",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 30,
+        "spanish": "\u00bfVamos o qu\u00e9?",
+        "english": "Are we going or what?",
+        "context": "Planning",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Planning",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-031-te-apunt-s",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 31,
+        "spanish": "\u00bfTe apunt\u00e1s?",
+        "english": "Are you in?",
+        "context": "Inviting",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Inviting",
+          "voseo",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-032-sim-n",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 32,
+        "spanish": "Sim\u00f3n.",
+        "english": "Yep.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "casual",
+          "regional"
+        ]
+      },
+      {
+        "id": "everyday-033-fijo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 33,
+        "spanish": "Fijo.",
+        "english": "For sure.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "casual",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-034-ni-modo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 34,
+        "spanish": "Ni modo.",
+        "english": "Oh well.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-035-qu-chilero",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 35,
+        "spanish": "Qu\u00e9 chilero.",
+        "english": "How cool.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-036-qu-buena-onda",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 36,
+        "spanish": "Qu\u00e9 buena onda.",
+        "english": "That's really nice.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "casual",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-037-qu-mala-onda",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 37,
+        "spanish": "Qu\u00e9 mala onda.",
+        "english": "That's messed up.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "casual",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-038-p-chica",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 38,
+        "spanish": "P\u00fachica.",
+        "english": "Dang.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-039-qu-clavo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 39,
+        "spanish": "Qu\u00e9 clavo.",
+        "english": "What a problem.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-040-no-hay-clavo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 40,
+        "spanish": "No hay clavo.",
+        "english": "No problem.",
+        "context": "Politeness",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Politeness",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-041-qu-pena",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 41,
+        "spanish": "Qu\u00e9 pena.",
+        "english": "What a shame.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-042-qu-verg-enza",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 42,
+        "spanish": "Qu\u00e9 verg\u00fcenza.",
+        "english": "How embarrassing.",
+        "context": "Reaction",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reaction",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-043-qu-alegre-verte",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 43,
+        "spanish": "Qu\u00e9 alegre verte.",
+        "english": "So good to see you.",
+        "context": "Greeting",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Greeting",
+          "warm"
+        ]
+      },
+      {
+        "id": "everyday-044-me-cay-bien",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 44,
+        "spanish": "Me cay\u00f3 bien.",
+        "english": "I liked them.",
+        "context": "Opinion",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Opinion",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-045-me-cae-bien",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 45,
+        "spanish": "Me cae bien.",
+        "english": "I like them.",
+        "context": "Opinion",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Opinion",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-046-ya-estuvo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 46,
+        "spanish": "Ya estuvo.",
+        "english": "That's enough.",
+        "context": "Stopping",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Stopping",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-047-ah-est",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 47,
+        "spanish": "Ah\u00ed est\u00e1.",
+        "english": "There it is.",
+        "context": "Finding",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Finding",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-048-ya-sali",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 48,
+        "spanish": "Ya sali\u00f3.",
+        "english": "It worked out.",
+        "context": "Result",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Result",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-049-qu-dec-s",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 49,
+        "spanish": "\u00bfQu\u00e9 dec\u00eds?",
+        "english": "What do you say?",
+        "context": "Asking",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Asking",
+          "voseo",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-050-decime",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 50,
+        "spanish": "Decime.",
+        "english": "Tell me.",
+        "context": "Asking",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Asking",
+          "voseo",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-051-contame",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 51,
+        "spanish": "Contame.",
+        "english": "Tell me about it.",
+        "context": "Conversation",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Conversation",
+          "voseo",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-052-me-explic-s",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 52,
+        "spanish": "\u00bfMe explic\u00e1s?",
+        "english": "Can you explain it to me?",
+        "context": "Clarifying",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Clarifying",
+          "voseo",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-053-esp-rame-tantito",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 53,
+        "spanish": "Esp\u00e9rame tantito.",
+        "english": "Wait for me a sec.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-054-ahorita-regreso",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 54,
+        "spanish": "Ahorita regreso.",
+        "english": "I'll be right back.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "guatemala",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-055-estoy-ocupado-ahorita",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 55,
+        "spanish": "Estoy ocupado ahorita.",
+        "english": "I'm busy right now.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-056-ando-con-prisa",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 56,
+        "spanish": "Ando con prisa.",
+        "english": "I'm in a hurry.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-057-ando-corto-de-tiempo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 57,
+        "spanish": "Ando corto de tiempo.",
+        "english": "I'm short on time.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-058-se-me-olvid",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 58,
+        "spanish": "Se me olvid\u00f3.",
+        "english": "I forgot.",
+        "context": "Memory",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Memory",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-059-no-me-acordaba",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 59,
+        "spanish": "No me acordaba.",
+        "english": "I didn't remember.",
+        "context": "Memory",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Memory",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-060-ya-me-acord",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 60,
+        "spanish": "Ya me acord\u00e9.",
+        "english": "I remembered.",
+        "context": "Memory",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Memory",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-061-me-qued-pensando",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 61,
+        "spanish": "Me qued\u00e9 pensando.",
+        "english": "I kept thinking about it.",
+        "context": "Reflection",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reflection",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-062-no-pasa-nada",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 62,
+        "spanish": "No pasa nada.",
+        "english": "It's okay.",
+        "context": "Reassurance",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reassurance",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-063-todo-tranqui",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 63,
+        "spanish": "Todo tranqui.",
+        "english": "All chill.",
+        "context": "Reassurance",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reassurance",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-064-est-complicado",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 64,
+        "spanish": "Est\u00e1 complicado.",
+        "english": "It's complicated.",
+        "context": "Opinion",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Opinion",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-065-est-f-cil",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 65,
+        "spanish": "Est\u00e1 f\u00e1cil.",
+        "english": "It's easy.",
+        "context": "Opinion",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Opinion",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-066-est-duro",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 66,
+        "spanish": "Est\u00e1 duro.",
+        "english": "It's tough.",
+        "context": "Opinion",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Opinion",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-067-est-lejos",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 67,
+        "spanish": "Est\u00e1 lejos.",
+        "english": "It's far.",
+        "context": "Location",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Location",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-068-est-cerca",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 68,
+        "spanish": "Est\u00e1 cerca.",
+        "english": "It's close.",
+        "context": "Location",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Location",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-069-qu-rico",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 69,
+        "spanish": "Qu\u00e9 rico.",
+        "english": "So tasty.",
+        "context": "Food",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Food",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-070-est-buen-simo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 70,
+        "spanish": "Est\u00e1 buen\u00edsimo.",
+        "english": "It's really good.",
+        "context": "Food",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Food",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-071-est-feo-el-tr-fico",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 71,
+        "spanish": "Est\u00e1 feo el tr\u00e1fico.",
+        "english": "Traffic is awful.",
+        "context": "Transit",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Transit",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-072-hay-un-mont-n-de-gente",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 72,
+        "spanish": "Hay un mont\u00f3n de gente.",
+        "english": "There are a lot of people.",
+        "context": "Crowds",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Crowds",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-073-est-lleno",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 73,
+        "spanish": "Est\u00e1 lleno.",
+        "english": "It's packed.",
+        "context": "Crowds",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Crowds",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-074-est-vac-o",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 74,
+        "spanish": "Est\u00e1 vac\u00edo.",
+        "english": "It's empty.",
+        "context": "Crowds",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Crowds",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-075-qu-calor",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 75,
+        "spanish": "Qu\u00e9 calor.",
+        "english": "It's hot.",
+        "context": "Weather",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Weather",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-076-qu-fr-o",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 76,
+        "spanish": "Qu\u00e9 fr\u00edo.",
+        "english": "It's cold.",
+        "context": "Weather",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Weather",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-077-est-lloviendo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 77,
+        "spanish": "Est\u00e1 lloviendo.",
+        "english": "It's raining.",
+        "context": "Weather",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Weather",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-078-llevo-rato-esperando",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 78,
+        "spanish": "Llevo rato esperando.",
+        "english": "I've been waiting a while.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-079-cu-nto-falta",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 79,
+        "spanish": "\u00bfCu\u00e1nto falta?",
+        "english": "How much longer?",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-080-ya-voy-saliendo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 80,
+        "spanish": "Ya voy saliendo.",
+        "english": "I'm heading out now.",
+        "context": "Timing",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Timing",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-081-d-nde-te-queda",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 81,
+        "spanish": "\u00bfD\u00f3nde te queda?",
+        "english": "Where is it for you?",
+        "context": "Location",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Location",
+          "casual"
+        ]
+      },
+      {
+        "id": "everyday-082-me-queda-cerca",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 82,
+        "spanish": "Me queda cerca.",
+        "english": "It's close to me.",
+        "context": "Location",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Location",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-083-me-queda-lejos",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 83,
+        "spanish": "Me queda lejos.",
+        "english": "It's far from me.",
+        "context": "Location",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Location",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-084-te-qued-claro",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 84,
+        "spanish": "\u00bfTe qued\u00f3 claro?",
+        "english": "Was that clear?",
+        "context": "Clarifying",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Clarifying",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-085-m-s-o-menos",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 85,
+        "spanish": "M\u00e1s o menos.",
+        "english": "More or less.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-086-la-verdad-s",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 86,
+        "spanish": "La verdad, s\u00ed.",
+        "english": "Honestly, yes.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-087-la-verdad-no",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 87,
+        "spanish": "La verdad, no.",
+        "english": "Honestly, no.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-088-no-creo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 88,
+        "spanish": "No creo.",
+        "english": "I don't think so.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-089-puede-ser",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 89,
+        "spanish": "Puede ser.",
+        "english": "Maybe.",
+        "context": "Reply",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Reply",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-090-tal-vez-despu-s",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 90,
+        "spanish": "Tal vez despu\u00e9s.",
+        "english": "Maybe later.",
+        "context": "Planning",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Planning",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-091-mejor-otro-d-a",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 91,
+        "spanish": "Mejor otro d\u00eda.",
+        "english": "Better another day.",
+        "context": "Planning",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Planning",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-092-hoy-no-puedo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 92,
+        "spanish": "Hoy no puedo.",
+        "english": "I can't today.",
+        "context": "Planning",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Planning",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-093-ma-ana-s-puedo",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 93,
+        "spanish": "Ma\u00f1ana s\u00ed puedo.",
+        "english": "I can tomorrow.",
+        "context": "Planning",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Planning",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-094-qu-buena-idea",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 94,
+        "spanish": "Qu\u00e9 buena idea.",
+        "english": "That's a good idea.",
+        "context": "Agreement",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Agreement",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-095-estoy-cansado",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 95,
+        "spanish": "Estoy cansado.",
+        "english": "I'm tired.",
+        "context": "Feelings",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Feelings",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-096-tengo-sue-o",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 96,
+        "spanish": "Tengo sue\u00f1o.",
+        "english": "I'm sleepy.",
+        "context": "Feelings",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Feelings",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-097-tengo-hambre",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 97,
+        "spanish": "Tengo hambre.",
+        "english": "I'm hungry.",
+        "context": "Food",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Food",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-098-tengo-sed",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 98,
+        "spanish": "Tengo sed.",
+        "english": "I'm thirsty.",
+        "context": "Food",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Food",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-099-ya-comiste",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 99,
+        "spanish": "\u00bfYa comiste?",
+        "english": "Have you eaten already?",
+        "context": "Food",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Food",
+          "common"
+        ]
+      },
+      {
+        "id": "everyday-100-buen-provecho",
+        "type": "phrase",
+        "sheet": "Everyday_Guatemalan_Phrases",
+        "sortOrder": 100,
+        "spanish": "Buen provecho.",
+        "english": "Enjoy your meal.",
+        "context": "Food",
+        "focus": "",
+        "source": "",
+        "tags": [
+          "phrase",
+          "Everyday_Guatemalan_Phrases",
+          "Food",
+          "common"
         ]
       }
     ],

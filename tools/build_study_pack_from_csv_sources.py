@@ -46,6 +46,21 @@ def load_lexicon_entries(path: Path):
     return entries
 
 
+def load_phrase_entries(path: Path):
+    payload = load_json(path)
+    if isinstance(payload, dict):
+        entries = payload.get("entries", [])
+    elif isinstance(payload, list):
+        entries = payload
+    else:
+        raise ValueError("Unsupported phrase payload.")
+
+    if not isinstance(entries, list):
+        raise ValueError("Phrase entries must be a list.")
+
+    return entries
+
+
 def enrich_main_words(main_words, phrasebank_rows):
     if len(phrasebank_rows) != len(main_words):
         raise ValueError(
@@ -183,15 +198,44 @@ def build_lexicon_entries(rows):
     return entries
 
 
+def build_everyday_phrase_entries(rows):
+    entries = []
+
+    for index, row in enumerate(rows, start=1):
+        spanish = clean(row.get("spanish"))
+        english = clean(row.get("english"))
+        context = clean(row.get("context"))
+        tags = [clean(tag) for tag in row.get("tags", []) if clean(tag)]
+
+        entries.append(
+            {
+                "id": f"everyday-{index:03d}-{slugify(spanish)[:24]}",
+                "type": "phrase",
+                "sheet": "Everyday_Guatemalan_Phrases",
+                "sortOrder": index,
+                "spanish": spanish,
+                "english": english,
+                "context": context,
+                "focus": "",
+                "source": "",
+                "tags": [value for value in ["phrase", "Everyday_Guatemalan_Phrases", context, *tags] if value],
+            }
+        )
+
+    return entries
+
+
 def build_payload(
     base_payload,
     fluency_rows,
     phrasebank_rows,
     lexicon_rows,
+    everyday_phrase_rows,
     base_path,
     fluency_path,
     phrasebank_path,
     lexicon_path,
+    everyday_phrases_path,
 ):
     base_collections = base_payload["collections"]
     main_words = enrich_main_words(base_collections["mainWords"], phrasebank_rows)
@@ -201,20 +245,27 @@ def build_payload(
     )
     guatemala_bonus = base_collections["guatemalaBonus"]
     guatemala_lexicon = build_lexicon_entries(lexicon_rows)
+    everyday_guatemala_phrases = build_everyday_phrase_entries(everyday_phrase_rows)
 
-    phrase_total = len(coffee_phrases) + len(conversation_verbs)
-    total = len(main_words) + phrase_total + len(guatemala_bonus) + len(guatemala_lexicon)
+    phrase_total = len(coffee_phrases) + len(conversation_verbs) + len(everyday_guatemala_phrases)
+    total = (
+        len(main_words)
+        + phrase_total
+        + len(guatemala_bonus)
+        + len(guatemala_lexicon)
+    )
     meta = {
         **base_payload.get("meta", {}),
         "description": (
             "Mobile-friendly vocabulary tracker: 3,000 high-frequency words, "
-            "coffee-shop phrases, conversation verbs, a curated Guatemalan lexicon, "
+            "coffee-shop phrases, conversation verbs, everyday Guatemalan phrases, a curated Guatemalan lexicon, "
             "and Guatemala notes."
         ),
         "counts": {
             "words": len(main_words),
             "coffeePhrases": len(coffee_phrases),
             "conversationVerbs": len(conversation_verbs),
+            "everydayGuatemalaPhrases": len(everyday_guatemala_phrases),
             "phrases": phrase_total,
             "bonus": len(guatemala_bonus),
             "guatemalaLexicon": len(guatemala_lexicon),
@@ -225,6 +276,7 @@ def build_payload(
             "fluencyCsv": fluency_path.name,
             "phrasebankCsv": phrasebank_path.name,
             "guatemalaLexiconJson": lexicon_path.name,
+            "everydayGuatemalaPhrasesJson": everyday_phrases_path.name,
         },
     }
 
@@ -234,6 +286,7 @@ def build_payload(
             "mainWords": main_words,
             "coffeePhrases": coffee_phrases,
             "conversationVerbs": conversation_verbs,
+            "everydayGuatemalaPhrases": everyday_guatemala_phrases,
             "guatemalaBonus": guatemala_bonus,
             "guatemalaLexicon": guatemala_lexicon,
         },
@@ -255,21 +308,27 @@ def main():
     else:
         lexicon_path = Path(__file__).resolve().parent.parent / "data" / "guatemala_spanish_lexicon.json"
         output_path = Path(sys.argv[4]).expanduser()
+    everyday_phrases_path = (
+        Path(__file__).resolve().parent.parent / "data" / "everyday_guatemalan_phrases.json"
+    )
 
     base_payload = load_json(base_path)
     fluency_rows = load_csv_rows(fluency_path)
     phrasebank_rows = load_csv_rows(phrasebank_path)
     lexicon_rows = load_lexicon_entries(lexicon_path)
+    everyday_phrase_rows = load_phrase_entries(everyday_phrases_path)
 
     payload = build_payload(
         base_payload,
         fluency_rows,
         phrasebank_rows,
         lexicon_rows,
+        everyday_phrase_rows,
         base_path,
         fluency_path,
         phrasebank_path,
         lexicon_path,
+        everyday_phrases_path,
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

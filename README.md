@@ -1,10 +1,10 @@
 # Guatemala Spanish 3000 Study App
 
-Small static PWA built from the study-pack dataset, CSV-fed phrase content, and a curated Guatemalan lexicon source file.
+Small static PWA built from the study-pack dataset, CSV-fed phrase content, a dedicated everyday-phrases source file, and a curated Guatemalan lexicon source file.
 
 ## What it does
 
-- Loads the main 3,000-word list, coffee-shop phrases, conversation verbs, Guatemala notes, and a Guatemalan lexicon deck
+- Loads the main 3,000-word list, coffee-shop phrases, conversation verbs, an everyday Guatemalan phrases deck, Guatemala notes, and a Guatemalan lexicon deck
 - Works as a mobile-first study app
 - Stores progress, spaced repetition, favorites, and app preferences in an internal browser database using IndexedDB
 - Supports offline use through a service worker
@@ -22,7 +22,7 @@ python3 ./tools/build_study_pack_from_csv_sources.py \
   ./data/guatemala_spanish_study_pack.json
 ```
 
-This rebuild keeps the existing `mainWords` and `guatemalaBonus` base content, replaces the coffee deck from the fluency CSV, adds the conversation-verbs deck, imports the Guatemalan lexicon deck from `data/guatemala_spanish_lexicon.json`, and enriches all 3,000 words with mini-phrase data.
+This rebuild keeps the existing `mainWords` and `guatemalaBonus` base content, replaces the coffee deck from the fluency CSV, adds the conversation-verbs deck, imports the everyday phrases deck from `data/everyday_guatemalan_phrases.json`, imports the Guatemalan lexicon deck from `data/guatemala_spanish_lexicon.json`, and enriches all 3,000 words with mini-phrase data.
 
 Legacy bootstrapping:
 
