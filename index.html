@@ -3,236 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#d96c28">
+  <meta name="theme-color" content="#28b573">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Spanish 3000">
-  <title>Guatemala Spanish 3000</title>
+  <title>Spanish 3000</title>
   <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,500;1,400&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="app-shell">
-    <header class="hero">
-      <p class="eyebrow">iPhone-friendly study app</p>
-      <h1>Guatemala Spanish 3000</h1>
-      <p id="hero-description" class="hero-copy">Loading workbook data...</p>
-      <div class="hero-stats" id="hero-stats"></div>
-    </header>
-
-    <main class="main-content">
-      <section class="panel study-panel">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Study</p>
-            <h2>Flashcards + review queue</h2>
-          </div>
-          <div class="panel-head-actions">
-            <button class="ghost-button" id="speak-button" type="button">Speak</button>
-            <button class="ghost-button" id="shuffle-button" type="button">Shuffle</button>
-          </div>
-        </div>
-
-        <div class="study-controls">
-          <label>
-            <span>Deck</span>
-            <select id="deck-select">
-              <option value="all">All cards</option>
-              <option value="mainWords">Main 3000</option>
-              <option value="coffeePhrases">Coffee phrases</option>
-              <option value="conversationVerbs">Conversation verbs</option>
-              <option value="everydayGuatemalaPhrases">Everyday Guatemalan phrases</option>
-              <option value="guatemalaBonus">Guatemala bonus</option>
-              <option value="guatemalaLexicon">Guatemalan lexicon</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Session</span>
-            <select id="session-filter">
-              <option value="all">All cards</option>
-              <option value="due">Due today</option>
-              <option value="weak">Weak spots</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Filter</span>
-            <select id="status-filter">
-              <option value="all">All progress</option>
-              <option value="new">New</option>
-              <option value="learning">Learning</option>
-              <option value="known">Known</option>
-              <option value="favorite">Favorites</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="speech-controls">
-          <label>
-            <span>Voice</span>
-            <select id="voice-select">
-              <option value="auto">Auto (best Spanish voice)</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Pronunciation speed</span>
-            <div class="range-control">
-              <input id="speech-rate-input" type="range" min="0.6" max="1.0" step="0.02" value="0.68">
-              <strong id="speech-rate-value" class="range-value">0.68x</strong>
-            </div>
-          </label>
-        </div>
-
-        <p id="speech-status" class="support-copy">Loading Spanish voices...</p>
-        <p id="study-summary" class="support-copy">Loading study queue...</p>
-
-        <button id="flashcard" class="flashcard" type="button" aria-live="polite">
-          <span class="flashcard-face flashcard-front">
-            <span class="card-label">Spanish</span>
-            <strong id="card-front-text">Loading...</strong>
-            <small id="card-front-meta"></small>
-          </span>
-          <span class="flashcard-face flashcard-back">
-            <span class="card-label">English</span>
-            <strong id="card-back-text"></strong>
-            <small id="card-back-meta"></small>
-          </span>
-        </button>
-
-        <div class="card-actions">
-          <button class="status-button" data-status="new" type="button">Reset</button>
-          <button class="status-button" data-status="learning" type="button">Learning</button>
-          <button class="status-button" data-status="known" type="button">Known</button>
-          <button class="ghost-button" id="favorite-button" type="button">Favorite</button>
-          <button class="primary-button" id="next-button" type="button">Next</button>
-        </div>
-      </section>
-
-      <section class="panel quiz-panel">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Quiz</p>
-            <h2>Answer check + spaced repetition</h2>
-          </div>
-        </div>
-
-        <div class="quiz-controls">
-          <label>
-            <span>Quiz source</span>
-            <select id="quiz-scope">
-              <option value="due">Due today</option>
-              <option value="weak">Weak spots</option>
-              <option value="filtered">Current filter</option>
-              <option value="all">All cards</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Direction</span>
-            <select id="quiz-direction">
-              <option value="es-en">Spanish to English</option>
-              <option value="en-es">English to Spanish</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="quiz-card">
-          <p class="card-label">Question</p>
-          <h3 id="quiz-prompt" class="quiz-prompt">Loading quiz...</h3>
-          <p id="quiz-meta" class="support-copy"></p>
-          <div id="quiz-options" class="quiz-options"></div>
-          <p id="quiz-feedback" class="quiz-feedback"></p>
-          <div class="quiz-actions">
-            <button class="ghost-button" id="quiz-speak-button" type="button">Speak</button>
-            <button class="primary-button" id="quiz-next-button" type="button">Next question</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Browse</p>
-            <h2>Search and filter</h2>
-          </div>
-        </div>
-
-        <div class="browse-controls">
-          <label class="search-input">
-            <span>Search</span>
-            <input id="search-input" type="search" placeholder="Search Spanish or English">
-          </label>
-
-          <label>
-            <span>Band</span>
-            <select id="band-filter">
-              <option value="all">All bands</option>
-              <option value="1K">1K</option>
-              <option value="2K">2K</option>
-              <option value="3K">3K</option>
-            </select>
-          </label>
-
-          <label>
-            <span>Type</span>
-            <select id="type-filter">
-              <option value="all">Everything</option>
-              <option value="word">Words</option>
-              <option value="phrase">Phrases</option>
-              <option value="bonus">Guatemala bonus</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="list-meta">
-          <p id="results-summary">Loading list...</p>
-          <button class="ghost-button" id="clear-filters-button" type="button">Reset filters</button>
-        </div>
-
-        <div class="entry-list" id="entry-list"></div>
-      </section>
-
-      <section class="panel progress-panel">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Progress</p>
-            <h2>Daily review + backup</h2>
-          </div>
-        </div>
-
-        <p id="review-summary" class="support-copy">Loading progress...</p>
-        <div class="progress-grid" id="progress-grid"></div>
-
-        <div class="portability-actions">
-          <button class="ghost-button" id="export-progress-button" type="button">Export progress</button>
-          <label class="file-button" for="import-progress-input">Import progress</label>
-          <input id="import-progress-input" type="file" accept="application/json" hidden>
-        </div>
-
-        <p id="import-status" class="support-copy"></p>
-      </section>
-    </main>
+  <div id="screen" data-theme="light">
+    <div id="content"></div>
+    <div id="tab-bar"></div>
+    <div id="word-sheet"></div>
+    <div id="toast-el"></div>
   </div>
-
-  <template id="entry-template">
-    <article class="entry-card">
-      <div class="entry-main">
-        <div>
-          <p class="entry-type"></p>
-          <h3 class="entry-spanish"></h3>
-          <p class="entry-english"></p>
-        </div>
-        <button class="mini-favorite" type="button" aria-label="Toggle favorite">Star</button>
-      </div>
-      <div class="entry-meta"></div>
-      <div class="entry-footer">
-        <div class="status-pill-row"></div>
-      </div>
-    </article>
-  </template>
-
-  <script src="./app.js" defer></script>
+  <script src="./app.js"></script>
 </body>
 </html>

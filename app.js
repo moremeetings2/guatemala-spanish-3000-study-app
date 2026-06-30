@@ -1,2185 +1,1328 @@
-const DATA_URL = "./data/guatemala_spanish_study_pack.json";
-const LOCAL_STORAGE_PROGRESS_KEY = "guatemala-spanish-3000-progress-v2";
-const LEGACY_STORAGE_KEY = "guatemala-spanish-3000-progress-v1";
-const LOCAL_STORAGE_PREFERENCES_KEY = "guatemala-spanish-3000-preferences-v1";
-const DAY_MS = 24 * 60 * 60 * 1000;
-const SHORT_REVIEW_DAYS = 3 / 24;
-const AUDIO_RATE_MIN = 0.6;
-const AUDIO_RATE_MAX = 1.0;
-const LEGACY_AUDIO_DEFAULT_RATE = 0.72;
-const AUDIO_PREFERENCES_VERSION = 2;
-const PERSISTENCE_SCHEMA_VERSION = 1;
-const DATABASE_NAME = "guatemala-spanish-study-app-db";
-const DATABASE_VERSION = 1;
-const DATABASE_STORE = "appState";
-const DATABASE_KEYS = {
-  progress: "progress",
-  preferences: "preferences",
-};
-const COLLECTION_ORDER = {
-  mainWords: 0,
-  coffeePhrases: 1,
-  conversationVerbs: 2,
-  everydayGuatemalaPhrases: 3,
-  guatemalaBonus: 4,
-  guatemalaLexicon: 5,
+'use strict';
+
+// ===== Constants =====
+const STORAGE_KEY = 'spanishStudyApp.v1';
+const OLD_PROGRESS_KEY = 'guatemala-spanish-3000-progress-v2';
+const DAY_MS = 86400000;
+const DATA_URL = './data/guatemala_spanish_study_pack.json';
+
+const DECK_DEFS = {
+  mainWords:                { name: 'Main 3000',          short: '3000',     accent: '#28b573', icon: 'dictionary' },
+  coffeePhrases:            { name: 'Coffee Phrases',     short: 'Coffee',   accent: '#f5a524', icon: 'local_cafe' },
+  conversationVerbs:        { name: 'Conversation',       short: 'Verbs',    accent: '#5560e0', icon: 'record_voice_over' },
+  everydayGuatemalaPhrases: { name: 'Everyday Phrases',   short: 'Everyday', accent: '#c23b9e', icon: 'chat' },
+  guatemalaBonus:           { name: 'Guatemala Notes',    short: 'Notes',    accent: '#e0843c', icon: 'flag' },
+  guatemalaLexicon:         { name: 'Guatemalan Lexicon', short: 'Lexicon',  accent: '#2c7a9e', icon: 'menu_book' },
 };
 
-let databasePromise = null;
-let progressSaveTimer = null;
-let preferencesSaveTimer = null;
-let pendingProgressEnvelope = null;
-let pendingPreferencesEnvelope = null;
-let speechVoicesReady = false;
+const TYPES_DEF = [
+  { id: 'word',   label: 'Word' },
+  { id: 'phrase', label: 'Phrase' },
+  { id: 'bonus',  label: 'Bonus' },
+];
 
-function normalizeSearchQuery(value) {
-  return typeof value === "string" ? value.trim().toLowerCase() : "";
-}
+const BANDS_DEF = [
+  { id: '1K', label: 'Top 1K' },
+  { id: '2K', label: 'Top 2K' },
+  { id: '3K', label: 'Top 3K' },
+];
 
-function defaultUiState() {
-  return {
-    deck: "all",
-    session: "all",
-    statusFilter: "all",
-    band: "all",
-    type: "all",
-    search: "",
-    currentEntryId: null,
-  };
-}
-
-function defaultQuizState() {
-  return {
-    scope: "due",
-    direction: "es-en",
-    current: null,
-    total: 0,
-    correct: 0,
-  };
-}
-
-function defaultAudioState() {
-  return {
-    version: AUDIO_PREFERENCES_VERSION,
-    voiceURI: "auto",
-    rate: 0.68,
-  };
-}
-
-const state = {
-  data: null,
-  entries: [],
-  filteredEntries: [],
-  currentIndex: 0,
-  progress: {},
-  quiz: defaultQuizState(),
-  ui: defaultUiState(),
-  audio: defaultAudioState(),
-  speechVoices: [],
+// ===== Application State =====
+let appState = {
+  data: null, loaded: false, tab: 'home', route: null,
+  readView: 'lib', storyId: null,
+  activeWord: null, lookedUp: {}, saved: [], completed: {},
+  compSel: null, compAnswered: false,
+  study: { idx: 0, flipped: false, order: [], source: 'all' },
+  quiz: { phase: 'intro', idx: 0, sel: null, answered: false, score: 0, qs: null, dir: 'es-en', source: 'all' },
+  cardState: {},
+  browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any' },
+  detailId: null,
+  settings: { speed: 1, voiceURI: 'auto', theme: 'light' },
+  voices: [], canInstall: false, confirmReset: false,
+  reviewedToday: 0, streak: 0, toast: null,
 };
 
-const elements = {
-  heroDescription: document.querySelector("#hero-description"),
-  heroStats: document.querySelector("#hero-stats"),
-  deckSelect: document.querySelector("#deck-select"),
-  sessionFilter: document.querySelector("#session-filter"),
-  statusFilter: document.querySelector("#status-filter"),
-  bandFilter: document.querySelector("#band-filter"),
-  typeFilter: document.querySelector("#type-filter"),
-  searchInput: document.querySelector("#search-input"),
-  resultsSummary: document.querySelector("#results-summary"),
-  entryList: document.querySelector("#entry-list"),
-  flashcard: document.querySelector("#flashcard"),
-  cardFrontText: document.querySelector("#card-front-text"),
-  cardFrontMeta: document.querySelector("#card-front-meta"),
-  cardBackText: document.querySelector("#card-back-text"),
-  cardBackMeta: document.querySelector("#card-back-meta"),
-  studySummary: document.querySelector("#study-summary"),
-  progressGrid: document.querySelector("#progress-grid"),
-  reviewSummary: document.querySelector("#review-summary"),
-  favoriteButton: document.querySelector("#favorite-button"),
-  nextButton: document.querySelector("#next-button"),
-  shuffleButton: document.querySelector("#shuffle-button"),
-  speakButton: document.querySelector("#speak-button"),
-  clearFiltersButton: document.querySelector("#clear-filters-button"),
-  exportProgressButton: document.querySelector("#export-progress-button"),
-  importProgressInput: document.querySelector("#import-progress-input"),
-  importStatus: document.querySelector("#import-status"),
-  voiceSelect: document.querySelector("#voice-select"),
-  speechRateInput: document.querySelector("#speech-rate-input"),
-  speechRateValue: document.querySelector("#speech-rate-value"),
-  speechStatus: document.querySelector("#speech-status"),
-  quizScope: document.querySelector("#quiz-scope"),
-  quizDirection: document.querySelector("#quiz-direction"),
-  quizPrompt: document.querySelector("#quiz-prompt"),
-  quizMeta: document.querySelector("#quiz-meta"),
-  quizOptions: document.querySelector("#quiz-options"),
-  quizFeedback: document.querySelector("#quiz-feedback"),
-  quizNextButton: document.querySelector("#quiz-next-button"),
-  quizSpeakButton: document.querySelector("#quiz-speak-button"),
-  entryTemplate: document.querySelector("#entry-template"),
-};
+let installPrompt = null;
+let saveTimer = null;
+let toastTimer = null;
+let resetTimer = null;
 
-bootstrap();
+// ===== Handler Registry =====
+let handlers = {};
+let hCount = 0;
 
-async function bootstrap() {
-  bindEvents();
-  bindLifecycleEvents();
-  registerServiceWorker();
+function h(fn) {
+  const id = 'h' + hCount++;
+  handlers[id] = fn;
+  return `data-h="${id}"`;
+}
+function hi(fn) {
+  const id = 'h' + hCount++;
+  handlers[id] = fn;
+  return `data-hi="${id}"`;
+}
+function hc(fn) {
+  const id = 'h' + hCount++;
+  handlers[id] = fn;
+  return `data-hc="${id}"`;
+}
 
-  try {
-    await hydratePersistedState();
-    initializeSpeechControls();
-    const response = await fetch(DATA_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to load data (${response.status})`);
+// ===== DOM refs =====
+const $screen = document.getElementById('screen');
+const $content = document.getElementById('content');
+const $tabBar = document.getElementById('tab-bar');
+const $wordSheet = document.getElementById('word-sheet');
+const $toastEl = document.getElementById('toast-el');
+
+// ===== Event Delegation =====
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-h]');
+  if (el) handlers[el.dataset.h]?.();
+});
+document.addEventListener('input', e => {
+  const el = e.target.closest('[data-hi]');
+  if (el) handlers[el.dataset.hi]?.(e);
+});
+document.addEventListener('change', e => {
+  const el = e.target.closest('[data-hc]');
+  if (el) handlers[el.dataset.hc]?.(e);
+});
+
+// ===== State Management =====
+function setState(patch) {
+  appState = { ...appState, ...patch };
+  render();
+  if (appState.loaded) schedSave();
+}
+
+function schedSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 300);
+}
+
+// ===== Navigation =====
+function goTab(t) { setState({ tab: t, route: null, activeWord: null }); }
+function openBrowse(patch) {
+  setState({ route: 'browse', browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any', ...patch } });
+}
+function setBrowse(patch) { setState({ browse: { ...appState.browse, ...patch } }); }
+
+// ===== Data Accessors =====
+function cs(id) {
+  return appState.cardState[id] || { state: 'new', due: Date.now(), seen: false, correct: 0, wrong: 0, weak: false, star: false };
+}
+
+function filterCards(f) {
+  const now = Date.now();
+  return appState.data.CARDS.filter(c => {
+    const s = cs(c.id);
+    if (f.deck && f.deck !== 'all' && c.deck !== f.deck) return false;
+    if (f.type && f.type !== 'all' && c.type !== f.type) return false;
+    if (f.band && f.band !== 'all' && c.band !== f.band) return false;
+    if (f.state && f.state !== 'all' && s.state !== f.state) return false;
+    if (f.session === 'seen' && !s.seen) return false;
+    if (f.session === 'unseen' && s.seen) return false;
+    if (f.star && !s.star) return false;
+    if (f.weak && !s.weak) return false;
+    if (f.due && !(s.seen && s.due <= now)) return false;
+    if (f.q) {
+      const q = f.q.toLowerCase();
+      if (!(c.es.toLowerCase().includes(q) || c.en.toLowerCase().includes(q))) return false;
     }
-
-    state.data = await response.json();
-    state.entries = sortEntries(flattenCollections(state.data.collections));
-    renderHero();
-    applyFilters(true);
-  } catch (error) {
-    elements.heroDescription.textContent = "The workbook data could not be loaded.";
-    elements.studySummary.textContent = error.message;
-    elements.entryList.innerHTML = `<p class="empty-state">${error.message}</p>`;
-    elements.quizPrompt.textContent = "Quiz unavailable";
-    elements.quizMeta.textContent = error.message;
-  }
-}
-
-function bindLifecycleEvents() {
-  window.addEventListener("pagehide", flushPendingPersistence);
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-      flushPendingPersistence();
-    }
-  });
-}
-
-function bindEvents() {
-  elements.deckSelect.addEventListener("change", (event) => {
-    state.ui.deck = event.target.value;
-    queuePreferencesSave();
-    applyFilters(true);
-  });
-
-  elements.sessionFilter.addEventListener("change", (event) => {
-    state.ui.session = event.target.value;
-    queuePreferencesSave();
-    applyFilters(true);
-  });
-
-  elements.statusFilter.addEventListener("change", (event) => {
-    state.ui.statusFilter = event.target.value;
-    queuePreferencesSave();
-    applyFilters(true);
-  });
-
-  elements.bandFilter.addEventListener("change", (event) => {
-    state.ui.band = event.target.value;
-    queuePreferencesSave();
-    applyFilters(true);
-  });
-
-  elements.typeFilter.addEventListener("change", (event) => {
-    state.ui.type = event.target.value;
-    queuePreferencesSave();
-    applyFilters(true);
-  });
-
-  elements.searchInput.addEventListener("input", (event) => {
-    state.ui.search = normalizeSearchQuery(event.target.value);
-    queuePreferencesSave();
-    applyFilters(true);
-  });
-
-  elements.voiceSelect.addEventListener("change", (event) => {
-    state.audio.voiceURI = event.target.value;
-    queuePreferencesSave();
-    renderSpeechControls();
-  });
-
-  elements.speechRateInput.addEventListener("input", (event) => {
-    state.audio.rate = clamp(Number(event.target.value), AUDIO_RATE_MIN, AUDIO_RATE_MAX);
-    queuePreferencesSave();
-    renderSpeechControls();
-  });
-
-  elements.flashcard.addEventListener("click", () => {
-    elements.flashcard.classList.toggle("is-flipped");
-  });
-
-  document.querySelectorAll(".status-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const entry = currentEntry();
-      if (!entry) {
-        return;
-      }
-      setManualStatus(entry.id, button.dataset.status);
-      refreshAfterProgressChange();
-    });
-  });
-
-  elements.favoriteButton.addEventListener("click", () => {
-    const entry = currentEntry();
-    if (!entry) {
-      return;
-    }
-    toggleFavorite(entry.id);
-    refreshAfterProgressChange();
-  });
-
-  elements.nextButton.addEventListener("click", nextCard);
-
-  elements.shuffleButton.addEventListener("click", () => {
-    shuffleFilteredEntries();
-    state.currentIndex = 0;
-    renderFlashcard();
-    syncCurrentEntryPreference();
-  });
-
-  elements.speakButton.addEventListener("click", () => {
-    speakEntry(currentEntry());
-  });
-
-  elements.quizScope.addEventListener("change", (event) => {
-    state.quiz.scope = event.target.value;
-    queuePreferencesSave();
-    ensureQuizQuestion(true);
-  });
-
-  elements.quizDirection.addEventListener("change", (event) => {
-    state.quiz.direction = event.target.value;
-    queuePreferencesSave();
-    ensureQuizQuestion(true);
-  });
-
-  elements.quizNextButton.addEventListener("click", () => {
-    ensureQuizQuestion(true);
-  });
-
-  elements.quizSpeakButton.addEventListener("click", () => {
-    speakEntry(state.quiz.current?.entry || null);
-  });
-
-  elements.exportProgressButton.addEventListener("click", exportProgress);
-  elements.importProgressInput.addEventListener("change", importProgress);
-
-  elements.clearFiltersButton.addEventListener("click", () => {
-    state.ui = defaultUiState();
-    syncControlsFromState();
-    queuePreferencesSave();
-    applyFilters(true);
-  });
-}
-
-async function hydratePersistedState() {
-  const persisted = await loadPersistedState();
-  state.progress = persisted.progress;
-  state.ui = {
-    ...defaultUiState(),
-    ...persisted.preferences.ui,
-  };
-  state.quiz = {
-    ...defaultQuizState(),
-    ...persisted.preferences.quiz,
-    current: null,
-    total: 0,
-    correct: 0,
-  };
-  state.audio = {
-    ...defaultAudioState(),
-    ...persisted.preferences.audio,
-  };
-  syncControlsFromState();
-}
-
-function syncControlsFromState() {
-  elements.deckSelect.value = state.ui.deck;
-  elements.sessionFilter.value = state.ui.session;
-  elements.statusFilter.value = state.ui.statusFilter;
-  elements.bandFilter.value = state.ui.band;
-  elements.typeFilter.value = state.ui.type;
-  elements.searchInput.value = state.ui.search;
-  elements.quizScope.value = state.quiz.scope;
-  elements.quizDirection.value = state.quiz.direction;
-  elements.speechRateInput.value = String(state.audio.rate);
-  elements.speechRateValue.textContent = formatSpeechRate(state.audio.rate);
-}
-
-function initializeSpeechControls() {
-  renderSpeechControls();
-
-  if (!("speechSynthesis" in window)) {
-    speechVoicesReady = false;
-    renderSpeechControls();
-    return;
-  }
-
-  const loadVoices = () => {
-    const availableVoices = window.speechSynthesis.getVoices();
-    state.speechVoices = rankSpanishVoices(availableVoices);
-    speechVoicesReady = true;
-
-    if (
-      state.audio.voiceURI !== "auto" &&
-      !state.speechVoices.some((voice) => voice.voiceURI === state.audio.voiceURI)
-    ) {
-      state.audio.voiceURI = "auto";
-      queuePreferencesSave();
-    }
-
-    renderSpeechControls();
-  };
-
-  loadVoices();
-  if (typeof window.speechSynthesis.addEventListener === "function") {
-    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
-  } else {
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-  }
-
-  window.setTimeout(loadVoices, 300);
-}
-
-function renderSpeechControls() {
-  elements.speechRateValue.textContent = formatSpeechRate(state.audio.rate);
-
-  if (!("speechSynthesis" in window)) {
-    elements.voiceSelect.innerHTML = '<option value="auto">Speech unavailable</option>';
-    elements.voiceSelect.disabled = true;
-    elements.speechRateInput.disabled = true;
-    elements.speechStatus.textContent = "Speech synthesis is not available in this browser.";
-    return;
-  }
-
-  const options = [
-    '<option value="auto">Auto (best Spanish voice)</option>',
-    ...state.speechVoices.map(
-      (voice) =>
-        `<option value="${escapeHtml(voice.voiceURI)}">${escapeHtml(formatVoiceLabel(voice))}</option>`
-    ),
-  ];
-
-  elements.voiceSelect.innerHTML = options.join("");
-  elements.voiceSelect.value = state.audio.voiceURI;
-  elements.voiceSelect.disabled = false;
-  elements.speechRateInput.disabled = false;
-
-  const activeVoice = getActiveSpeechVoice();
-  if (!speechVoicesReady) {
-    elements.speechStatus.textContent = "Loading Spanish voices...";
-  } else if (!state.speechVoices.length) {
-    elements.speechStatus.textContent =
-      "No Spanish voices were found. The browser will fall back to its default voice.";
-  } else if (state.audio.voiceURI === "auto") {
-    elements.speechStatus.textContent =
-      `Auto voice: ${formatVoiceLabel(activeVoice)} at ${formatSpeechRate(state.audio.rate)}. ` +
-      "For best clarity on iPhone, install an enhanced Spanish voice in Settings > Accessibility > Spoken Content > Voices.";
-  } else {
-    elements.speechStatus.textContent =
-      `Selected voice: ${formatVoiceLabel(activeVoice)} at ${formatSpeechRate(state.audio.rate)}.`;
-  }
-}
-
-function applyFilters(resetIndex = false, options = {}) {
-  const { syncQuiz = true, persistSelection = true } = options;
-  const preferredEntryId = currentEntry()?.id || state.ui.currentEntryId || null;
-  const basicFiltered = state.entries.filter(matchesBaseFilters);
-  let filtered = basicFiltered;
-
-  if (state.ui.session === "due") {
-    filtered = selectDueEntries(basicFiltered);
-  } else if (state.ui.session === "weak") {
-    filtered = selectWeakEntries(basicFiltered);
-  }
-
-  state.filteredEntries = sortEntries(filtered.slice());
-  restoreCurrentSelection(preferredEntryId, resetIndex);
-  syncCurrentEntryPreference(persistSelection);
-
-  renderHero();
-  renderStudySummary(basicFiltered);
-  renderFlashcard();
-  renderList();
-  renderProgress();
-
-  if (syncQuiz) {
-    ensureQuizQuestion(false);
-  } else {
-    renderQuiz();
-  }
-}
-
-function restoreCurrentSelection(preferredEntryId, resetIndex) {
-  if (!state.filteredEntries.length) {
-    state.currentIndex = 0;
-    return;
-  }
-
-  if (preferredEntryId) {
-    const preferredIndex = state.filteredEntries.findIndex((entry) => entry.id === preferredEntryId);
-    if (preferredIndex >= 0) {
-      state.currentIndex = preferredIndex;
-      return;
-    }
-  }
-
-  if (!resetIndex && state.currentIndex >= 0 && state.currentIndex < state.filteredEntries.length) {
-    return;
-  }
-
-  state.currentIndex = 0;
-}
-
-function syncCurrentEntryPreference(persist = true) {
-  const nextEntryId = currentEntry()?.id || null;
-  if (state.ui.currentEntryId === nextEntryId) {
-    return;
-  }
-
-  state.ui.currentEntryId = nextEntryId;
-  if (persist) {
-    queuePreferencesSave();
-  }
-}
-
-function matchesBaseFilters(entry) {
-  if (state.ui.deck !== "all" && entry.collection !== state.ui.deck) {
-    return false;
-  }
-
-  if (state.ui.band !== "all" && entry.band !== state.ui.band) {
-    return false;
-  }
-
-  if (state.ui.type !== "all" && entry.type !== state.ui.type) {
-    return false;
-  }
-
-  const progress = readEntryProgress(entry.id);
-  if (state.ui.statusFilter === "favorite" && !progress.favorite) {
-    return false;
-  }
-
-  if (["new", "learning", "known"].includes(state.ui.statusFilter) && progress.status !== state.ui.statusFilter) {
-    return false;
-  }
-
-  if (state.ui.search) {
-    const haystack = [
-      entry.spanish,
-      entry.english,
-      entry.partOfSpeech,
-      entry.context,
-      entry.focus,
-      entry.miniPhrase,
-      entry.miniPhraseEnglish,
-      entry.phrasePattern,
-      entry.note,
-      entry.lexiconEntryType,
-      entry.lexiconCategory,
-      entry.lexiconMeaningEsNeutral,
-      entry.lexiconExampleEs,
-      entry.lexiconExampleEn,
-      entry.lexiconRegister,
-      entry.lexiconSpecificity,
-      entry.lexiconConfidence,
-      entry.lexiconCaution,
-      entry.lexiconNotes,
-      entry.tags?.join(" "),
-      collectionLabel(entry.collection),
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-
-    if (!haystack.includes(state.ui.search)) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function renderHero() {
-  if (!state.data) {
-    return;
-  }
-
-  const { meta } = state.data;
-  const counts = computeReviewCounts(state.entries);
-  const dailyTarget = getDailyTarget();
-  elements.heroDescription.textContent =
-    `${meta.description || "Study offline on your phone."} Daily target: ${dailyTarget} cards.`;
-
-  const accuracy = counts.quizSeen ? `${Math.round((counts.quizCorrect / counts.quizSeen) * 100)}%` : "0%";
-  const cards = [
-    ["Words", meta.counts.words],
-    ["Coffee phrases", meta.counts.coffeePhrases ?? 0],
-    ["Conversation verbs", meta.counts.conversationVerbs ?? 0],
-    ["Everyday Guatemalan phrases", meta.counts.everydayGuatemalaPhrases ?? 0],
-    ["Guatemala notes", meta.counts.bonus ?? 0],
-    ["Guatemalan lexicon", meta.counts.guatemalaLexicon ?? 0],
-    ["Due today", counts.due],
-    ["Quiz accuracy", accuracy],
-  ];
-
-  elements.heroStats.innerHTML = cards
-    .map(
-      ([label, value]) => `
-        <article class="stat-card">
-          <strong>${value}</strong>
-          <span>${label}</span>
-        </article>
-      `
-    )
-    .join("");
-}
-
-function renderStudySummary(basicFiltered) {
-  const overall = computeReviewCounts(state.entries);
-  const sessionLabel = {
-    all: "all filtered cards",
-    due: "the due queue",
-    weak: "weak spots",
-  }[state.ui.session];
-
-  elements.studySummary.textContent =
-    `${state.filteredEntries.length} cards in ${sessionLabel}. ` +
-    `${basicFiltered.length} cards match the current filters. ` +
-    `${overall.due} due today, ${overall.weak} weak cards across the full deck.`;
-}
-
-function renderFlashcard() {
-  elements.flashcard.classList.remove("is-flipped");
-  const entry = currentEntry();
-
-  if (!entry) {
-    elements.cardFrontText.textContent = "No cards found";
-    elements.cardFrontMeta.textContent = "Try changing the filters.";
-    elements.cardBackText.textContent = "";
-    elements.cardBackMeta.textContent = "";
-    elements.favoriteButton.textContent = "Favorite";
-    document.querySelectorAll(".status-button").forEach((button) => {
-      button.classList.remove("is-active");
-    });
-    return;
-  }
-
-  const progress = readEntryProgress(entry.id);
-  elements.cardFrontText.textContent = entry.spanish;
-  elements.cardFrontMeta.textContent = buildFrontMeta(entry, progress);
-  elements.cardBackText.textContent = entry.english;
-  elements.cardBackMeta.textContent = buildBackMeta(entry, progress);
-  elements.favoriteButton.textContent = progress.favorite ? "Favorited" : "Favorite";
-
-  document.querySelectorAll(".status-button").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.status === progress.status);
-  });
-}
-
-function renderList() {
-  const entries = state.filteredEntries.slice(0, 80);
-  const total = state.filteredEntries.length;
-  const shown = entries.length;
-  elements.resultsSummary.textContent = total
-    ? `Showing ${shown} of ${total} matching cards`
-    : "No matching cards";
-
-  if (!shown) {
-    elements.entryList.innerHTML = '<p class="empty-state">No cards match the current filters.</p>';
-    return;
-  }
-
-  const fragment = document.createDocumentFragment();
-  entries.forEach((entry) => {
-    const progress = readEntryProgress(entry.id);
-    const node = elements.entryTemplate.content.firstElementChild.cloneNode(true);
-
-    node.querySelector(".entry-type").textContent = entryLabel(entry);
-    node.querySelector(".entry-spanish").textContent = entry.spanish;
-    node.querySelector(".entry-english").textContent = entry.english;
-
-    const favoriteButton = node.querySelector(".mini-favorite");
-    favoriteButton.textContent = progress.favorite ? "Starred" : "Star";
-    favoriteButton.addEventListener("click", () => {
-      toggleFavorite(entry.id);
-      refreshAfterProgressChange();
-    });
-
-    const meta = buildListMetaBits(entry, progress);
-    node.querySelector(".entry-meta").textContent = meta.join(" • ");
-
-    const pills = node.querySelector(".status-pill-row");
-    pills.appendChild(makePill(progress.status, progress.status));
-    if (isDueProgress(progress)) {
-      pills.appendChild(makePill("due", "due"));
-    }
-    if (isWeakProgress(progress)) {
-      pills.appendChild(makePill("weak", "weak"));
-    }
-    if (progress.favorite) {
-      pills.appendChild(makePill("favorite", "favorite"));
-    }
-
-    node.addEventListener("click", (event) => {
-      if (event.target.closest("button")) {
-        return;
-      }
-      const position = state.filteredEntries.findIndex((item) => item.id === entry.id);
-      if (position >= 0) {
-        state.currentIndex = position;
-        renderFlashcard();
-        syncCurrentEntryPreference();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    });
-
-    fragment.appendChild(node);
-  });
-
-  elements.entryList.innerHTML = "";
-  elements.entryList.appendChild(fragment);
-}
-
-function renderProgress() {
-  const counts = computeReviewCounts(state.entries);
-  const accuracy = counts.quizSeen ? `${Math.round((counts.quizCorrect / counts.quizSeen) * 100)}%` : "0%";
-  const cards = [
-    ["Total cards", counts.total],
-    ["Due today", counts.due],
-    ["Weak cards", counts.weak],
-    ["Known", counts.known],
-    ["Learning", counts.learning],
-    ["Quiz accuracy", accuracy],
-  ];
-
-  elements.progressGrid.innerHTML = cards
-    .map(
-      ([label, value]) => `
-        <article class="progress-item">
-          <strong>${value}</strong>
-          <span>${label}</span>
-        </article>
-      `
-    )
-    .join("");
-
-  elements.reviewSummary.textContent =
-    `${counts.reviewed} reviewed, ${counts.favorite} favorited. ` +
-    `${counts.quizSeen} quiz attempts with ${accuracy} accuracy. ` +
-    `${counts.due} cards ready today and ${counts.weak} weak cards resurfacing.`;
-}
-
-function ensureQuizQuestion(forceNew = false) {
-  const pool = getQuizPool();
-  if (!pool.length) {
-    state.quiz.current = null;
-    renderQuiz();
-    return;
-  }
-
-  const stillValid =
-    !forceNew &&
-    state.quiz.current &&
-    pool.some((entry) => entry.id === state.quiz.current.entry.id);
-
-  if (stillValid) {
-    renderQuiz();
-    return;
-  }
-
-  state.quiz.current = buildQuizQuestion(pool);
-  renderQuiz();
-}
-
-function renderQuiz() {
-  const question = state.quiz.current;
-  if (!question) {
-    elements.quizPrompt.textContent = "No quiz cards available";
-    elements.quizMeta.textContent = "Switch the quiz source or review more cards.";
-    elements.quizOptions.innerHTML = "";
-    elements.quizFeedback.textContent = "";
-    elements.quizFeedback.className = "quiz-feedback";
-    return;
-  }
-
-  elements.quizPrompt.textContent = question.prompt;
-  elements.quizMeta.textContent =
-    `${quizScopeLabel(state.quiz.scope)} • ${quizDirectionLabel(state.quiz.direction)} • ` +
-    `Score ${state.quiz.correct}/${state.quiz.total}`;
-
-  const fragment = document.createDocumentFragment();
-  question.options.forEach((option) => {
-    const button = document.createElement("button");
-    button.className = "quiz-option";
-    button.type = "button";
-    button.textContent = option.label;
-
-    if (question.answered) {
-      button.disabled = true;
-      if (option.correct) {
-        button.classList.add("is-correct");
-      } else if (option.label === question.selectedLabel) {
-        button.classList.add("is-wrong");
-      }
-    } else {
-      button.addEventListener("click", () => answerQuiz(option.label));
-    }
-
-    fragment.appendChild(button);
-  });
-
-  elements.quizOptions.innerHTML = "";
-  elements.quizOptions.appendChild(fragment);
-  elements.quizFeedback.textContent = question.feedback || "";
-  elements.quizFeedback.className = `quiz-feedback ${question.feedbackClass || ""}`.trim();
-}
-
-function answerQuiz(selectedLabel) {
-  const question = state.quiz.current;
-  if (!question || question.answered) {
-    return;
-  }
-
-  const selected = question.options.find((option) => option.label === selectedLabel);
-  if (!selected) {
-    return;
-  }
-
-  const wasCorrect = selected.correct;
-  const schedule = applyReviewOutcome(question.entry.id, wasCorrect);
-  question.answered = true;
-  question.selectedLabel = selectedLabel;
-  state.quiz.total += 1;
-
-  if (wasCorrect) {
-    state.quiz.correct += 1;
-    question.feedback = `Correct. Next review ${schedule.label}.`;
-    question.feedbackClass = "is-correct";
-  } else {
-    question.feedback =
-      `Not quite. Correct answer: ${question.correctLabel}. Back ${schedule.label}.`;
-    question.feedbackClass = "is-wrong";
-  }
-
-  applyFilters(false, { syncQuiz: false });
-}
-
-function buildQuizQuestion(pool) {
-  const entry = pickRandomEntry(pool, state.quiz.current?.entry?.id || null);
-  const direction = state.quiz.direction;
-  const prompt = direction === "es-en" ? entry.spanish : entry.english;
-  const correctLabel = direction === "es-en" ? entry.english : entry.spanish;
-  const distractors = buildDistractors(entry, direction, correctLabel);
-  const options = shuffleArray([
-    { label: correctLabel, correct: true },
-    ...distractors.map((label) => ({ label, correct: false })),
-  ]).slice(0, 4);
-
-  return {
-    entry,
-    prompt,
-    correctLabel,
-    options,
-    answered: false,
-    selectedLabel: null,
-    feedback: "",
-    feedbackClass: "",
-  };
-}
-
-function buildDistractors(entry, direction, correctLabel) {
-  const targetValue = direction === "es-en" ? "english" : "spanish";
-  const pool = state.entries.filter((candidate) => {
-    if (candidate.id === entry.id || candidate.type !== entry.type) {
-      return false;
-    }
-
-    if (entry.type === "word" && candidate.band !== entry.band) {
-      return false;
-    }
-
-    return candidate[targetValue] && candidate[targetValue] !== correctLabel;
-  });
-
-  const labels = [];
-  const seen = new Set([correctLabel]);
-  shuffleArray(pool.slice()).some((candidate) => {
-    const label = candidate[targetValue];
-    if (!seen.has(label)) {
-      seen.add(label);
-      labels.push(label);
-    }
-    return labels.length === 3;
-  });
-
-  if (labels.length < 3) {
-    shuffleArray(state.entries.slice()).some((candidate) => {
-      const label = candidate[targetValue];
-      if (
-        candidate.id !== entry.id &&
-        label &&
-        !seen.has(label)
-      ) {
-        seen.add(label);
-        labels.push(label);
-      }
-      return labels.length === 3;
-    });
-  }
-
-  return labels;
-}
-
-function getQuizPool() {
-  if (state.quiz.scope === "filtered") {
-    return state.filteredEntries.length ? state.filteredEntries : state.entries;
-  }
-
-  if (state.quiz.scope === "weak") {
-    return selectWeakEntries(state.entries);
-  }
-
-  if (state.quiz.scope === "due") {
-    return selectDueEntries(state.entries);
-  }
-
-  return state.entries;
-}
-
-function nextCard() {
-  if (!state.filteredEntries.length) {
-    return;
-  }
-
-  state.currentIndex = (state.currentIndex + 1) % state.filteredEntries.length;
-  renderFlashcard();
-  syncCurrentEntryPreference();
-}
-
-function currentEntry() {
-  return state.filteredEntries[state.currentIndex] || null;
-}
-
-function shuffleFilteredEntries() {
-  state.filteredEntries = shuffleArray(state.filteredEntries.slice());
-}
-
-function flattenCollections(collections) {
-  return Object.entries(collections).flatMap(([collection, entries]) =>
-    entries.map((entry) => ({
-      ...entry,
-      collection,
-    }))
-  );
-}
-
-function sortEntries(entries) {
-  return entries.sort((left, right) => {
-    const leftRank = left.rank ?? Number.MAX_SAFE_INTEGER;
-    const rightRank = right.rank ?? Number.MAX_SAFE_INTEGER;
-    if (leftRank !== rightRank) {
-      return leftRank - rightRank;
-    }
-
-    const leftCollectionOrder = COLLECTION_ORDER[left.collection] ?? Number.MAX_SAFE_INTEGER;
-    const rightCollectionOrder = COLLECTION_ORDER[right.collection] ?? Number.MAX_SAFE_INTEGER;
-    if (leftCollectionOrder !== rightCollectionOrder) {
-      return leftCollectionOrder - rightCollectionOrder;
-    }
-
-    const leftSortOrder = left.sortOrder ?? Number.MAX_SAFE_INTEGER;
-    const rightSortOrder = right.sortOrder ?? Number.MAX_SAFE_INTEGER;
-    if (leftSortOrder !== rightSortOrder) {
-      return leftSortOrder - rightSortOrder;
-    }
-
-    return left.spanish.localeCompare(right.spanish);
-  });
-}
-
-function computeReviewCounts(entries) {
-  const counts = {
-    total: entries.length,
-    new: 0,
-    learning: 0,
-    known: 0,
-    favorite: 0,
-    due: selectDueEntries(entries).length,
-    weak: selectWeakEntries(entries).length,
-    reviewed: 0,
-    quizSeen: 0,
-    quizCorrect: 0,
-  };
-
-  entries.forEach((entry) => {
-    const progress = readEntryProgress(entry.id);
-    counts[progress.status] += 1;
-    counts.reviewed += progress.reviewCount;
-    counts.quizSeen += progress.quizSeen;
-    counts.quizCorrect += progress.quizCorrect;
-    if (progress.favorite) {
-      counts.favorite += 1;
-    }
-  });
-
-  return counts;
-}
-
-function selectDueEntries(entries) {
-  const target = getDailyTarget();
-  const sorted = sortEntries(entries.slice());
-  const seen = new Set();
-
-  const overdue = sorted.filter((entry) => {
-    const progress = readEntryProgress(entry.id);
-    return progress.reviewCount > 0 && isDueProgress(progress);
-  });
-
-  const weak = sorted.filter((entry) => {
-    if (seen.has(entry.id)) {
-      return false;
-    }
-    const progress = readEntryProgress(entry.id);
-    return isWeakProgress(progress);
-  });
-
-  const fresh = sorted.filter((entry) => {
-    const progress = readEntryProgress(entry.id);
-    return progress.status === "new" && progress.reviewCount === 0;
-  }).slice(0, target);
-
-  return dedupeEntries([...overdue, ...weak.slice(0, target), ...fresh], seen);
-}
-
-function selectWeakEntries(entries) {
-  return sortEntries(entries.slice()).filter((entry) => isWeakProgress(readEntryProgress(entry.id)));
-}
-
-function dedupeEntries(entries, existingSeen = new Set()) {
-  const unique = [];
-  entries.forEach((entry) => {
-    if (existingSeen.has(entry.id)) {
-      return;
-    }
-    existingSeen.add(entry.id);
-    unique.push(entry);
-  });
-  return unique;
-}
-
-function isDueProgress(progress) {
-  if (progress.status === "learning" && !progress.dueAt) {
     return true;
-  }
-
-  if (!progress.dueAt) {
-    return false;
-  }
-
-  const dueMs = Date.parse(progress.dueAt);
-  return !Number.isNaN(dueMs) && dueMs <= Date.now();
-}
-
-function isWeakProgress(progress) {
-  return (
-    progress.status === "learning" ||
-    progress.lastOutcome === "incorrect" ||
-    progress.wrongCount > Math.max(1, progress.quizCorrect) ||
-    progress.ease < 2.1
-  );
-}
-
-function getDailyTarget() {
-  const raw = state.data?.meta?.dashboardStats?.["Words/day target"];
-  const target = Number(raw);
-  return Number.isFinite(target) && target > 0 ? target : 25;
-}
-
-async function loadPersistedState() {
-  const database = await openAppDatabase();
-  const progressRecords = [
-    readLocalStorageRecord(LOCAL_STORAGE_PROGRESS_KEY, "localStorage", true),
-    readLocalStorageRecord(LEGACY_STORAGE_KEY, "legacyLocalStorage", false),
-    await readDatabaseRecord(DATABASE_KEYS.progress, Boolean(database)),
-  ];
-  const preferencesRecords = [
-    readLocalStorageRecord(LOCAL_STORAGE_PREFERENCES_KEY, "localStorage", true),
-    await readDatabaseRecord(DATABASE_KEYS.preferences, Boolean(database)),
-  ];
-  const progressResolution = resolvePersistedKind(DATABASE_KEYS.progress, progressRecords);
-  const preferencesResolution = resolvePersistedKind(DATABASE_KEYS.preferences, preferencesRecords);
-
-  await repairPersistedKind(
-    DATABASE_KEYS.progress,
-    progressResolution,
-    Boolean(database),
-    LOCAL_STORAGE_PROGRESS_KEY
-  );
-  await repairPersistedKind(
-    DATABASE_KEYS.preferences,
-    preferencesResolution,
-    Boolean(database),
-    LOCAL_STORAGE_PREFERENCES_KEY
-  );
-
-  return {
-    progress: progressResolution.value,
-    preferences: preferencesResolution.value,
-  };
-}
-
-function readLocalStorageRecord(storageKey, source, requiredStore) {
-  const raw = localStorage.getItem(storageKey);
-  if (raw == null) {
-    return {
-      source,
-      storageKey,
-      requiredStore,
-      exists: false,
-      raw: null,
-      invalid: false,
-    };
-  }
-
-  try {
-    return {
-      source,
-      storageKey,
-      requiredStore,
-      exists: true,
-      raw: JSON.parse(raw),
-      invalid: false,
-    };
-  } catch (error) {
-    return {
-      source,
-      storageKey,
-      requiredStore,
-      exists: true,
-      raw: null,
-      invalid: true,
-    };
-  }
-}
-
-async function readDatabaseRecord(key, databaseAvailable) {
-  if (!databaseAvailable) {
-    return {
-      source: "indexedDB",
-      storageKey: null,
-      requiredStore: true,
-      exists: false,
-      raw: null,
-      invalid: false,
-    };
-  }
-
-  try {
-    const raw = await readDatabaseValue(key);
-    return {
-      source: "indexedDB",
-      storageKey: null,
-      requiredStore: true,
-      exists: raw != null,
-      raw,
-      invalid: false,
-    };
-  } catch (error) {
-    console.error(`Failed to read ${key} from IndexedDB.`, error);
-    return {
-      source: "indexedDB",
-      storageKey: null,
-      requiredStore: true,
-      exists: true,
-      raw: null,
-      invalid: true,
-    };
-  }
-}
-
-function resolvePersistedKind(kind, records) {
-  const normalizedRecords = records.map((record) => normalizePersistedRecord(kind, record));
-  const validRecords = normalizedRecords.filter((record) => record.valid);
-
-  if (!validRecords.length) {
-    return {
-      value: defaultPersistedValue(kind),
-      envelope: null,
-      shouldRepair: false,
-    };
-  }
-
-  const winner = validRecords.slice().sort(comparePersistedRecords)[0];
-  const envelope = winner.isEnvelope
-    ? winner.envelope
-    : buildPersistenceEnvelope(kind, winner.value);
-  const shouldRepair = normalizedRecords.some((record) => shouldRepairPersistedRecord(record, envelope));
-
-  return {
-    value: winner.value,
-    envelope,
-    shouldRepair,
-  };
-}
-
-function normalizePersistedRecord(kind, record) {
-  if (!record.exists) {
-    return {
-      ...record,
-      valid: false,
-      isEnvelope: false,
-      envelope: null,
-      value: null,
-      score: -1,
-      updatedAtMs: null,
-    };
-  }
-
-  if (record.invalid) {
-    return {
-      ...record,
-      valid: false,
-      isEnvelope: false,
-      envelope: null,
-      value: null,
-      score: -1,
-      updatedAtMs: null,
-    };
-  }
-
-  const envelope = extractPersistenceEnvelope(kind, record.raw);
-  if (envelope) {
-    return {
-      ...record,
-      valid: true,
-      isEnvelope: true,
-      envelope,
-      value: envelope.value,
-      score: persistedValueScore(kind, envelope.value),
-      updatedAtMs: Date.parse(envelope.updatedAt),
-    };
-  }
-
-  const legacyValue = extractLegacyPersistedValue(kind, record.raw);
-  if (legacyValue == null) {
-    return {
-      ...record,
-      valid: false,
-      isEnvelope: false,
-      envelope: null,
-      value: null,
-      score: -1,
-      updatedAtMs: null,
-    };
-  }
-
-  return {
-    ...record,
-    valid: true,
-    isEnvelope: false,
-    envelope: null,
-    value: legacyValue,
-    score: persistedValueScore(kind, legacyValue),
-    updatedAtMs: null,
-  };
-}
-
-async function repairPersistedKind(kind, resolution, databaseAvailable, localStorageKey) {
-  if (!resolution.shouldRepair || !resolution.envelope) {
-    return;
-  }
-
-  if (!databaseAvailable) {
-    writeLocalStorageMirror(localStorageKey, resolution.envelope, kind);
-    return;
-  }
-
-  try {
-    await persistValue(kind, resolution.envelope, localStorageKey);
-  } catch (error) {
-    console.error(`Failed to repair ${kind} persistence stores.`, error);
-    writeLocalStorageMirror(localStorageKey, resolution.envelope, kind);
-  }
-}
-
-function normalizePersistedPreferences(raw) {
-  const defaults = {
-    ui: defaultUiState(),
-    quiz: {
-      scope: defaultQuizState().scope,
-      direction: defaultQuizState().direction,
-    },
-    audio: defaultAudioState(),
-  };
-
-  const ui = raw?.ui || {};
-  const quiz = raw?.quiz || {};
-  const audio = raw?.audio || {};
-  const audioRate = clamp(safeNumber(audio.rate, defaults.audio.rate), AUDIO_RATE_MIN, AUDIO_RATE_MAX);
-  const hasLegacyAudioDefaults =
-    safeNumber(audio.version, 0) < AUDIO_PREFERENCES_VERSION &&
-    (audio.voiceURI == null || audio.voiceURI === "auto") &&
-    Math.abs(audioRate - LEGACY_AUDIO_DEFAULT_RATE) < 0.001;
-
-  return {
-    ui: {
-      deck: allowedValue(ui.deck, ["all", "mainWords", "coffeePhrases", "conversationVerbs", "everydayGuatemalaPhrases", "guatemalaBonus", "guatemalaLexicon"], defaults.ui.deck),
-      session: allowedValue(ui.session, ["all", "due", "weak"], defaults.ui.session),
-      statusFilter: allowedValue(ui.statusFilter, ["all", "new", "learning", "known", "favorite"], defaults.ui.statusFilter),
-      band: allowedValue(ui.band, ["all", "1K", "2K", "3K"], defaults.ui.band),
-      type: allowedValue(ui.type, ["all", "word", "phrase", "bonus"], defaults.ui.type),
-      search: normalizeSearchQuery(ui.search),
-      currentEntryId:
-        typeof ui.currentEntryId === "string" && ui.currentEntryId.trim()
-          ? ui.currentEntryId.trim()
-          : null,
-    },
-    quiz: {
-      scope: allowedValue(quiz.scope, ["due", "weak", "filtered", "all"], defaults.quiz.scope),
-      direction: allowedValue(quiz.direction, ["es-en", "en-es"], defaults.quiz.direction),
-    },
-    audio: {
-      version: AUDIO_PREFERENCES_VERSION,
-      voiceURI: typeof audio.voiceURI === "string" && audio.voiceURI ? audio.voiceURI : defaults.audio.voiceURI,
-      rate: hasLegacyAudioDefaults ? defaults.audio.rate : audioRate,
-    },
-  };
-}
-
-function defaultPersistedValue(kind) {
-  if (kind === DATABASE_KEYS.progress) {
-    return {};
-  }
-
-  return normalizePersistedPreferences({});
-}
-
-function buildPersistenceEnvelope(kind, value, updatedAt = new Date().toISOString()) {
-  const normalizedUpdatedAt = normalizeDate(updatedAt) || new Date().toISOString();
-  return {
-    schemaVersion: PERSISTENCE_SCHEMA_VERSION,
-    kind,
-    updatedAt: normalizedUpdatedAt,
-    value,
-  };
-}
-
-function extractPersistenceEnvelope(kind, raw) {
-  if (
-    !isPlainObject(raw) ||
-    raw.schemaVersion !== PERSISTENCE_SCHEMA_VERSION ||
-    raw.kind !== kind ||
-    !("value" in raw)
-  ) {
-    return null;
-  }
-
-  const updatedAt = normalizeDate(raw.updatedAt);
-  if (!updatedAt) {
-    return null;
-  }
-
-  const value = normalizePersistenceValue(kind, raw.value);
-  if (value == null) {
-    return null;
-  }
-
-  return buildPersistenceEnvelope(kind, value, updatedAt);
-}
-
-function extractLegacyPersistedValue(kind, raw) {
-  const payload = extractLegacyPersistencePayload(kind, raw);
-  if (payload == null) {
-    return null;
-  }
-
-  return normalizePersistenceValue(kind, payload);
-}
-
-function extractLegacyPersistencePayload(kind, raw) {
-  if (!isPlainObject(raw)) {
-    return null;
-  }
-
-  if (
-    "schemaVersion" in raw &&
-    "kind" in raw &&
-    "updatedAt" in raw &&
-    "value" in raw
-  ) {
-    return null;
-  }
-
-  if (kind === DATABASE_KEYS.progress) {
-    const payload = isPlainObject(raw.progress) ? raw.progress : raw;
-    if (!Object.keys(payload).length) {
-      return {};
-    }
-
-    return Object.values(payload).some((value) => isPlainObject(value)) ? payload : null;
-  }
-
-  const payload = isPlainObject(raw.preferences) ? raw.preferences : raw;
-  if (!Object.keys(payload).length) {
-    return {};
-  }
-
-  return ["ui", "quiz", "audio"].some((key) => key in payload) ? payload : null;
-}
-
-function normalizePersistenceValue(kind, raw) {
-  if (kind === DATABASE_KEYS.progress) {
-    return normalizeProgressMap(raw);
-  }
-
-  if (kind === DATABASE_KEYS.preferences) {
-    return normalizePersistedPreferences(raw);
-  }
-
-  return null;
-}
-
-function persistedValueScore(kind, value) {
-  if (kind === DATABASE_KEYS.progress) {
-    return Object.values(value).reduce(
-      (score, progress) => score + (isMeaningfulProgress(progress) ? 1 : 0),
-      0
-    );
-  }
-
-  const defaults = normalizePersistedPreferences({});
-  let score = 0;
-  if (!serializedValueEquals(value.ui, defaults.ui)) score += 1;
-  if (!serializedValueEquals(value.quiz, defaults.quiz)) score += 1;
-  if (!serializedValueEquals(value.audio, defaults.audio)) score += 1;
-  return score;
-}
-
-function isMeaningfulProgress(progress) {
-  return (
-    progress.favorite ||
-    progress.status !== "new" ||
-    progress.reviewCount > 0 ||
-    progress.quizSeen > 0 ||
-    progress.quizCorrect > 0 ||
-    progress.correctStreak > 0 ||
-    progress.wrongCount > 0 ||
-    progress.intervalDays > 0 ||
-    progress.dueAt != null ||
-    progress.lastReviewedAt != null ||
-    progress.lastOutcome != null
-  );
-}
-
-function comparePersistedRecords(left, right) {
-  const leftHasTimestamp = Number.isFinite(left.updatedAtMs);
-  const rightHasTimestamp = Number.isFinite(right.updatedAtMs);
-
-  if (leftHasTimestamp && rightHasTimestamp && left.updatedAtMs !== right.updatedAtMs) {
-    return right.updatedAtMs - left.updatedAtMs;
-  }
-
-  if (leftHasTimestamp !== rightHasTimestamp) {
-    return leftHasTimestamp ? -1 : 1;
-  }
-
-  if (left.score !== right.score) {
-    return right.score - left.score;
-  }
-
-  return persistedSourcePriority(right.source) - persistedSourcePriority(left.source);
-}
-
-function shouldRepairPersistedRecord(record, resolvedEnvelope) {
-  if (!record.requiredStore) {
-    return false;
-  }
-
-  if (!record.exists || !record.valid || !record.isEnvelope || !record.envelope) {
-    return true;
-  }
-
-  return !serializedValueEquals(record.envelope, resolvedEnvelope);
-}
-
-function persistedSourcePriority(source) {
-  if (source === "localStorage") {
-    return 3;
-  }
-
-  if (source === "legacyLocalStorage") {
-    return 2;
-  }
-
-  return 1;
-}
-
-function buildPersistedPreferences() {
-  return normalizePersistedPreferences({
-    ui: state.ui,
-    quiz: {
-      scope: state.quiz.scope,
-      direction: state.quiz.direction,
-    },
-    audio: {
-      version: AUDIO_PREFERENCES_VERSION,
-      voiceURI: state.audio.voiceURI,
-      rate: state.audio.rate,
-    },
   });
 }
 
-function queueProgressSave() {
-  pendingProgressEnvelope = buildPersistenceEnvelope(DATABASE_KEYS.progress, state.progress);
-  writeLocalStorageMirror(
-    LOCAL_STORAGE_PROGRESS_KEY,
-    pendingProgressEnvelope,
-    DATABASE_KEYS.progress
-  );
-
-  if (progressSaveTimer) {
-    clearTimeout(progressSaveTimer);
-  }
-
-  progressSaveTimer = window.setTimeout(() => {
-    progressSaveTimer = null;
-    const envelope = pendingProgressEnvelope;
-    pendingProgressEnvelope = null;
-    if (envelope) {
-      void persistValue(DATABASE_KEYS.progress, envelope, LOCAL_STORAGE_PROGRESS_KEY);
-    }
-  }, 0);
+function sourceCards(src) {
+  if (src === 'due') return filterCards({ due: true });
+  if (src === 'weak') return filterCards({ weak: true });
+  if (src === 'starred') return filterCards({ star: true });
+  if (src === 'filter') return filterCards(appState.browse);
+  if (src && src.startsWith('deck:')) return filterCards({ deck: src.slice(5) });
+  return appState.data.CARDS;
 }
 
-function queuePreferencesSave() {
-  pendingPreferencesEnvelope = buildPersistenceEnvelope(
-    DATABASE_KEYS.preferences,
-    buildPersistedPreferences()
-  );
-  writeLocalStorageMirror(
-    LOCAL_STORAGE_PREFERENCES_KEY,
-    pendingPreferencesEnvelope,
-    DATABASE_KEYS.preferences
-  );
-
-  if (preferencesSaveTimer) {
-    clearTimeout(preferencesSaveTimer);
-  }
-
-  preferencesSaveTimer = window.setTimeout(() => {
-    preferencesSaveTimer = null;
-    const envelope = pendingPreferencesEnvelope;
-    pendingPreferencesEnvelope = null;
-    if (envelope) {
-      void persistValue(
-        DATABASE_KEYS.preferences,
-        envelope,
-        LOCAL_STORAGE_PREFERENCES_KEY
-      );
-    }
-  }, 0);
+function orderFor(src) {
+  const ids = sourceCards(src).map(c => c.id);
+  const sh = shuffleArr(ids.length);
+  return sh.map(i => ids[i]);
 }
 
-function flushPendingPersistence() {
-  if (progressSaveTimer) {
-    clearTimeout(progressSaveTimer);
-    progressSaveTimer = null;
-  }
-  const progressEnvelope = pendingProgressEnvelope;
-  pendingProgressEnvelope = null;
-  if (progressEnvelope) {
-    void persistValue(DATABASE_KEYS.progress, progressEnvelope, LOCAL_STORAGE_PROGRESS_KEY);
-  }
-
-  if (preferencesSaveTimer) {
-    clearTimeout(preferencesSaveTimer);
-    preferencesSaveTimer = null;
-  }
-  const preferencesEnvelope = pendingPreferencesEnvelope;
-  pendingPreferencesEnvelope = null;
-  if (preferencesEnvelope) {
-    void persistValue(
-      DATABASE_KEYS.preferences,
-      preferencesEnvelope,
-      LOCAL_STORAGE_PREFERENCES_KEY
-    );
-  }
+function setStudySource(src) {
+  setState({ study: { idx: 0, flipped: false, source: src, order: orderFor(src) } });
 }
 
-async function openAppDatabase() {
-  if (!("indexedDB" in window)) {
-    return null;
-  }
-
-  if (!databasePromise) {
-    databasePromise = new Promise((resolve, reject) => {
-      const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
-
-      request.onupgradeneeded = () => {
-        const database = request.result;
-        if (!database.objectStoreNames.contains(DATABASE_STORE)) {
-          database.createObjectStore(DATABASE_STORE, { keyPath: "key" });
-        }
-      };
-
-      request.onsuccess = () => {
-        const database = request.result;
-        database.onversionchange = () => database.close();
-        resolve(database);
-      };
-
-      request.onerror = () => reject(request.error);
-    }).catch((error) => {
-      console.error("Failed to open IndexedDB.", error);
-      databasePromise = null;
-      return null;
-    });
-  }
-
-  return databasePromise;
-}
-
-async function readDatabaseValue(key) {
-  const database = await openAppDatabase();
-  if (!database) {
-    return null;
-  }
-
-  const transaction = database.transaction(DATABASE_STORE, "readonly");
-  const request = transaction.objectStore(DATABASE_STORE).get(key);
-  const record = await requestToPromise(request);
-  await transactionToPromise(transaction);
-  return record?.value ?? null;
-}
-
-async function persistValue(key, value, mirrorLocalStorageKey = null) {
-  if (mirrorLocalStorageKey) {
-    writeLocalStorageMirror(mirrorLocalStorageKey, value, key);
-  }
-
-  const database = await openAppDatabase();
-  if (!database) {
-    return;
-  }
-
-  const transaction = database.transaction(DATABASE_STORE, "readwrite");
-  transaction.objectStore(DATABASE_STORE).put({ key, value });
-  await transactionToPromise(transaction);
-}
-
-function writeLocalStorageMirror(storageKey, value, label = storageKey) {
-  try {
-    localStorage.setItem(storageKey, JSON.stringify(value));
-  } catch (error) {
-    console.error(`Failed to mirror ${label} to localStorage.`, error);
-  }
-}
-
-function requestToPromise(request) {
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+// ===== Spaced Repetition =====
+function seedStates(cards, ex) {
+  const out = { ...ex };
+  const now = Date.now();
+  cards.forEach(c => {
+    if (!out[c.id]) out[c.id] = { state: 'new', due: now, seen: false, correct: 0, wrong: 0, weak: false, star: false };
   });
+  return out;
 }
 
-function transactionToPromise(transaction) {
-  return new Promise((resolve, reject) => {
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
-    transaction.onabort = () => reject(transaction.error);
-  });
-}
-
-function saveProgress() {
-  queueProgressSave();
-}
-
-function defaultProgress() {
-  return {
-    status: "new",
-    favorite: false,
-    reviewCount: 0,
-    quizSeen: 0,
-    quizCorrect: 0,
-    correctStreak: 0,
-    wrongCount: 0,
-    intervalDays: 0,
-    ease: 2.3,
-    dueAt: null,
-    lastReviewedAt: null,
-    lastOutcome: null,
-  };
-}
-
-function normalizeProgressMap(rawMap) {
-  if (!rawMap || typeof rawMap !== "object" || Array.isArray(rawMap)) {
-    return {};
-  }
-
-  return Object.fromEntries(
-    Object.entries(rawMap).flatMap(([entryId, progress]) => {
-      if (!progress || typeof progress !== "object") {
-        return [];
-      }
-      return [[entryId, normalizeProgressEntry(progress)]];
-    })
-  );
-}
-
-function normalizeProgressEntry(progress) {
-  const defaults = defaultProgress();
-  const status = ["new", "learning", "known"].includes(progress.status)
-    ? progress.status
-    : "new";
-
-  const normalized = {
-    ...defaults,
-    ...progress,
-    status,
-    favorite: Boolean(progress.favorite),
-    reviewCount: safeNumber(progress.reviewCount, progress.quizSeen || 0),
-    quizSeen: safeNumber(progress.quizSeen),
-    quizCorrect: safeNumber(progress.quizCorrect),
-    correctStreak: safeNumber(progress.correctStreak),
-    wrongCount: safeNumber(progress.wrongCount),
-    intervalDays: safeNumber(progress.intervalDays),
-    ease: clamp(safeNumber(progress.ease, defaults.ease), 1.4, 3.2),
-    dueAt: normalizeDate(progress.dueAt),
-    lastReviewedAt: normalizeDate(progress.lastReviewedAt),
-    lastOutcome: ["correct", "incorrect"].includes(progress.lastOutcome) ? progress.lastOutcome : null,
-  };
-
-  return normalized;
-}
-
-function readEntryProgress(entryId) {
-  return normalizeProgressEntry(state.progress[entryId] || defaultProgress());
-}
-
-function updateEntryProgress(entryId, nextProgress) {
-  state.progress[entryId] = normalizeProgressEntry(nextProgress);
-  saveProgress();
-  return state.progress[entryId];
-}
-
-function setManualStatus(entryId, status) {
-  const current = readEntryProgress(entryId);
-  const next = { ...current, status };
-
-  if (status === "new") {
-    next.reviewCount = 0;
-    next.correctStreak = 0;
-    next.intervalDays = 0;
-    next.dueAt = null;
-    next.lastOutcome = null;
-  } else if (status === "learning") {
-    next.dueAt = new Date().toISOString();
-    next.intervalDays = 0;
-    next.lastReviewedAt = new Date().toISOString();
-  } else if (status === "known") {
-    next.correctStreak = Math.max(2, current.correctStreak);
-    next.intervalDays = Math.max(3, current.intervalDays || 3);
-    next.dueAt = addDays(next.intervalDays);
-    next.lastReviewedAt = new Date().toISOString();
-  }
-
-  updateEntryProgress(entryId, next);
-}
-
-function toggleFavorite(entryId) {
-  const progress = readEntryProgress(entryId);
-  updateEntryProgress(entryId, { ...progress, favorite: !progress.favorite });
-}
-
-function applyReviewOutcome(entryId, wasCorrect) {
-  const current = readEntryProgress(entryId);
-  const now = new Date().toISOString();
-  const next = {
-    ...current,
-    reviewCount: current.reviewCount + 1,
-    quizSeen: current.quizSeen + 1,
-    lastReviewedAt: now,
-    lastOutcome: wasCorrect ? "correct" : "incorrect",
-  };
-
-  if (wasCorrect) {
-    next.quizCorrect = current.quizCorrect + 1;
-    next.correctStreak = current.correctStreak + 1;
-    next.ease = clamp(current.ease + 0.12, 1.4, 3.2);
-    next.intervalDays = current.intervalDays < 1
-      ? 1
-      : Math.max(1, Math.round(current.intervalDays * next.ease));
-    next.status = next.correctStreak >= 2 || next.intervalDays >= 3 ? "known" : "learning";
-    next.dueAt = addDays(next.intervalDays);
+function grade(id, correct) {
+  const m = { ...appState.cardState };
+  const c = { ...cs(id) };
+  c.seen = true;
+  if (correct) {
+    c.correct = (c.correct || 0) + 1;
+    c.weak = false;
+    c.state = c.state === 'new' ? 'learning' : (c.state === 'learning' ? (c.correct >= 3 ? 'known' : 'learning') : 'known');
+    c.due = Date.now() + (c.state === 'known' ? 7 : 2) * DAY_MS;
   } else {
-    next.correctStreak = 0;
-    next.wrongCount = current.wrongCount + 1;
-    next.ease = clamp(current.ease - 0.2, 1.4, 3.2);
-    next.intervalDays = SHORT_REVIEW_DAYS;
-    next.status = "learning";
-    next.dueAt = addDays(SHORT_REVIEW_DAYS);
+    c.wrong = (c.wrong || 0) + 1;
+    c.weak = true;
+    c.state = 'learning';
+    c.due = Date.now();
   }
+  m[id] = c;
+  setState({ cardState: m, reviewedToday: appState.reviewedToday + 1 });
+}
 
-  const saved = updateEntryProgress(entryId, next);
-  return {
-    progress: saved,
-    label: wasCorrect ? `in ${formatDays(saved.intervalDays)}` : `in ${formatDays(SHORT_REVIEW_DAYS)}`,
+function setProg(id, state) {
+  const m = { ...appState.cardState };
+  const c = { ...cs(id) };
+  c.state = state;
+  if (state !== 'new') c.seen = true;
+  if (state === 'known') { c.weak = false; c.due = Date.now() + 7 * DAY_MS; }
+  else if (state === 'learning') { c.due = Date.now(); }
+  else { c.weak = false; c.due = Date.now(); c.seen = false; }
+  m[id] = c;
+  setState({ cardState: m });
+}
+
+function toggleStar(id) {
+  const m = { ...appState.cardState };
+  const c = { ...cs(id) };
+  c.star = !c.star;
+  m[id] = c;
+  setState({ cardState: m });
+}
+
+// ===== Speech =====
+function initVoices() {
+  const load = () => {
+    try {
+      const v = (window.speechSynthesis ? speechSynthesis.getVoices() : [])
+        .filter(x => /^es/i.test(x.lang)).slice().sort((a, b) => scoreVoice(b) - scoreVoice(a));
+      setState({ voices: v });
+    } catch (e) {}
   };
-}
-
-function refreshAfterProgressChange() {
-  applyFilters(false);
-}
-
-function makePill(kind, label) {
-  const pill = document.createElement("span");
-  pill.className = "status-pill";
-  pill.dataset.status = kind;
-  pill.textContent = label;
-  return pill;
-}
-
-function buildFrontMeta(entry, progress) {
-  const bits = [];
-
-  if (isLexiconEntry(entry)) {
-    bits.push(
-      "Guatemalan lexicon",
-      formatLexiconEntryType(entry.lexiconEntryType),
-      formatLexiconCategory(entry.lexiconCategory)
-    );
-  } else if (entry.type === "word") {
-    bits.push(entry.band, entry.partOfSpeech);
-  } else if (entry.type === "phrase") {
-    bits.push(collectionLabel(entry.collection), entry.focus, entry.context);
-  } else {
-    bits.push("Guatemala note");
-  }
-
-  bits.push(formatDueSummary(progress));
-  return bits.filter(Boolean).join(" • ");
-}
-
-function buildBackMeta(entry, progress) {
-  const bits = [];
-
-  if (isLexiconEntry(entry)) {
-    if (entry.lexiconMeaningEsNeutral) {
-      bits.push(`Neutral Spanish: ${entry.lexiconMeaningEsNeutral}`);
-    }
-    if (entry.lexiconExampleEs) {
-      bits.push(`Example: ${entry.lexiconExampleEs}`);
-    }
-    if (entry.lexiconRegister) {
-      bits.push(`Register: ${formatLexiconValue(entry.lexiconRegister)}`);
-    }
-    if (entry.lexiconSpecificityScore) {
-      bits.push(formatLexiconSpecificityScore(entry.lexiconSpecificityScore));
-    }
-    if (entry.lexiconConfidence) {
-      bits.push(`Confidence: ${formatLexiconValue(entry.lexiconConfidence)}`);
-    }
-    if (entry.lexiconCaution) {
-      bits.push(`Caution: ${entry.lexiconCaution}`);
-    }
-    if (entry.lexiconNotes) {
-      bits.push(entry.lexiconNotes);
-    }
-  } else if (entry.type === "word") {
-    bits.push(entry.commonForms, phrasebankSummary(entry));
-  } else if (entry.type === "phrase") {
-    if (entry.focus) {
-      bits.push(`Focus: ${entry.focus}`);
-    }
-    if (entry.context) {
-      bits.push(`Use: ${entry.context}`);
-    }
-    if (entry.note) {
-      bits.push(entry.note);
-    }
-  } else {
-    bits.push(entry.note);
-  }
-
-  bits.push(reviewScoreSummary(progress));
-  return bits.filter(Boolean).join(" • ");
-}
-
-function buildListMetaBits(entry, progress) {
-  const bits = [];
-
-  if (isLexiconEntry(entry)) {
-    bits.push(
-      "Guatemalan lexicon",
-      formatLexiconEntryType(entry.lexiconEntryType),
-      formatLexiconCategory(entry.lexiconCategory)
-    );
-    if (entry.lexiconRegister) {
-      bits.push(`Register: ${formatLexiconValue(entry.lexiconRegister)}`);
-    }
-    if (entry.lexiconSpecificityScore) {
-      bits.push(formatLexiconSpecificityScore(entry.lexiconSpecificityScore));
-    }
-  } else if (entry.type === "word") {
-    bits.push(`Rank ${entry.rank}`, entry.band, entry.partOfSpeech, phrasebankSummary(entry));
-  } else if (entry.type === "phrase") {
-    bits.push(collectionLabel(entry.collection));
-    if (entry.focus) {
-      bits.push(`Focus: ${entry.focus}`);
-    }
-    if (entry.context) {
-      bits.push(`Use: ${entry.context}`);
-    }
-  } else {
-    bits.push("Guatemala note", entry.note);
-  }
-
-  bits.push(formatDueSummary(progress));
-  return bits.filter(Boolean);
-}
-
-function reviewScoreSummary(progress) {
-  if (!progress.quizSeen) {
-    return "No quiz history yet";
-  }
-
-  return `Quiz ${progress.quizCorrect}/${progress.quizSeen}`;
-}
-
-function formatDueSummary(progress) {
-  if (progress.status === "new" && progress.reviewCount === 0) {
-    return "Fresh card";
-  }
-
-  if (!progress.dueAt) {
-    return progress.status === "known" ? "Scheduled later" : "Ready now";
-  }
-
-  const dueMs = Date.parse(progress.dueAt);
-  if (Number.isNaN(dueMs)) {
-    return "";
-  }
-
-  if (dueMs <= Date.now()) {
-    return "Due now";
-  }
-
-  return `Due ${formatDistance(dueMs - Date.now())}`;
-}
-
-function formatDistance(deltaMs) {
-  const hours = Math.round(deltaMs / (60 * 60 * 1000));
-  if (hours < 24) {
-    return `in ${hours}h`;
-  }
-
-  return `in ${Math.round(hours / 24)}d`;
-}
-
-function entryLabel(entry) {
-  if (isLexiconEntry(entry)) {
-    return formatLexiconEntryType(entry.lexiconEntryType);
-  }
-  if (entry.type === "word") {
-    return entry.band || "Word";
-  }
-  if (entry.type === "phrase") {
-    return collectionLabel(entry.collection);
-  }
-  return "Guatemala note";
-}
-
-function collectionLabel(collection) {
-  return {
-    mainWords: "Main word",
-    coffeePhrases: "Coffee phrase",
-    conversationVerbs: "Conversation verb",
-    everydayGuatemalaPhrases: "Everyday Guatemalan phrase",
-    guatemalaBonus: "Guatemala bonus",
-    guatemalaLexicon: "Guatemalan lexicon",
-  }[collection] || "Study card";
-}
-
-function isLexiconEntry(entry) {
-  return entry.collection === "guatemalaLexicon";
-}
-
-function formatLexiconEntryType(value) {
-  if (value === "coffee_phrase") {
-    return "Coffee phrase";
-  }
-  if (value === "phrase") {
-    return "Phrase";
-  }
-  return "Word";
-}
-
-function formatLexiconCategory(value) {
-  return value ? `Category: ${formatLexiconValue(value)}` : "";
-}
-
-function formatLexiconSpecificityScore(value) {
-  const score = Number(value);
-  return Number.isFinite(score) ? `Specificity ${score}/5` : "";
-}
-
-function formatLexiconValue(value) {
-  return String(value)
-    .replaceAll("_", " ")
-    .trim();
-}
-
-function phrasebankSummary(entry) {
-  if (!entry.miniPhrase) {
-    return "";
-  }
-
-  const english = entry.miniPhraseEnglish ? ` -> ${entry.miniPhraseEnglish}` : "";
-  const pattern = entry.phrasePattern ? ` (${entry.phrasePattern})` : "";
-  return `Phrase: ${entry.miniPhrase}${english}${pattern}`;
-}
-
-function quizScopeLabel(scope) {
-  return {
-    due: "Due today",
-    weak: "Weak spots",
-    filtered: "Current filter",
-    all: "All cards",
-  }[scope];
-}
-
-function quizDirectionLabel(direction) {
-  return direction === "es-en" ? "Spanish to English" : "English to Spanish";
-}
-
-function allowedValue(value, allowed, fallback) {
-  return allowed.includes(value) ? value : fallback;
-}
-
-function serializedValueEquals(left, right) {
-  return JSON.stringify(left) === JSON.stringify(right);
-}
-
-function isPlainObject(value) {
-  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
-}
-
-function formatSpeechRate(rate) {
-  return `${rate.toFixed(2)}x`;
-}
-
-function normalizeSpeechText(text) {
-  return String(text)
-    .replace(/\[word\]/gi, "palabra")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-function formatVoiceLabel(voice) {
-  if (!voice) {
-    return "Browser default Spanish voice";
-  }
-
-  return `${voice.name} (${voice.lang})`;
-}
-
-function getActiveSpeechVoice() {
-  if (!state.speechVoices.length) {
-    return null;
-  }
-
-  if (state.audio.voiceURI !== "auto") {
-    return state.speechVoices.find((voice) => voice.voiceURI === state.audio.voiceURI) || state.speechVoices[0];
-  }
-
-  return state.speechVoices[0];
-}
-
-function rankSpanishVoices(voices) {
-  return voices
-    .filter((voice) => typeof voice.lang === "string" && voice.lang.toLowerCase().startsWith("es"))
-    .slice()
-    .sort((left, right) => scoreVoice(right) - scoreVoice(left));
+  load();
+  try { if (window.speechSynthesis) speechSynthesis.onvoiceschanged = load; } catch (e) {}
+  setTimeout(load, 500);
 }
 
 function scoreVoice(voice) {
-  const lang = (voice.lang || "").toLowerCase();
-  const name = (voice.name || "").toLowerCase();
-  let score = 0;
-
-  if (lang === "es-gt") score += 140;
-  else if (lang === "es-mx") score += 130;
-  else if (lang === "es-us") score += 120;
-  else if (lang === "es-419") score += 115;
-  else if (lang.startsWith("es-")) score += 100;
-  else if (lang === "es") score += 90;
-
-  if (name.includes("siri")) score += 50;
-  if (name.includes("premium")) score += 35;
-  if (name.includes("enhanced")) score += 30;
-  if (name.includes("natural")) score += 25;
-  if (name.includes("neural")) score += 25;
-  if (name.includes("high quality")) score += 20;
-  if (voice.localService) score += 5;
-
-  return score;
+  const lang = (voice.lang || '').toLowerCase();
+  const name = (voice.name || '').toLowerCase();
+  let s = 0;
+  if (lang === 'es-gt') s += 140; else if (lang === 'es-mx') s += 130;
+  else if (lang === 'es-us') s += 120; else if (lang.startsWith('es-')) s += 100;
+  else if (lang === 'es') s += 90;
+  if (name.includes('siri')) s += 50; if (name.includes('premium')) s += 35;
+  if (name.includes('enhanced')) s += 30; if (name.includes('natural')) s += 25;
+  if (voice.localService) s += 5;
+  return s;
 }
 
-function safeNumber(value, fallback = 0) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : fallback;
+function bestVoice() { return appState.voices[0] || null; }
+
+function speak(text) {
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(String(text));
+    u.lang = 'es-GT'; u.rate = appState.settings.speed;
+    const uri = appState.settings.voiceURI;
+    let voice = uri && uri !== 'auto' ? appState.voices.find(x => x.voiceURI === uri) : null;
+    if (!voice) voice = bestVoice();
+    if (voice) u.voice = voice;
+    speechSynthesis.speak(u);
+  } catch (e) {}
 }
 
-function normalizeDate(value) {
-  if (!value) {
-    return null;
+// ===== Word Lookup (Reading) =====
+function openWord(nrm, display) {
+  const d = appState.data.DICT[nrm]; if (!d) return;
+  const sid = appState.storyId;
+  const lu = { ...appState.lookedUp, [sid]: { ...(appState.lookedUp[sid] || {}), [nrm]: true } };
+  setState({ activeWord: { es: display, en: d.en, pos: d.pos }, lookedUp: lu });
+}
+
+function saveWord() {
+  const w = appState.activeWord; if (!w) return;
+  if (appState.saved.some(s => s.es === w.es)) return;
+  setState({ saved: [...appState.saved, { es: w.es, en: w.en }] });
+  flash('Saved "' + w.es + '" to deck');
+}
+
+function normWord(word) { return word.toLowerCase().replace(/[^a-záéíóúüñ]/gi, ''); }
+
+function tokenize(sentence) {
+  const re = /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g;
+  const lu = appState.lookedUp[appState.storyId] || {};
+  const toks = []; let last = 0, m;
+  while ((m = re.exec(sentence))) {
+    if (m.index > last) toks.push({ text: esc(sentence.slice(last, m.index)), plain: true });
+    const word = m[0]; const nrm = normWord(word); const d = appState.data.DICT[nrm];
+    if (d) {
+      const seen = !!lu[nrm];
+      const onClick = () => openWord(nrm, word);
+      const style = seen
+        ? 'background:var(--g-soft);color:var(--g-ink);border-bottom:2px solid #28b573;border-radius:5px;padding:0 3px;cursor:pointer'
+        : 'border-bottom:2px dotted rgba(40,181,115,.55);cursor:pointer;color:inherit';
+      toks.push({ text: esc(word), tappable: true, onClick, style });
+    } else {
+      toks.push({ text: esc(word), plain: true });
+    }
+    last = m.index + word.length;
   }
-
-  const timestamp = Date.parse(value);
-  if (Number.isNaN(timestamp)) {
-    return null;
-  }
-
-  return new Date(timestamp).toISOString();
+  if (last < sentence.length) toks.push({ text: esc(sentence.slice(last)), plain: true });
+  return toks;
 }
 
-function clamp(value, min, max) {
-  return Math.min(max, Math.max(min, value));
+// ===== Quiz =====
+function buildQuiz() {
+  const { CARDS } = appState.data; const dir = appState.quiz.dir;
+  let src = sourceCards(appState.quiz.source); if (src.length < 4) src = CARDS;
+  const order = shuffleArr(src.length).slice(0, Math.min(8, src.length));
+  const qs = order.map(i => {
+    const card = src[i];
+    const prompt = dir === 'es-en' ? card.es : card.en;
+    const correct = dir === 'es-en' ? card.en : card.es;
+    const pool = CARDS.filter(c => c.id !== card.id).map(c => dir === 'es-en' ? c.en : c.es);
+    const opts = [correct];
+    while (opts.length < 4 && pool.length) { const j = (Math.random() * pool.length) | 0; opts.push(pool.splice(j, 1)[0]); }
+    for (let x = opts.length - 1; x > 0; x--) { const j = (Math.random() * (x + 1)) | 0; [opts[x], opts[j]] = [opts[j], opts[x]]; }
+    return { id: card.id, es: card.es, prompt, options: opts, answer: opts.indexOf(correct) };
+  });
+  setState({ quiz: { ...appState.quiz, phase: 'play', idx: 0, sel: null, answered: false, score: 0, qs } });
 }
 
-function addDays(days) {
-  return new Date(Date.now() + days * DAY_MS).toISOString();
+function answerQuiz(i) {
+  const q = appState.quiz; if (q.answered) return;
+  const cur = q.qs[q.idx]; const correct = i === cur.answer;
+  grade(cur.id, correct);
+  setState({ quiz: { ...appState.quiz, sel: i, answered: true, score: q.score + (correct ? 1 : 0) } });
 }
 
-function formatDays(days) {
-  if (days < 1) {
-    return `${Math.round(days * 24)} hours`;
-  }
-  if (days < 7) {
-    return `${Math.round(days)} day${Math.round(days) === 1 ? "" : "s"}`;
-  }
-  const weeks = Math.round((days / 7) * 10) / 10;
-  return `${weeks} week${weeks === 1 ? "" : "s"}`;
+function nextQuiz() {
+  const q = appState.quiz;
+  if (q.idx + 1 >= q.qs.length) { setState({ quiz: { ...q, phase: 'done' } }); return; }
+  setState({ quiz: { ...q, idx: q.idx + 1, sel: null, answered: false } });
 }
 
-function pickRandomEntry(entries, avoidId) {
-  if (entries.length === 1) {
-    return entries[0];
-  }
+// ===== Comprehension =====
+function answerComp(i) { if (appState.compAnswered) return; setState({ compSel: i, compAnswered: true }); }
+function finishStory() { setState({ completed: { ...appState.completed, [appState.storyId]: true }, readView: 'done' }); }
 
-  const shuffled = shuffleArray(entries.slice());
-  return shuffled.find((entry) => entry.id !== avoidId) || shuffled[0];
+// ===== UI Utilities =====
+function flash(msg) {
+  setState({ toast: msg }); clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => setState({ toast: null }), 1700);
 }
 
-function shuffleArray(items) {
-  for (let index = items.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [items[index], items[swapIndex]] = [items[swapIndex], items[index]];
-  }
-  return items;
+function install() {
+  if (installPrompt) { installPrompt.prompt(); installPrompt = null; setState({ canInstall: false }); }
+  else { flash('Use Share → Add to Home Screen'); }
 }
 
-function speakEntry(entry) {
-  if (!entry || !("speechSynthesis" in window)) {
+// ===== Persistence =====
+function persistable() {
+  const S = appState;
+  return {
+    cardState: S.cardState, saved: S.saved, completed: S.completed,
+    lookedUp: S.lookedUp, storyId: S.storyId, settings: S.settings,
+    reviewedToday: S.reviewedToday, streak: S.streak,
+    study: { source: S.study.source },
+    quiz: { dir: S.quiz.dir, source: S.quiz.source },
+    browse: S.browse,
+  };
+}
+
+function saveState() {
+  const o = persistable();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(o)); } catch (e) {}
+  idbSet(o);
+}
+
+let _idbDb = null;
+function idbOpen() {
+  if (!_idbDb) _idbDb = new Promise(res => {
+    try {
+      if (!window.indexedDB) return res(null);
+      const r = indexedDB.open('spanishApp', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('kv');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => res(null);
+    } catch (e) { res(null); }
+  });
+  return _idbDb;
+}
+
+async function idbSet(o) {
+  try { const db = await idbOpen(); if (!db) return; db.transaction('kv', 'readwrite').objectStore('kv').put(o, 'state'); } catch (e) {}
+}
+
+async function idbGet() {
+  try {
+    const db = await idbOpen(); if (!db) return null;
+    return await new Promise(res => {
+      const rq = db.transaction('kv', 'readonly').objectStore('kv').get('state');
+      rq.onsuccess = () => res(rq.result || null); rq.onerror = () => res(null);
+    });
+  } catch (e) { return null; }
+}
+
+async function loadState() {
+  let o = await idbGet();
+  if (!o) { try { o = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) {} }
+  if (o) return o;
+  // Migrate from old format
+  try {
+    const raw = JSON.parse(localStorage.getItem(OLD_PROGRESS_KEY));
+    const oldProg = raw && raw.value ? raw.value : (raw || null);
+    if (oldProg && typeof oldProg === 'object') return { _migrateFrom: oldProg };
+  } catch (e) {}
+  return null;
+}
+
+function migrateOldProgress(oldProg, cards) {
+  const now = Date.now(); const out = {};
+  cards.forEach(c => {
+    const old = oldProg[c.id]; if (!old) return;
+    out[c.id] = {
+      state: old.status || 'new',
+      due: old.dueAt ? (Date.parse(old.dueAt) || now) : now,
+      seen: (old.reviewCount || 0) > 0 || (old.quizSeen || 0) > 0,
+      correct: old.quizCorrect || 0, wrong: old.wrongCount || 0,
+      weak: old.status === 'learning' || old.lastOutcome === 'incorrect',
+      star: Boolean(old.favorite),
+    };
+  });
+  return out;
+}
+
+function exportJSON() {
+  try {
+    const blob = new Blob([JSON.stringify(persistable(), null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'spanish-progress.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    flash('Progress exported');
+  } catch (e) { flash('Export failed'); }
+}
+
+function importJSON(e) {
+  const file = e.target.files?.[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const o = JSON.parse(r.result);
+      setState({ cardState: { ...appState.cardState, ...(o.cardState || {}) }, saved: o.saved || appState.saved, completed: o.completed || appState.completed, lookedUp: o.lookedUp || appState.lookedUp, settings: { ...appState.settings, ...(o.settings || {}) } });
+      flash('Progress imported');
+    } catch (err) { flash('Invalid file'); }
+  };
+  r.readAsText(file); e.target.value = '';
+}
+
+function resetProgress() {
+  if (!appState.confirmReset) {
+    setState({ confirmReset: true }); clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => setState({ confirmReset: false }), 3000);
     return;
   }
-
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(normalizeSpeechText(entry.spanish));
-  const voice = getActiveSpeechVoice();
-  utterance.lang = voice?.lang || "es-GT";
-  utterance.rate = state.audio.rate;
-  utterance.pitch = 1;
-  utterance.volume = 1;
-
-  if (voice) {
-    utterance.voice = voice;
-  }
-
-  window.speechSynthesis.speak(utterance);
+  const cardState = seedStates(appState.data.CARDS, {});
+  setState({ cardState, saved: [], completed: {}, lookedUp: {}, confirmReset: false, reviewedToday: 0, streak: 0 });
+  flash('Progress reset');
 }
 
-function exportProgress() {
-  const payload = {
-    version: 3,
-    exportedAt: new Date().toISOString(),
-    progress: state.progress,
-    preferences: buildPersistedPreferences(),
+// ===== Style Helpers =====
+function seg(active) {
+  return `flex:1;border:none;font-family:Nunito;font-size:13.5px;font-weight:800;padding:10px 4px;border-radius:10px;cursor:pointer;background:${active ? 'var(--surface)' : 'transparent'};color:${active ? 'var(--ink)' : 'var(--muted)'};box-shadow:${active ? '0 2px 6px rgba(0,0,0,.12)' : 'none'};white-space:nowrap`;
+}
+
+function chip(active) {
+  return `border:1.5px solid ${active ? '#28b573' : 'var(--line)'};background:${active ? 'var(--g-soft)' : 'var(--surface)'};color:${active ? 'var(--g-ink)' : 'var(--muted)'};font-family:Nunito;font-weight:800;font-size:12.5px;padding:7px 13px;border-radius:999px;cursor:pointer;white-space:nowrap;flex:none`;
+}
+
+function optStyle(state) {
+  const base = 'width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:Nunito;font-size:16px;font-weight:800;padding:17px 18px;border-radius:16px;cursor:pointer;text-align:left;border:2px solid';
+  if (state === 'correct') return `${base};background:var(--g-soft);border-color:#28b573;color:var(--g-ink)`;
+  if (state === 'wrong')   return `${base};background:var(--r-soft);border-color:#e05a4d;color:var(--r-ink)`;
+  if (state === 'dim')     return `${base};background:var(--surface);border-color:var(--line);color:var(--muted2)`;
+  return `${base};background:var(--surface);border-color:var(--line);color:var(--ink)`;
+}
+
+function stateColor(s) { return s === 'known' ? '#28b573' : s === 'learning' ? '#f5a524' : 'var(--muted2)'; }
+function deckTint(a) { return `color-mix(in oklch, ${a} 16%, var(--mix))`; }
+
+// ===== Utilities =====
+function shuffleArr(n) {
+  const a = [...Array(n).keys()];
+  for (let i = n - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function ms(icon, size, color) {
+  return `<span style="font-family:'Material Symbols Rounded';font-size:${size}px${color ? ';color:' + color : ''}">${icon}</span>`;
+}
+
+function msf(icon, size, color) {
+  return `<span style="font-family:'Material Symbols Rounded';font-size:${size}px;font-variation-settings:'FILL' 1${color ? ';color:' + color : ''}">${icon}</span>`;
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+}
+
+// ===== Data Transformation =====
+function transformData(raw) {
+  const colls = raw.collections || {};
+  const CARDS = [];
+  Object.entries(colls).forEach(([deckId, entries]) => {
+    entries.forEach(entry => {
+      CARDS.push({ id: entry.id, es: entry.spanish || '', en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null });
+    });
+  });
+  const DECKS = Object.entries(DECK_DEFS)
+    .map(([id, def]) => ({ id, ...def, count: (colls[id] || []).length }))
+    .filter(d => d.count > 0);
+  return { CARDS, DECKS, TYPES: TYPES_DEF, BANDS: BANDS_DEF, DICT: {}, STORIES: [], LEVELS: [] };
+}
+
+// ===== Compute Render Values =====
+function computeVals() {
+  const S = appState;
+  const themeAttr = S.settings.theme || 'light';
+  if (!S.data) return { loading: true, ready: false, showTabs: false, themeAttr, word: { show: false }, toast: { show: false } };
+
+  const { CARDS, DECKS, TYPES, BANDS, DICT, STORIES, LEVELS } = S.data;
+  const { tab, route } = S; const now = Date.now();
+  const inReader = tab === 'read' && S.readView === 'reader';
+  const inQuestion = tab === 'read' && S.readView === 'question';
+  const inDone = tab === 'read' && S.readView === 'done';
+  const deckOf = id => DECKS.find(d => d.id === id);
+
+  // Tabs
+  const tabs = [
+    { key: 'home', icon: 'home', label: 'Home' }, { key: 'study', icon: 'style', label: 'Study' },
+    { key: 'read', icon: 'menu_book', label: 'Read' }, { key: 'quiz', icon: 'quiz', label: 'Quiz' },
+    { key: 'progress', icon: 'insights', label: 'You' },
+  ].map(t => { const a = tab === t.key && !route; return { ...t, fill: a ? 1 : 0, color: a ? '#28b573' : 'var(--muted2)', onClick: () => goTab(t.key) }; });
+
+  // Counts
+  let known = 0, learning = 0, fresh = 0, due = 0, weak = 0, tc = 0, tw = 0, starCount = 0;
+  CARDS.forEach(c => {
+    const s = cs(c.id);
+    if (s.state === 'known') known++; else if (s.state === 'learning') learning++; else fresh++;
+    if (s.seen && s.due <= now) due++;
+    if (s.weak) weak++;
+    tc += s.correct || 0; tw += s.wrong || 0;
+    if (s.star) starCount++;
+  });
+  const acc = (tc + tw) ? Math.round(tc / (tc + tw) * 100) : 0;
+  const favorites = S.saved.length + starCount;
+
+  // Library
+  const levels = LEVELS.map(lv => {
+    const stories = STORIES.filter(s => s.level === lv.n).map(s => {
+      const done = !!S.completed[s.id];
+      return { real: true, locked: false, title: s.title, teaser: s.teaser, icon: s.icon,
+        color: lv.color, tint: deckTint(lv.color), meta: s.minutes + ' min read' + (done ? ' · completed' : ''),
+        done, notDone: !done,
+        onClick: () => setState({ tab: 'read', route: null, readView: 'reader', storyId: s.id, activeWord: null, compSel: null, compAnswered: false }) };
+    });
+    stories.push({ real: false, locked: true });
+    return { n: lv.n, name: lv.name, es: lv.es, color: lv.color, stories };
+  });
+
+  // Home
+  const firstInc = STORIES.find(s => !S.completed[s.id]) || STORIES[0];
+  const fiL = firstInc ? LEVELS.find(l => l.n === firstInc.level) : null;
+  const goalTotal = 30; const goalDone = Math.min(goalTotal, S.reviewedToday);
+  const goalPct = Math.round(goalDone / goalTotal * 100);
+  const home = {
+    streak: S.streak || 0, goalDone, goalTotal, goalPct, dueCount: due, weakCount: weak,
+    contKicker: firstInc && S.completed[firstInc.id] ? 'Read again' : 'Continue reading',
+    contTitle: firstInc ? firstInc.title : 'Stories coming soon',
+    contIcon: firstInc ? firstInc.icon : 'menu_book',
+    contColor: fiL ? fiL.color : 'var(--a-ink)', contTint: fiL ? deckTint(fiL.color) : 'var(--a-soft)',
+    onContinue: firstInc ? () => setState({ tab: 'read', route: null, readView: 'reader', storyId: firstInc.id, activeWord: null, compSel: null, compAnswered: false }) : () => goTab('read'),
+    onReviewDue: () => { setStudySource('due'); setState({ tab: 'study', route: null }); },
+    onReviewWeak: () => { setStudySource('weak'); setState({ tab: 'study', route: null }); },
+    actions: [
+      { label: 'Flashcards', sub: 'Flip & learn', icon: 'style', color: 'var(--g-ink)', tint: 'var(--g-soft)', onClick: () => goTab('study') },
+      { label: 'Quiz', sub: 'Test recall', icon: 'quiz', color: '#5560e0', tint: 'var(--p-soft)', onClick: () => goTab('quiz') },
+      { label: 'Read', sub: STORIES.length + ' stories', icon: 'menu_book', color: 'var(--a-ink)', tint: 'var(--a-soft)', onClick: () => goTab('read') },
+      { label: 'Browse', sub: CARDS.length + ' cards', icon: 'search', color: 'var(--pk-ink)', tint: 'var(--pk-soft)', onClick: () => openBrowse({}) },
+    ],
   };
 
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
-    type: "application/json",
-  });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  const stamp = new Date().toISOString().slice(0, 10);
+  // Study
+  const order = S.study.order || []; const sLen = order.length;
+  const stStates = [{ v: 'new', l: 'New' }, { v: 'learning', l: 'Learning' }, { v: 'known', l: 'Known' }];
+  const studyMsg = ({ due: 'No cards are due right now — great work!', weak: 'No weak cards. Keep it up!', starred: 'Star cards to build a custom set.' })[S.study.source] || 'This set is empty.';
+  const study = {
+    sources: [{ v: 'all', l: 'All' }, { v: 'due', l: 'Due' }, { v: 'weak', l: 'Weak' }, { v: 'starred', l: '★ Starred' }]
+      .map(x => ({ label: x.l, onClick: () => setStudySource(x.v), style: chip(S.study.source === x.v) })),
+    empty: sLen === 0, has: sLen > 0, emptyMsg: studyMsg,
+    onBrowse: () => openBrowse({}),
+    ...(sLen > 0 ? (() => {
+      const id = order[S.study.idx % sLen]; const card = CARDS.find(c => c.id === id);
+      const cst = cs(id); const dk = deckOf(card.deck);
+      return {
+        deckLabel: dk ? dk.name : card.deck, deckShort: dk ? dk.short : card.deck, deckAccent: dk ? dk.accent : '#28b573',
+        counter: (S.study.idx % sLen + 1) + ' / ' + sLen,
+        faceLabel: S.study.flipped ? 'English' : 'Español', faceText: S.study.flipped ? card.en : card.es,
+        starIcon: cst.star ? 'star' : 'star_outline', starColor: cst.star ? '#f5a524' : 'var(--muted2)',
+        onFlip: () => setState({ study: { ...S.study, flipped: !S.study.flipped } }),
+        onNext: () => setState({ study: { ...S.study, idx: S.study.idx + 1, flipped: false } }),
+        onShuffle: () => { setStudySource(S.study.source); flash('Shuffled'); },
+        onSpeak: () => speak(card.es), onStar: () => toggleStar(id),
+        states: stStates.map(x => ({ label: x.l, onClick: () => setProg(id, x.v), style: seg(cst.state === x.v) })),
+      };
+    })() : {}),
+  };
 
-  link.href = url;
-  link.download = `guatemala-spanish-progress-${stamp}.json`;
-  link.click();
-  URL.revokeObjectURL(url);
-  elements.importStatus.textContent = "Study data exported.";
+  // Reader
+  const st = S.storyId ? STORIES.find(s => s.id === S.storyId) : null;
+  const stLv = st ? LEVELS.find(l => l.n === st.level) : null;
+  const reader = st ? {
+    title: st.title, titleEn: st.titleEn || '', levelName: stLv ? stLv.name : '',
+    color: stLv ? stLv.color : '#28b573', tint: deckTint(stLv ? stLv.color : '#28b573'),
+    paragraphs: (st.body || []).map((p, i) => ({ tokens: tokenize(p), key: 'pr' + i })),
+    lookedUp: Object.keys(S.lookedUp[st.id] || {}).length, pct: 0,
+    onBack: () => setState({ readView: 'lib', activeWord: null }),
+    onSpeak: () => speak((st.body || []).join(' ')),
+    onFinish: () => setState({ readView: 'question', compSel: null, compAnswered: false }),
+  } : { title: '', titleEn: '', levelName: '', color: '#28b573', tint: deckTint('#28b573'), paragraphs: [], lookedUp: 0, pct: 0, onBack: () => setState({ readView: 'lib' }), onSpeak: () => {}, onFinish: () => {} };
+
+  // Comprehension
+  const cq = st && st.question ? st.question : { q: '', options: [], answer: 0 };
+  const comp = {
+    q: cq.q, answered: S.compAnswered,
+    options: (cq.options || []).map((o, i) => {
+      let stt = 'idle';
+      if (S.compAnswered) { if (i === cq.answer) stt = 'correct'; else if (i === S.compSel) stt = 'wrong'; else stt = 'dim'; }
+      return { text: o, style: optStyle(stt), showIcon: S.compAnswered && (i === cq.answer || i === S.compSel), icon: i === cq.answer ? 'check_circle' : 'cancel', onClick: () => answerComp(i) };
+    }),
+    fbTint: S.compSel === cq.answer ? 'var(--g-soft)' : 'var(--r-soft)',
+    fbColor: S.compSel === cq.answer ? '#28b573' : '#e05a4d',
+    fbTitle: S.compSel === cq.answer ? '¡Correcto! Well done.' : 'Not quite — review and keep going.',
+    onNext: () => finishStory(),
+  };
+  const done = { title: st ? st.title : '', looked: Object.keys(S.lookedUp[S.storyId] || {}).length, saved: S.saved.length, onBack: () => setState({ readView: 'lib', activeWord: null }) };
+
+  // Quiz
+  const q = S.quiz;
+  const qSrcCount = (() => { const c = sourceCards(q.source).length; return Math.min(8, c < 4 ? CARDS.length : c); })();
+  const quiz = {
+    intro: q.phase === 'intro', playing: q.phase === 'play', done: q.phase === 'done', startCount: qSrcCount,
+    dirs: [{ v: 'es-en', l: 'Español → English' }, { v: 'en-es', l: 'English → Español' }].map(x => ({ label: x.l, onClick: () => setState({ quiz: { ...q, dir: x.v } }), style: seg(q.dir === x.v) })),
+    sources: [{ v: 'all', l: 'All cards' }, { v: 'due', l: 'Due today' }, { v: 'weak', l: 'Weak spots' }, { v: 'filter', l: 'Current filter' }].map(x => ({ label: x.l, onClick: () => setState({ quiz: { ...q, source: x.v } }), style: seg(q.source === x.v) })),
+    onStart: () => buildQuiz(),
+    ...(q.phase === 'play' && q.qs ? (() => {
+      const cur = q.qs[q.idx];
+      return {
+        prompt: cur.prompt, counter: (q.idx + 1) + ' / ' + q.qs.length, pct: Math.round(q.idx / q.qs.length * 100),
+        answered: q.answered, ask: q.dir === 'es-en' ? 'What does this mean?' : 'How do you say this?',
+        nextLabel: q.idx + 1 >= q.qs.length ? 'See results' : 'Next question',
+        onNext: () => nextQuiz(), onSpeak: () => speak(cur.es),
+        options: cur.options.map((o, i) => {
+          let stt = 'idle';
+          if (q.answered) { if (i === cur.answer) stt = 'correct'; else if (i === q.sel) stt = 'wrong'; else stt = 'dim'; }
+          return { text: o, style: optStyle(stt), showIcon: q.answered && (i === cur.answer || i === q.sel), icon: i === cur.answer ? 'check_circle' : 'cancel', onClick: () => answerQuiz(i) };
+        }),
+      };
+    })() : {}),
+    ...(q.phase === 'done' && q.qs ? { accuracy: Math.round(q.score / q.qs.length * 100), scoreLine: q.score + ' of ' + q.qs.length + ' correct', onRestart: () => setState({ quiz: { ...q, phase: 'intro' } }) } : {}),
+  };
+
+  // Progress
+  const prog = {
+    total: CARDS.length.toLocaleString(), known, learning, fresh,
+    storiesDone: Object.keys(S.completed).length, storiesTotal: STORIES.length,
+    readPct: STORIES.length ? Math.round(Object.keys(S.completed).length / STORIES.length * 100) : 0,
+    stats: [
+      { label: 'Due today', value: due, icon: 'event_available', color: '#5560e0', onClick: () => { setStudySource('due'); setState({ tab: 'study', route: null }); } },
+      { label: 'Weak spots', value: weak, icon: 'bolt', color: '#e0843c', onClick: () => { setStudySource('weak'); setState({ tab: 'study', route: null }); } },
+      { label: 'Favorites', value: favorites, icon: 'bookmark', color: 'var(--pk-ink)', onClick: () => openBrowse({}) },
+      { label: 'Quiz accuracy', value: acc + '%', icon: 'target', color: '#28b573', onClick: () => goTab('quiz') },
+    ],
+    decks: DECKS.map(d => {
+      const kn = CARDS.filter(c => c.deck === d.id && cs(c.id).state === 'known').length;
+      return { name: d.name, icon: d.icon, accent: d.accent, tint: deckTint(d.accent), sub: d.count.toLocaleString() + ' cards · ' + kn + ' known', onClick: () => openBrowse({ deck: d.id }) };
+    }),
+  };
+
+  // Browse
+  const bf = S.browse; const results = filterCards(bf);
+  const mkChips = (arr, key) => arr.map(o => ({ label: o.label, onClick: () => setBrowse({ [key]: o.val }), style: chip(String(bf[key]) === String(o.val)) }));
+  const browse = {
+    q: bf.q, hasQ: !!bf.q, count: results.length, none: results.length === 0,
+    onSearch: e => setBrowse({ q: e.target.value }), onClearQ: () => setBrowse({ q: '' }),
+    deckChips: mkChips([{ label: 'All decks', val: 'all' }].concat(DECKS.map(d => ({ label: d.short, val: d.id }))), 'deck'),
+    typeChips: mkChips([{ label: 'All types', val: 'all' }].concat(TYPES.map(t => ({ label: t.label, val: t.id }))), 'type'),
+    stateChips: mkChips([{ label: 'Any state', val: 'all' }, { label: 'New', val: 'new' }, { label: 'Learning', val: 'learning' }, { label: 'Known', val: 'known' }], 'state'),
+    bandChips: mkChips([{ label: 'All bands', val: 'all' }].concat(BANDS.map(b => ({ label: b.label, val: b.id }))), 'band'),
+    sessionChips: mkChips([{ label: 'Any session', val: 'any' }, { label: 'Seen', val: 'seen' }, { label: 'Not seen', val: 'unseen' }], 'session'),
+    onBack: () => setState({ route: null }),
+    onStudy: () => setState({ study: { idx: 0, flipped: false, source: 'filter', order: orderFor('filter') }, tab: 'study', route: null }),
+    onQuiz: () => setState({ quiz: { ...q, source: 'filter', phase: 'intro' }, tab: 'quiz', route: null }),
+    results: results.slice(0, 200).map(c => {
+      const s = cs(c.id);
+      return { es: c.es, en: c.en, stateColor: stateColor(s.state), starIcon: s.star ? 'star' : 'star_outline', starColor: s.star ? '#f5a524' : 'var(--muted2)', onOpen: () => setState({ route: 'card', detailId: c.id }), onStar: () => toggleStar(c.id) };
+    }),
+  };
+
+  // Card detail
+  let card = {};
+  if (route === 'card' && S.detailId) {
+    const c = CARDS.find(x => x.id === S.detailId);
+    if (c) {
+      const s = cs(c.id); const dk = deckOf(c.deck);
+      const ddays = Math.round((s.due - now) / DAY_MS);
+      const dueText = s.state === 'new' ? 'New card — not in review yet' : (s.due <= now ? 'Due for review now' : 'Next review in ' + ddays + ' day' + (ddays === 1 ? '' : 's'));
+      card = {
+        es: c.es, en: c.en, deckName: dk ? dk.short : c.deck, deckAccent: dk ? dk.accent : '#28b573', deckTint: dk ? deckTint(dk.accent) : 'var(--g-soft)',
+        typeLabel: TYPES.find(t => t.id === c.type)?.label || c.type, hasBand: !!c.band, bandLabel: c.band || '',
+        dueText, starIcon: s.star ? 'star' : 'star_outline', starColor: s.star ? '#f5a524' : 'var(--ink)',
+        onStar: () => toggleStar(c.id), onSpeak: () => speak(c.es), onBack: () => setState({ route: 'browse' }),
+        states: stStates.map(x => ({ label: x.l, onClick: () => setProg(c.id, x.v), style: seg(s.state === x.v) })),
+      };
+    }
+  }
+
+  // Settings
+  const voiceOpts = [{ uri: 'auto', name: 'Auto — best Spanish voice', sub: bestVoice() ? bestVoice().name : 'Detecting device voices…' }]
+    .concat(S.voices.map(v => ({ uri: v.voiceURI, name: v.name, sub: v.lang + (v.localService ? ' · on-device' : '') })));
+  const settings = {
+    voiceNote: S.voices.length ? S.voices.length + ' Spanish voice(s) on this device' : 'Spanish voices load on a real device',
+    voices: voiceOpts.map(v => ({
+      name: v.name, sub: v.sub, active: S.settings.voiceURI === v.uri,
+      onClick: () => setState({ settings: { ...S.settings, voiceURI: v.uri } }),
+      style: `width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px solid ${S.settings.voiceURI === v.uri ? '#28b573' : 'var(--line)'};background:${S.settings.voiceURI === v.uri ? 'var(--g-soft)' : 'var(--surface)'};color:var(--ink);padding:11px 13px;border-radius:12px;cursor:pointer`,
+    })),
+    speeds: [{ v: 0.75, l: 'Slow' }, { v: 1, l: 'Normal' }, { v: 1.25, l: 'Fast' }].map(x => ({ label: x.l, onClick: () => { setState({ settings: { ...S.settings, speed: x.v } }); setTimeout(() => speak('Hola, buenos días'), 30); }, style: seg(S.settings.speed === x.v) })),
+    themes: [{ v: 'light', l: 'Light', i: 'light_mode' }, { v: 'dark', l: 'Dark', i: 'dark_mode' }].map(x => ({ label: x.l, icon: x.i, onClick: () => setState({ settings: { ...S.settings, theme: x.v } }), style: seg(themeAttr === x.v) })),
+    onTest: () => speak('Hola, ¿cómo estás? Buenos días.'),
+    onExport: () => exportJSON(), onImport: e => importJSON(e), onReset: () => resetProgress(),
+    resetLabel: S.confirmReset ? 'Tap again to confirm reset' : 'Reset progress',
+    onInstall: () => install(),
+    installLabel: S.canInstall ? 'Install app' : 'Add to Home Screen',
+    installHint: S.canInstall ? 'Install as a standalone app' : 'In Safari: Share → Add to Home Screen',
+    onBack: () => setState({ route: null }),
+  };
+
+  // Word sheet
+  const aw = S.activeWord; const isSaved = aw && S.saved.some(s => s.es === aw.es);
+  const word = {
+    show: !!aw, es: aw ? aw.es : '', en: aw ? aw.en : '', pos: aw ? aw.pos : '',
+    onClose: () => setState({ activeWord: null }), onSpeak: () => aw && speak(aw.es), onSave: () => saveWord(),
+    saveIcon: isSaved ? 'bookmark_added' : 'bookmark_add', saveLabel: isSaved ? 'Saved to your deck' : 'Save to deck',
+    saveStyle: `width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Nunito;font-size:16px;font-weight:800;padding:15px;border-radius:16px;cursor:pointer;border:none;background:${isSaved ? 'var(--g-soft)' : '#28b573'};color:${isSaved ? 'var(--g-ink)' : '#fff'}`,
+  };
+
+  return {
+    loading: false, ready: true, themeAttr,
+    vHome: tab === 'home' && !route, vStudy: tab === 'study' && !route, vQuiz: tab === 'quiz' && !route,
+    vProgress: tab === 'progress' && !route,
+    vReadLib: tab === 'read' && S.readView === 'lib' && !route,
+    vReader: inReader, vQuestion: inQuestion, vDone: inDone,
+    vBrowse: route === 'browse', vCard: route === 'card', vSettings: route === 'settings',
+    showTabs: !inReader && !inQuestion && !inDone && !route,
+    onSettings: () => setState({ route: 'settings' }),
+    tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word,
+    greeting: greeting(),
+    toast: { show: !!S.toast, text: S.toast || '' },
+  };
 }
 
-async function importProgress(event) {
-  const file = event.target.files?.[0];
-  if (!file) {
+// ===== View Renderers =====
+
+function renderHome(v) {
+  const { home, greeting: g, onSettings } = v;
+  return `
+<div style="padding:8px 22px 120px;animation:fadeIn .3s both">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px">
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--muted)">${esc(g)}</div>
+      <div style="font-size:27px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-top:2px">¡Hola! 🇬🇹</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button ${h(onSettings)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('settings', 23, 'var(--ink)')}</button>
+      <div style="display:flex;align-items:center;gap:5px;background:var(--a-soft);border-radius:16px;padding:8px 12px">
+        ${ms('local_fire_department', 21, '#f5a524')}
+        <span style="font-size:17px;font-weight:900;color:var(--a-ink)">${home.streak}</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:linear-gradient(135deg,#28b573,#1f9d63);border-radius:24px;padding:22px;color:#fff;margin-bottom:14px;box-shadow:0 8px 22px rgba(40,181,115,.28)">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:13px;font-weight:800;opacity:.85;text-transform:uppercase;letter-spacing:.5px">Today's reviews</div>
+        <div style="font-size:23px;font-weight:900;margin-top:4px;white-space:nowrap">${home.goalDone} / ${home.goalTotal} done</div>
+        <div style="font-size:13px;font-weight:700;opacity:.85;margin-top:2px">${home.dueCount} cards due today</div>
+      </div>
+      <div style="position:relative;width:66px;height:66px;border-radius:50%;background:conic-gradient(#fff ${home.goalPct}%,rgba(255,255,255,.28) 0)">
+        <div style="position:absolute;inset:7px;border-radius:50%;background:#239a60;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900">${home.goalPct}%</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="display:flex;gap:10px;margin-bottom:13px">
+      <div style="flex:1;text-align:center;background:var(--p-soft);border-radius:14px;padding:12px">
+        <div style="font-size:24px;font-weight:900;color:#5560e0">${home.dueCount}</div>
+        <div style="font-size:11.5px;font-weight:800;color:var(--muted)">Due today</div>
+      </div>
+      <div style="flex:1;text-align:center;background:var(--r-soft);border-radius:14px;padding:12px">
+        <div style="font-size:24px;font-weight:900;color:var(--r-ink)">${home.weakCount}</div>
+        <div style="font-size:11.5px;font-weight:800;color:var(--muted)">Weak spots</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button ${h(home.onReviewDue)} style="flex:1;border:none;background:#28b573;color:#fff;font-family:Nunito;font-size:14.5px;font-weight:800;padding:13px;border-radius:13px;cursor:pointer">Review due</button>
+      <button ${h(home.onReviewWeak)} style="flex:1;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-size:14.5px;font-weight:800;padding:13px;border-radius:13px;cursor:pointer">Weak spots</button>
+    </div>
+  </div>
+  <div ${h(home.onContinue)} style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;background:${home.contTint}">
+      ${ms(home.contIcon, 27, home.contColor)}
+    </div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:12px;font-weight:800;color:${home.contColor};text-transform:uppercase;letter-spacing:.4px">${home.contKicker}</div>
+      <div style="font-size:17px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(home.contTitle)}</div>
+    </div>
+    ${ms('chevron_right', 26, 'var(--muted2)')}
+  </div>
+  <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Jump back in</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    ${home.actions.map(a => `
+    <div ${h(a.onClick)} style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px 16px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+      <div style="width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:${a.tint};margin-bottom:12px">${ms(a.icon, 24, a.color)}</div>
+      <div style="font-size:16px;font-weight:800;color:var(--ink)">${esc(a.label)}</div>
+      <div style="font-size:13px;font-weight:600;color:var(--muted)">${esc(a.sub)}</div>
+    </div>`).join('')}
+  </div>
+</div>`;
+}
+
+function renderStudy(v) {
+  const { study } = v;
+  return `
+<div style="padding:8px 22px 120px;animation:fadeIn .3s both;height:100%;display:flex;flex-direction:column">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.6px">Study</div>
+    <button ${h(study.onBrowse)} style="display:flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);border-radius:13px;padding:8px 12px;cursor:pointer;font-family:Nunito;font-weight:800;font-size:13px;color:var(--ink)">${ms('tune', 18)}Filters</button>
+  </div>
+  <div class="hrow" style="display:flex;gap:8px;margin-bottom:18px;padding-bottom:2px">
+    ${study.sources.map(s => `<button ${h(s.onClick)} style="${s.style}">${s.label}</button>`).join('')}
+  </div>
+  ${study.empty ? `
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted)">
+    ${ms('check_circle', 48, 'var(--muted2)')}
+    <div style="font-size:16px;font-weight:800;color:var(--ink);margin-top:10px">Nothing here right now</div>
+    <div style="font-size:14px;font-weight:600;max-width:230px;margin-top:4px">${study.emptyMsg}</div>
+  </div>` : `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div style="font-size:13px;font-weight:700;color:var(--muted)">${esc(study.deckLabel)}</div>
+    <div style="font-size:14px;font-weight:800;color:var(--muted)">${study.counter}</div>
+  </div>
+  <div ${h(study.onFlip)} style="flex:1;min-height:300px;background:var(--surface);border:1px solid var(--line);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.07);position:relative;padding:30px;text-align:center">
+    <button ${h(study.onStar)} style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer">${ms(study.starIcon, 28, study.starColor)}</button>
+    <div style="position:absolute;top:20px;left:20px;font-size:11px;font-weight:800;color:#fff;background:${study.deckAccent};padding:4px 10px;border-radius:9px">${esc(study.deckShort)}</div>
+    <div style="font-size:13px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">${study.faceLabel}</div>
+    <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">${esc(study.faceText)}</div>
+    <button ${h(study.onSpeak)} style="margin-top:22px;border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 25, 'var(--g-ink)')}</button>
+  </div>
+  <div style="margin-top:14px">
+    <div style="font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Mark as</div>
+    <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px">
+      ${study.states.map(st => `<button ${h(st.onClick)} style="${st.style}">${st.label}</button>`).join('')}
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:14px">
+    <button ${h(study.onShuffle)} style="flex:none;width:56px;border:1px solid var(--line);background:var(--surface);border-radius:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:15px 0">${ms('shuffle', 24, 'var(--ink)')}</button>
+    <button ${h(study.onNext)} style="flex:1;border:none;background:var(--ink);color:var(--surface);font-family:Nunito;font-size:17px;font-weight:800;padding:15px;border-radius:18px;cursor:pointer">Next card</button>
+  </div>`}
+</div>`;
+}
+
+function renderReadLib(v) {
+  const { levels } = v;
+  return `
+<div style="padding:8px 22px 120px;animation:fadeIn .3s both">
+  <div style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.6px;margin-bottom:3px">Read</div>
+  <div style="font-size:15px;font-weight:600;color:var(--muted);margin-bottom:22px">Short stories. Tap any word to translate.</div>
+  ${!levels.length ? `
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;color:var(--muted)">
+    ${ms('menu_book', 52, 'var(--muted2)')}
+    <div style="font-size:18px;font-weight:800;color:var(--ink);margin-top:18px">Stories coming soon</div>
+    <div style="font-size:14px;font-weight:600;margin-top:6px;max-width:240px">Short Spanish stories with tap-to-translate are in the works.</div>
+  </div>` :
+  levels.map(lv => `
+  <div style="margin-bottom:26px">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:13px">
+      <div style="width:34px;height:34px;border-radius:11px;background:${lv.color};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px">${lv.n}</div>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:var(--ink);line-height:1.1">${esc(lv.name)}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--muted2)">${esc(lv.es)}</div>
+      </div>
+    </div>
+    ${lv.stories.map(st => st.real ? `
+    <div ${h(st.onClick)} style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:15px;display:flex;align-items:center;gap:14px;margin-bottom:10px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+      <div style="width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:${st.tint}">${ms(st.icon, 26, st.color)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:16px;font-weight:800;color:var(--ink)">${esc(st.title)}</div>
+        <div style="font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(st.teaser)}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--muted2);margin-top:3px">${st.meta}</div>
+      </div>
+      ${st.done ? msf('check_circle', 24, '#28b573') : ms('chevron_right', 24, 'var(--muted2)')}
+    </div>` : `
+    <div style="border:1.5px dashed var(--line);border-radius:18px;padding:13px 15px;display:flex;align-items:center;gap:12px;margin-bottom:10px;opacity:.7">
+      ${ms('lock', 22, 'var(--muted2)')}
+      <div style="font-size:14px;font-weight:700;color:var(--muted)">More stories coming soon</div>
+    </div>`).join('')}
+  </div>`).join('')}
+</div>`;
+}
+
+function renderReader(v) {
+  const { reader } = v;
+  return `
+<div style="animation:fadeIn .3s both">
+  <div style="position:sticky;top:0;z-index:4;background:var(--bar);backdrop-filter:blur(8px);padding:6px 16px 12px;border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <button ${h(reader.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
+      <div style="display:flex;align-items:center;gap:6px;background:${reader.tint};padding:6px 12px;border-radius:13px"><span style="font-size:13px;font-weight:800;color:${reader.color}">${esc(reader.levelName)}</span></div>
+      <button ${h(reader.onSpeak)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 23, 'var(--ink)')}</button>
+    </div>
+    <div style="margin-top:11px;height:6px;border-radius:4px;background:var(--track);overflow:hidden"><div style="height:100%;width:${reader.pct}%;background:#28b573;border-radius:4px;transition:width .3s"></div></div>
+    <div style="font-size:12px;font-weight:700;color:var(--muted2);margin-top:5px">${reader.lookedUp} words explored</div>
+  </div>
+  <div style="padding:20px 24px 40px">
+    <div style="font-size:25px;font-weight:900;color:var(--ink);letter-spacing:-.4px;line-height:1.15">${esc(reader.title)}</div>
+    <div style="font-size:14px;font-weight:600;color:var(--muted);font-style:italic;margin:5px 0 22px">${esc(reader.titleEn)}</div>
+    ${reader.paragraphs.map(para => `
+    <p style="font-family:'Lora',Georgia,serif;font-size:19.5px;line-height:1.95;color:var(--ink);margin:0 0 18px">
+      ${para.tokens.map(tok => tok.tappable ? `<span class="tapw" style="${tok.style}" ${h(tok.onClick)}>${tok.text}</span>` : `<span>${tok.text}</span>`).join('')}
+    </p>`).join('')}
+    <button ${h(reader.onFinish)} style="margin-top:14px;width:100%;border:none;background:#28b573;color:#fff;font-family:Nunito;font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;box-shadow:0 6px 16px rgba(40,181,115,.3)">I finished — check my understanding</button>
+  </div>
+</div>`;
+}
+
+function renderQuestion(v) {
+  const { comp, reader } = v;
+  return `
+<div style="padding:18px 24px 40px;animation:fadeIn .3s both;min-height:100%;display:flex;flex-direction:column">
+  <button ${h(reader.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:24px">${ms('close', 24, 'var(--ink)')}</button>
+  <div style="font-size:13px;font-weight:800;color:#28b573;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Comprehension</div>
+  <div style="font-size:23px;font-weight:900;color:var(--ink);line-height:1.3;margin-bottom:26px">${esc(comp.q)}</div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    ${comp.options.map(op => `
+    <button ${h(op.onClick)} style="${op.style}"><span>${esc(op.text)}</span>${op.showIcon ? ms(op.icon, 23) : ''}</button>`).join('')}
+  </div>
+  <div style="flex:1"></div>
+  ${comp.answered ? `
+  <div style="background:${comp.fbTint};border-radius:18px;padding:16px;margin-top:24px;animation:pop .25s">
+    <div style="font-size:16px;font-weight:900;color:${comp.fbColor}">${comp.fbTitle}</div>
+    <button ${h(comp.onNext)} style="margin-top:12px;width:100%;border:none;background:${comp.fbColor};color:#fff;font-family:Nunito;font-size:16px;font-weight:800;padding:14px;border-radius:14px;cursor:pointer">Continue</button>
+  </div>` : ''}
+</div>`;
+}
+
+function renderDone(v) {
+  const { done } = v;
+  return `
+<div style="padding:40px 28px;animation:fadeIn .3s both;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+  <div style="width:96px;height:96px;border-radius:50%;background:var(--g-soft);display:flex;align-items:center;justify-content:center;margin-bottom:22px;animation:pop .4s">${ms('verified', 54, '#28b573')}</div>
+  <div style="font-size:27px;font-weight:900;color:var(--ink);letter-spacing:-.5px">¡Bien hecho!</div>
+  <div style="font-size:15px;font-weight:600;color:var(--muted);margin-top:6px;max-width:240px">You finished "${esc(done.title)}".</div>
+  <div style="display:flex;gap:14px;margin:28px 0 30px">
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 22px;box-shadow:0 4px 14px rgba(0,0,0,.04)"><div style="font-size:28px;font-weight:900;color:#28b573">${done.looked}</div><div style="font-size:12px;font-weight:700;color:var(--muted)">words explored</div></div>
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 22px;box-shadow:0 4px 14px rgba(0,0,0,.04)"><div style="font-size:28px;font-weight:900;color:#f5a524">${done.saved}</div><div style="font-size:12px;font-weight:700;color:var(--muted)">saved to deck</div></div>
+  </div>
+  <button ${h(done.onBack)} style="width:100%;border:none;background:#28b573;color:#fff;font-family:Nunito;font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;box-shadow:0 6px 16px rgba(40,181,115,.3)">Back to library</button>
+</div>`;
+}
+
+function renderQuiz(v) {
+  const { quiz } = v;
+  return `
+<div style="padding:8px 22px 120px;animation:fadeIn .3s both;height:100%;display:flex;flex-direction:column">
+  ${quiz.intro ? `
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div style="width:80px;height:80px;border-radius:24px;background:var(--p-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 18px">${ms('quiz', 44, '#5560e0')}</div>
+    <div style="font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-.5px;text-align:center">Quick quiz</div>
+    <div style="font-size:14px;font-weight:600;color:var(--muted);margin:6px auto 24px;text-align:center;max-width:250px">Multiple choice, scored, with spaced-repetition updates.</div>
+    <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Direction</div>
+    <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px;margin-bottom:18px">
+      ${quiz.dirs.map(d => `<button ${h(d.onClick)} style="${d.style}">${d.label}</button>`).join('')}
+    </div>
+    <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Source</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:26px">
+      ${quiz.sources.map(s => `<button ${h(s.onClick)} style="${s.style}">${s.label}</button>`).join('')}
+    </div>
+    <button ${h(quiz.onStart)} style="width:100%;border:none;background:#5560e0;color:#fff;font-family:Nunito;font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;box-shadow:0 6px 16px rgba(85,96,224,.3)">Start quiz · ${quiz.startCount} cards</button>
+  </div>` : ''}
+  ${quiz.playing ? `
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+    <div style="flex:1;height:8px;border-radius:5px;background:var(--track);overflow:hidden"><div style="height:100%;width:${quiz.pct}%;background:#5560e0;border-radius:5px;transition:width .3s"></div></div>
+    <div style="font-size:14px;font-weight:800;color:var(--muted)">${quiz.counter}</div>
+  </div>
+  <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${quiz.ask}</div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:30px 20px;text-align:center;margin-bottom:20px;box-shadow:0 6px 18px rgba(0,0,0,.05);position:relative">
+    <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px">${esc(quiz.prompt)}</div>
+    <button ${h(quiz.onSpeak)} style="position:absolute;top:12px;right:12px;border:none;background:var(--g-soft);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 21, 'var(--g-ink)')}</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    ${(quiz.options || []).map(op => `<button ${h(op.onClick)} style="${op.style}"><span>${esc(op.text)}</span>${op.showIcon ? ms(op.icon, 23) : ''}</button>`).join('')}
+  </div>
+  <div style="flex:1"></div>
+  ${quiz.answered ? `<button ${h(quiz.onNext)} style="width:100%;border:none;background:#5560e0;color:#fff;font-family:Nunito;font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;animation:fadeIn .2s">${quiz.nextLabel}</button>` : ''}` : ''}
+  ${quiz.done ? `
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+    <div style="width:96px;height:96px;border-radius:50%;background:var(--p-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:pop .4s">${ms('emoji_events', 54, '#5560e0')}</div>
+    <div style="font-size:27px;font-weight:900;color:var(--ink)">Quiz complete!</div>
+    <div style="font-size:54px;font-weight:900;color:#5560e0;margin:14px 0 2px;letter-spacing:-1px">${quiz.accuracy}%</div>
+    <div style="font-size:15px;font-weight:700;color:var(--muted);margin-bottom:28px">${quiz.scoreLine} · schedule updated</div>
+    <button ${h(quiz.onRestart)} style="width:100%;border:none;background:#5560e0;color:#fff;font-family:Nunito;font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer">Done</button>
+  </div>` : ''}
+</div>`;
+}
+
+function renderProgress(v) {
+  const { prog, onSettings } = v;
+  return `
+<div style="padding:8px 22px 120px;animation:fadeIn .3s both">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.6px">Progress</div>
+    <button ${h(onSettings)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('settings', 23, 'var(--ink)')}</button>
+  </div>
+  <div style="background:linear-gradient(135deg,#2c2b2e,#46443f);border-radius:24px;padding:22px;color:#fff;margin-bottom:18px">
+    <div style="font-size:13px;font-weight:800;opacity:.75;text-transform:uppercase;letter-spacing:.5px">Cards in catalog</div>
+    <div style="font-size:40px;font-weight:900;letter-spacing:-1px;margin:2px 0 14px">${prog.total}</div>
+    <div style="display:flex;gap:18px">
+      <div><div style="font-size:20px;font-weight:900;color:#7ee2ab">${prog.known}</div><div style="font-size:12px;font-weight:700;opacity:.7">Known</div></div>
+      <div><div style="font-size:20px;font-weight:900;color:#ffd27a">${prog.learning}</div><div style="font-size:12px;font-weight:700;opacity:.7">Learning</div></div>
+      <div><div style="font-size:20px;font-weight:900;color:#9aa3ff">${prog.fresh}</div><div style="font-size:12px;font-weight:700;opacity:.7">New</div></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+    ${prog.stats.map(s => `
+    <div ${h(s.onClick)} style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.04);cursor:pointer">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">${ms(s.icon, 20, s.color)}<span style="font-size:13px;font-weight:700;color:var(--muted)">${s.label}</span></div>
+      <div style="font-size:26px;font-weight:900;color:var(--ink)">${s.value}</div>
+    </div>`).join('')}
+  </div>
+  <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Decks</div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+    ${prog.decks.map(d => `
+    <div ${h(d.onClick)} style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 15px;display:flex;align-items:center;gap:13px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+      <div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:${d.tint}">${ms(d.icon, 22, d.accent)}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800;color:var(--ink)">${esc(d.name)}</div><div style="font-size:12.5px;font-weight:700;color:var(--muted)">${d.sub}</div></div>
+      ${ms('chevron_right', 22, 'var(--muted2)')}
+    </div>`).join('')}
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:16px;font-weight:800;color:var(--ink)">Reading</div>
+      <div style="font-size:14px;font-weight:800;color:#28b573">${prog.storiesDone}/${prog.storiesTotal} stories</div>
+    </div>
+    <div style="height:8px;border-radius:5px;background:var(--track);overflow:hidden"><div style="height:100%;width:${prog.readPct}%;background:#28b573;border-radius:5px"></div></div>
+  </div>
+</div>`;
+}
+
+function renderBrowse(v) {
+  const { browse } = v;
+  return `
+<div style="animation:slideIn .25s both">
+  <div style="position:sticky;top:0;z-index:4;background:var(--bar);backdrop-filter:blur(8px);padding:6px 16px 12px;border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+      <button ${h(browse.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
+      <div style="font-size:20px;font-weight:900;color:var(--ink)">Browse cards</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:var(--soft2);border-radius:13px;padding:0 12px;margin-bottom:10px">
+      ${ms('search', 20, 'var(--muted)')}
+      <input class="fld" type="text" placeholder="Search Spanish or English…" value="${esc(browse.q)}" data-fid="browse-search" ${hi(browse.onSearch)} style="flex:1;border:none;background:transparent;outline:none;padding:11px 0">
+      ${browse.hasQ ? `<button ${h(browse.onClearQ)} style="border:none;background:transparent;cursor:pointer;display:flex">${ms('cancel', 20, 'var(--muted)')}</button>` : ''}
+    </div>
+    <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px">${browse.deckChips.map(c => `<button ${h(c.onClick)} style="${c.style}">${c.label}</button>`).join('')}</div>
+    <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px">${browse.typeChips.map(c => `<button ${h(c.onClick)} style="${c.style}">${c.label}</button>`).join('')}</div>
+    <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px">${browse.stateChips.map(c => `<button ${h(c.onClick)} style="${c.style}">${c.label}</button>`).join('')}</div>
+    <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px">${browse.bandChips.map(c => `<button ${h(c.onClick)} style="${c.style}">${c.label}</button>`).join('')}</div>
+    <div class="hrow" style="display:flex;gap:7px">${browse.sessionChips.map(c => `<button ${h(c.onClick)} style="${c.style}">${c.label}</button>`).join('')}</div>
+  </div>
+  <div style="padding:14px 18px 30px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:800;color:var(--muted)">${browse.count} cards</div>
+      <div style="display:flex;gap:8px">
+        <button ${h(browse.onStudy)} style="border:none;background:var(--g-soft);color:var(--g-ink);font-family:Nunito;font-weight:800;font-size:13px;padding:8px 14px;border-radius:11px;cursor:pointer">Study these</button>
+        <button ${h(browse.onQuiz)} style="border:none;background:var(--p-soft);color:#5560e0;font-family:Nunito;font-weight:800;font-size:13px;padding:8px 14px;border-radius:11px;cursor:pointer">Quiz these</button>
+      </div>
+    </div>
+    ${browse.none ? '<div style="text-align:center;color:var(--muted);padding:40px 0;font-weight:700">No cards match these filters.</div>' : ''}
+    <div style="display:flex;flex-direction:column;gap:9px">
+      ${browse.results.map(r => `
+      <div ${h(r.onOpen)} style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer">
+        <div style="width:9px;height:9px;border-radius:50%;background:${r.stateColor};flex:none"></div>
+        <div style="flex:1;min-width:0"><div style="font-size:15.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.es)}</div><div style="font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.en)}</div></div>
+        <button ${h(r.onStar)} style="border:none;background:transparent;cursor:pointer;flex:none;display:flex">${ms(r.starIcon, 22, r.starColor)}</button>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`;
+}
+
+function renderCard(v) {
+  const { card } = v;
+  return `
+<div style="animation:slideIn .25s both;padding:6px 22px 40px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+    <button ${h(card.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
+    <div style="display:flex;align-items:center;gap:6px;background:${card.deckTint};padding:6px 12px;border-radius:12px"><span style="font-size:13px;font-weight:800;color:${card.deckAccent}">${esc(card.deckName)}</span></div>
+    <button ${h(card.onStar)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms(card.starIcon, 23, card.starColor)}</button>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:30px 24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.07);margin-bottom:18px">
+    <div style="font-size:32px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">${esc(card.es)}</div>
+    <div style="font-size:18px;font-weight:700;color:var(--muted);margin-top:10px">${esc(card.en)}</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:14px">
+      <span style="font-size:12px;font-weight:800;color:var(--muted);background:var(--soft2);padding:4px 11px;border-radius:9px">${esc(card.typeLabel)}</span>
+      ${card.hasBand ? `<span style="font-size:12px;font-weight:800;color:var(--muted);background:var(--soft2);padding:4px 11px;border-radius:9px">Band ${esc(card.bandLabel)}</span>` : ''}
+    </div>
+    <button ${h(card.onSpeak)} style="margin-top:22px;border:none;background:var(--g-soft);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto;margin-right:auto">${ms('volume_up', 28, 'var(--g-ink)')}</button>
+  </div>
+  <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Progress state</div>
+  <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px;margin-bottom:14px">
+    ${card.states.map(st => `<button ${h(st.onClick)} style="${st.style}">${st.label}</button>`).join('')}
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px 16px;display:flex;align-items:center;gap:10px">
+    ${ms('schedule', 21, 'var(--muted)')}
+    <div style="font-size:14px;font-weight:700;color:var(--ink)">${esc(card.dueText)}</div>
+  </div>
+</div>`;
+}
+
+function renderSettings(v) {
+  const { settings } = v;
+  return `
+<div style="animation:slideIn .25s both;padding:6px 22px 40px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+    <button ${h(settings.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
+    <div style="font-size:24px;font-weight:900;color:var(--ink)">Settings</div>
+  </div>
+  <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pronunciation</div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:8px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:15px;font-weight:800;color:var(--ink)">Speed</div>
+      <button ${h(settings.onTest)} style="border:none;background:var(--g-soft);color:var(--g-ink);font-family:Nunito;font-weight:800;font-size:12.5px;padding:6px 12px;border-radius:10px;cursor:pointer">Test voice</button>
+    </div>
+    <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px">
+      ${settings.speeds.map(sp => `<button ${h(sp.onClick)} style="${sp.style}">${sp.label}</button>`).join('')}
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px">Voice</div>
+    <div style="font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:12px">${settings.voiceNote}</div>
+    <div class="scrl" style="display:flex;flex-direction:column;gap:7px;max-height:210px">
+      ${settings.voices.map(vv => `
+      <button ${h(vv.onClick)} style="${vv.style}">
+        <div style="text-align:left"><div style="font-size:14px;font-weight:800">${esc(vv.name)}</div><div style="font-size:11.5px;font-weight:600;opacity:.7">${esc(vv.sub)}</div></div>
+        ${vv.active ? msf('check_circle', 21, '#28b573') : ''}
+      </button>`).join('')}
+    </div>
+  </div>
+  <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Appearance</div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:10px">Theme</div>
+    <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px">
+      ${settings.themes.map(t => `<button ${h(t.onClick)} style="${t.style}">${ms(t.icon, 18)}&nbsp;${t.label}</button>`).join('')}
+    </div>
+  </div>
+  <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Your data</div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <button ${h(settings.onExport)} style="width:100%;border:none;background:transparent;display:flex;align-items:center;gap:13px;padding:13px;cursor:pointer;border-radius:12px">
+      ${ms('download', 23, 'var(--ink)')}
+      <div style="text-align:left;flex:1"><div style="font-size:15px;font-weight:800;color:var(--ink)">Export progress</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Download a JSON backup</div></div>
+    </button>
+    <label style="width:100%;display:flex;align-items:center;gap:13px;padding:13px;cursor:pointer;border-radius:12px;border-top:1px solid var(--line)">
+      ${ms('upload', 23, 'var(--ink)')}
+      <div style="text-align:left;flex:1"><div style="font-size:15px;font-weight:800;color:var(--ink)">Import progress</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Restore from a JSON file</div></div>
+      <input type="file" accept="application/json,.json" ${hc(settings.onImport)} style="display:none">
+    </label>
+    <button ${h(settings.onReset)} style="width:100%;border:none;background:transparent;display:flex;align-items:center;gap:13px;padding:13px;cursor:pointer;border-radius:12px;border-top:1px solid var(--line)">
+      ${ms('restart_alt', 23, 'var(--r-ink)')}
+      <div style="text-align:left;flex:1"><div style="font-size:15px;font-weight:800;color:var(--r-ink)">${settings.resetLabel}</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Reset all states to defaults</div></div>
+    </button>
+  </div>
+  <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">App</div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">${ms('wifi_off', 22, '#28b573')}<div><div style="font-size:14.5px;font-weight:800;color:var(--ink)">Works offline</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Cards & progress are stored on your device</div></div></div>
+    <button ${h(settings.onInstall)} style="width:100%;border:none;background:var(--ink);color:var(--surface);font-family:Nunito;font-size:15px;font-weight:800;padding:14px;border-radius:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">${ms('add_to_home_screen', 20)}&nbsp;${settings.installLabel}</button>
+    <div style="font-size:12px;font-weight:600;color:var(--muted);margin-top:9px;text-align:center">${settings.installHint}</div>
+  </div>
+</div>`;
+}
+
+function renderTabBar(tabs) {
+  return `
+<div style="display:flex;justify-content:space-around;align-items:center;padding:9px 8px max(26px,env(safe-area-inset-bottom,0px));background:var(--bar);backdrop-filter:blur(10px);border-top:1px solid var(--line)">
+  ${tabs.map(t => `
+  <button ${h(t.onClick)} style="border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:4px 0">
+    <span style="font-family:'Material Symbols Rounded';font-size:26px;color:${t.color};font-variation-settings:'FILL' ${t.fill}">${t.icon}</span>
+    <span style="font-size:10.5px;font-weight:800;color:${t.color}">${t.label}</span>
+  </button>`).join('')}
+</div>`;
+}
+
+function renderWordSheet(word) {
+  return `
+<div ${h(word.onClose)} style="position:absolute;inset:0;background:rgba(20,18,15,.4);z-index:20;animation:fadeIn .2s;display:flex;align-items:flex-end">
+  <div ${h(() => {})} style="width:100%;background:var(--surface);border-radius:28px 28px 0 0;padding:10px 24px 34px;animation:sheetUp .28s cubic-bezier(.2,.9,.3,1)">
+    <div style="width:42px;height:5px;border-radius:3px;background:var(--track);margin:0 auto 18px"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px">${esc(word.es)}</div>
+        <div style="display:inline-block;font-size:12px;font-weight:800;color:var(--muted);background:var(--soft2);padding:3px 9px;border-radius:8px;margin-top:6px;text-transform:lowercase">${esc(word.pos)}</div>
+      </div>
+      <button ${h(word.onSpeak)} style="flex:none;border:none;background:var(--g-soft);width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 28, 'var(--g-ink)')}</button>
+    </div>
+    <div style="font-size:21px;font-weight:700;color:var(--ink);margin:16px 0 22px;line-height:1.35">${esc(word.en)}</div>
+    <button ${h(word.onSave)} style="${word.saveStyle}">${ms(word.saveIcon, 22)}<span>${word.saveLabel}</span></button>
+  </div>
+</div>`;
+}
+
+function renderToast(toast) {
+  return `<div style="background:var(--ink);color:var(--surface);font-size:14px;font-weight:800;padding:12px 20px;border-radius:14px;animation:pop .25s;box-shadow:0 8px 20px rgba(0,0,0,.25)">${esc(toast.text)}</div>`;
+}
+
+// ===== Main Render =====
+function render() {
+  // Save focus for inputs
+  const focused = document.activeElement;
+  const focusId = focused?.dataset?.fid;
+  const selStart = focused?.selectionStart ?? null;
+  const selEnd = focused?.selectionEnd ?? null;
+
+  handlers = {}; hCount = 0;
+  const v = computeVals();
+
+  $screen.dataset.theme = v.themeAttr;
+
+  if (v.loading) {
+    $content.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;font-size:16px">Cargando…</div>';
+    $tabBar.innerHTML = ''; $wordSheet.innerHTML = ''; $toastEl.innerHTML = '';
     return;
   }
 
+  let html = '';
+  if (v.vHome)     html = renderHome(v);
+  else if (v.vStudy)    html = renderStudy(v);
+  else if (v.vReadLib)  html = renderReadLib(v);
+  else if (v.vReader)   html = renderReader(v);
+  else if (v.vQuestion) html = renderQuestion(v);
+  else if (v.vDone)     html = renderDone(v);
+  else if (v.vQuiz)     html = renderQuiz(v);
+  else if (v.vProgress) html = renderProgress(v);
+  else if (v.vBrowse)   html = renderBrowse(v);
+  else if (v.vCard)     html = renderCard(v);
+  else if (v.vSettings) html = renderSettings(v);
+
+  $content.innerHTML = html;
+  $tabBar.innerHTML = v.showTabs ? renderTabBar(v.tabs) : '';
+  $wordSheet.innerHTML = v.word.show ? renderWordSheet(v.word) : '';
+  $toastEl.innerHTML = v.toast.show ? renderToast(v.toast) : '';
+
+  // Restore focus
+  if (focusId) {
+    const el = document.querySelector(`[data-fid="${focusId}"]`);
+    if (el) { el.focus(); if (selStart !== null && el.setSelectionRange) el.setSelectionRange(selStart, selEnd); }
+  }
+}
+
+// ===== Bootstrap =====
+async function bootstrap() {
+  // Install prompt
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; setState({ canInstall: true }); });
+
+  render(); // show loading state
+
   try {
-    const text = await file.text();
-    const parsed = JSON.parse(text);
-    const imported = normalizeProgressMap(parsed.progress || parsed);
-    const importedPreferences = normalizePersistedPreferences(parsed.preferences || {});
-    state.progress = imported;
-    state.ui = {
-      ...defaultUiState(),
-      ...importedPreferences.ui,
-    };
-    state.quiz = {
-      ...state.quiz,
-      ...importedPreferences.quiz,
-      current: null,
-      total: 0,
-      correct: 0,
-    };
-    state.audio = {
-      ...defaultAudioState(),
-      ...importedPreferences.audio,
-    };
-    syncControlsFromState();
-    renderSpeechControls();
-    saveProgress();
-    queuePreferencesSave();
-    elements.importStatus.textContent = `Imported ${Object.keys(imported).length} progress records.`;
-    applyFilters(true);
-  } catch (error) {
-    elements.importStatus.textContent = "Import failed. Please choose a valid progress JSON file.";
-  } finally {
-    elements.importProgressInput.value = "";
+    const [persisted, response] = await Promise.all([
+      loadState(),
+      fetch(DATA_URL),
+    ]);
+
+    if (!response.ok) throw new Error(`Failed to load data (${response.status})`);
+    const raw = await response.json();
+    const data = transformData(raw);
+
+    let cardState = {};
+    let settings = appState.settings;
+    let saved = [], completed = {}, lookedUp = {}, storyId = null;
+    let studySource = 'all', quizDir = 'es-en', quizSource = 'all';
+    let browse = appState.browse;
+    let reviewedToday = 0, streak = 0;
+
+    if (persisted) {
+      if (persisted._migrateFrom) {
+        cardState = migrateOldProgress(persisted._migrateFrom, data.CARDS);
+      } else {
+        cardState = persisted.cardState || {};
+        saved = persisted.saved || [];
+        completed = persisted.completed || {};
+        lookedUp = persisted.lookedUp || {};
+        storyId = persisted.storyId || null;
+        settings = { ...appState.settings, ...(persisted.settings || {}) };
+        studySource = persisted.study?.source || 'all';
+        quizDir = persisted.quiz?.dir || 'es-en';
+        quizSource = persisted.quiz?.source || 'all';
+        browse = { ...appState.browse, ...(persisted.browse || {}) };
+        reviewedToday = persisted.reviewedToday || 0;
+        streak = persisted.streak || 0;
+      }
+    }
+
+    cardState = seedStates(data.CARDS, cardState);
+
+    // Rebuild study order with persisted source
+    appState = { ...appState, data, cardState };
+    const studyOrder = orderFor(studySource);
+
+    setState({
+      data, cardState, saved, completed, lookedUp, storyId, settings,
+      study: { idx: 0, flipped: false, source: studySource, order: studyOrder },
+      quiz: { ...appState.quiz, dir: quizDir, source: quizSource },
+      browse, reviewedToday, streak, loaded: true,
+    });
+
+    initVoices();
+    registerServiceWorker();
+  } catch (err) {
+    $content.innerHTML = `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--muted)"><div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">Could not load cards</div><div style="font-size:14px;font-weight:600">${esc(err.message)}</div></div>`;
   }
 }
 
 function registerServiceWorker() {
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("./sw.js", { updateViaCache: "none" })
-        .then((registration) => registration.update().catch(() => {}))
-        .catch(() => {});
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+        .then(r => r.update().catch(() => {})).catch(() => {});
     });
   }
 }
+
+bootstrap();
