@@ -486,7 +486,7 @@ function greeting() {
 }
 
 // ===== Data Transformation =====
-function transformData(raw) {
+function transformData(raw, reading) {
   const colls = raw.collections || {};
   const CARDS = [];
   Object.entries(colls).forEach(([deckId, entries]) => {
@@ -497,7 +497,16 @@ function transformData(raw) {
   const DECKS = Object.entries(DECK_DEFS)
     .map(([id, def]) => ({ id, ...def, count: (colls[id] || []).length }))
     .filter(d => d.count > 0);
-  return { CARDS, DECKS, TYPES: TYPES_DEF, BANDS: BANDS_DEF, DICT: {}, STORIES: [], LEVELS: [] };
+  const DICT = {};
+  CARDS.forEach(c => {
+    const words = c.es.match(/[A-Za-záéíóúüñÁÉÍÓÚÜÑ]+/g) || [];
+    words.forEach(w => {
+      const norm = w.toLowerCase().replace(/[^a-záéíóúüñ]/gi, '');
+      if (norm && !DICT[norm]) DICT[norm] = { en: c.en, pos: c.type === 'phrase' ? 'phrase' : 'word' };
+    });
+  });
+  const rd = reading || { levels: [], stories: [] };
+  return { CARDS, DECKS, TYPES: TYPES_DEF, BANDS: BANDS_DEF, DICT, STORIES: rd.stories || [], LEVELS: rd.levels || [] };
 }
 
 // ===== Compute Render Values =====
@@ -1261,14 +1270,17 @@ async function bootstrap() {
   render(); // show loading state
 
   try {
-    const [persisted, response] = await Promise.all([
+    const [persisted, response, readingResp] = await Promise.all([
       loadState(),
       fetch(DATA_URL),
+      fetch('./data/reading-data.json'),
     ]);
 
     if (!response.ok) throw new Error(`Failed to load data (${response.status})`);
     const raw = await response.json();
-    const data = transformData(raw);
+    let reading = null;
+    try { reading = await readingResp.json(); } catch(e) {}
+    const data = transformData(raw, reading);
 
     let cardState = {};
     let settings = appState.settings;

@@ -1,4 +1,4 @@
-const CACHE_NAME = "guatemala-spanish-3000-v9";
+const CACHE_NAME = "guatemala-spanish-3000-v10";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const APP_ASSETS = [
   "./app.js",
   "./manifest.webmanifest",
   "./data/guatemala_spanish_study_pack.json",
+  "./data/reading-data.json",
 ];
 const APP_ASSET_URLS = new Set(
   APP_ASSETS.map((assetPath) => new URL(assetPath, self.location.href).href)

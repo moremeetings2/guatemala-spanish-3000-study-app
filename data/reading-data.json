@@ -1,0 +1,870 @@
+{
+  "levels": [
+    { "n": 1, "name": "Beginner", "es": "Principiante", "color": "#28b573" },
+    { "n": 2, "name": "Basic", "es": "Básico", "color": "#f5a524" },
+    { "n": 3, "name": "Intermediate", "es": "Intermedio", "color": "#5560e0" },
+    { "n": 4, "name": "Advanced", "es": "Avanzado", "color": "#c23b9e" },
+    { "n": 5, "name": "Upper", "es": "Superior", "color": "#2c7a9e" }
+  ],
+  "stories": [
+    {
+      "id": "l1s01", "level": 1, "title": "El mercado", "titleEn": "The Market",
+      "teaser": "A morning trip to the market with mom.", "icon": "storefront", "minutes": 1,
+      "body": [
+        "Hoy voy al mercado con mi mamá. El mercado está cerca de mi casa.",
+        "En el mercado hay muchas cosas: frutas, verduras y tortillas. Hay mucha gente y muchos colores.",
+        "Mi mamá compra tomates, cebollas y chiles. Yo compro un mango. El mango es dulce y muy rico."
+      ],
+      "question": { "q": "What does the child buy at the market?", "options": ["Tomatoes", "A mango", "Onions", "Chiles"], "answer": 1 }
+    },
+    {
+      "id": "l1s02", "level": 1, "title": "Mi familia", "titleEn": "My Family",
+      "teaser": "Meeting the whole family on a Sunday.", "icon": "family_restroom", "minutes": 1,
+      "body": [
+        "Mi familia es grande. Tengo un papá, una mamá, dos hermanos y una hermana.",
+        "Mi papá trabaja en el campo. Mi mamá trabaja en casa. Mis hermanos van a la escuela conmigo.",
+        "Los domingos, toda la familia come junta. Mi mamá hace tamales y frijoles. Es mi comida favorita."
+      ],
+      "question": { "q": "What does mom make on Sundays?", "options": ["Tamales and beans", "Mangos and tortillas", "Rice and chicken", "Tamales and chiles"], "answer": 0 }
+    },
+    {
+      "id": "l1s03", "level": 1, "title": "La tortilla", "titleEn": "The Tortilla",
+      "teaser": "How tortillas are made every day.", "icon": "flatware", "minutes": 1,
+      "body": [
+        "La tortilla es muy importante en Guatemala. Las mujeres hacen tortillas todos los días.",
+        "Para hacer tortillas, se necesita maíz. El maíz se muele y se mezcla con agua y sal.",
+        "Las tortillas se cocinan en el comal. Son calientes y deliciosas. Comemos tortillas con frijoles y con todo."
+      ],
+      "question": { "q": "What is the main ingredient in tortillas?", "options": ["Wheat", "Potatoes", "Corn", "Rice"], "answer": 2 }
+    },
+    {
+      "id": "l1s04", "level": 1, "title": "Buenos días", "titleEn": "Good Morning",
+      "teaser": "A typical Guatemalan morning routine.", "icon": "wb_sunny", "minutes": 1,
+      "body": [
+        "En Guatemala, las personas se saludan mucho. Por la mañana decimos 'buenos días'.",
+        "Me levanto a las seis de la mañana. Me lavo la cara y los dientes. Luego tomo café.",
+        "Mi mamá hace desayuno: huevos, frijoles y tortillas. Es un desayuno típico guatemalteco. Está muy bueno."
+      ],
+      "question": { "q": "What time does the narrator wake up?", "options": ["Five in the morning", "Six in the morning", "Seven in the morning", "Eight in the morning"], "answer": 1 }
+    },
+    {
+      "id": "l1s05", "level": 1, "title": "El café", "titleEn": "Coffee",
+      "teaser": "Why coffee is so important in Guatemala.", "icon": "local_cafe", "minutes": 1,
+      "body": [
+        "Guatemala produce mucho café. El café guatemalteco es famoso en todo el mundo.",
+        "Los cafetales están en las montañas. Allí hace frío y hay mucha lluvia. Eso es bueno para el café.",
+        "Por la mañana, toda la familia toma café. El café es negro y caliente. Es muy rico con azúcar."
+      ],
+      "question": { "q": "Where are the coffee plants found?", "options": ["In the mountains", "Near the lake", "In the city", "In the jungle"], "answer": 0 }
+    },
+    {
+      "id": "l1s06", "level": 1, "title": "La escuela", "titleEn": "School",
+      "teaser": "A school day in a Guatemalan village.", "icon": "school", "minutes": 1,
+      "body": [
+        "Voy a la escuela todos los días de lunes a viernes. Mi escuela está en el pueblo.",
+        "En la escuela aprendo a leer, escribir y hacer matemáticas. Mi maestra se llama doña Carmen. Es muy buena.",
+        "En el recreo juego con mis amigos. Jugamos a la pelota y corremos. Me gusta mucho la escuela."
+      ],
+      "question": { "q": "What is the teacher's name?", "options": ["Doña María", "Doña Rosa", "Doña Carmen", "Doña Ana"], "answer": 2 }
+    },
+    {
+      "id": "l1s07", "level": 1, "title": "Los colores", "titleEn": "Colors",
+      "teaser": "The bright colors of Guatemala's markets and birds.", "icon": "palette", "minutes": 1,
+      "body": [
+        "En Guatemala hay muchos colores. Los textiles mayas son muy coloridos.",
+        "En el mercado veo ropa de muchos colores: rojo, azul, amarillo y verde. Las mujeres usan huipiles con bordados.",
+        "Mi color favorito es el verde, como el quetzal. El quetzal es un pájaro muy bonito de Guatemala."
+      ],
+      "question": { "q": "What is the narrator's favorite color?", "options": ["Red", "Blue", "Yellow", "Green"], "answer": 3 }
+    },
+    {
+      "id": "l1s08", "level": 1, "title": "El autobús", "titleEn": "The Bus",
+      "teaser": "Riding the colorful chicken bus to the market.", "icon": "directions_bus", "minutes": 1,
+      "body": [
+        "En Guatemala, los autobuses son muy coloridos. Los llaman 'camionetas' o 'buses'.",
+        "Para ir al mercado, tomo el autobús en la esquina. Hay mucha gente adentro.",
+        "El camionero toca la bocina mucho. El viaje es rápido y barato. Cuesta cinco quetzales."
+      ],
+      "question": { "q": "How much does the bus ride cost?", "options": ["Ten quetzales", "Five quetzales", "Three quetzales", "One quetzal"], "answer": 1 }
+    },
+    {
+      "id": "l1s09", "level": 1, "title": "Los animales", "titleEn": "Animals",
+      "teaser": "Life on grandfather's farm with cows and hens.", "icon": "pets", "minutes": 1,
+      "body": [
+        "En la finca de mi abuelo hay muchos animales. Hay vacas, gallinas, cerdos y perros.",
+        "Las gallinas ponen huevos todos los días. Los huevos son para comer en el desayuno.",
+        "Por las tardes, mi abuelo camina con sus vacas al río. Las vacas toman agua y comen pasto. Son animales grandes y bonitos."
+      ],
+      "question": { "q": "What do the chickens do every day?", "options": ["Eat corn", "Drink water", "Lay eggs", "Walk to the river"], "answer": 2 }
+    },
+    {
+      "id": "l1s10", "level": 1, "title": "La comida", "titleEn": "Food",
+      "teaser": "The classic flavors of Guatemalan cuisine.", "icon": "restaurant", "minutes": 1,
+      "body": [
+        "La comida guatemalteca es muy rica. Hay muchos platos típicos.",
+        "El pepián es una salsa con chiles y especias. Se come con pollo o carne. También están los frijoles negros.",
+        "Las tortillas van con todo: con frijoles, con huevos, con carne. Sin tortillas, no hay comida completa en Guatemala."
+      ],
+      "question": { "q": "What is pepián made with?", "options": ["Chiles and spices", "Corn and beans", "Chicken and rice", "Tomatoes and salt"], "answer": 0 }
+    },
+    {
+      "id": "l1s11", "level": 1, "title": "Mi casa", "titleEn": "My House",
+      "teaser": "A small but beloved home in the village.", "icon": "home", "minutes": 1,
+      "body": [
+        "Mi casa es pequeña pero bonita. Tiene tres cuartos: un dormitorio, una cocina y una sala.",
+        "En la cocina hay un comal para hacer tortillas. En la sala hay sillas y una mesa.",
+        "Mi cuarto favorito es la cocina porque siempre huele a comida rica. Mi mamá cocina ahí con mucho amor."
+      ],
+      "question": { "q": "Why does the narrator like the kitchen most?", "options": ["It has a TV", "It is the biggest room", "It has comfortable chairs", "It always smells like good food"], "answer": 3 }
+    },
+    {
+      "id": "l1s12", "level": 1, "title": "El trabajo", "titleEn": "Work",
+      "teaser": "A father's long day working in the fields.", "icon": "agriculture", "minutes": 1,
+      "body": [
+        "Mi papá trabaja en el campo. Se levanta muy temprano, a las cuatro de la mañana.",
+        "Trabaja todo el día bajo el sol. Siembra maíz y frijoles. Es un trabajo difícil pero importante.",
+        "Cuando regresa a casa, está cansado. Mi mamá le da de comer y él descansa. El trabajo del campo es duro."
+      ],
+      "question": { "q": "What time does dad wake up?", "options": ["Three in the morning", "Four in the morning", "Five in the morning", "Six in the morning"], "answer": 1 }
+    },
+    {
+      "id": "l1s13", "level": 1, "title": "El agua", "titleEn": "Water",
+      "teaser": "How a village got running water at home.", "icon": "water_drop", "minutes": 1,
+      "body": [
+        "El agua es muy importante. En Guatemala, muchas familias van al río a buscar agua.",
+        "El río está cerca de mi pueblo. El agua es fresca y limpia. Usamos el agua para cocinar y para bañarnos.",
+        "Ahora hay agua en las casas. El gobierno puso tubos en el pueblo. Es mucho mejor así."
+      ],
+      "question": { "q": "What did the government install in the town?", "options": ["A river", "Lights", "Pipes", "A well"], "answer": 2 }
+    },
+    {
+      "id": "l1s14", "level": 1, "title": "Los amigos", "titleEn": "Friends",
+      "teaser": "Childhood friends playing after school.", "icon": "group", "minutes": 1,
+      "body": [
+        "Tengo muchos amigos en el pueblo. Nos conocemos desde niños.",
+        "Después de la escuela, jugamos juntos en la calle. Jugamos a la pelota o simplemente conversamos.",
+        "Mi mejor amigo se llama Diego. Él vive cerca de mi casa. Somos amigos desde los cinco años."
+      ],
+      "question": { "q": "What is the narrator's best friend's name?", "options": ["Diego", "Carlos", "Pedro", "Luis"], "answer": 0 }
+    },
+    {
+      "id": "l1s15", "level": 1, "title": "La pelota", "titleEn": "The Ball",
+      "teaser": "Sunday football with Los Tigres in the village.", "icon": "sports_soccer", "minutes": 1,
+      "body": [
+        "El fútbol es muy popular en Guatemala. Todos los niños juegan al fútbol.",
+        "Los domingos, jugamos en la cancha del pueblo. Hay dos equipos. Muchas personas vienen a ver.",
+        "Mi equipo se llama 'Los Tigres'. Jugamos bien. La semana pasada ganamos dos a uno. Fue un partido muy bueno."
+      ],
+      "question": { "q": "What is the narrator's team called?", "options": ["Los Leones", "Los Tigres", "Los Águilas", "Los Jaguares"], "answer": 1 }
+    },
+
+    {
+      "id": "l2s01", "level": 2, "title": "El lago Atitlán", "titleEn": "Lake Atitlán",
+      "teaser": "One of the world's most beautiful lakes.", "icon": "waves", "minutes": 2,
+      "body": [
+        "El lago Atitlán es uno de los lagos más bonitos del mundo. Está en el altiplano de Guatemala.",
+        "Alrededor del lago hay tres volcanes y varios pueblos indígenas. Los pueblos tienen nombres mayas: Santiago, San Juan, San Pedro.",
+        "Muchos turistas vienen al lago Atitlán. Llegan en lancha desde Panajachel. El agua del lago es de un azul muy profundo.",
+        "En las orillas del lago, las mujeres mayas venden tejidos de colores. Los tejidos son muy bonitos y tienen diseños antiguos."
+      ],
+      "question": { "q": "What do Maya women sell at the lake?", "options": ["Fish", "Coffee", "Colorful weavings", "Fruits"], "answer": 2 }
+    },
+    {
+      "id": "l2s02", "level": 2, "title": "La finca de café", "titleEn": "The Coffee Farm",
+      "teaser": "A visit to a Huehuetenango coffee farm.", "icon": "local_cafe", "minutes": 2,
+      "body": [
+        "Mi tío tiene una finca de café en las montañas de Huehuetenango. La finca es grande y hermosa.",
+        "Los cafetales crecen en las laderas de la montaña. La planta de café necesita sombra, lluvia y tierra fértil.",
+        "En octubre y noviembre empieza la cosecha. Muchas personas vienen a recoger el café. Es trabajo duro pero hay buen ambiente.",
+        "El café de Huehuetenango es muy bueno. Tiene un sabor especial. Los compradores de Europa y Norteamérica lo buscan mucho."
+      ],
+      "question": { "q": "When does the coffee harvest begin?", "options": ["In July and August", "In March and April", "In December and January", "In October and November"], "answer": 3 }
+    },
+    {
+      "id": "l2s03", "level": 2, "title": "Antigua Guatemala", "titleEn": "Antigua Guatemala",
+      "teaser": "The colonial gem famous for Holy Week.", "icon": "villa", "minutes": 2,
+      "body": [
+        "Antigua Guatemala es una ciudad colonial muy hermosa. Fue la capital del país hace muchos años.",
+        "Tiene iglesias viejas, calles de piedra y casas de colores. Las ruinas de los terremotos del siglo dieciocho todavía están allí.",
+        "Mucha gente viene a estudiar español en Antigua. Hay escuelas de idiomas por toda la ciudad.",
+        "En la Semana Santa, Antigua es famosa por sus procesiones. Las alfombras de aserrín y flores son muy bonitas. Vienen turistas de todo el mundo."
+      ],
+      "question": { "q": "Why is Antigua famous during Holy Week?", "options": ["For its processions", "For its food", "For its coffee", "For its markets"], "answer": 0 }
+    },
+    {
+      "id": "l2s04", "level": 2, "title": "El mercado de Chichicastenango", "titleEn": "The Chichicastenango Market",
+      "teaser": "Guatemala's most famous Maya market.", "icon": "storefront", "minutes": 2,
+      "body": [
+        "Chichicastenango es un pueblo maya en el altiplano de Guatemala. Los jueves y domingos hay un mercado muy famoso.",
+        "En el mercado venden de todo: ropa tejida, máscaras, cerámica, hierbas medicinales y comida. Es uno de los mercados más grandes de América Central.",
+        "Los vendedores llegan desde muchos pueblos. Algunos caminan horas para llegar. Venden sus productos y compran lo que necesitan.",
+        "También hay una iglesia vieja llamada Santo Tomás. Adentro y afuera hay incienso y rezos. Es un lugar muy especial."
+      ],
+      "question": { "q": "On which days is the Chichicastenango market held?", "options": ["Tuesdays and Saturdays", "Thursdays and Sundays", "Mondays and Fridays", "Wednesdays and Sundays"], "answer": 1 }
+    },
+    {
+      "id": "l2s05", "level": 2, "title": "La familia García", "titleEn": "The García Family",
+      "teaser": "An everyday family in the western highlands.", "icon": "people", "minutes": 2,
+      "body": [
+        "La familia García vive en un pueblo cerca de Quetzaltenango. Son cuatro: papá, mamá y dos hijos.",
+        "El señor García trabaja en la construcción. La señora García vende verduras en el mercado los martes y viernes.",
+        "Su hijo mayor, Rodrigo, estudia en la escuela secundaria. Le gustan las matemáticas y quiere ser ingeniero.",
+        "La hija menor, Sofía, tiene diez años. Ella ayuda a su mamá en el mercado después de la escuela. Son una familia muy unida."
+      ],
+      "question": { "q": "What does Rodrigo want to be?", "options": ["A teacher", "A doctor", "A farmer", "An engineer"], "answer": 3 }
+    },
+    {
+      "id": "l2s06", "level": 2, "title": "El volcán de Fuego", "titleEn": "The Volcano of Fire",
+      "teaser": "Living near Guatemala's most active volcano.", "icon": "landscape", "minutes": 2,
+      "body": [
+        "Guatemala tiene muchos volcanes. El volcán más activo se llama Volcán de Fuego.",
+        "El Volcán de Fuego erupciona con frecuencia. Lanza piedras, ceniza y lava. La gente de los pueblos cercanos tiene que evacuar a veces.",
+        "El volcán es peligroso, pero también es hermoso. Por la noche, se puede ver el fuego en la cima.",
+        "Muchos turistas vienen a ver el volcán. Algunos suben al Acatenango, que está cerca, para tener una vista mejor del Fuego."
+      ],
+      "question": { "q": "What can be seen on the volcano at night?", "options": ["Tourists climbing", "Stars in the sky", "Fire at the summit", "Rivers of water"], "answer": 2 }
+    },
+    {
+      "id": "l2s07", "level": 2, "title": "La lluvia", "titleEn": "The Rain",
+      "teaser": "Guatemala's rainy season and what it means.", "icon": "rainy", "minutes": 2,
+      "body": [
+        "En Guatemala hay dos estaciones: la seca y la lluviosa. La temporada de lluvias empieza en mayo y termina en octubre.",
+        "Las lluvias son muy fuertes. Por las tardes, el cielo se pone oscuro y llueve mucho. A veces hay relámpagos y truenos.",
+        "La lluvia es importante para los campesinos. Con lluvia, el maíz, el café y las verduras crecen bien.",
+        "Pero a veces la lluvia es demasiado fuerte. Puede causar inundaciones y deslaves. Los ríos crecen mucho y hay problemas."
+      ],
+      "question": { "q": "When does the rainy season begin?", "options": ["In May", "In July", "In March", "In August"], "answer": 0 }
+    },
+    {
+      "id": "l2s08", "level": 2, "title": "La abuela cocina", "titleEn": "Grandma Cooks",
+      "teaser": "Making pepián the traditional way.", "icon": "soup_kitchen", "minutes": 2,
+      "body": [
+        "Mi abuela cocina mejor que nadie. Ella sabe hacer todos los platos típicos de Guatemala.",
+        "Esta mañana hizo pepián de pollo. Primero tostó los chiles en el comal. Luego los molió con tomates, pepitas y achiote.",
+        "El pepián huele muy bien. Toda la casa se llena de ese olor rico. Cuando está listo, lo servimos con arroz y tortillas.",
+        "Mi abuela dice que aprendió a cocinar con su mamá, y su mamá con la suya. La receta tiene muchos años."
+      ],
+      "question": { "q": "How did grandma learn to cook?", "options": ["At school", "From her mother", "From a book", "From a neighbor"], "answer": 1 }
+    },
+    {
+      "id": "l2s09", "level": 2, "title": "El río", "titleEn": "The River",
+      "teaser": "Life along the river in a Guatemalan village.", "icon": "water", "minutes": 2,
+      "body": [
+        "El río que pasa por mi pueblo se llama río Samalá. Es un río grande y de agua fría.",
+        "Los niños del pueblo vamos al río los sábados. Nadamos, jugamos y nos refrescamos del calor.",
+        "Las mujeres lavan la ropa en el río. Traen canastos con ropa y jabón. Mientras trabajan, conversan y cantan.",
+        "El río también da agua para regar los cultivos. Los campesinos hacen canales pequeños para llevar el agua a sus milpas."
+      ],
+      "question": { "q": "What do women bring to the river?", "options": ["Food and water", "Fish and nets", "Children and blankets", "Baskets with clothes and soap"], "answer": 3 }
+    },
+    {
+      "id": "l2s10", "level": 2, "title": "La tienda de don Carlos", "titleEn": "Don Carlos's Store",
+      "teaser": "The corner store that everyone depends on.", "icon": "store", "minutes": 2,
+      "body": [
+        "En mi pueblo hay una tienda pequeña que se llama 'Tienda La Esperanza'. El dueño es don Carlos.",
+        "Don Carlos vende de todo: arroz, frijoles, azúcar, aceite, jabón y dulces. También vende refrescos fríos.",
+        "Muchas personas van a la tienda todos los días. Don Carlos sabe los nombres de todos sus clientes. Es muy amable.",
+        "Don Carlos llegó al pueblo hace veinte años. Antes vivía en la ciudad, pero prefiere la vida del pueblo. Dice que aquí todo es más tranquilo."
+      ],
+      "question": { "q": "How long has Don Carlos been in the town?", "options": ["Ten years", "Fifteen years", "Twenty years", "Thirty years"], "answer": 2 }
+    },
+    {
+      "id": "l2s11", "level": 2, "title": "El quetzal", "titleEn": "The Quetzal",
+      "teaser": "Guatemala's sacred national bird.", "icon": "flutter_dash", "minutes": 2,
+      "body": [
+        "El quetzal es el pájaro nacional de Guatemala. Es uno de los pájaros más hermosos del mundo.",
+        "El macho tiene plumas verdes brillantes y una cola muy larga. El pecho es rojo. Es un pájaro muy colorido.",
+        "Los mayas consideraban al quetzal un pájaro sagrado. Era símbolo de libertad porque no puede vivir en cautiverio.",
+        "Hoy el quetzal está en peligro. Los bosques donde vive se están perdiendo. El gobierno y grupos ambientales trabajan para protegerlo."
+      ],
+      "question": { "q": "Why is the quetzal a symbol of freedom?", "options": ["Because it cannot live in captivity", "Because it flies very fast", "Because it has a long tail", "Because it is very colorful"], "answer": 0 }
+    },
+    {
+      "id": "l2s12", "level": 2, "title": "Los mayas hoy", "titleEn": "The Maya Today",
+      "teaser": "Millions of Maya people live in Guatemala today.", "icon": "history_edu", "minutes": 2,
+      "body": [
+        "Los mayas no son solo historia. Hoy en día, millones de personas mayas viven en Guatemala.",
+        "Hay más de veinte grupos mayas en el país. Cada grupo tiene su propio idioma, su propia ropa y sus propias tradiciones.",
+        "Muchos mayas viven en el altiplano. Trabajan en el campo, en los mercados y en las ciudades.",
+        "Las generaciones jóvenes aprenden español y también estudian en sus idiomas maternos. Quieren mantener sus tradiciones y participar en el mundo moderno."
+      ],
+      "question": { "q": "How many Maya groups are there in Guatemala?", "options": ["More than five", "More than ten", "More than fifteen", "More than twenty"], "answer": 3 }
+    },
+    {
+      "id": "l2s13", "level": 2, "title": "La marimba", "titleEn": "The Marimba",
+      "teaser": "Guatemala's beloved national instrument.", "icon": "music_note", "minutes": 2,
+      "body": [
+        "La marimba es el instrumento nacional de Guatemala. Tiene una historia muy larga.",
+        "La marimba es parecida al xilófono. Se toca con baquetas. Los músicos golpean las teclas de madera y salen sonidos muy bonitos.",
+        "En las fiestas y celebraciones guatemaltecas siempre hay marimba. La gente baila con la música de la marimba.",
+        "Tocar la marimba bien requiere mucha práctica. Muchos músicos aprenden desde niños. Es un arte que pasa de generación en generación."
+      ],
+      "question": { "q": "How is the marimba played?", "options": ["With the fingers", "With sticks", "With the feet", "With a bow"], "answer": 1 }
+    },
+    {
+      "id": "l2s14", "level": 2, "title": "El comal", "titleEn": "The Comal",
+      "teaser": "The ancient griddle at the heart of every kitchen.", "icon": "outdoor_grill", "minutes": 2,
+      "body": [
+        "El comal es una piedra o disco de metal para cocinar. En Guatemala, casi todas las cocinas tienen un comal.",
+        "En el comal se hacen las tortillas. Primero se pone el comal en el fuego. Cuando está caliente, se ponen las tortillas.",
+        "En el comal también se tuestan los chiles, los tomates y las semillas para las salsas. Da un sabor especial a la comida.",
+        "Antes, los comales eran de barro. Ahora muchos son de metal. Pero las tortillas cocinadas en comal siempre son las mejores."
+      ],
+      "question": { "q": "What were comales made of in the past?", "options": ["Metal", "Wood", "Clay", "Stone"], "answer": 2 }
+    },
+    {
+      "id": "l2s15", "level": 2, "title": "La fiesta del pueblo", "titleEn": "The Village Festival",
+      "teaser": "Every town celebrates its patron saint's day.", "icon": "celebration", "minutes": 2,
+      "body": [
+        "Cada pueblo de Guatemala tiene su santo patrón. El día del santo hay una gran fiesta.",
+        "La fiesta dura varios días. Hay música de marimba, cohetes, comida y bailes tradicionales. Toda la gente se reúne.",
+        "Las mujeres se ponen sus mejores huipiles. Los hombres también se visten con ropa especial. Es un día de orgullo para el pueblo.",
+        "También hay juegos y actividades para los niños. Se venden dulces, algodón de azúcar y cosas típicas. La fiesta es un momento muy esperado por todos."
+      ],
+      "question": { "q": "What happens on the patron saint's day?", "options": ["A big festival", "A market day", "A school fair", "A sports game"], "answer": 0 }
+    },
+
+    {
+      "id": "l3s01", "level": 3, "title": "El tejido maya", "titleEn": "Maya Weaving",
+      "teaser": "Woven cloth as identity, history, and art.", "icon": "texture", "minutes": 3,
+      "body": [
+        "El tejido es una de las artes más antiguas de los mayas de Guatemala. Las mujeres mayas han tejido por miles de años.",
+        "Cada región tiene sus propios diseños y colores. Los colores y patrones indican de qué pueblo viene la persona.",
+        "Para tejer, se usa un telar de cintura. La tejedora envuelve los hilos alrededor de su cuerpo y los tensa. Luego entrelaza los hilos con mucha habilidad.",
+        "Los diseños tienen significados especiales. Hay flores, animales, formas geométricas y símbolos ancestrales. Cada diseño cuenta una historia.",
+        "Hoy las jóvenes mayas aprenden a tejer de sus madres y abuelas. Es una tradición que se transmite en familia y mantiene viva la identidad cultural."
+      ],
+      "question": { "q": "How can you tell which town a weaving is from?", "options": ["By its price", "By its colors and patterns", "By its size", "By the name woven in"], "answer": 1 }
+    },
+    {
+      "id": "l3s02", "level": 3, "title": "La Semana Santa en Antigua", "titleEn": "Holy Week in Antigua",
+      "teaser": "The world's most spectacular Holy Week processions.", "icon": "church", "minutes": 3,
+      "body": [
+        "La Semana Santa en Antigua es una de las celebraciones más espectaculares del mundo. Cada año vienen miles de visitantes.",
+        "Durante varios días, grupos de personas cargan enormes plataformas con figuras religiosas. Estas procesiones recorren las calles empedradas de la ciudad.",
+        "Antes de que pase la procesión, los vecinos preparan alfombras en la calle. Hacen diseños con aserrín de colores, flores y frutas. Las alfombras son muy elaboradas.",
+        "Cuando la procesión pasa por encima de las alfombras, las destruye. Eso es parte de la tradición. Simboliza que la belleza es temporal.",
+        "Es un evento profundamente religioso y también cultural. Mezcla tradiciones españolas coloniales con elementos guatemaltecos únicos."
+      ],
+      "question": { "q": "What happens to the carpet when the procession passes?", "options": ["It gets saved as a souvenir", "It gets donated to the church", "It stays on the street all week", "It gets destroyed"], "answer": 3 }
+    },
+    {
+      "id": "l3s03", "level": 3, "title": "La cosecha del café", "titleEn": "The Coffee Harvest",
+      "teaser": "The most important season of the year for many families.", "icon": "agriculture", "minutes": 3,
+      "body": [
+        "La cosecha del café en Guatemala empieza entre octubre y diciembre, dependiendo de la región. Es el momento más importante del año para muchas familias.",
+        "Los recolectores llegan de varios pueblos. Algunos vienen de muy lejos, a pie. Se instalan en la finca durante semanas.",
+        "El trabajo consiste en recoger los granos de café rojos, llamados 'cerezas', uno por uno. No se deben recoger los que están verdes.",
+        "Al final del día, los recolectores pesan lo que recogieron. Les pagan por kilo. Los mejores recolectores pueden ganar buen dinero en la temporada.",
+        "Después de la cosecha, el café se procesa: se quita la pulpa, se lava y se seca. El proceso es largo pero el resultado es un café de excelente calidad."
+      ],
+      "question": { "q": "What are the ripe coffee beans called on the plant?", "options": ["Seeds", "Pearls", "Cherries", "Grains"], "answer": 2 }
+    },
+    {
+      "id": "l3s04", "level": 3, "title": "El Día de los Muertos", "titleEn": "Day of the Dead",
+      "teaser": "Kites and family in Guatemalan November cemeteries.", "icon": "candle", "minutes": 3,
+      "body": [
+        "En Guatemala, el primero y dos de noviembre se celebra el Día de los Muertos. Es una tradición muy especial.",
+        "Las familias van al cementerio a visitar las tumbas de sus seres queridos. Llevan flores, comida y velas. Limpian y adornan las tumbas.",
+        "En Sumpango y Santiago Sacatepéquez hay una tradición muy especial: los barriletes gigantes. Los jóvenes construyen cometas enormes de papel.",
+        "Estos barriletes pueden medir más de diez metros. Las familias los elevan en el cementerio. Se cree que los barriletes conectan el mundo de los vivos con el de los muertos.",
+        "La celebración mezcla tradiciones mayas prehispánicas con costumbres católicas traídas por los españoles."
+      ],
+      "question": { "q": "What special tradition happens in Sumpango and Santiago Sacatepéquez?", "options": ["Giant kite flying", "A candlelight procession", "Fireworks over the cemetery", "Traditional dances"], "answer": 0 }
+    },
+    {
+      "id": "l3s05", "level": 3, "title": "Los tamales de Navidad", "titleEn": "Christmas Tamales",
+      "teaser": "The long, loving process of making holiday tamales.", "icon": "fastfood", "minutes": 3,
+      "body": [
+        "En Guatemala, la Navidad no es completa sin tamales. Es la comida más esperada de la temporada.",
+        "Para hacer tamales se necesitan muchos ingredientes: masa de maíz, carne, tomate, chile, aceitunas, pasas y hojas de plátano.",
+        "La preparación es un trabajo familiar. La abuela dirige todo. Las mujeres ayudan a preparar la masa y el relleno. Los niños observan y aprenden.",
+        "Los tamales se envuelven en hojas de plátano y se cuecen al vapor. El proceso tarda horas. Cuando están listos, toda la familia se reúne a comer.",
+        "La tradición dice que la familia que come tamales junta en Navidad permanece unida. Por eso, nadie quiere perderse este momento especial."
+      ],
+      "question": { "q": "What wraps the tamales?", "options": ["Corn husks", "Banana leaves", "Avocado leaves", "Aluminum foil"], "answer": 1 }
+    },
+    {
+      "id": "l3s06", "level": 3, "title": "La ceiba sagrada", "titleEn": "The Sacred Ceiba",
+      "teaser": "Guatemala's national tree and Maya world tree.", "icon": "park", "minutes": 3,
+      "body": [
+        "La ceiba es el árbol nacional de Guatemala. Para los mayas, era el árbol más sagrado de todos.",
+        "Los mayas creían que la ceiba era el centro del universo. Sus raíces llegaban al inframundo, su tronco era el mundo humano y su copa tocaba el cielo.",
+        "La ceiba puede crecer muy alta, hasta sesenta metros. Tiene raíces muy gruesas que sobresalen del suelo. Es un árbol impresionante.",
+        "En muchos pueblos de Guatemala hay una ceiba en el parque central. Los abuelos cuentan historias sobre el árbol y su significado.",
+        "Hoy en día, muchas ceibas están en peligro por la deforestación. Grupos ambientales trabajan para proteger este árbol tan especial."
+      ],
+      "question": { "q": "What did the Maya believe the ceiba's roots reached?", "options": ["The water table", "Other trees", "Ancient cities", "The underworld"], "answer": 3 }
+    },
+    {
+      "id": "l3s07", "level": 3, "title": "El mercado de artesanías", "titleEn": "The Craft Market",
+      "teaser": "Why it matters to buy directly from the artisan.", "icon": "storefront", "minutes": 3,
+      "body": [
+        "En Guatemala hay mercados de artesanías en todas las ciudades. Venden objetos hechos a mano por artesanos mayas.",
+        "Hay tejidos, cerámica, madera tallada, jade, máscaras y mucho más. Cada objeto refleja una tradición cultural de siglos.",
+        "Los artesanos trabajan muchas horas para crear sus piezas. Algunos usan técnicas aprendidas de sus abuelos. El trabajo manual requiere mucha paciencia y destreza.",
+        "Los turistas compran artesanías como recuerdos de su visita. Pero para los artesanos, estas piezas son más que recuerdos: son parte de su identidad y su sustento.",
+        "Es importante comprar directamente al artesano para que reciba el precio justo. Los intermediarios a veces pagan muy poco y venden muy caro."
+      ],
+      "question": { "q": "What is important to do when buying crafts?", "options": ["Buy the cheapest pieces", "Buy in large quantities", "Buy directly from the artisan", "Only buy modern designs"], "answer": 2 }
+    },
+    {
+      "id": "l3s08", "level": 3, "title": "La marimba nacional", "titleEn": "The National Marimba",
+      "teaser": "How an instrument from Africa became the soul of Guatemala.", "icon": "music_note", "minutes": 3,
+      "body": [
+        "La marimba fue declarada instrumento nacional de Guatemala en 1978. Pero su historia es mucho más antigua.",
+        "Se cree que la marimba llegó a Guatemala desde África, traída por personas esclavizadas. Con el tiempo, se adaptó y se convirtió en parte central de la cultura guatemalteca.",
+        "Hay dos tipos de marimba: la sencilla y la doble. La doble tiene más teclas y permite tocar más notas. Una marimba doble puede ser tocada por cuatro o más músicos.",
+        "En las celebraciones nacionales, bodas y fiestas, la marimba es siempre la protagonista. Sus sonidos llenan los parques y salones.",
+        "Aprender a tocar la marimba bien toma años de práctica. Hay escuelas de música dedicadas a este instrumento en todo el país."
+      ],
+      "question": { "q": "In what year was the marimba declared the national instrument?", "options": ["1978", "1950", "1921", "1991"], "answer": 0 }
+    },
+    {
+      "id": "l3s09", "level": 3, "title": "El viaje a Xela", "titleEn": "Trip to Xela",
+      "teaser": "Guatemala's second city, cool and authentic.", "icon": "train", "minutes": 3,
+      "body": [
+        "Xela es el nombre popular de Quetzaltenango, la segunda ciudad más grande de Guatemala. Para llegar desde la capital, hay que viajar varias horas.",
+        "El camino a Xela pasa por montañas muy altas. En algunos puntos, las nubes están por debajo de la carretera. El paisaje es muy hermoso.",
+        "Xela es una ciudad fría. Está a más de dos mil metros sobre el nivel del mar. Los habitantes usan suéter y chamarra casi todo el año.",
+        "En el centro de Xela hay un parque central muy bonito. Hay edificios coloniales y un teatro viejo. La gente se reúne en el parque los fines de semana.",
+        "Xela tiene muchas escuelas de español para extranjeros. También hay volcanes cerca, como el volcán Santa María, que es muy visitado."
+      ],
+      "question": { "q": "What is special about the road to Xela?", "options": ["It runs along the coast", "It passes through mountains where clouds are below the road", "It goes through the jungle", "It follows a river all the way"], "answer": 1 }
+    },
+    {
+      "id": "l3s10", "level": 3, "title": "La siembra del maíz", "titleEn": "Corn Planting",
+      "teaser": "The sacred cycle of planting corn in Guatemala.", "icon": "grass", "minutes": 3,
+      "body": [
+        "El maíz es la base de la alimentación guatemalteca. Los mayas lo consideraban sagrado. Según el Popol Vuh, los humanos fueron creados del maíz.",
+        "La siembra del maíz sigue un calendario tradicional. Los campesinos siembran en mayo, cuando empiezan las lluvias.",
+        "Para sembrar, hacen hoyos pequeños en la tierra con un palo llamado coa. En cada hoyo ponen varios granos de maíz.",
+        "El maíz necesita sol, agua y tierra buena. En unos tres meses, las mazorcas están listas para cosechar. Es un momento de alegría para la familia.",
+        "Con el maíz se hacen tortillas, tamales, atol, tostadas y muchos otros alimentos. El maíz está presente en cada mesa guatemalteca."
+      ],
+      "question": { "q": "What tool is used to make holes for corn seeds?", "options": ["A shovel", "A machete", "A rake", "A coa"], "answer": 3 }
+    },
+    {
+      "id": "l3s11", "level": 3, "title": "La medicina de las plantas", "titleEn": "Plant Medicine",
+      "teaser": "Ancient knowledge of healing plants passed down through generations.", "icon": "spa", "minutes": 3,
+      "body": [
+        "En Guatemala, la medicina tradicional basada en plantas tiene miles de años de historia. Los mayas tenían un profundo conocimiento de las plantas medicinales.",
+        "Hay curanderos que conocen estas plantas. Ellos saben cuándo recogerlas, cómo prepararlas y para qué sirven.",
+        "Algunas plantas muy comunes son la manzanilla para el estómago, el romero para el dolor y la ruda para los nervios. Los mercados venden estas plantas.",
+        "La medicina moderna también reconoce que muchas de estas plantas tienen propiedades medicinales reales. Algunos medicamentos modernos vienen de plantas antiguas.",
+        "Hoy hay un movimiento para documentar el conocimiento de los curanderos antes de que se pierda. Es un tesoro cultural que hay que preservar."
+      ],
+      "question": { "q": "What is manzanilla used for?", "options": ["For stomach problems", "For headaches", "For fever", "For muscle pain"], "answer": 0 }
+    },
+    {
+      "id": "l3s12", "level": 3, "title": "El estudiante universitario", "titleEn": "The University Student",
+      "teaser": "Andrés studies medicine to bring healthcare to his village.", "icon": "school", "minutes": 3,
+      "body": [
+        "Andrés tiene veinte años y estudia medicina en la Universidad de San Carlos de Guatemala. Viene de un pueblo pequeño en el departamento de San Marcos.",
+        "Para pagar sus estudios, Andrés trabaja los fines de semana en un café. Vive con tres compañeros en un apartamento pequeño cerca de la universidad.",
+        "Los estudios de medicina son difíciles. Andrés pasa muchas horas estudiando en la biblioteca. A veces se siente cansado y quiere regresar a su casa.",
+        "Pero sigue adelante porque tiene un sueño: regresar a su pueblo como médico. Allí no hay doctores y la gente tiene que viajar lejos para recibir atención médica.",
+        "Su mamá le llama todos los domingos. Ella siempre le dice: 'Mijo, estudia mucho. Nosotros te esperamos.' Eso le da fuerzas para continuar."
+      ],
+      "question": { "q": "Why does Andrés want to become a doctor in his town?", "options": ["Because it pays well there", "Because his family lives there", "Because there are no doctors there", "Because the university is there"], "answer": 2 }
+    },
+    {
+      "id": "l3s13", "level": 3, "title": "La cooperativa de café", "titleEn": "The Coffee Cooperative",
+      "teaser": "How farmers joined forces for fair prices.", "icon": "handshake", "minutes": 3,
+      "body": [
+        "En Huehuetenango, un grupo de agricultores formó una cooperativa de café hace quince años. Se llama 'Cooperativa La Montaña'.",
+        "Antes, cada agricultor vendía su café solo, a precios muy bajos. Los intermediarios ganaban mucho dinero y los agricultores poco.",
+        "Con la cooperativa, los agricultores venden juntos. Tienen más poder de negociación y consiguen mejores precios. También comparten máquinas y conocimientos.",
+        "La cooperativa exporta directamente a compradores en Europa y Estados Unidos. Algunos compradores pagan precio de 'café de especialidad', que es más alto.",
+        "Gracias a la cooperativa, las familias tienen mejor ingreso. Los hijos de los agricultores pueden estudiar y el pueblo ha mejorado mucho."
+      ],
+      "question": { "q": "Why do farmers earn more with the cooperative?", "options": ["They grow more coffee", "They sell together and have more negotiating power", "They use better machines", "They sell directly to tourists"], "answer": 1 }
+    },
+    {
+      "id": "l3s14", "level": 3, "title": "Los sueños de Ana", "titleEn": "Ana's Dreams",
+      "teaser": "A young Maya painter in Comalapa chasing her dream.", "icon": "palette", "minutes": 3,
+      "body": [
+        "Ana tiene dieciséis años y vive en San Juan Comalapa, un pueblo conocido por sus pintores mayas. Desde niña, ella también quiere ser pintora.",
+        "Los sábados, Ana va a un taller donde un pintor famoso del pueblo enseña a los jóvenes. Ella aprende técnica y también aprende a ver el mundo con ojos de artista.",
+        "Sus pinturas muestran escenas de la vida cotidiana: mujeres en el mercado, volcanes, milpas y fiestas del pueblo. Cada pintura cuenta una historia.",
+        "Los turistas que visitan Comalapa a veces compran sus pinturas. Con ese dinero, Ana ayuda a su familia y ahorra para comprar más materiales.",
+        "Ana sueña con exponer sus obras en una galería de la ciudad. Su maestra le dice que tiene mucho talento. Ana trabaja duro todos los días para cumplir su sueño."
+      ],
+      "question": { "q": "What does Ana use the money she earns for?", "options": ["Buy new clothes", "Travel to the city", "Pay for university", "Help her family and buy more materials"], "answer": 3 }
+    },
+    {
+      "id": "l3s15", "level": 3, "title": "El Popol Vuh", "titleEn": "The Popol Vuh",
+      "teaser": "The Maya creation story and the sacred book of the K'iche'.", "icon": "menu_book", "minutes": 3,
+      "body": [
+        "El Popol Vuh es el libro sagrado de los mayas quiché de Guatemala. Es uno de los textos más importantes de toda América precolombina.",
+        "El Popol Vuh cuenta la historia de la creación del mundo. Los dioses intentaron crear a los humanos varias veces: primero con barro, luego con madera, y finalmente con maíz.",
+        "Solo cuando usaron maíz los humanos salieron bien. Por eso el maíz es tan sagrado para los mayas. Es el material del cual estamos hechos.",
+        "El libro también cuenta las aventuras de los Héroes Gemelos: Hunahpú e Ixbalanqué. Ellos enfrentan a los señores del inframundo y los vencen.",
+        "El texto original se escribió en lengua quiché después de la conquista española, usando el alfabeto latino. Hoy se puede leer en español y en muchos otros idiomas."
+      ],
+      "question": { "q": "From what material did the gods finally succeed in creating humans?", "options": ["Clay", "Wood", "Corn", "Stone"], "answer": 2 }
+    },
+
+    {
+      "id": "l4s01", "level": 4, "title": "La historia de Rosa", "titleEn": "Rosa's Story",
+      "teaser": "A Maya weaver who built a business on tradition and fair trade.", "icon": "person", "minutes": 4,
+      "body": [
+        "Rosa Cú nació en un pueblo de Totonicapán hace cincuenta años. Creció hablando k'iche' en casa y aprendió el español en la escuela.",
+        "De joven, Rosa aprendió a tejer con su madre. Pasaba horas frente al telar, aprendiendo los patrones que su familia había usado por generaciones.",
+        "A los veinte años, Rosa comenzó a vender sus tejidos en el mercado de Quetzaltenango. Al principio ganaba poco. Pero poco a poco, su trabajo fue reconocido por su calidad.",
+        "Un día, una organización de comercio justo la contactó. Le ofrecieron vender sus tejidos directamente a tiendas en Europa. Rosa aceptó, aunque al principio tenía miedo de lo desconocido.",
+        "Hoy, a sus cincuenta años, Rosa dirige un taller donde trabajan doce mujeres mayas. Todas tienen ingreso justo. Rosa está orgullosa de haber preservado las tradiciones mientras construía un futuro mejor para su comunidad."
+      ],
+      "question": { "q": "How did Rosa's work reach Europe?", "options": ["Through a tourist she met", "Through a fair trade organization", "Through a government program", "Through a sister living abroad"], "answer": 1 }
+    },
+    {
+      "id": "l4s02", "level": 4, "title": "El corazón de Quetzaltenango", "titleEn": "The Heart of Quetzaltenango",
+      "teaser": "Why Xela feels more real than Antigua to many visitors.", "icon": "location_city", "minutes": 4,
+      "body": [
+        "Quetzaltenango, llamada Xela por los locales, es una ciudad que guarda el alma del altiplano guatemalteco. No tiene la energía turística de la capital, pero tiene algo que muchos visitantes buscan: autenticidad.",
+        "El parque central de Xela está rodeado por edificios neoclásicos de principios del siglo veinte. El Teatro Municipal, la Municipalidad y la antigua Catedral forman un conjunto arquitectónico serio y elegante.",
+        "A diferencia de Antigua, que vive en gran parte del turismo, Xela es una ciudad universitaria y comercial. Sus calles son usadas principalmente por estudiantes, comerciantes y trabajadores.",
+        "Los mercados de Xela son otro mundo. En el mercado La Democracia, se puede encontrar de todo: desde frutas y verduras hasta herramientas, telas y comida preparada.",
+        "Quienes vienen a estudiar español encuentran en Xela no solo el idioma, sino una ventana a la vida guatemalteca real. Xela no actúa para el turista. Simplemente es."
+      ],
+      "question": { "q": "How is Xela different from Antigua?", "options": ["It is warmer and less cloudy", "It has more Maya temples to visit", "It is cheaper for language schools", "It is primarily a university and commercial city, not focused on tourism"], "answer": 3 }
+    },
+    {
+      "id": "l4s03", "level": 4, "title": "Las tradiciones del tejido", "titleEn": "Weaving Traditions",
+      "teaser": "How a Maya garment encodes centuries of history.", "icon": "texture", "minutes": 4,
+      "body": [
+        "En las comunidades mayas de Guatemala, el tejido no es simplemente una artesanía: es un lenguaje visual que codifica historia, identidad y espiritualidad.",
+        "Cada municipio tiene su propio traje regional. Las mujeres lo usan con orgullo. Cuando alguien ve el traje, puede identificar inmediatamente de qué pueblo viene esa persona.",
+        "Los diseños del tejido han sido transmitidos por generaciones. Incluyen figuras de animales sagrados, plantas y símbolos cosmológicos. Algunos diseños tienen más de mil años de antigüedad.",
+        "Sin embargo, el tejido enfrenta amenazas modernas. Las telas sintéticas baratas compiten con los tejidos manuales. Los jóvenes a veces prefieren ropa occidental.",
+        "A pesar de estos desafíos, hay un movimiento de revitalización. Jóvenes diseñadores mayas fusionan los diseños tradicionales con la moda contemporánea, creando prendas que honran el pasado mientras miran hacia el futuro."
+      ],
+      "question": { "q": "What does the traje regional reveal about the wearer?", "options": ["Which town they are from", "How old they are", "If they are married", "What their profession is"], "answer": 0 }
+    },
+    {
+      "id": "l4s04", "level": 4, "title": "La migración al norte", "titleEn": "Migration North",
+      "teaser": "The dangerous journey and the money sent back home.", "icon": "flight_takeoff", "minutes": 4,
+      "body": [
+        "Cada año, miles de guatemaltecos emprenden el camino hacia el norte, hacia los Estados Unidos. Las razones son diversas: falta de empleo, violencia, y el deseo de un futuro mejor.",
+        "El viaje es peligroso. Los migrantes pasan por México, enfrentando calor extremo, crimen organizado y la posibilidad de ser detenidos. Muchos no llegan a su destino.",
+        "Los que sí llegan encuentran un mundo muy diferente. Trabajan en construcción, restaurantes y campos agrícolas. Envían dinero a sus familias en Guatemala, lo que se llama remesas.",
+        "Las remesas son una parte enorme de la economía guatemalteca. Representan más de veinte por ciento del producto interno bruto. Muchas familias dependen de ese dinero para vivir.",
+        "Pero la migración también tiene costos humanos. Los hijos crecen sin sus padres. Los matrimonios se separan. Las comunidades pierden a sus hombres jóvenes. El dilema entre necesidad económica y unidad familiar no tiene respuesta fácil."
+      ],
+      "question": { "q": "What are remittances?", "options": ["Taxes paid by Guatemalan workers in the US", "Loans from US banks", "Money sent from the US back to families in Guatemala", "Government aid programs"], "answer": 2 }
+    },
+    {
+      "id": "l4s05", "level": 4, "title": "El festival del barrilete gigante", "titleEn": "The Giant Kite Festival",
+      "teaser": "Enormous kites carry messages to the dead on November 1st.", "icon": "air", "minutes": 4,
+      "body": [
+        "El primero de noviembre, en los cementerios de Sumpango y Santiago Sacatepéquez, ocurre algo extraordinario. Familias enteras trabajan durante semanas para crear barriletes gigantes de papel.",
+        "Estos barriletes pueden alcanzar más de diez metros de diámetro. Están decorados con colores brillantes y diseños intrincados. Algunos tienen mensajes políticos o sociales.",
+        "La tradición tiene raíces prehispánicas. Los mayas creían que el viento de los barriletes llevaba mensajes a los muertos. Era una forma de comunicarse con los ancestros.",
+        "El día del festival, las familias los elevan sobre el cementerio. No siempre es fácil: el viento puede ser impredecible y los barriletes son muy pesados. A veces se rompen.",
+        "Cuando un barrilete logra elevarse, la multitud aplaude y celebra. Es un momento de alegría colectiva mezclada con memoria y respeto por los que ya no están."
+      ],
+      "question": { "q": "What did the Maya believe the kites' wind carried?", "options": ["Prayers to the gods", "Messages to the dead", "Offerings of food", "The souls of the living"], "answer": 1 }
+    },
+    {
+      "id": "l4s06", "level": 4, "title": "La medicina tradicional maya", "titleEn": "Traditional Maya Medicine",
+      "teaser": "Healers who read the sacred calendar and prescribe plants.", "icon": "local_pharmacy", "minutes": 4,
+      "body": [
+        "Los mayas desarrollaron un sistema médico sofisticado a lo largo de siglos. Este sistema combina el conocimiento de las plantas con rituales espirituales y una visión del cuerpo como parte de un todo cósmico.",
+        "Los curanderos, conocidos como 'ajq'ijab' en k'iche', son personas que han recibido una formación especial. Algunos heredan el conocimiento de sus padres; otros son llamados a este camino mediante sueños o señales.",
+        "Una consulta con un curandero no es como ir al médico occidental. Incluye rezos, el uso de un calendario sagrado llamado Tzolkin, y la aplicación de plantas medicinales.",
+        "Algunos medicamentos modernos fueron derivados originalmente de plantas que los pueblos indígenas habían usado por siglos. La aspirina tiene raíces en la corteza del sauce, por ejemplo.",
+        "El reto actual es lograr que la medicina tradicional y la occidental trabajen juntas. En Guatemala, algunos hospitales ya están experimentando con esta integración."
+      ],
+      "question": { "q": "What is the Tzolkin?", "options": ["A medicinal plant", "A type of prayer", "A healing ceremony", "A sacred calendar used by healers"], "answer": 3 }
+    },
+    {
+      "id": "l4s07", "level": 4, "title": "Los jóvenes cafetaleros", "titleEn": "The Young Coffee Farmers",
+      "teaser": "A new generation reinventing how Guatemala's coffee is grown and sold.", "icon": "agriculture", "minutes": 4,
+      "body": [
+        "En las montañas de Huehuetenango, una nueva generación de cafetaleros está cambiando la manera en que se produce y vende el café guatemalteco.",
+        "Estos jóvenes, muchos con educación universitaria en agronomía o negocios, regresan a sus pueblos con nuevas ideas. Quieren mejorar la calidad del café y conseguir mejores precios.",
+        "Algunos han dejado de vender su café a intermediarios y ahora exportan directamente. Otros experimentan con procesos nuevos, como el fermentado anaeróbico, que produce sabores únicos.",
+        "La sostenibilidad también es importante para ellos. Plantan árboles de sombra, usan menos químicos y cuidan el agua. Quieren un modelo de producción que dure para sus propios hijos.",
+        "El resultado es un café guatemalteco que está ganando premios internacionales y llegando a los mejores cafés del mundo. Es una historia de orgullo para toda la comunidad."
+      ],
+      "question": { "q": "How are the young coffee farmers selling differently?", "options": ["By exporting directly without intermediaries", "By selling to larger cooperatives", "By focusing only on domestic sales", "By growing new varieties of coffee"], "answer": 0 }
+    },
+    {
+      "id": "l4s08", "level": 4, "title": "El río Usumacinta", "titleEn": "The Usumacinta River",
+      "teaser": "The mightiest river of Mesoamerica and its threatened jungle.", "icon": "water", "minutes": 4,
+      "body": [
+        "El río Usumacinta nace en las montañas de Guatemala y Chiapas, México. Forma la frontera natural entre los dos países en una parte de su recorrido.",
+        "Es el río más caudaloso de México y Centroamérica. A lo largo de su cauce crecen selvas densas que albergan una biodiversidad extraordinaria: jaguares, tapires, monos saraguatos y cientos de especies de aves.",
+        "Para los mayas, el Usumacinta era sagrado. Varios sitios arqueológicos importantes están en sus orillas, como Piedras Negras y Yaxchilán. Estos sitios solo son accesibles por río.",
+        "Hoy el río enfrenta amenazas serias. La deforestación en sus cuencas ha aumentado los niveles de sedimentos. Las comunidades que dependen del río para agua y pesca sufren las consecuencias.",
+        "Organizaciones ambientales trabajan para proteger la cuenca del Usumacinta. Es una batalla difícil entre el desarrollo económico y la preservación de uno de los últimos grandes ríos silvestres del hemisferio."
+      ],
+      "question": { "q": "How can you reach the archaeological sites along the Usumacinta?", "options": ["Only by air", "By a recently built road", "Only by river", "Through a jungle trail"], "answer": 2 }
+    },
+    {
+      "id": "l4s09", "level": 4, "title": "La selva del Petén", "titleEn": "The Petén Jungle",
+      "teaser": "The ancient Maya forest facing a modern crisis.", "icon": "forest", "minutes": 4,
+      "body": [
+        "El departamento del Petén ocupa el norte de Guatemala. Es la región más grande del país y también la más remota. Allí se encuentra la selva más grande de Mesoamérica.",
+        "Esta selva es el hogar de animales extraordinarios: el jaguar, el puma, el tapir, el pavo ocelado y cientos de especies de aves tropicales. También hay caimanes en los ríos y lagos.",
+        "En el corazón de la selva está Tikal, la antigua ciudad maya que fue una de las más poderosas de su tiempo. Los templos de Tikal se elevan por encima de la copa de los árboles.",
+        "Hoy, el Petén enfrenta una crisis ambiental grave. La deforestación avanza rápidamente por el fuego, la ganadería y el cultivo. Cada año se pierden miles de hectáreas de selva.",
+        "Proteger el Petén es proteger una de las últimas grandes selvas del continente. Es también proteger la herencia maya y la biodiversidad que este ecosistema alberga."
+      ],
+      "question": { "q": "What is Tikal?", "options": ["A type of Guatemalan parrot", "An ancient Maya city in the jungle", "A sacred river in Petén", "A national park ranger station"], "answer": 1 }
+    },
+    {
+      "id": "l4s10", "level": 4, "title": "El maestro rural", "titleEn": "The Rural Teacher",
+      "teaser": "Thirty years of teaching in a one-room highland school.", "icon": "school", "minutes": 4,
+      "body": [
+        "Don Abel lleva treinta años enseñando en una escuela primaria rural en el altiplano de Quiché. Su escuela tiene tres grados multigrado en un solo salón.",
+        "Cada mañana camina cuarenta minutos desde su casa hasta la escuela. En la temporada de lluvias, el camino se vuelve de lodo. Pero en treinta años, casi nunca ha faltado.",
+        "Los niños de su escuela hablan k'iche' en casa. Aprender a leer y escribir en español es un desafío enorme. Don Abel usa canciones, juegos y mucha paciencia.",
+        "Don Abel ha visto generaciones enteras pasar por su salón. Algunos de sus alumnos ahora son maestros, médicos y abogados. Cuando se los encuentra, siempre le agradecen.",
+        "Preguntado por qué sigue haciendo este trabajo tan difícil, don Abel responde: 'Porque cuando un niño aprende a leer, algo en mí se ilumina. Eso no tiene precio.'"
+      ],
+      "question": { "q": "What does Don Abel say about when a child learns to read?", "options": ["It is the greatest reward for his work", "He feels proud of his country", "He remembers why he became a teacher", "Something in him lights up"], "answer": 3 }
+    },
+    {
+      "id": "l4s11", "level": 4, "title": "El carnaval de Mazatenango", "titleEn": "The Mazatenango Carnival",
+      "teaser": "February color and music in the sugarcane capital.", "icon": "celebration", "minutes": 4,
+      "body": [
+        "Mazatenango, capital del departamento de Suchitepéquez, celebra cada febrero uno de los carnavales más coloridos de Guatemala. La ciudad se transforma completamente.",
+        "Los carnavales duran varios días. En las calles, grupos de disfrazados bailan al ritmo de la marimba. Los disfraces son elaborados y creativos. Hay personajes históricos, animales y figuras fantásticas.",
+        "Lo más esperado del carnaval es el desfile final. Carrozas decoradas con flores y papel llenan las calles principales. Las reinas del carnaval saludan al público desde sus carrozas.",
+        "La tradición del carnaval llegó con los españoles, pero ha sido transformada por los guatemaltecos. Combina elementos europeos con música, colores y sabores locales.",
+        "Participar en el carnaval de Mazatenango es participar en la alegría de un pueblo que sabe celebrar la vida. La línea entre espectadores y participantes casi desaparece."
+      ],
+      "question": { "q": "What is the most anticipated event of the carnival?", "options": ["The final parade", "The costume contest", "The marimba concert", "The carnival queen coronation"], "answer": 0 }
+    },
+    {
+      "id": "l4s12", "level": 4, "title": "La promesa de Pedro", "titleEn": "Pedro's Promise",
+      "teaser": "A teenager sacrifices his own dreams so his brother can study.", "icon": "handshake", "minutes": 4,
+      "body": [
+        "Pedro Sajché tenía quince años cuando su papá murió. De repente, él, el hijo mayor, tuvo que hacerse cargo de la familia: su mamá y cuatro hermanos menores.",
+        "Dejó la escuela y empezó a trabajar en la finca de un vecino. Era trabajo duro, mal pagado. Pero no había otra opción. La familia necesitaba comer.",
+        "Un día, la maestra de su hermano menor le habló a Pedro. Le dijo que su hermano era muy inteligente y que tenía que seguir estudiando. Pedro prometió que haría todo lo posible.",
+        "Trabajó más, ahorró más, y consiguió que su hermano terminara la secundaria y entrara a la universidad. Lo hizo a costa de sus propios sueños de estudiar.",
+        "Años después, cuando su hermano se graduó de médico, lo primero que hizo fue buscar a Pedro y decirle: 'Esto también es tuyo.' Pedro lloró. Por primera vez en muchos años, lloró."
+      ],
+      "question": { "q": "Why did Pedro leave school?", "options": ["He failed his exams", "He didn't like studying", "His father died and he had to support the family", "He got a job in the city"], "answer": 2 }
+    },
+    {
+      "id": "l4s13", "level": 4, "title": "Las lenguas del silencio", "titleEn": "The Languages of Silence",
+      "teaser": "Twenty-three Maya languages, a history of suppression, and revival.", "icon": "translate", "minutes": 4,
+      "body": [
+        "Guatemala tiene veintitrés idiomas mayas reconocidos oficialmente, además del español, el garífuna y el xinca. Es una de las naciones más lingüísticamente diversas del hemisferio.",
+        "Durante décadas, hablar un idioma maya en lugares públicos era sinónimo de discriminación. Muchos padres decidieron no enseñar su lengua a sus hijos para protegerlos.",
+        "Esta decisión, tomada por amor, tuvo consecuencias dolorosas. Muchas lenguas comenzaron a debilitarse. Algunos idiomas tienen ahora apenas unos pocos cientos de hablantes.",
+        "Hoy hay un movimiento de revitalización lingüística en Guatemala. Jóvenes mayas aprenden su lengua ancestral o la recuperan. Escuelas bilingües enseñan en español y en maya.",
+        "Cuando una lengua muere, se pierde una manera de ver el mundo, un sistema de conocimiento acumulado durante siglos. Por eso, preservar las lenguas mayas es mucho más que un asunto cultural: es una cuestión de justicia."
+      ],
+      "question": { "q": "Why did some parents stop teaching their Maya language to their children?", "options": ["Because the government forbade it", "To protect them from discrimination", "Because they moved to the city", "Because Spanish was more useful"], "answer": 1 }
+    },
+    {
+      "id": "l4s14", "level": 4, "title": "El mercado de San Francisco El Alto", "titleEn": "The San Francisco El Alto Market",
+      "teaser": "One of Central America's largest markets in the highlands.", "icon": "storefront", "minutes": 4,
+      "body": [
+        "El mercado municipal de San Francisco El Alto, en Totonicapán, es conocido como uno de los mercados más grandes de Guatemala y de toda Centroamérica.",
+        "Los viernes, el mercado se convierte en un océano de telas, ropa, artesanías y productos agrícolas. Llegan vendedores de todo el país y también de México.",
+        "El mercado es especialmente famoso por sus telas. Comerciantes de todo el altiplano vienen a comprar materiales para sus talleres de tejido. También hay ropa usada importada.",
+        "Los precios en el mercado de San Francisco son los más bajos de la región. Por eso, muchos vendedores de otros mercados vienen aquí a abastecerse.",
+        "Caminar por el mercado de San Francisco es como caminar por el corazón económico del altiplano. Aquí se cruzan culturas, idiomas y tradiciones en una danza constante de compra y venta."
+      ],
+      "question": { "q": "On which day does the San Francisco El Alto market take place?", "options": ["Tuesdays", "Wednesdays", "Thursdays", "Fridays"], "answer": 3 }
+    },
+    {
+      "id": "l4s15", "level": 4, "title": "La identidad y el futuro", "titleEn": "Identity and Future",
+      "teaser": "What it means to be Guatemalan in the twenty-first century.", "icon": "visibility", "minutes": 4,
+      "body": [
+        "¿Qué significa ser guatemalteco en el siglo veintiuno? Es una pregunta que muchos jóvenes se hacen mientras navegan entre tradición y modernidad, entre el pueblo y la ciudad.",
+        "Guatemala es un país de identidades múltiples. No existe una sola manera de ser guatemalteco. El país incluye mestizos, mayas de diferentes grupos, garífunas y xincas, cada uno con su historia.",
+        "Por décadas, la narrativa oficial ignoró la diversidad. La constitución de 1985 fue un paso importante: reconoció formalmente el carácter multiétnico del país.",
+        "Hoy los jóvenes guatemaltecos están construyendo identidades que antes eran impensables: artistas mayas que usan redes sociales, emprendedores indígenas con negocios globales, activistas que luchan por sus derechos en varios idiomas.",
+        "El futuro de Guatemala depende de su capacidad para celebrar esta diversidad. La riqueza del país no está solo en sus volcanes y su café: está en su gente, en toda su multiplicidad."
+      ],
+      "question": { "q": "What did the 1985 constitution formally recognize?", "options": ["The rights of coffee workers", "Indigenous languages as official", "The multiethnic character of the country", "Maya spiritual practices"], "answer": 2 }
+    },
+
+    {
+      "id": "l5s01", "level": 5, "title": "La identidad guatemalteca en el siglo XXI", "titleEn": "Guatemalan Identity in the 21st Century",
+      "teaser": "A country of profound contrasts navigating its plural identity.", "icon": "flag", "minutes": 5,
+      "body": [
+        "Guatemala es, en muchos sentidos, un enigma. Un país de belleza extraordinaria y contrastes profundos, donde la pobreza extrema convive con una riqueza cultural sin igual. Donde el pasado maya milenario pulsa bajo la superficie de la modernidad.",
+        "La identidad guatemalteca no es una sola cosa. Es un mosaico construido a lo largo de siglos de historia, conquista, resistencia y mezcla. Los mayas, que representan más de la mitad de la población, llevan consigo un legado cosmológico, artístico y lingüístico de una complejidad asombrosa.",
+        "Al mismo tiempo, Guatemala es un país joven, con más de la mitad de su población menor de veinticinco años. Estos jóvenes son herederos de todas las tradiciones, pero también ciudadanos del mundo digital, conectados globalmente desde sus teléfonos.",
+        "La tensión entre lo ancestral y lo moderno no es necesariamente una crisis. Puede ser una fuente de creatividad extraordinaria. Ya lo demuestran los artistas mayas que ilustran con tabletas digitales los glifos del Popol Vuh, o los chefs que reinventan el pepián en restaurantes de vanguardia.",
+        "Ser guatemalteco en el siglo veintiuno es aprender a habitar esa tensión con inteligencia y orgullo. Es reconocer que la identidad no es una herencia fija, sino algo que se construye activamente, generación tras generación."
+      ],
+      "question": { "q": "How does the text describe Guatemalan identity?", "options": ["As a fixed cultural inheritance", "As a mosaic built over centuries", "As primarily Maya", "As a conflict between old and new"], "answer": 1 }
+    },
+    {
+      "id": "l5s02", "level": 5, "title": "El Popol Vuh: el libro del tiempo", "titleEn": "The Popol Vuh: The Book of Time",
+      "teaser": "How a persecuted people secretly preserved their creation story.", "icon": "menu_book", "minutes": 5,
+      "body": [
+        "El Popol Vuh no es simplemente un libro de mitos. Es la memoria de un pueblo, codificada en narrativa, que ha sobrevivido siglos de colonización, quemas de manuscritos y silencio forzado.",
+        "El texto que conocemos hoy fue transcrito en el siglo dieciséis por miembros de la nobleza quiché, usando el alfabeto español para preservar en secreto lo que los frailes querían destruir. El manuscrito original se perdió; lo que queda es una copia del siglo dieciocho.",
+        "El Popol Vuh narra la creación del cosmos en cuatro intentos, la historia de los Héroes Gemelos y sus descensos al inframundo de Xibalbá, y el origen del pueblo quiché. Cada historia tiene capas de significado astronómico, filosófico y moral.",
+        "Leer el Popol Vuh con conocimiento del contexto maya es una experiencia diferente a leerlo como simple mitología. Cada animal mencionado tiene significado sagrado. Cada número corresponde a un ciclo cósmico. Es un texto que requiere iniciación para ser comprendido plenamente.",
+        "Hoy el Popol Vuh está disponible en docenas de idiomas y es estudiado por académicos de todo el mundo. Pero su hogar sigue siendo el altiplano de Guatemala, donde los ajq'ijab lo conocen no como literatura sino como verdad viviente."
+      ],
+      "question": { "q": "How was the Popol Vuh preserved during the colonial period?", "options": ["Hidden in a cave by priests", "Memorized by generations of healers", "Protected by Spanish missionaries", "Secretly transcribed by members of the Quiché nobility"], "answer": 3 }
+    },
+    {
+      "id": "l5s03", "level": 5, "title": "La resistencia cultural maya", "titleEn": "Maya Cultural Resistance",
+      "teaser": "Five hundred years of quiet, persistent, creative resistance.", "icon": "shield", "minutes": 5,
+      "body": [
+        "La conquista española del siglo dieciséis no terminó con la cultura maya. Fue el comienzo de un proceso de adaptación y resistencia que continúa hasta hoy.",
+        "Los mayas absorbieron elementos del catolicismo pero los integraron a su propio sistema cosmológico. Las iglesias coloniales fueron construidas sobre los mismos lugares donde antes había templos. Los santos católicos adoptaron atributos de las deidades mayas.",
+        "El idioma fue otra línea de resistencia. A pesar de siglos de presión para hablar solo español, las lenguas mayas sobrevivieron. Hoy más de cuarenta por ciento de los guatemaltecos habla un idioma maya como lengua materna.",
+        "El tejido fue quizás la forma de resistencia más silenciosa y más persistente. Cada patrón bordado en un huipil es un mensaje en un código que los colonizadores nunca pudieron descifrar completamente.",
+        "La resistencia maya no es solo un fenómeno del pasado. Hoy toma la forma de activismo político, arte contemporáneo, educación bilingüe y la recuperación de prácticas espirituales ancestrales. Es una resistencia que se reinventa constantemente."
+      ],
+      "question": { "q": "What was perhaps the most silent and persistent form of Maya resistance?", "options": ["Preserving the Maya languages", "Maintaining sacred ceremonies", "Weaving", "Defending their land"], "answer": 2 }
+    },
+    {
+      "id": "l5s04", "level": 5, "title": "El café: de la montaña al mundo", "titleEn": "Coffee: From Mountain to World",
+      "teaser": "The history, injustice, and global triumph of Guatemalan coffee.", "icon": "local_cafe", "minutes": 5,
+      "body": [
+        "El café llegó a Guatemala en el siglo dieciocho, traído por jesuitas. Pero no fue hasta el siglo diecinueve, durante el gobierno liberal de Justo Rufino Barrios, que se convirtió en el motor de la economía nacional.",
+        "Para expandir la producción cafetalera, el gobierno liberal expropió tierras a las comunidades mayas e impuso trabajo forzado. La historia del café guatemalteco está, por lo tanto, teñida de injusticia.",
+        "Sin embargo, el café de Guatemala es genuinamente excepcional. La diversidad de microclimas, desde los valles cálidos hasta las montañas frías, produce cafés de perfiles aromáticos muy distintos. Hay ocho regiones cafetaleras reconocidas, cada una con características únicas.",
+        "En el mercado global de café de especialidad, Guatemala ocupa un lugar de honor. Sus cafés de Huehuetenango, Atitlán y Fraijanes son buscados por tostadores artesanales de Tokio a Berlín.",
+        "El reto del futuro es que el beneficio económico llegue también a los recolectores y pequeños productores. La historia del café guatemalteco está siendo reescrita por una nueva generación que exige justicia además de calidad."
+      ],
+      "question": { "q": "Why does the text say Guatemala's coffee history is 'tinged with injustice'?", "options": ["Because expanding coffee production required expropriating Maya lands and forcing labor", "Because coffee profits went to foreign companies", "Because the government taxed coffee farmers heavily", "Because climate change has destroyed many farms"], "answer": 0 }
+    },
+    {
+      "id": "l5s05", "level": 5, "title": "Las lenguas mayas y el español", "titleEn": "Maya Languages and Spanish",
+      "teaser": "Twenty-two living languages, a multilingual constitution, and an unfinished promise.", "icon": "translate", "minutes": 5,
+      "body": [
+        "Guatemala es, según la Constitución, una nación multiétnica, pluricultural y multilingüe. Esta declaración, adoptada en 1985, fue un reconocimiento tardío pero importante de una realidad que siempre había existido.",
+        "Las veintidós lenguas mayas de Guatemala no son dialectos ni variaciones del español. Son lenguas completas, con gramáticas complejas, literaturas orales ricas y sistemas de pensamiento propios.",
+        "Durante el conflicto armado interno, que duró de 1960 a 1996, hablar una lengua indígena en ciertas zonas era peligroso. Las comunidades mayas fueron objetivo de violencia sistemática. El silencio lingüístico fue, para muchos, una estrategia de supervivencia.",
+        "Con los Acuerdos de Paz de 1996, se abrió un espacio para la revitalización lingüística. La Academia de las Lenguas Mayas de Guatemala, creada en 1990, trabaja en la estandarización ortográfica y la producción de materiales educativos.",
+        "El desafío pendiente es hacer efectivo el mandato constitucional. Todavía hay jóvenes mayas que llegan a la escuela sin hablar español, y maestros que no hablan la lengua de sus alumnos. La educación bilingüe intercultural es la promesa y el campo de batalla de este cambio."
+      ],
+      "question": { "q": "What is the Academia de las Lenguas Mayas working on?", "options": ["Teaching Spanish to Maya communities", "Spelling standardization and educational materials", "Translating the Constitution into all Maya languages", "Building schools in rural areas"], "answer": 1 }
+    },
+    {
+      "id": "l5s06", "level": 5, "title": "La montaña del quetzal", "titleEn": "The Quetzal's Mountain",
+      "teaser": "Inside the cloud forest home of Guatemala's most sacred bird.", "icon": "landscape", "minutes": 5,
+      "body": [
+        "En las montañas de Alta Verapaz, donde la niebla cubre los árboles como un manto eterno, habita el quetzal: el pájaro más sagrado de los mayas y símbolo nacional de Guatemala.",
+        "El quetzal (Pharomachrus mocinno) pertenece a la familia de los trogones. El macho tiene plumas de un verde iridiscente que cambian de tono con la luz. Su cola puede alcanzar un metro de longitud. La hembra es más discreta en colores.",
+        "Para los mayas, el quetzal representaba la libertad absoluta porque no puede sobrevivir en cautiverio. Los guerreros mayas usaban sus plumas como insignia de poder. El dios Quetzalcóatl, venerado también en México, combina al quetzal con la serpiente.",
+        "Hoy el quetzal está en peligro. Su hábitat natural, el bosque nuboso, se reduce año a año por la tala y el cambio climático. Se estima que quedan menos de cincuenta mil ejemplares en toda su área de distribución.",
+        "El Biotopo del Quetzal, en Alta Verapaz, es uno de los esfuerzos más serios para proteger esta especie. Pero la verdadera esperanza es que los guatemaltecos se convenzan de que proteger al quetzal es proteger la identidad misma del país."
+      ],
+      "question": { "q": "What is estimated about the quetzal population?", "options": ["It is growing due to conservation efforts", "The exact numbers are unknown", "There are only a few hundred left", "Fewer than fifty thousand remain in their entire range"], "answer": 3 }
+    },
+    {
+      "id": "l5s07", "level": 5, "title": "El tejido como lenguaje vivo", "titleEn": "Weaving as a Living Language",
+      "teaser": "Each thread in a Maya huipil carries meaning, history, and prayer.", "icon": "texture", "minutes": 5,
+      "body": [
+        "Cuando una mujer maya se sienta frente a su telar de cintura, no está simplemente haciendo ropa. Está participando en un acto de comunicación que trasciende el tiempo: dialogando con sus ancestras, con su comunidad y con el cosmos.",
+        "Los diseños del tejido maya no son decorativos en el sentido occidental. Son escritura. Cada figura, color y combinación transporta significado. Un maíz sobre fondo azul no es solo un dibujo bonito: puede indicar el clan de la tejedora, su municipio, su estado civil, o una oración específica.",
+        "La investigadora Margot Blum Schevill documentó, en la segunda mitad del siglo veinte, cómo los patrones del tejido cambiaban sutilmente de municipio a municipio, como dialectos de un idioma visual. Dos mujeres de pueblos vecinos podían 'leer' el tejido de la otra.",
+        "Esta capacidad de lectura está en riesgo. Las jóvenes que migran a la ciudad pierden contacto con la comunidad que da sentido al código. El tejido que compran los turistas es a menudo una simplificación que ha perdido su gramática original.",
+        "Por eso, el movimiento de rescate del tejido no es solo artesanal: es lingüístico y filosófico. Cuando las abuelas enseñan a sus nietas los diseños ancestrales, están transmitiendo una manera de ver el mundo que no existe en ningún otro idioma."
+      ],
+      "question": { "q": "How did weaving patterns vary between towns, according to researcher Schevill?", "options": ["According to the price of the threads", "Based on the age of the weaver", "Like dialects of a visual language", "Following seasonal planting cycles"], "answer": 2 }
+    },
+    {
+      "id": "l5s08", "level": 5, "title": "La historia de Antigua", "titleEn": "The History of Antigua",
+      "teaser": "From colonial capital to earthquake ruins to UNESCO heritage.", "icon": "villa", "minutes": 5,
+      "body": [
+        "Santiago de los Caballeros de Guatemala, que hoy conocemos como Antigua, fue fundada en 1543 en el Valle de Panchoy. Era la tercera capital de la Capitanía General de Guatemala, tras los desastres que destruyeron las dos anteriores.",
+        "Por más de dos siglos, Antigua fue una de las ciudades más importantes del Nuevo Mundo. Fue sede de una universidad, una imprenta, conventos de varias órdenes religiosas y una intensa vida cultural y comercial.",
+        "El terremoto de Santa Marta, el 29 de julio de 1773, cambió todo. Las autoridades coloniales decidieron trasladar la capital al Valle de la Ermita, donde hoy está Ciudad de Guatemala. Una parte de la población se negó a moverse y permaneció entre las ruinas.",
+        "Las ruinas de Antigua, en lugar de ser demolidas, se convirtieron en el corazón de la ciudad moderna. Hoy son patrimonio de la humanidad según la UNESCO y atraen millones de visitantes cada año.",
+        "Caminar por las calles empedradas de Antigua es caminar por capas de historia. Cada bloque de piedra volcánica cuenta una historia de construcción, destrucción y renacimiento."
+      ],
+      "question": { "q": "What did authorities decide after the 1773 earthquake?", "options": ["To move the capital to where Guatemala City is now", "To rebuild Antigua on a stronger foundation", "To abandon the entire region", "To ask Spain for help rebuilding"], "answer": 0 }
+    },
+    {
+      "id": "l5s09", "level": 5, "title": "Los guardianes del tiempo", "titleEn": "The Keepers of Time",
+      "teaser": "The Maya sacred calendar and the people who still count its days.", "icon": "history", "minutes": 5,
+      "body": [
+        "En el altiplano de Guatemala existe una práctica espiritual que lleva operando ininterrumpidamente desde antes de la conquista española. Los ajq'ijab, los guardianes del calendario sagrado maya, continúan contando los días con la misma matemática que usaron sus ancestros hace más de dos milenios.",
+        "El calendario sagrado maya, llamado Cholq'ij en k'iche', tiene doscientos sesenta días. Es el resultado de combinar una secuencia de veinte nahuales o energías con una cuenta de trece números. Cada combinación es única y tiene un significado específico.",
+        "Los ajq'ijab leen este calendario para guiar a las personas en decisiones importantes: cuándo sembrar, cuándo casarse, cuándo iniciar un negocio. También realizan ceremonias en lugares sagrados, encendiendo fuego y ofrendando copal, flores y alimentos.",
+        "Durante la conquista y las épocas coloniales, estas prácticas fueron perseguidas. Los ajq'ijab guardaron su conocimiento en secreto, enseñándolo solo a aquellos que habían demostrado disposición y aptitud. Así sobrevivió el conocimiento.",
+        "Hoy, en un mundo de relojes atómicos y calendarios digitales, los ajq'ijab continúan su trabajo. Son, en el más literal de los sentidos, guerreros del tiempo: personas que luchan para que la medida maya de la realidad no desaparezca del mundo."
+      ],
+      "question": { "q": "What is the Cholq'ij?", "options": ["A Maya spiritual leader", "The sacred Maya calendar of 260 days", "A ceremonial fire ritual", "A type of Maya offering"], "answer": 1 }
+    },
+    {
+      "id": "l5s10", "level": 5, "title": "La paz y la memoria", "titleEn": "Peace and Memory",
+      "teaser": "Guatemala's thirty-six year civil war and the unfinished work of justice.", "icon": "peace", "minutes": 5,
+      "body": [
+        "El 29 de diciembre de 1996, el gobierno de Guatemala y la guerrilla de la URNG firmaron los Acuerdos de Paz que pusieron fin a treinta y seis años de conflicto armado interno. Fue el conflicto más largo de América Latina del siglo veinte.",
+        "El informe de la Comisión para el Esclarecimiento Histórico, publicado en 1999, documentó más de doscientas mil víctimas, la mayoría de ellas mayas. El informe concluyó que el Estado guatemalteco había cometido actos de genocidio contra los pueblos indígenas.",
+        "La palabra 'paz' tiene significados diferentes según a quién se le pregunte. Para algunos fue un alivio después de tanto dolor. Para otros, fue un acuerdo que dejó pendiente la justicia. Para las comunidades que perdieron todo, la paz llegó tarde.",
+        "La memoria histórica es uno de los campos más complejos de la posguerra. Los Acuerdos de Paz incluían compromisos de verdad, justicia y reparación que han sido cumplidos de manera incompleta.",
+        "Sin embargo, hay esperanza. Una nueva generación de guatemaltecos está decidida a conocer su historia completa, sin versiones oficiales que oculten el dolor. Porque sin memoria no puede haber paz verdadera."
+      ],
+      "question": { "q": "What did the Historical Clarification Commission conclude about the Guatemalan State?", "options": ["That it had acted in self-defense", "That the guerrilla was primarily responsible", "That both sides were equally responsible", "That it had committed acts of genocide against indigenous peoples"], "answer": 3 }
+    },
+    {
+      "id": "l5s11", "level": 5, "title": "El sueño americano y el regreso", "titleEn": "The American Dream and the Return",
+      "teaser": "Twelve years away, and a homecoming more complex than expected.", "icon": "home", "minutes": 5,
+      "body": [
+        "Miguel Ajú salió de su pueblo en Totonicapán hace doce años con doscientos dólares en el bolsillo y la dirección de un primo en Los Ángeles. El camino le tomó tres semanas peligrosas.",
+        "En Los Ángeles, Miguel encontró trabajo en construcción. Trabajaba doce horas diarias, seis días a la semana. Enviaba dinero a Guatemala cada quince días. Con ese dinero, su familia construyó una casa y sus hermanos pudieron estudiar.",
+        "Pero el sueño americano tiene sombras. Miguel trabajó doce años sin documentos, siempre con miedo. No pudo estar cuando murió su padre. Vio crecer a sus hijos por videollamada.",
+        "El año pasado, Miguel tomó la decisión más difícil de su vida: regresar. Llegó a su pueblo con ahorros, con experiencia y con las cicatrices invisibles de una ausencia larga.",
+        "La reintegración ha sido difícil. Sus hijos hablan de él como de un extraño. Su pueblo ha cambiado. Él también ha cambiado. Miguel está aprendiendo a ser guatemalteco de nuevo, en un país que ya no es exactamente el que recordaba."
+      ],
+      "question": { "q": "Why has Miguel's return been difficult?", "options": ["He could not find work after returning", "The money he saved was not enough", "His children see him as a stranger and both he and his country have changed", "His family had moved away while he was gone"], "answer": 2 }
+    },
+    {
+      "id": "l5s12", "level": 5, "title": "Las voces del altiplano", "titleEn": "Voices of the Highlands",
+      "teaser": "The densely populated highlands where ancient and modern negotiate daily.", "icon": "record_voice_over", "minutes": 5,
+      "body": [
+        "El altiplano occidental de Guatemala es una región de contradicciones. Es la más densamente poblada del país y también una de las más pobres. Es donde se concentra la mayor diversidad lingüística y donde la marginación histórica ha sido más profunda.",
+        "Aquí viven los k'iche', los mam, los kaqchikel, los tz'utujil y otros grupos mayas. Cada uno tiene su idioma, su historia, su manera de organizar el tiempo y de interpretar el cosmos.",
+        "Las voces del altiplano son múltiples. Hay la voz del anciano que recuerda la guerra con una mezcla de dolor y dignidad. La voz de la mujer que teje a las cinco de la mañana antes de ir al mercado. La voz del joven que estudia en la ciudad y regresa los fines de semana.",
+        "Hay también voces nuevas: activistas que llevan sus demandas al Congreso, artistas que muestran su trabajo en bienales internacionales, emprendedores que usan el comercio electrónico para vender artesanías a compradores de todo el mundo.",
+        "El altiplano no es un museo. Es un lugar vivo, en constante transformación, donde lo antiguo y lo nuevo negocian permanentemente los términos de su coexistencia."
+      ],
+      "question": { "q": "What does the text say the highlands are NOT?", "options": ["A museum", "A wealthy region", "A homogeneous culture", "A peaceful place"], "answer": 0 }
+    },
+    {
+      "id": "l5s13", "level": 5, "title": "El futuro de Guatemala", "titleEn": "The Future of Guatemala",
+      "teaser": "The unresolved tensions and extraordinary energies that will shape tomorrow.", "icon": "public", "minutes": 5,
+      "body": [
+        "Hablar del futuro de Guatemala es hablar de tensiones no resueltas que se arrastran desde la colonia. La concentración de tierra y riqueza. La exclusión de los pueblos indígenas. La debilidad del Estado. La corrupción que atraviesa todas las instituciones.",
+        "Pero también es hablar de una energía social extraordinaria. Guatemala tiene una sociedad civil activa, movimientos indígenas que han ganado batallas legales importantes, una prensa que investiga y denuncia, y una juventud que no está dispuesta a aceptar las mismas condiciones que sus padres.",
+        "El caso de la CICIG —la Comisión Internacional contra la Impunidad en Guatemala— demostró que era posible llevar a la justicia a poderosos actores que creían estar por encima de la ley. Aunque la CICIG fue expulsada en 2019, su legado permanece en la memoria colectiva.",
+        "El mayor activo de Guatemala no es el café ni el turismo ni las remesas. Es su gente. Los millones de mayas que mantienen viva una cosmología de más de tres mil años. Los científicos, artistas y activistas que trabajan contra viento y marea.",
+        "El futuro de Guatemala se construye en las aulas de las escuelas rurales, en los talleres de los artesanos, en los mercados donde se negocian no solo precios sino relaciones humanas. Se construye en los pequeños actos de dignidad cotidiana que, acumulados, cambian el mundo."
+      ],
+      "question": { "q": "What was the CICIG?", "options": ["A Maya cultural organization", "An international commission against impunity in Guatemala", "A cooperative of small coffee farmers", "A peace agreement with indigenous groups"], "answer": 1 }
+    },
+    {
+      "id": "l5s14", "level": 5, "title": "La selva maya: naturaleza y misterio", "titleEn": "The Maya Jungle: Nature and Mystery",
+      "teaser": "Beneath the Petén canopy lie cities no one has seen in a thousand years.", "icon": "forest", "minutes": 5,
+      "body": [
+        "La selva del Petén es uno de los últimos grandes bloques de bosque tropical continuo que quedan en Mesoamérica. Se extiende desde el norte de Guatemala hasta el sur de México y Belice, formando la llamada 'Selva Maya'.",
+        "Esta selva alberga una biodiversidad extraordinaria: más de quinientas especies de aves, ciento cincuenta de mamíferos, y una flora que incluye árboles que no se encuentran en ningún otro lugar. El jaguar, animal sagrado de los mayas, todavía ronda estos bosques.",
+        "Pero la selva oculta también otra riqueza: bajo su dosel verde, hundidos en siglos de vegetación, hay miles de sitios arqueológicos mayas. Muchos nunca han sido explorados. Las imágenes de lidar, una tecnología de radar láser, han revelado ciudades enteras que nadie sabía que existían.",
+        "La amenaza sobre la selva es real e inmediata. La ganadería extensiva, el narcotráfico y la migración hacia zonas forestales avanzan cada año. Se estima que Guatemala pierde más de cien mil hectáreas de bosque anualmente.",
+        "Proteger la Selva Maya es proteger un patrimonio que pertenece a toda la humanidad. Es también honrar a un pueblo, el maya, que vivió en armonía con este ecosistema durante milenios y cuyo conocimiento sobre él sigue siendo irreemplazable."
+      ],
+      "question": { "q": "What technology has revealed entire unknown Maya cities in the jungle?", "options": ["Satellite imagery", "Ground-penetrating sonar", "Aerial photography", "Lidar (laser radar)"], "answer": 3 }
+    },
+    {
+      "id": "l5s15", "level": 5, "title": "El volcán y la ciudad", "titleEn": "The Volcano and the City",
+      "teaser": "Guatemala is built on fire — and it has learned to live that way.", "icon": "landscape", "minutes": 5,
+      "body": [
+        "Guatemala está construida sobre fuego. No es una metáfora: el territorio guatemalteco tiene más de treinta volcanes, de los cuales varios están activos. La capital misma, Ciudad de Guatemala, está rodeada por volcanes que se asoman en los días claros.",
+        "Esta relación con los volcanes ha dado forma a la psicología colectiva guatemalteca. Hay una aceptación callada del riesgo, una manera de vivir sabiendo que la tierra puede temblar y el fuego puede caer del cielo. No es fatalismo: es adaptación.",
+        "El Volcán de Fuego es el más activo del país. En junio de 2018, una erupción catastrófica mató a más de ciento noventa personas en la aldea de El Rodeo y comunidades cercanas. Los ríos de lava y piroclastos llegaron antes que cualquier advertencia.",
+        "La tragedia del Fuego demostró las brechas en los sistemas de alerta temprana y en los protocolos de evacuación. También demostró la solidaridad guatemalteca: miles de personas donaron tiempo, comida y recursos para las familias afectadas.",
+        "Los volcanes guatemaltecos son también una fuente de turismo, de energía geotérmica y, para muchos pueblos mayas, de espiritualidad. Son el fuego que destruye y el fuego que da vida. Son, en definitiva, Guatemala misma: poderosa, impredecible, y profundamente hermosa."
+      ],
+      "question": { "q": "What happened in June 2018 at Volcán de Fuego?", "options": ["A major earthquake destroyed nearby homes", "A new volcanic vent opened near the capital", "A catastrophic eruption killed more than 190 people", "The volcano was declared dormant"], "answer": 2 }
+    }
+  ]
+}
