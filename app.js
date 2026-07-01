@@ -486,12 +486,15 @@ function greeting() {
 }
 
 // ===== Data Transformation =====
-function transformData(raw, reading) {
+function transformData(raw, reading, synonymsMap) {
+  const syns = synonymsMap || {};
   const colls = raw.collections || {};
   const CARDS = [];
   Object.entries(colls).forEach(([deckId, entries]) => {
     entries.forEach(entry => {
-      CARDS.push({ id: entry.id, es: entry.spanish || '', en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null });
+      const es = entry.spanish || '';
+      const synonyms = deckId === 'mainWords' ? (syns[es] || []) : [];
+      CARDS.push({ id: entry.id, es, en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null, synonyms });
     });
   });
   const DECKS = Object.entries(DECK_DEFS)
@@ -598,6 +601,7 @@ function computeVals() {
         onNext: () => setState({ study: { ...S.study, idx: S.study.idx + 1, flipped: false } }),
         onShuffle: () => { setStudySource(S.study.source); flash('Shuffled'); },
         onSpeak: () => speak(card.es), onStar: () => toggleStar(id),
+        synonyms: S.study.flipped ? [] : (card.synonyms || []),
         states: stStates.map(x => ({ label: x.l, onClick: () => setProg(id, x.v), style: seg(cst.state === x.v) })),
       };
     })() : {}),
@@ -853,6 +857,11 @@ function renderStudy(v) {
     <div style="font-size:13px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">${study.faceLabel}</div>
     <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">${esc(study.faceText)}</div>
     <button ${h(study.onSpeak)} style="margin-top:22px;border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 25, 'var(--g-ink)')}</button>
+    ${study.synonyms && study.synonyms.length ? `
+    <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:7px;justify-content:center">
+      <div style="width:100%;font-size:11px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Synonyms</div>
+      ${study.synonyms.map(s => `<span style="background:var(--soft2);color:var(--muted);font-family:Nunito;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px">${esc(s)}</span>`).join('')}
+    </div>` : ''}
   </div>
   <div style="margin-top:14px">
     <div style="font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Mark as</div>
@@ -1270,17 +1279,20 @@ async function bootstrap() {
   render(); // show loading state
 
   try {
-    const [persisted, response, readingResp] = await Promise.all([
+    const [persisted, response, readingResp, synResp] = await Promise.all([
       loadState(),
       fetch(DATA_URL),
       fetch('./data/reading-data.json'),
+      fetch('./data/synonyms.json'),
     ]);
 
     if (!response.ok) throw new Error(`Failed to load data (${response.status})`);
     const raw = await response.json();
     let reading = null;
+    let synonymsMap = {};
     try { reading = await readingResp.json(); } catch(e) {}
-    const data = transformData(raw, reading);
+    try { synonymsMap = await synResp.json(); } catch(e) {}
+    const data = transformData(raw, reading, synonymsMap);
 
     let cardState = {};
     let settings = appState.settings;
