@@ -860,7 +860,7 @@ function renderStudy(v) {
     ${study.synonyms && study.synonyms.length ? `
     <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:7px;justify-content:center">
       <div style="width:100%;font-size:11px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Synonyms</div>
-      ${study.synonyms.map(s => `<span style="background:var(--soft2);color:var(--muted);font-family:Nunito;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px">${esc(s)}</span>`).join('')}
+      ${study.synonyms.map(s => `<button ${h(() => speak(s))} style="background:var(--soft2);color:var(--muted);font-family:Nunito;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;border:none;cursor:pointer">${esc(s)} ${ms('volume_up', 13, 'var(--muted2)')}</button>`).join('')}
     </div>` : ''}
   </div>
   <div style="margin-top:14px">
