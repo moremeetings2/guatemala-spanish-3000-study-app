@@ -485,16 +485,32 @@ function greeting() {
   return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
 }
 
+// Pick the best example sentence for a card: authored sentence first,
+// then the word's mini-phrase, then a lexicon example. Returns null when none exists.
+function sentenceFor(deckId, es, entry, sents) {
+  if (deckId === 'mainWords') {
+    if (sents[es]) return { es: sents[es].es, en: sents[es].en || '' };
+    if (entry.miniPhrase) return { es: entry.miniPhrase, en: entry.miniPhraseEnglish || '' };
+    return null;
+  }
+  if (deckId === 'guatemalaLexicon' && entry.lexiconExampleEs) {
+    return { es: entry.lexiconExampleEs, en: entry.lexiconExampleEn || '' };
+  }
+  return null;
+}
+
 // ===== Data Transformation =====
-function transformData(raw, reading, synonymsMap) {
+function transformData(raw, reading, synonymsMap, sentencesMap) {
   const syns = synonymsMap || {};
+  const sents = sentencesMap || {};
   const colls = raw.collections || {};
   const CARDS = [];
   Object.entries(colls).forEach(([deckId, entries]) => {
     entries.forEach(entry => {
       const es = entry.spanish || '';
       const synonyms = deckId === 'mainWords' ? (syns[es] || []) : [];
-      CARDS.push({ id: entry.id, es, en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null, synonyms });
+      const sentence = sentenceFor(deckId, es, entry, sents);
+      CARDS.push({ id: entry.id, es, en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null, synonyms, sentence });
     });
   });
   const DECKS = Object.entries(DECK_DEFS)
@@ -592,16 +608,25 @@ function computeVals() {
     ...(sLen > 0 ? (() => {
       const id = order[S.study.idx % sLen]; const card = CARDS.find(c => c.id === id);
       const cst = cs(id); const dk = deckOf(card.deck);
+      const showSentence = !!S.study.showSentence && !!card.sentence;
       return {
         deckLabel: dk ? dk.name : card.deck, deckShort: dk ? dk.short : card.deck, deckAccent: dk ? dk.accent : '#28b573',
         counter: (S.study.idx % sLen + 1) + ' / ' + sLen,
         faceLabel: S.study.flipped ? 'English' : 'Español', faceText: S.study.flipped ? card.en : card.es,
         starIcon: cst.star ? 'star' : 'star_outline', starColor: cst.star ? '#f5a524' : 'var(--muted2)',
-        onFlip: () => setState({ study: { ...S.study, flipped: !S.study.flipped } }),
-        onNext: () => setState({ study: { ...S.study, idx: S.study.idx + 1, flipped: false } }),
+        showSentence,
+        sentenceEs: card.sentence ? card.sentence.es : '',
+        sentenceEn: card.sentence ? card.sentence.en : '',
+        hasSentence: !!card.sentence && !S.study.flipped,
+        onUse: () => setState({ study: { ...S.study, showSentence: true } }),
+        onSpeakSentence: () => card.sentence && speak(card.sentence.es),
+        onFlip: () => S.study.showSentence
+          ? setState({ study: { ...S.study, showSentence: false } })
+          : setState({ study: { ...S.study, flipped: !S.study.flipped } }),
+        onNext: () => setState({ study: { ...S.study, idx: S.study.idx + 1, flipped: false, showSentence: false } }),
         onShuffle: () => { setStudySource(S.study.source); flash('Shuffled'); },
         onSpeak: () => speak(card.es), onStar: () => toggleStar(id),
-        synonyms: S.study.flipped ? [] : (card.synonyms || []),
+        synonyms: (S.study.flipped || showSentence) ? [] : (card.synonyms || []),
         states: stStates.map(x => ({ label: x.l, onClick: () => setProg(id, x.v), style: seg(cst.state === x.v) })),
       };
     })() : {}),
@@ -854,14 +879,25 @@ function renderStudy(v) {
   <div ${h(study.onFlip)} style="flex:1;min-height:300px;background:var(--surface);border:1px solid var(--line);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.07);position:relative;padding:30px;text-align:center">
     <button ${h(study.onStar)} style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer">${ms(study.starIcon, 28, study.starColor)}</button>
     <div style="position:absolute;top:20px;left:20px;font-size:11px;font-weight:800;color:#fff;background:${study.deckAccent};padding:4px 10px;border-radius:9px">${esc(study.deckShort)}</div>
+    ${study.showSentence ? `
+    <div style="font-size:13px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px">Example</div>
+    <div style="font-size:23px;font-weight:800;color:var(--ink);letter-spacing:-.3px;line-height:1.35">${esc(study.sentenceEs)}</div>
+    ${study.sentenceEn ? `<div style="font-size:15px;font-weight:600;color:var(--muted);margin-top:12px;line-height:1.3">${esc(study.sentenceEn)}</div>` : ''}
+    <button ${h(study.onSpeakSentence)} style="margin-top:22px;border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 25, 'var(--g-ink)')}</button>
+    <div style="margin-top:16px;font-size:12px;font-weight:700;color:var(--muted2)">Tap card to go back</div>
+    ` : `
     <div style="font-size:13px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">${study.faceLabel}</div>
     <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">${esc(study.faceText)}</div>
-    <button ${h(study.onSpeak)} style="margin-top:22px;border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 25, 'var(--g-ink)')}</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:22px">
+      <button ${h(study.onSpeak)} style="border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 25, 'var(--g-ink)')}</button>
+      ${study.hasSentence ? `<button ${h(study.onUse)} style="display:flex;align-items:center;gap:6px;border:none;background:var(--p-soft);color:#5560e0;font-family:Nunito;font-weight:800;font-size:15px;padding:0 18px;height:50px;border-radius:25px;cursor:pointer">${ms('format_quote', 22, '#5560e0')}Use</button>` : ''}
+    </div>
     ${study.synonyms && study.synonyms.length ? `
     <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:7px;justify-content:center">
       <div style="width:100%;font-size:11px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Synonyms</div>
       ${study.synonyms.map(s => `<button ${h(() => speak(s))} style="background:var(--soft2);color:var(--muted);font-family:Nunito;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;border:none;cursor:pointer">${esc(s)} ${ms('volume_up', 13, 'var(--muted2)')}</button>`).join('')}
     </div>` : ''}
+    `}
   </div>
   <div style="margin-top:14px">
     <div style="font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Mark as</div>
@@ -1279,20 +1315,23 @@ async function bootstrap() {
   render(); // show loading state
 
   try {
-    const [persisted, response, readingResp, synResp] = await Promise.all([
+    const [persisted, response, readingResp, synResp, sentResp] = await Promise.all([
       loadState(),
       fetch(DATA_URL),
       fetch('./data/reading-data.json'),
       fetch('./data/synonyms.json'),
+      fetch('./data/sentences.json'),
     ]);
 
     if (!response.ok) throw new Error(`Failed to load data (${response.status})`);
     const raw = await response.json();
     let reading = null;
     let synonymsMap = {};
+    let sentencesMap = {};
     try { reading = await readingResp.json(); } catch(e) {}
     try { synonymsMap = await synResp.json(); } catch(e) {}
-    const data = transformData(raw, reading, synonymsMap);
+    try { sentencesMap = await sentResp.json(); } catch(e) {}
+    const data = transformData(raw, reading, synonymsMap, sentencesMap);
 
     let cardState = {};
     let settings = appState.settings;
