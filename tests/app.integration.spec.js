@@ -1,19 +1,21 @@
 const fs = require("fs");
-const fsp = require("fs/promises");
 const { test, expect } = require("@playwright/test");
 
-const DB_NAME = "guatemala-spanish-study-app-db";
-const DB_STORE = "appState";
-const APP_JS_PATH = "app.js";
-const SW_PATH = "sw.js";
-const PROGRESS_STORAGE_KEY = "guatemala-spanish-3000-progress-v2";
-const PREFERENCES_STORAGE_KEY = "guatemala-spanish-3000-preferences-v1";
-const PERSISTENCE_SCHEMA_VERSION = 1;
-const CONVERSATION_ENTRY_ID = "conversation-001-soy-nuevo-aqu";
-const BASE_PROGRESS_TIMESTAMP = "2026-04-01T12:00:00.000Z";
-const OLDER_TIMESTAMP = "2026-04-01T12:00:00.000Z";
-const NEWER_TIMESTAMP = "2026-04-01T12:10:00.000Z";
-const SERVICE_WORKER_CACHE_NAME = extractServiceWorkerCacheName();
+// Integration coverage for the current mobile phone-style app (post-refactor).
+//
+// The app renders with inline styles + delegated `data-h` handlers and exposes
+// `appState` / `setState` / `setStudySource` / `speak` as script globals. Tests
+// drive navigation through those globals and real button clicks, then assert on
+// rendered text and on the real persistence layer:
+//   - localStorage key  : spanishStudyApp.v1        (single JSON blob)
+//   - IndexedDB          : db "spanishApp", store "kv", key "state"
+//   - legacy migration   : localStorage key guatemala-spanish-3000-progress-v2
+const STORAGE_KEY = "spanishStudyApp.v1";
+const OLD_PROGRESS_KEY = "guatemala-spanish-3000-progress-v2";
+const IDB_NAME = "spanishApp";
+const IDB_STORE = "kv";
+const IDB_KEY = "state";
+const SW_CACHE_NAME = extractServiceWorkerCacheName();
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -21,711 +23,364 @@ test.beforeEach(async ({ page }) => {
   await installSpeechStub(page);
 });
 
-test("renders the expanded phrase content and supports search across phrasebank fields", async ({ page }) => {
-  await expect(page.locator("#hero-stats")).toContainText("Coffee phrases");
-  await expect(page.locator("#hero-stats")).toContainText("Conversation verbs");
-  await expect(page.locator("#card-front-text")).toHaveText("de");
-
-  await page.locator("#flashcard").click();
-  await expect(page.locator("#card-back-meta")).toContainText("Phrase: de Guatemala -> from Guatemala");
-
-  await page.locator("#search-input").fill("de Guatemala");
-  await expect(page.locator("#results-summary")).toContainText("matching cards");
-  await expect(page.locator("#entry-list")).toContainText("de");
-  await expect(page.locator("#entry-list")).toContainText("Phrase: de Guatemala");
-
-  await page.locator("#search-input").fill("");
-  await page.locator("#deck-select").selectOption("conversationVerbs");
-  await expect(page.locator("#study-summary")).toContainText("73 cards");
-  await expect(page.locator("#card-front-text")).toHaveText("Soy nuevo aquí.");
-  await expect(page.locator("#card-front-meta")).toContainText("Conversation verb");
-  await expect(page.locator("#card-back-meta")).toContainText("Focus: ser");
+test("home dashboard shows the catalog totals and study entry points", async ({ page }) => {
+  const content = page.locator("#content");
+  await expect(content).toContainText("¡Hola! 🇬🇹");
+  await expect(content).toContainText("Flashcards");
+  await expect(content).toContainText("Quiz");
+  await expect(content).toContainText("75 stories");
+  await expect(content).toContainText("3599 cards");
 });
 
-test("loads the Guatemalan lexicon deck and searches lexicon metadata", async ({ page }) => {
-  await expect(page.locator("#hero-stats")).toContainText("Guatemalan lexicon");
-
-  await page.locator("#deck-select").selectOption("guatemalaLexicon");
-  await expect(page.locator("#study-summary")).toContainText("356 cards");
-  await expect(page.locator("#card-front-text")).toHaveText("chapín / chapina");
-  await expect(page.locator("#card-front-meta")).toContainText("Guatemalan lexicon");
-  await expect(page.locator("#card-back-meta")).toContainText("Neutral Spanish: guatemalteco; propio de Guatemala");
-
-  await page.locator("#search-input").fill("near_unique_guatemala");
-  await expect(page.locator("#results-summary")).toContainText("matching cards");
-  await expect(page.locator("#entry-list")).toContainText("chapín / chapina");
-  await expect(page.locator("#entry-list")).toContainText("Specificity 5/5");
+test("the You tab lists every deck with its card count", async ({ page }) => {
+  await page.evaluate(() => setState({ tab: "progress", route: null }));
+  const content = page.locator("#content");
+  await expect(content).toContainText("3,599");            // catalog total
+  await expect(content).toContainText("Main 3000");
+  await expect(content).toContainText("3,000 cards");
+  await expect(content).toContainText("Coffee Phrases");
+  await expect(content).toContainText("57 cards");
+  await expect(content).toContainText("Conversation");
+  await expect(content).toContainText("73 cards");
+  await expect(content).toContainText("Everyday Phrases");
+  await expect(content).toContainText("100 cards");
+  await expect(content).toContainText("Guatemala Notes");
+  await expect(content).toContainText("13 cards");
+  await expect(content).toContainText("Guatemalan Lexicon");
+  await expect(content).toContainText("356 cards");
 });
 
-test("loads the everyday Guatemalan phrases deck and flips Spanish cards to English", async ({ page }) => {
-  await expect(page.locator("#hero-stats")).toContainText("Everyday Guatemalan phrases");
+test("browse filters by deck and searches Spanish and English fields", async ({ page }) => {
+  // Filter to the lexicon deck.
+  await page.evaluate(() => openBrowse({ deck: "guatemalaLexicon" }));
+  const content = page.locator("#content");
+  await expect(content).toContainText("356 cards");
+  await expect(content).toContainText("chapín / chapina");
 
-  await page.locator("#deck-select").selectOption("everydayGuatemalaPhrases");
-  await expect(page.locator("#study-summary")).toContainText("100 cards");
-  await expect(page.locator("#card-front-text")).toHaveText("¿Cómo va todo?");
+  // Search narrows results (matches Spanish term + metadata).
+  await page.evaluate(() => setBrowse({ q: "chapín" }));
+  await expect(content).toContainText("chapín / chapina");
+  await expect(content).not.toContainText("356 cards");
 
-  await page.locator("#flashcard").click();
-  await expect(page.locator("#card-back-text")).toHaveText("How's it going?");
-
-  await page.locator("#search-input").fill("Buen punto");
-  await expect(page.locator("#results-summary")).toContainText("matching cards");
-  await expect(page.locator("#entry-list")).toContainText("Buen punto.");
-  await expect(page.locator("#entry-list")).toContainText("That's a good point.");
+  // Search across the English side, across all decks.
+  await page.evaluate(() => openBrowse({}));
+  await page.evaluate(() => setBrowse({ q: "black coffee" }));
+  await expect(content).toContainText("café negro");
 });
 
-test("supports study actions and review filters", async ({ page }) => {
-  await page.locator("#deck-select").selectOption("conversationVerbs");
-  await expect(page.locator("#card-front-text")).toHaveText("Soy nuevo aquí.");
+test("study cards flip, grade, and star — and the progress persists across reload", async ({ page }) => {
+  await openMainWordCard(page, "de"); // main-0001
+  const content = page.locator("#content");
+  await expect(content).toContainText("de");
 
-  await page.locator("#favorite-button").click();
-  await expect(page.locator("#favorite-button")).toHaveText("Favorited");
+  // Flip to English.
+  await content.locator('[data-h][style*="border-radius:28px"]').click({ position: { x: 190, y: 24 } });
+  await expect(content).toContainText("of; from");
 
-  await page.getByRole("button", { name: "Learning" }).click();
-  await expect(page.locator("#card-front-meta")).toContainText("Due now");
+  // Mark as Known and star the card.
+  await content.getByRole("button", { name: "Known" }).click();
+  await content.locator('[data-h][style*="border-radius:28px"] button').first().click(); // star (top-right)
 
-  await page.locator("#status-filter").selectOption("favorite");
-  await expect(page.locator("#study-summary")).toContainText("1 cards");
-  await expect(page.locator("#card-front-text")).toHaveText("Soy nuevo aquí.");
+  await expect
+    .poll(() => page.evaluate(() => appState.cardState["main-0001"]?.state))
+    .toBe("known");
+  await expect
+    .poll(() => page.evaluate(() => appState.cardState["main-0001"]?.star))
+    .toBe(true);
 
-  await page.locator("#session-filter").selectOption("due");
-  await expect(page.locator("#study-summary")).toContainText("1 cards");
-  await expect(page.locator("#card-front-text")).toHaveText("Soy nuevo aquí.");
-
-  const progressRecord = await readDatabaseRecord(page, "progress");
-  expect(progressRecord.kind).toBe("progress");
-  expect(progressRecord.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
-  expect(progressRecord.value[CONVERSATION_ENTRY_ID].status).toBe("learning");
-});
-
-test("runs quiz interactions and pronunciation controls", async ({ page }) => {
-  await page.locator("#quiz-scope").selectOption("all");
-  await expect(page.locator("#quiz-prompt")).not.toHaveText(/Loading quiz/);
-  await expect(page.locator("#speech-rate-input")).toHaveValue("0.68");
-
-  const firstOption = page.locator("#quiz-options .quiz-option").first();
-  const optionCount = await page.locator("#quiz-options .quiz-option").count();
-  expect(optionCount).toBe(4);
-  await firstOption.click();
-
-  await expect(page.locator("#quiz-feedback")).not.toHaveText("");
-  await expect(page.locator("#quiz-meta")).toContainText("Score");
-  await page.locator("#speech-rate-input").evaluate((node) => {
-    node.value = "0.64";
-    node.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-  await expect(page.locator("#speech-rate-value")).toHaveText("0.64x");
-
-  await page.locator("#speak-button").click();
-  await page.locator("#quiz-speak-button").click();
-
-  const speechCalls = await page.evaluate(() => window.__speechCalls);
-  expect(speechCalls.length).toBeGreaterThanOrEqual(2);
-  expect(speechCalls[0].rate).toBe(0.64);
-  expect(speechCalls[0].voiceURI).toBe("auto");
-});
-
-test("persists preferences and progress across reload and supports export/import", async ({ browser, page }) => {
-  await page.locator("#deck-select").selectOption("conversationVerbs");
-  await page.locator("#quiz-direction").selectOption("en-es");
-  await page.locator("#speech-rate-input").evaluate((node) => {
-    node.value = "0.64";
-    node.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-  await page.locator("#favorite-button").click();
-  await page.locator("#next-button").click();
-  await page.locator("#next-button").click();
-  await page.locator("#search-input").fill("primera semana");
-
-  const resumedCardText = await page.locator("#card-front-text").textContent();
-
+  // Wait until the debounced save has actually flushed to storage, then reload.
+  await expect
+    .poll(() =>
+      page.evaluate((key) => {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const card = JSON.parse(raw).cardState?.["main-0001"];
+        return card ? `${card.state}:${card.star}` : null;
+      }, STORAGE_KEY)
+    )
+    .toBe("known:true");
   await page.reload();
   await waitForAppReady(page);
+  expect(await page.evaluate(() => appState.cardState["main-0001"]?.state)).toBe("known");
+  expect(await page.evaluate(() => appState.cardState["main-0001"]?.star)).toBe(true);
+});
 
-  await expect(page.locator("#deck-select")).toHaveValue("conversationVerbs");
-  await expect(page.locator("#quiz-direction")).toHaveValue("en-es");
-  await expect(page.locator("#speech-rate-input")).toHaveValue("0.64");
-  await expect(page.locator("#search-input")).toHaveValue("primera semana");
-  await expect(page.locator("#card-front-text")).toHaveText(resumedCardText);
+test("persists a snapshot to both localStorage and IndexedDB", async ({ page }) => {
+  await page.evaluate(() => setProg("main-0002", "learning"));
+  await page.waitForTimeout(400);
 
+  const local = await page.evaluate((key) => {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  }, STORAGE_KEY);
+  expect(local?.cardState?.["main-0002"]?.state).toBe("learning");
+
+  const idb = await readIdbState(page);
+  expect(idb?.cardState?.["main-0002"]?.state).toBe("learning");
+});
+
+test("runs a full quiz to completion and updates the score", async ({ page }) => {
+  await page.evaluate(() => setState({ tab: "quiz", route: null, quiz: { ...appState.quiz, phase: "intro", source: "all" } }));
+  const content = page.locator("#content");
+
+  await content.getByRole("button", { name: /Start quiz/ }).click();
+  await expect.poll(() => page.evaluate(() => appState.quiz.phase)).toBe("play");
+
+  // Answer every question with the correct option (deterministic 100%).
+  for (let guard = 0; guard < 12; guard += 1) {
+    const done = await page.evaluate(() => appState.quiz.phase === "done");
+    if (done) break;
+    await page.evaluate(() => {
+      const cur = appState.quiz.qs[appState.quiz.idx];
+      const answer = cur.options[cur.answer];
+      const btn = [...document.querySelectorAll("#content button")].find(
+        (b) => b.textContent.trim() === answer
+      );
+      btn.click();
+    });
+    await page.evaluate(() => {
+      const label = appState.quiz.idx + 1 >= appState.quiz.qs.length ? "See results" : "Next question";
+      const btn = [...document.querySelectorAll("#content button")].find(
+        (b) => b.textContent.trim() === label
+      );
+      if (btn) btn.click();
+    });
+  }
+
+  await expect(content).toContainText("Quiz complete!");
+  await expect(content).toContainText("100%");
+});
+
+test("settings persist speed and theme and drive the pronunciation rate", async ({ page }) => {
+  await page.evaluate(() => setState({ route: "settings" }));
+  const content = page.locator("#content");
+
+  await content.getByRole("button", { name: "Fast" }).click();
+  await content.getByRole("button", { name: /Dark/ }).click();
+
+  // Theme is reflected on the root element and stored in settings.
+  await expect(page.locator("#screen")).toHaveAttribute("data-theme", "dark");
+  expect(await page.evaluate(() => appState.settings.speed)).toBe(1.25);
+
+  // Choosing a speed also fires a test-voice preview at the new rate.
+  await expect
+    .poll(() => page.evaluate(() => (window.__speech.at(-1) || {}).rate))
+    .toBe(1.25);
+
+  // Preferences survive a reload (wait for the save to flush first).
+  await expect
+    .poll(() =>
+      page.evaluate((key) => {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw).settings?.theme : null;
+      }, STORAGE_KEY)
+    )
+    .toBe("dark");
+  await page.reload();
+  await waitForAppReady(page);
+  expect(await page.evaluate(() => appState.settings.speed)).toBe(1.25);
+  expect(await page.evaluate(() => appState.settings.theme)).toBe("dark");
+  await expect(page.locator("#screen")).toHaveAttribute("data-theme", "dark");
+});
+
+test("exports a JSON backup and imports it into a clean profile", async ({ browser, page }) => {
+  // Create some progress to back up.
+  await page.evaluate(() => {
+    setProg("main-0001", "known");
+    toggleStar("main-0001");
+    setState({ settings: { ...appState.settings, speed: 1.25 } });
+  });
+  await page.waitForTimeout(200);
+
+  await page.evaluate(() => setState({ route: "settings" }));
   const downloadPromise = page.waitForEvent("download");
-  await page.locator("#export-progress-button").click();
+  await page.locator("#content").getByRole("button", { name: /Export progress/ }).click();
   const download = await downloadPromise;
-  const exportJson = JSON.parse(fs.readFileSync(await download.path(), "utf8"));
-  expect(exportJson.preferences.ui.deck).toBe("conversationVerbs");
-  expect(exportJson.preferences.ui.search).toBe("primera semana");
-  expect(exportJson.preferences.ui.currentEntryId).toBeTruthy();
-  expect(exportJson.preferences.quiz.direction).toBe("en-es");
-  expect(exportJson.preferences.audio.rate).toBe(0.64);
-  expect(exportJson.progress[CONVERSATION_ENTRY_ID].favorite).toBe(true);
+  expect(download.suggestedFilename()).toBe("spanish-progress.json");
+  const exported = JSON.parse(fs.readFileSync(await download.path(), "utf8"));
+  expect(exported.cardState["main-0001"].state).toBe("known");
+  expect(exported.cardState["main-0001"].star).toBe(true);
+  expect(exported.settings.speed).toBe(1.25);
 
-  const importedPayload = {
-    version: 3,
-    exportedAt: new Date().toISOString(),
-    progress: {
-      "main-0001": {
-        status: "known",
-        favorite: true,
-        reviewCount: 2,
-        quizSeen: 2,
-        quizCorrect: 2,
-        correctStreak: 2,
-        wrongCount: 0,
-        intervalDays: 3,
-        ease: 2.5,
-        dueAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-        lastReviewedAt: new Date().toISOString(),
-        lastOutcome: "correct",
-      },
-    },
-    preferences: {
-      ui: {
-        deck: "mainWords",
-        session: "all",
-        statusFilter: "favorite",
-        band: "1K",
-        type: "word",
-        search: "de Guatemala",
-        currentEntryId: "main-0001",
-      },
-      quiz: {
-        scope: "all",
-        direction: "es-en",
-      },
-      audio: {
-        voiceURI: "auto",
-        rate: 0.6,
-      },
-    },
-  };
-
+  // Import the same backup into a brand-new browser context.
   const cleanContext = await browser.newContext({ acceptDownloads: true });
   const cleanPage = await cleanContext.newPage();
   await cleanPage.goto("/");
   await waitForAppReady(cleanPage);
   await installSpeechStub(cleanPage);
 
-  await cleanPage.locator("#import-progress-input").setInputFiles({
-    name: "import.json",
+  await cleanPage.evaluate(() => setState({ route: "settings" }));
+  await cleanPage.locator('#content input[type="file"]').setInputFiles({
+    name: "spanish-progress.json",
     mimeType: "application/json",
-    buffer: Buffer.from(JSON.stringify(importedPayload), "utf8"),
+    buffer: Buffer.from(JSON.stringify(exported), "utf8"),
   });
 
-  await expect(cleanPage.locator("#import-status")).toContainText("Imported 1 progress records.");
-  await expect(cleanPage.locator("#deck-select")).toHaveValue("mainWords");
-  await expect(cleanPage.locator("#status-filter")).toHaveValue("favorite");
-  await expect(cleanPage.locator("#band-filter")).toHaveValue("1K");
-  await expect(cleanPage.locator("#type-filter")).toHaveValue("word");
-  await expect(cleanPage.locator("#search-input")).toHaveValue("de guatemala");
-  await expect(cleanPage.locator("#speech-rate-input")).toHaveValue("0.6");
-  await expect(cleanPage.locator("#card-front-text")).toHaveText("de");
-  await expect(cleanPage.locator("#favorite-button")).toHaveText("Favorited");
-
-  const importedPreferences = await readDatabaseRecord(cleanPage, "preferences");
-  expect(importedPreferences.kind).toBe("preferences");
-  expect(importedPreferences.value.ui.deck).toBe("mainWords");
-  expect(importedPreferences.value.ui.currentEntryId).toBe("main-0001");
-  expect(importedPreferences.value.quiz.scope).toBe("all");
-  expect(importedPreferences.value.audio.rate).toBe(0.6);
+  await expect(cleanPage.locator("#toast-el")).toContainText("Progress imported");
+  expect(await cleanPage.evaluate(() => appState.cardState["main-0001"]?.state)).toBe("known");
+  expect(await cleanPage.evaluate(() => appState.cardState["main-0001"]?.star)).toBe(true);
+  expect(await cleanPage.evaluate(() => appState.settings.speed)).toBe(1.25);
 
   await cleanContext.close();
 });
 
-test("persists study progress across a full relaunch", async ({ playwright, browserName, baseURL }, testInfo) => {
-  const userDataDir = testInfo.outputPath(`persistent-profile-${browserName}`);
-  await fsp.mkdir(userDataDir, { recursive: true });
+test("migrates progress saved under the legacy storage key", async ({ page }) => {
+  // Clear the current stores, seed the old-format progress, then reload.
+  await page.evaluate(async ({ storageKey, oldKey, dbName, store, dbKey }) => {
+    localStorage.removeItem(storageKey);
+    localStorage.setItem(
+      oldKey,
+      JSON.stringify({
+        value: {
+          "main-0001": { status: "known", favorite: true, quizCorrect: 2, reviewCount: 1, lastOutcome: "correct" },
+        },
+      })
+    );
+    await new Promise((resolve) => {
+      const req = indexedDB.open(dbName);
+      req.onsuccess = () => {
+        const db = req.result;
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).delete(dbKey);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => resolve();
+      };
+      req.onerror = () => resolve();
+    });
+  }, { storageKey: STORAGE_KEY, oldKey: OLD_PROGRESS_KEY, dbName: IDB_NAME, store: IDB_STORE, dbKey: IDB_KEY });
 
-  let context = await launchPersistentAppContext(playwright, browserName, userDataDir);
-  let page = context.pages()[0] || await context.newPage();
-  await page.goto(baseURL);
+  await page.reload();
   await waitForAppReady(page);
-  await page.locator("#next-button").click();
-  await page.locator("#next-button").click();
-  await page.locator("#next-button").click();
-  const resumedCardText = await page.locator("#card-front-text").textContent();
-  await context.close();
 
-  context = await launchPersistentAppContext(playwright, browserName, userDataDir);
-  page = context.pages()[0] || await context.newPage();
-  await page.goto(baseURL);
-  await waitForAppReady(page);
-
-  await expect(page.locator("#deck-select")).toHaveValue("all");
-  await expect(page.locator("#card-front-text")).toHaveText(resumedCardText);
-
-  const preferencesRecord = await readDatabaseRecord(page, "preferences");
-  expect(preferencesRecord.kind).toBe("preferences");
-  expect(preferencesRecord.value.ui.currentEntryId).toBeTruthy();
-
-  await context.close();
+  const migrated = await page.evaluate(() => appState.cardState["main-0001"]);
+  expect(migrated.state).toBe("known");
+  expect(migrated.star).toBe(true);
+  expect(migrated.correct).toBe(2);
 });
 
-test("refreshes a stale cached app shell instead of pinning the old app.js", async ({ browser }) => {
-  const scenario = await openScenarioPage(browser);
-  await ensureServiceWorkerControlsPage(scenario.page);
+test("service worker serves a fresh app.js over a stale cached copy", async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto("/");
+  await waitForAppReady(page);
 
+  const hasSW = await page.evaluate(() => "serviceWorker" in navigator);
+  test.skip(!hasSW, "Service workers unavailable in this browser context");
+
+  await ensureServiceWorkerControlsPage(page);
+
+  // Poison the cache with a stale app.js that tags the document if it runs.
   const staleAppJs =
     'document.documentElement.dataset.cachedAppVariant = "stale-shell";\n' +
-    fs.readFileSync(APP_JS_PATH, "utf8");
-
-  await scenario.page.evaluate(
+    fs.readFileSync("app.js", "utf8");
+  await page.evaluate(
     async ({ cacheName, scriptText }) => {
       const cache = await caches.open(cacheName);
-      const appJsUrl = new URL("./app.js", location.href).href;
       await cache.put(
-        appJsUrl,
-        new Response(scriptText, {
-          headers: { "Content-Type": "application/javascript" },
-        })
+        new URL("./app.js", location.href).href,
+        new Response(scriptText, { headers: { "Content-Type": "application/javascript" } })
       );
     },
-    {
-      cacheName: SERVICE_WORKER_CACHE_NAME,
-      scriptText: staleAppJs,
-    }
+    { cacheName: SW_CACHE_NAME, scriptText: staleAppJs }
   );
 
-  await scenario.page.close();
-  const reopenedPage = await scenario.context.newPage();
-  await reopenedPage.goto("/");
-  await waitForAppReady(reopenedPage);
+  await page.close();
+  const reopened = await context.newPage();
+  await reopened.goto("/");
+  await waitForAppReady(reopened);
 
-  await expect.poll(async () => {
-    return reopenedPage.evaluate(() => ({
-      cachedAppVariant: document.documentElement.dataset.cachedAppVariant || null,
-      hasController: Boolean(navigator.serviceWorker?.controller),
-    }));
-  }).toEqual({
-    cachedAppVariant: null,
-    hasController: true,
-  });
+  // network-first must win: the stale marker never appears, and the SW controls.
+  await expect
+    .poll(() =>
+      reopened.evaluate(() => ({
+        stale: document.documentElement.dataset.cachedAppVariant || null,
+        controlled: Boolean(navigator.serviceWorker?.controller),
+      }))
+    )
+    .toEqual({ stale: null, controlled: true });
 
-  await scenario.context.close();
+  await context.close();
 });
 
-test("prefers the newest localStorage snapshot and backfills IndexedDB", async ({ browser }) => {
-  const scenario = await openScenarioPage(browser);
-  const newerProgress = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
-  const olderProgress = makeEnvelope("progress", {}, OLDER_TIMESTAMP);
-  const newerPreferences = makeEnvelope(
-    "preferences",
-    buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
-    NEWER_TIMESTAMP
-  );
-  const olderPreferences = makeEnvelope(
-    "preferences",
-    buildPreferences({ ui: { deck: "mainWords", currentEntryId: "main-0001" } }),
-    OLDER_TIMESTAMP
-  );
-
-  await writeLocalStorageJson(scenario.page, PROGRESS_STORAGE_KEY, newerProgress);
-  await writeLocalStorageJson(scenario.page, PREFERENCES_STORAGE_KEY, newerPreferences);
-  await writeDatabaseValue(scenario.page, "progress", olderProgress);
-  await writeDatabaseValue(scenario.page, "preferences", olderPreferences);
-  await scenario.page.reload();
-  await waitForAppReady(scenario.page);
-
-  await expect(scenario.page.locator("#deck-select")).toHaveValue("conversationVerbs");
-  await expect(scenario.page.locator("#favorite-button")).toHaveText("Favorited");
-
-  const repairedProgress = await readDatabaseRecord(scenario.page, "progress");
-  const repairedPreferences = await readDatabaseRecord(scenario.page, "preferences");
-  expect(repairedProgress.updatedAt).toBe(NEWER_TIMESTAMP);
-  expect(repairedPreferences.updatedAt).toBe(NEWER_TIMESTAMP);
-  expect(repairedProgress.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
-  expect(repairedPreferences.value.ui.deck).toBe("conversationVerbs");
-  expect(repairedPreferences.value.ui.currentEntryId).toBe(CONVERSATION_ENTRY_ID);
-
-  await scenario.context.close();
-});
-
-test("prefers the newest IndexedDB snapshot and backfills localStorage", async ({ browser }) => {
-  const scenario = await openScenarioPage(browser);
-  const olderProgress = makeEnvelope("progress", {}, OLDER_TIMESTAMP);
-  const newerProgress = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
-  const olderPreferences = makeEnvelope(
-    "preferences",
-    buildPreferences({ ui: { deck: "mainWords", currentEntryId: "main-0001" } }),
-    OLDER_TIMESTAMP
-  );
-  const newerPreferences = makeEnvelope(
-    "preferences",
-    buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
-    NEWER_TIMESTAMP
-  );
-
-  await writeLocalStorageJson(scenario.page, PROGRESS_STORAGE_KEY, olderProgress);
-  await writeLocalStorageJson(scenario.page, PREFERENCES_STORAGE_KEY, olderPreferences);
-  await writeDatabaseValue(scenario.page, "progress", newerProgress);
-  await writeDatabaseValue(scenario.page, "preferences", newerPreferences);
-  await scenario.page.reload();
-  await waitForAppReady(scenario.page);
-
-  await expect(scenario.page.locator("#deck-select")).toHaveValue("conversationVerbs");
-  await expect(scenario.page.locator("#favorite-button")).toHaveText("Favorited");
-
-  const repairedLocalProgress = await readLocalStorageJson(scenario.page, PROGRESS_STORAGE_KEY);
-  const repairedLocalPreferences = await readLocalStorageJson(scenario.page, PREFERENCES_STORAGE_KEY);
-  expect(repairedLocalProgress.updatedAt).toBe(NEWER_TIMESTAMP);
-  expect(repairedLocalPreferences.updatedAt).toBe(NEWER_TIMESTAMP);
-  expect(repairedLocalProgress.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
-  expect(repairedLocalPreferences.value.ui.deck).toBe("conversationVerbs");
-
-  await scenario.context.close();
-});
-
-test("repairs missing or corrupt stores from the remaining valid snapshot", async ({ browser }) => {
-  await test.step("backfills a missing localStorage snapshot from IndexedDB", async () => {
-    const scenario = await openScenarioPage(browser);
-    const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
-    const preferencesEnvelope = makeEnvelope(
-      "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
-      NEWER_TIMESTAMP
-    );
-
-    await removeLocalStorageKey(scenario.page, PROGRESS_STORAGE_KEY);
-    await removeLocalStorageKey(scenario.page, PREFERENCES_STORAGE_KEY);
-    await writeDatabaseValue(scenario.page, "progress", progressEnvelope);
-    await writeDatabaseValue(scenario.page, "preferences", preferencesEnvelope);
-    await scenario.page.reload();
-    await waitForAppReady(scenario.page);
-
-    const repairedLocalProgress = await readLocalStorageJson(scenario.page, PROGRESS_STORAGE_KEY);
-    const repairedLocalPreferences = await readLocalStorageJson(scenario.page, PREFERENCES_STORAGE_KEY);
-    expect(repairedLocalProgress.updatedAt).toBe(NEWER_TIMESTAMP);
-    expect(repairedLocalPreferences.updatedAt).toBe(NEWER_TIMESTAMP);
-    expect(repairedLocalProgress.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
-    expect(repairedLocalPreferences.value.ui.deck).toBe("conversationVerbs");
-
-    await scenario.context.close();
-  });
-
-  await test.step("backfills a missing IndexedDB snapshot from localStorage", async () => {
-    const scenario = await openScenarioPage(browser);
-    const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
-    const preferencesEnvelope = makeEnvelope(
-      "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
-      NEWER_TIMESTAMP
-    );
-
-    await writeLocalStorageJson(scenario.page, PROGRESS_STORAGE_KEY, progressEnvelope);
-    await writeLocalStorageJson(scenario.page, PREFERENCES_STORAGE_KEY, preferencesEnvelope);
-    await deleteDatabaseValue(scenario.page, "progress");
-    await deleteDatabaseValue(scenario.page, "preferences");
-    await scenario.page.reload();
-    await waitForAppReady(scenario.page);
-
-    const repairedProgress = await readDatabaseRecord(scenario.page, "progress");
-    const repairedPreferences = await readDatabaseRecord(scenario.page, "preferences");
-    expect(repairedProgress.updatedAt).toBe(NEWER_TIMESTAMP);
-    expect(repairedPreferences.updatedAt).toBe(NEWER_TIMESTAMP);
-    expect(repairedProgress.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
-    expect(repairedPreferences.value.ui.deck).toBe("conversationVerbs");
-
-    await scenario.context.close();
-  });
-
-  await test.step("repairs corrupt localStorage from IndexedDB", async () => {
-    const scenario = await openScenarioPage(browser);
-    const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
-    const preferencesEnvelope = makeEnvelope(
-      "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
-      NEWER_TIMESTAMP
-    );
-
-    await writeLocalStorageRaw(scenario.page, PROGRESS_STORAGE_KEY, "{broken-json");
-    await writeLocalStorageRaw(scenario.page, PREFERENCES_STORAGE_KEY, "{broken-json");
-    await writeDatabaseValue(scenario.page, "progress", progressEnvelope);
-    await writeDatabaseValue(scenario.page, "preferences", preferencesEnvelope);
-    await scenario.page.reload();
-    await waitForAppReady(scenario.page);
-
-    const repairedLocalProgress = await readLocalStorageJson(scenario.page, PROGRESS_STORAGE_KEY);
-    const repairedLocalPreferences = await readLocalStorageJson(scenario.page, PREFERENCES_STORAGE_KEY);
-    expect(repairedLocalProgress.updatedAt).toBe(NEWER_TIMESTAMP);
-    expect(repairedLocalPreferences.updatedAt).toBe(NEWER_TIMESTAMP);
-
-    await scenario.context.close();
-  });
-
-  await test.step("repairs corrupt IndexedDB from localStorage", async () => {
-    const scenario = await openScenarioPage(browser);
-    const progressEnvelope = makeEnvelope("progress", buildConversationProgress(), NEWER_TIMESTAMP);
-    const preferencesEnvelope = makeEnvelope(
-      "preferences",
-      buildPreferences({ ui: { deck: "conversationVerbs", currentEntryId: CONVERSATION_ENTRY_ID } }),
-      NEWER_TIMESTAMP
-    );
-
-    await writeLocalStorageJson(scenario.page, PROGRESS_STORAGE_KEY, progressEnvelope);
-    await writeLocalStorageJson(scenario.page, PREFERENCES_STORAGE_KEY, preferencesEnvelope);
-    await writeDatabaseValue(scenario.page, "progress", { schemaVersion: 1, kind: "progress", updatedAt: "broken", value: {} });
-    await writeDatabaseValue(scenario.page, "preferences", { schemaVersion: 1, kind: "preferences", updatedAt: "broken", value: {} });
-    await scenario.page.reload();
-    await waitForAppReady(scenario.page);
-
-    const repairedProgress = await readDatabaseRecord(scenario.page, "progress");
-    const repairedPreferences = await readDatabaseRecord(scenario.page, "preferences");
-    expect(repairedProgress.updatedAt).toBe(NEWER_TIMESTAMP);
-    expect(repairedPreferences.updatedAt).toBe(NEWER_TIMESTAMP);
-    expect(repairedProgress.value[CONVERSATION_ENTRY_ID].favorite).toBe(true);
-    expect(repairedPreferences.value.ui.deck).toBe("conversationVerbs");
-
-    await scenario.context.close();
-  });
-});
+// ===== Helpers =====
 
 async function waitForAppReady(page) {
-  await expect(page.locator("#hero-description")).not.toContainText("Loading workbook data...");
-  await expect(page.locator("#card-front-text")).not.toContainText("Loading...");
-  await expect(page.locator("#results-summary")).not.toContainText("Loading list...");
+  await page.waitForFunction(
+    () =>
+      typeof appState !== "undefined" &&
+      appState.loaded &&
+      appState.data &&
+      document.querySelector("#content") &&
+      document.querySelector("#content").childElementCount > 0,
+    null,
+    { timeout: 15000 }
+  );
 }
 
+// Replace speech synthesis with a recorder so pronunciation is testable offline.
 async function installSpeechStub(page) {
   await page.evaluate(() => {
-    window.__speechCalls = [];
-    speakEntry = (entry) => {
-      if (!entry) {
-        return;
-      }
-
-      window.__speechCalls.push({
-        text: entry.spanish,
-        voiceURI: document.querySelector("#voice-select")?.value || "auto",
-        rate: Number(document.querySelector("#speech-rate-input")?.value || "0"),
-      });
+    window.__speech = [];
+    const stub = {
+      speak: (u) =>
+        window.__speech.push({
+          text: u && u.text,
+          rate: u && u.rate,
+          voiceURI: u && u.voice ? u.voice.voiceURI : "auto",
+        }),
+      cancel() {},
+      pause() {},
+      resume() {},
+      getVoices: () => [],
+      onvoiceschanged: null,
     };
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: stub });
   });
+}
+
+async function openMainWordCard(page, spanish) {
+  await page.evaluate((word) => {
+    const card = appState.data.CARDS.find((c) => c.deck === "mainWords" && c.es === word);
+    if (appState.study.order.indexOf(card.id) === -1) setStudySource("all");
+    const pos = appState.study.order.indexOf(card.id);
+    setState({ tab: "study", route: null, study: { ...appState.study, idx: pos, flipped: false, showSentence: false } });
+  }, spanish);
+}
+
+async function readIdbState(page) {
+  return page.evaluate(
+    ({ dbName, store, dbKey }) =>
+      new Promise((resolve) => {
+        const req = indexedDB.open(dbName);
+        req.onsuccess = () => {
+          const db = req.result;
+          const tx = db.transaction(store, "readonly");
+          const get = tx.objectStore(store).get(dbKey);
+          get.onsuccess = () => resolve(get.result || null);
+          get.onerror = () => resolve(null);
+        };
+        req.onerror = () => resolve(null);
+      }),
+    { dbName: IDB_NAME, store: IDB_STORE, dbKey: IDB_KEY }
+  );
 }
 
 async function ensureServiceWorkerControlsPage(page) {
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
   });
-
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const hasController = await page.evaluate(() => Boolean(navigator.serviceWorker?.controller));
-    if (hasController) {
-      return;
-    }
-
+    const controlled = await page.evaluate(() => Boolean(navigator.serviceWorker?.controller));
+    if (controlled) return;
     await page.reload();
     await waitForAppReady(page);
   }
-
-  await expect.poll(async () => {
-    return page.evaluate(() => Boolean(navigator.serviceWorker?.controller));
-  }).toBe(true);
-}
-
-async function launchPersistentAppContext(playwright, browserName, userDataDir) {
-  return playwright[browserName].launchPersistentContext(userDataDir, {
-    acceptDownloads: true,
-    viewport: { width: 430, height: 932 },
-  });
-}
-
-async function openScenarioPage(browser) {
-  const context = await browser.newContext({ acceptDownloads: true });
-  const page = await context.newPage();
-  await page.goto("/");
-  await waitForAppReady(page);
-  await installSpeechStub(page);
-  return { context, page };
-}
-
-function makeEnvelope(kind, value, updatedAt) {
-  return {
-    schemaVersion: PERSISTENCE_SCHEMA_VERSION,
-    kind,
-    updatedAt,
-    value,
-  };
-}
-
-function buildConversationProgress(overrides = {}) {
-  return {
-    [CONVERSATION_ENTRY_ID]: {
-      status: "learning",
-      favorite: true,
-      reviewCount: 1,
-      quizSeen: 1,
-      quizCorrect: 0,
-      correctStreak: 0,
-      wrongCount: 1,
-      intervalDays: 0,
-      ease: 2.1,
-      dueAt: BASE_PROGRESS_TIMESTAMP,
-      lastReviewedAt: BASE_PROGRESS_TIMESTAMP,
-      lastOutcome: "incorrect",
-      ...overrides,
-    },
-  };
-}
-
-function buildPreferences(overrides = {}) {
-  return {
-    ui: {
-      deck: "all",
-      session: "all",
-      statusFilter: "all",
-      band: "all",
-      type: "all",
-      search: "",
-      currentEntryId: null,
-      ...overrides.ui,
-    },
-    quiz: {
-      scope: "due",
-      direction: "es-en",
-      ...overrides.quiz,
-    },
-    audio: {
-      version: 2,
-      voiceURI: "auto",
-      rate: 0.68,
-      ...overrides.audio,
-    },
-  };
-}
-
-async function readDatabaseRecord(page, key) {
-  let lastError = null;
-
-  for (let attempt = 0; attempt < 5; attempt += 1) {
-    try {
-      return await page.evaluate(
-        async ({ databaseName, storeName, recordKey }) => {
-          const database = await new Promise((resolve, reject) => {
-            const request = indexedDB.open(databaseName);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-          });
-
-          const transaction = database.transaction(storeName, "readonly");
-          const store = transaction.objectStore(storeName);
-          const record = await new Promise((resolve, reject) => {
-            const request = store.get(recordKey);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-          });
-
-          return record?.value ?? null;
-        },
-        {
-          databaseName: DB_NAME,
-          storeName: DB_STORE,
-          recordKey: key,
-        }
-      );
-    } catch (error) {
-      lastError = error;
-      const message = String(error);
-      const isTransientIndexedDbError =
-        message.includes("Error looking up record in object store by key range") ||
-        message.includes("The database connection is closing") ||
-        message.includes("One of the specified object stores was not found");
-
-      if (!isTransientIndexedDbError || attempt === 4) {
-        throw error;
-      }
-
-      await page.waitForTimeout(100);
-    }
-  }
-
-  throw lastError;
-}
-
-async function readLocalStorageJson(page, storageKey) {
-  return page.evaluate((key) => {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  }, storageKey);
-}
-
-async function writeLocalStorageJson(page, storageKey, value) {
-  await page.evaluate(
-    ({ key, nextValue }) => {
-      localStorage.setItem(key, JSON.stringify(nextValue));
-    },
-    { key: storageKey, nextValue: value }
-  );
-}
-
-async function writeLocalStorageRaw(page, storageKey, raw) {
-  await page.evaluate(
-    ({ key, value }) => {
-      localStorage.setItem(key, value);
-    },
-    { key: storageKey, value: raw }
-  );
-}
-
-async function removeLocalStorageKey(page, storageKey) {
-  await page.evaluate((key) => {
-    localStorage.removeItem(key);
-  }, storageKey);
-}
-
-async function writeDatabaseValue(page, key, value) {
-  await page.evaluate(
-    async ({ databaseName, storeName, recordKey, recordValue }) => {
-      const database = await new Promise((resolve, reject) => {
-        const request = indexedDB.open(databaseName);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-
-      await new Promise((resolve, reject) => {
-        const transaction = database.transaction(storeName, "readwrite");
-        transaction.objectStore(storeName).put({ key: recordKey, value: recordValue });
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () => reject(transaction.error);
-        transaction.onabort = () => reject(transaction.error);
-      });
-    },
-    {
-      databaseName: DB_NAME,
-      storeName: DB_STORE,
-      recordKey: key,
-      recordValue: value,
-    }
-  );
-}
-
-async function deleteDatabaseValue(page, key) {
-  await page.evaluate(
-    async ({ databaseName, storeName, recordKey }) => {
-      const database = await new Promise((resolve, reject) => {
-        const request = indexedDB.open(databaseName);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-
-      await new Promise((resolve, reject) => {
-        const transaction = database.transaction(storeName, "readwrite");
-        transaction.objectStore(storeName).delete(recordKey);
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () => reject(transaction.error);
-        transaction.onabort = () => reject(transaction.error);
-      });
-    },
-    {
-      databaseName: DB_NAME,
-      storeName: DB_STORE,
-      recordKey: key,
-    }
-  );
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker?.controller))).toBe(true);
 }
 
 function extractServiceWorkerCacheName() {
-  const swSource = fs.readFileSync(SW_PATH, "utf8");
-  const match = swSource.match(/const CACHE_NAME = "([^"]+)"/);
-  if (!match) {
-    throw new Error("Unable to determine the service worker cache name.");
-  }
+  const source = fs.readFileSync("sw.js", "utf8");
+  const match = source.match(/const CACHE_NAME = "([^"]+)"/);
+  if (!match) throw new Error("Unable to determine the service worker cache name.");
   return match[1];
 }

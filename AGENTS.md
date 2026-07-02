@@ -20,8 +20,8 @@
 - `data/synonyms.json`: Spanish synonyms for Main 3000 words (shown on flashcards)
 - `data/sentences.json`: example sentences for all 3000 Main 3000 words (the "Use" button); top ~150 hand-authored, rest generated
 - The "You" tab includes a Guatemalan Lexicon reference view (`renderLexicon`, route `lexicon`) showing each term with its example sentence
-- `tests/app.integration.spec.js`: Playwright integration tests (LEGACY: targets the pre-refactor UI; currently stale)
-- `tests/study-card-enrichments.spec.js`: Playwright tests for synonyms + example-sentence card features (current UI)
+- `tests/app.integration.spec.js`: Playwright integration tests for the core app (home, browse, study, quiz, settings, persistence, legacy migration, service worker) — current UI
+- `tests/study-card-enrichments.spec.js`: Playwright tests for synonyms + example-sentence card features and the Lexicon view (current UI)
 - `tools/generate_synonyms.py`: regenerates `data/synonyms.json` from WordNet (NLTK)
 - `playwright.config.js`: Playwright config
 - `tools/build_study_pack_from_csv_sources.py`: rebuilds study-pack data from CSV sources
