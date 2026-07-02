@@ -71,9 +71,9 @@ test('the "Use" button reveals an example sentence and the card flips back', asy
   await expect(content).not.toContainText("Me gusta hablar con mis amigos.");
 });
 
-test("falls back to the mini-phrase for words beyond the authored set", async ({ page }) => {
-  // "peseta" is deep in the deck (no authored sentence) and should fall back
-  // to its mini-phrase so the Use button still works and no card is blank.
+test("shows an authored example sentence for a word deep in the deck", async ({ page }) => {
+  // "peseta" is far down the frequency list; every Main 3000 word now has a
+  // real authored sentence (with the mini-phrase kept only as a safety net).
   await page.evaluate(() => {
     const card = appState.data.CARDS.find((c) => c.deck === "mainWords" && c.es === "peseta");
     if (appState.study.order.indexOf(card.id) === -1) setStudySource("all");
@@ -86,8 +86,33 @@ test("falls back to the mini-phrase for words beyond the authored set", async ({
   await expect(useButton).toBeVisible();
   await useButton.click();
   await expect(content).toContainText("Example");
-  // Fallback mini-phrase pairs Spanish with its English gloss.
-  await expect(content).toContainText("peseta");
+  await expect(content).toContainText("Mi abuela guarda una peseta vieja.");
+});
+
+test("opens the Guatemalan Lexicon from the You tab with example sentences", async ({ page }) => {
+  await page.evaluate(() => setState({ tab: "progress", route: null }));
+  const content = page.locator("#content");
+
+  // Entry point card lives in the You tab.
+  const entry = content.getByRole("button", { name: /Guatemalan Lexicon/ });
+  await expect(entry).toBeVisible();
+  await entry.click();
+
+  // Reference view header + a known entry with its own example sentence.
+  await expect(content).toContainText("356 words & phrases");
+  await expect(content).toContainText("chapín / chapina");
+  await expect(content).toContainText("Mi amiga es chapina y habla con mucho sabor local.");
+});
+
+test("search filters the Guatemalan Lexicon list", async ({ page }) => {
+  await page.evaluate(() => setState({ route: "lexicon", lexQ: "" }));
+  const content = page.locator("#content");
+  await expect(content).toContainText("356 words & phrases");
+
+  await page.evaluate(() => setState({ lexQ: "chapin" }));
+  await expect(content).toContainText("of 356");
+  await expect(content).toContainText("chapín / chapina");
+  await expect(content).not.toContainText("356 words & phrases");
 });
 
 test("does not offer a Use button on cards without an example sentence", async ({ page }) => {

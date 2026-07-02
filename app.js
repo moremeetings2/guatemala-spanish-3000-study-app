@@ -37,6 +37,7 @@ let appState = {
   quiz: { phase: 'intro', idx: 0, sel: null, answered: false, score: 0, qs: null, dir: 'es-en', source: 'all' },
   cardState: {},
   browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any' },
+  lexQ: '',
   detailId: null,
   settings: { speed: 1, voiceURI: 'auto', theme: 'light' },
   voices: [], canInstall: false, confirmReset: false,
@@ -510,7 +511,8 @@ function transformData(raw, reading, synonymsMap, sentencesMap) {
       const es = entry.spanish || '';
       const synonyms = deckId === 'mainWords' ? (syns[es] || []) : [];
       const sentence = sentenceFor(deckId, es, entry, sents);
-      CARDS.push({ id: entry.id, es, en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null, synonyms, sentence });
+      const cat = deckId === 'guatemalaLexicon' ? (entry.lexiconCategory || '') : '';
+      CARDS.push({ id: entry.id, es, en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null, synonyms, sentence, cat });
     });
   });
   const DECKS = Object.entries(DECK_DEFS)
@@ -687,6 +689,8 @@ function computeVals() {
   };
 
   // Progress
+  const lexCards = CARDS.filter(c => c.deck === 'guatemalaLexicon');
+  const lexDeckDef = DECK_DEFS.guatemalaLexicon;
   const prog = {
     total: CARDS.length.toLocaleString(), known, learning, fresh,
     storiesDone: Object.keys(S.completed).length, storiesTotal: STORIES.length,
@@ -701,6 +705,36 @@ function computeVals() {
       const kn = CARDS.filter(c => c.deck === d.id && cs(c.id).state === 'known').length;
       return { name: d.name, icon: d.icon, accent: d.accent, tint: deckTint(d.accent), sub: d.count.toLocaleString() + ' cards · ' + kn + ' known', onClick: () => openBrowse({ deck: d.id }) };
     }),
+    lexCount: lexCards.length,
+    lexAccent: lexDeckDef.accent, lexTint: deckTint(lexDeckDef.accent), lexIcon: lexDeckDef.icon,
+    onLexicon: () => setState({ route: 'lexicon', lexQ: '' }),
+  };
+
+  // Guatemalan Lexicon reference (in the "You" tab)
+  const lq = (S.lexQ || '').trim().toLowerCase();
+  const lexItems = lexCards
+    .filter(c => {
+      if (!lq) return true;
+      return c.es.toLowerCase().includes(lq)
+        || c.en.toLowerCase().includes(lq)
+        || (c.cat && c.cat.toLowerCase().includes(lq))
+        || (c.sentence && c.sentence.es.toLowerCase().includes(lq));
+    })
+    .map(c => ({
+      term: c.es, meaning: c.en, cat: c.cat || '',
+      hasSentence: !!c.sentence,
+      sentEs: c.sentence ? c.sentence.es : '', sentEn: c.sentence ? c.sentence.en : '',
+      onSpeakTerm: () => speak(c.es),
+      onSpeakSentence: () => c.sentence && speak(c.sentence.es),
+    }));
+  const lexicon = {
+    total: lexCards.length, shown: lexItems.length,
+    q: S.lexQ || '', hasQ: !!(S.lexQ && S.lexQ.trim()),
+    accent: lexDeckDef.accent, tint: deckTint(lexDeckDef.accent), icon: lexDeckDef.icon,
+    items: lexItems,
+    onBack: () => setState({ route: null, lexQ: '' }),
+    onSearch: e => setState({ lexQ: e.target.value }),
+    onClearQ: () => setState({ lexQ: '' }),
   };
 
   // Browse
@@ -778,9 +812,10 @@ function computeVals() {
     vReadLib: tab === 'read' && S.readView === 'lib' && !route,
     vReader: inReader, vQuestion: inQuestion, vDone: inDone,
     vBrowse: route === 'browse', vCard: route === 'card', vSettings: route === 'settings',
+    vLexicon: route === 'lexicon',
     showTabs: !inReader && !inQuestion && !inDone && !route,
     onSettings: () => setState({ route: 'settings' }),
-    tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word,
+    tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word, lexicon,
     greeting: greeting(),
     toast: { show: !!S.toast, text: S.toast || '' },
   };
@@ -1089,12 +1124,71 @@ function renderProgress(v) {
       ${ms('chevron_right', 22, 'var(--muted2)')}
     </div>`).join('')}
   </div>
+  <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Guatemala</div>
+  <button ${h(prog.onLexicon)} style="width:100%;text-align:left;border:none;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04);margin-bottom:18px">
+    <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:${prog.lexTint};flex:none">${ms(prog.lexIcon, 25, prog.lexAccent)}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:16px;font-weight:800;color:var(--ink)">Guatemalan Lexicon</div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${prog.lexCount} Guatemalan words & phrases with examples</div>
+    </div>
+    ${ms('chevron_right', 22, 'var(--muted2)')}
+  </button>
   <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div style="font-size:16px;font-weight:800;color:var(--ink)">Reading</div>
       <div style="font-size:14px;font-weight:800;color:#28b573">${prog.storiesDone}/${prog.storiesTotal} stories</div>
     </div>
     <div style="height:8px;border-radius:5px;background:var(--track);overflow:hidden"><div style="height:100%;width:${prog.readPct}%;background:#28b573;border-radius:5px"></div></div>
+  </div>
+</div>`;
+}
+
+function renderLexicon(v) {
+  const { lexicon: lx } = v;
+  return `
+<div style="animation:slideIn .25s both">
+  <div style="position:sticky;top:0;z-index:4;background:var(--bar);backdrop-filter:blur(8px);padding:6px 16px 12px;border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+      <button ${h(lx.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
+      <div style="min-width:0">
+        <div style="font-size:20px;font-weight:900;color:var(--ink);line-height:1.1">Guatemalan Lexicon</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${lx.hasQ ? lx.shown + ' of ' + lx.total : lx.total + ' words & phrases'}</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:var(--soft2);border-radius:13px;padding:0 12px">
+      ${ms('search', 20, 'var(--muted)')}
+      <input class="fld" type="text" placeholder="Search lexicon…" value="${esc(lx.q)}" data-fid="lex-search" ${hi(lx.onSearch)} style="flex:1;border:none;background:transparent;outline:none;padding:11px 0">
+      ${lx.hasQ ? `<button ${h(lx.onClearQ)} style="border:none;background:transparent;cursor:pointer;display:flex">${ms('cancel', 20, 'var(--muted)')}</button>` : ''}
+    </div>
+  </div>
+  <div style="padding:14px 16px 40px">
+    ${lx.items.length === 0 ? `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;color:var(--muted)">
+      ${ms('search_off', 46, 'var(--muted2)')}
+      <div style="font-size:16px;font-weight:800;color:var(--ink);margin-top:14px">No matches</div>
+      <div style="font-size:14px;font-weight:600;margin-top:4px">Try a different word.</div>
+    </div>` :
+    lx.items.map(it => `
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.3px">${esc(it.term)}</div>
+          <div style="font-size:14px;font-weight:600;color:var(--muted);margin-top:2px">${esc(it.meaning)}</div>
+        </div>
+        <button ${h(it.onSpeakTerm)} style="flex:none;border:none;background:${lx.tint};width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 20, lx.accent)}</button>
+      </div>
+      ${it.cat ? `<div style="display:inline-block;margin-top:10px;font-size:11px;font-weight:800;color:${lx.accent};background:${lx.tint};padding:3px 9px;border-radius:8px;text-transform:capitalize">${esc(it.cat)}</div>` : ''}
+      ${it.hasSentence ? `
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:15px;font-weight:700;color:var(--ink);line-height:1.35">${esc(it.sentEs)}</div>
+            ${it.sentEn ? `<div style="font-size:13.5px;font-weight:600;color:var(--muted);margin-top:4px;line-height:1.3">${esc(it.sentEn)}</div>` : ''}
+          </div>
+          <button ${h(it.onSpeakSentence)} style="flex:none;border:none;background:var(--soft2);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 18, 'var(--muted)')}</button>
+        </div>
+      </div>` : ''}
+    </div>`).join('')}
   </div>
 </div>`;
 }
@@ -1294,6 +1388,7 @@ function render() {
   else if (v.vBrowse)   html = renderBrowse(v);
   else if (v.vCard)     html = renderCard(v);
   else if (v.vSettings) html = renderSettings(v);
+  else if (v.vLexicon)  html = renderLexicon(v);
 
   $content.innerHTML = html;
   $tabBar.innerHTML = v.showTabs ? renderTabBar(v.tabs) : '';
