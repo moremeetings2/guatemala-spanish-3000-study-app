@@ -2,6 +2,7 @@
 
 // ===== Constants =====
 const STORAGE_KEY = 'spanishStudyApp.v1';
+const AUTH_KEY = 'spanishAuth.v1';
 const OLD_PROGRESS_KEY = 'guatemala-spanish-3000-progress-v2';
 const DAY_MS = 86400000;
 const DATA_URL = './data/guatemala_spanish_study_pack.json';
@@ -42,6 +43,9 @@ let appState = {
   settings: { speed: 1, voiceURI: 'auto', theme: 'light' },
   voices: [], canInstall: false, confirmReset: false,
   reviewedToday: 0, streak: 0, toast: null,
+  auth: { token: null, user: null }, guest: false,
+  authView: 'landing', authEmail: '', authPassword: '', authError: '', authBusy: false,
+  syncing: false,
 };
 
 let installPrompt = null;
@@ -181,6 +185,7 @@ function grade(id, correct) {
   }
   m[id] = c;
   setState({ cardState: m, reviewedToday: appState.reviewedToday + 1 });
+  queueProgressSync(id);
 }
 
 function setProg(id, state) {
@@ -193,6 +198,7 @@ function setProg(id, state) {
   else { c.weak = false; c.due = Date.now(); c.seen = false; }
   m[id] = c;
   setState({ cardState: m });
+  queueProgressSync(id);
 }
 
 function toggleStar(id) {
@@ -201,6 +207,7 @@ function toggleStar(id) {
   c.star = !c.star;
   m[id] = c;
   setState({ cardState: m });
+  queueProgressSync(id);
 }
 
 // ===== Speech =====
@@ -440,6 +447,101 @@ function resetProgress() {
   const cardState = seedStates(appState.data.CARDS, {});
   setState({ cardState, saved: [], completed: {}, lookedUp: {}, confirmReset: false, reviewedToday: 0, streak: 0 });
   flash('Progress reset');
+}
+
+// ===== Accounts & Sync =====
+let dirtyCards = new Set();
+let progressSyncTimer = null;
+
+function loadAuth() {
+  try { return JSON.parse(localStorage.getItem(AUTH_KEY)) || null; } catch (e) { return null; }
+}
+
+function saveAuth() {
+  try {
+    localStorage.setItem(AUTH_KEY, JSON.stringify({
+      token: appState.auth.token, user: appState.auth.user, guest: appState.guest,
+    }));
+  } catch (e) {}
+}
+
+function continueAsGuest() { setState({ guest: true, authError: '' }); saveAuth(); }
+
+async function doAuth(kind) {
+  const email = (appState.authEmail || '').trim();
+  const password = appState.authPassword || '';
+  if (!email || !password) { setState({ authError: 'Enter your email and password.' }); return; }
+  if (kind === 'signup' && password.length < 8) {
+    setState({ authError: 'Password must be at least 8 characters.' }); return;
+  }
+  setState({ authBusy: true, authError: '' });
+  try {
+    const { token, user } = kind === 'signup' ? await API.signup(email, password) : await API.login(email, password);
+    setState({ auth: { token, user }, guest: false, authBusy: false, authPassword: '', authEmail: '' });
+    saveAuth();
+    flash(kind === 'signup' ? 'Account created!' : 'Welcome back!');
+    await syncOnLogin();
+  } catch (e) {
+    setState({ authBusy: false, authError: (e && e.message) || 'Something went wrong.' });
+  }
+}
+
+async function doLogout() {
+  const token = appState.auth.token;
+  try { if (token) await API.logout(token); } catch (e) {}
+  clearTimeout(progressSyncTimer); dirtyCards = new Set();
+  setState({ auth: { token: null, user: null }, guest: false, authView: 'landing', route: null, tab: 'home' });
+  saveAuth();
+  flash('Logged out');
+}
+
+// A card is worth syncing only once the user has actually touched it — this keeps
+// the ~3,600 seeded default rows out of the server.
+function isMeaningfulProgress(s) {
+  return !!s && (s.state !== 'new' || s.seen || s.star || (s.correct || 0) > 0 || (s.wrong || 0) > 0 || s.weak);
+}
+
+// After login: merge server progress with local, then push only real progress up.
+async function syncOnLogin() {
+  const token = appState.auth.token;
+  if (!token) return;
+  setState({ syncing: true });
+  try {
+    const { cardState: server } = await API.getProgress(token);
+    const merged = { ...appState.cardState, ...(server || {}) };
+    setState({ cardState: merged, syncing: false });
+    const meaningful = {};
+    for (const [id, s] of Object.entries(merged)) {
+      if (isMeaningfulProgress(s)) meaningful[id] = s;
+    }
+    if (Object.keys(meaningful).length) await API.putProgress(token, meaningful);
+  } catch (e) {
+    setState({ syncing: false });
+    if (e && e.status === 401) doLogout();
+  }
+}
+
+// Debounced push of changed cards while logged in.
+function queueProgressSync(id) {
+  if (!appState.auth.token) return;
+  if (id) dirtyCards.add(id);
+  clearTimeout(progressSyncTimer);
+  progressSyncTimer = setTimeout(pushProgress, 1500);
+}
+
+async function pushProgress() {
+  const token = appState.auth.token;
+  if (!token || !dirtyCards.size) return;
+  const ids = [...dirtyCards];
+  const subset = {};
+  ids.forEach(cardId => { if (appState.cardState[cardId]) subset[cardId] = appState.cardState[cardId]; });
+  dirtyCards.clear();
+  try {
+    await API.putProgress(token, subset);
+  } catch (e) {
+    if (e && e.status === 401) { doLogout(); return; }
+    ids.forEach(cardId => dirtyCards.add(cardId)); // retry on next change
+  }
 }
 
 // ===== Style Helpers =====
@@ -794,6 +896,14 @@ function computeVals() {
     installLabel: S.canInstall ? 'Install app' : 'Add to Home Screen',
     installHint: S.canInstall ? 'Install as a standalone app' : 'In Safari: Share → Add to Home Screen',
     onBack: () => setState({ route: null }),
+    account: {
+      authed: !!S.auth.user,
+      email: S.auth.user ? S.auth.user.email : '',
+      isAdmin: !!(S.auth.user && S.auth.user.role === 'admin'),
+      syncing: S.syncing,
+      onLogout: () => doLogout(),
+      onLogin: () => setState({ guest: false, authView: 'login', authError: '' }),
+    },
   };
 
   // Word sheet
@@ -805,15 +915,33 @@ function computeVals() {
     saveStyle: `width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Nunito;font-size:16px;font-weight:800;padding:15px;border-radius:16px;cursor:pointer;border:none;background:${isSaved ? 'var(--g-soft)' : '#28b573'};color:${isSaved ? 'var(--g-ink)' : '#fff'}`,
   };
 
+  // Auth (landing / login / signup) — shown until signed in or continuing as guest.
+  const authed = !!S.auth.user;
+  const showAuth = !authed && !S.guest;
+  const auth = {
+    view: S.authView, email: S.authEmail, password: S.authPassword,
+    error: S.authError, busy: S.authBusy,
+    onEmail: e => setState({ authEmail: e.target.value }),
+    onPassword: e => setState({ authPassword: e.target.value }),
+    onShowLogin: () => setState({ authView: 'login', authError: '' }),
+    onShowSignup: () => setState({ authView: 'signup', authError: '' }),
+    onBack: () => setState({ authView: 'landing', authError: '' }),
+    onGuest: () => continueAsGuest(),
+    onLogin: () => doAuth('login'),
+    onSignup: () => doAuth('signup'),
+    onSubmit: () => doAuth(S.authView === 'signup' ? 'signup' : 'login'),
+  };
+
   return {
     loading: false, ready: true, themeAttr,
+    vAuth: showAuth, auth,
     vHome: tab === 'home' && !route, vStudy: tab === 'study' && !route, vQuiz: tab === 'quiz' && !route,
     vProgress: tab === 'progress' && !route,
     vReadLib: tab === 'read' && S.readView === 'lib' && !route,
     vReader: inReader, vQuestion: inQuestion, vDone: inDone,
     vBrowse: route === 'browse', vCard: route === 'card', vSettings: route === 'settings',
     vLexicon: route === 'lexicon',
-    showTabs: !inReader && !inQuestion && !inDone && !route,
+    showTabs: !showAuth && !inReader && !inQuestion && !inDone && !route,
     onSettings: () => setState({ route: 'settings' }),
     tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word, lexicon,
     greeting: greeting(),
@@ -822,6 +950,47 @@ function computeVals() {
 }
 
 // ===== View Renderers =====
+
+function renderAuth(v) {
+  const a = v.auth;
+  const landing = a.view === 'landing';
+  const isSignup = a.view === 'signup';
+  const primaryLabel = isSignup ? 'Create account' : 'Log in';
+  const field = (label, type, value, handler, fid, extra = '') =>
+    `<label style="display:block;margin-bottom:12px">
+      <span style="display:block;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${label}</span>
+      <input class="fld" type="${type}" value="${esc(value)}" data-fid="${fid}" ${hi(handler)} ${extra}
+        style="width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:13px;padding:13px 14px;font-family:Nunito;font-size:16px;font-weight:700;color:var(--ink);outline:none">
+    </label>`;
+  return `
+<div style="min-height:100%;display:flex;flex-direction:column;justify-content:center;padding:32px 26px;animation:fadeIn .3s both">
+  <div style="text-align:center;margin-bottom:26px">
+    <div style="font-size:40px;margin-bottom:6px">🇬🇹</div>
+    <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.6px">Spanish 3000</div>
+    <div style="font-size:15px;font-weight:600;color:var(--muted);margin-top:4px">Learn Guatemalan Spanish, one card at a time.</div>
+  </div>
+  ${landing ? `
+  <button ${h(a.onShowLogin)} style="width:100%;border:none;background:#28b573;color:#fff;font-family:Nunito;font-size:17px;font-weight:800;padding:15px;border-radius:16px;cursor:pointer;margin-bottom:11px;box-shadow:0 6px 16px rgba(40,181,115,.3)">Log in</button>
+  <button ${h(a.onShowSignup)} style="width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-size:17px;font-weight:800;padding:15px;border-radius:16px;cursor:pointer;margin-bottom:11px">Sign up</button>
+  <button ${h(a.onGuest)} style="width:100%;border:none;background:transparent;color:var(--muted);font-family:Nunito;font-size:15px;font-weight:800;padding:13px;border-radius:16px;cursor:pointer">Continue as guest</button>
+  <div style="font-size:12.5px;font-weight:600;color:var(--muted2);text-align:center;margin-top:14px;line-height:1.4">Sign in to sync your progress across devices.<br>Guest mode keeps everything on this device.</div>
+  ` : `
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 6px 18px rgba(0,0,0,.05)">
+    <div style="font-size:19px;font-weight:900;color:var(--ink);margin-bottom:16px">${isSignup ? 'Create your account' : 'Welcome back'}</div>
+    ${field('Email', 'email', a.email, a.onEmail, 'auth-email', 'autocomplete="email" inputmode="email"')}
+    ${field('Password', 'password', a.password, a.onPassword, 'auth-password', `autocomplete="${isSignup ? 'new-password' : 'current-password'}"`)}
+    ${a.error ? `<div style="background:var(--r-soft);color:var(--r-ink);font-size:13.5px;font-weight:700;padding:10px 12px;border-radius:11px;margin-bottom:12px">${esc(a.error)}</div>` : ''}
+    <button ${h(a.onSubmit)} ${a.busy ? 'disabled' : ''} style="width:100%;border:none;background:#28b573;color:#fff;font-family:Nunito;font-size:16px;font-weight:800;padding:14px;border-radius:14px;cursor:${a.busy ? 'default' : 'pointer'};opacity:${a.busy ? '.6' : '1'}">${a.busy ? 'Please wait…' : primaryLabel}</button>
+  </div>
+  <div style="text-align:center;margin-top:16px">
+    ${isSignup
+      ? `<span style="font-size:14px;font-weight:600;color:var(--muted)">Already have an account? </span><button ${h(a.onShowLogin)} style="border:none;background:transparent;color:#28b573;font-family:Nunito;font-size:14px;font-weight:800;cursor:pointer;padding:0">Log in</button>`
+      : `<span style="font-size:14px;font-weight:600;color:var(--muted)">New here? </span><button ${h(a.onShowSignup)} style="border:none;background:transparent;color:#28b573;font-family:Nunito;font-size:14px;font-weight:800;cursor:pointer;padding:0">Create an account</button>`}
+  </div>
+  <button ${h(a.onGuest)} style="width:100%;border:none;background:transparent;color:var(--muted2);font-family:Nunito;font-size:14px;font-weight:800;padding:14px;border-radius:14px;cursor:pointer;margin-top:6px">Continue as guest</button>
+  `}
+</div>`;
+}
 
 function renderHome(v) {
   const { home, greeting: g, onSettings } = v;
@@ -1271,6 +1440,26 @@ function renderSettings(v) {
     <button ${h(settings.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
     <div style="font-size:24px;font-weight:900;color:var(--ink)">Settings</div>
   </div>
+  <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Account</div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    ${settings.account.authed ? `
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;border-radius:50%;background:var(--g-soft);display:flex;align-items:center;justify-content:center;flex:none">${ms('person', 24, 'var(--g-ink)')}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(settings.account.email)}</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${settings.account.isAdmin ? 'Admin · ' : ''}${settings.account.syncing ? 'Syncing…' : 'Progress syncs across devices'}</div>
+      </div>
+      <button ${h(settings.account.onLogout)} style="flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:13px;padding:9px 14px;border-radius:12px;cursor:pointer">Log out</button>
+    </div>` : `
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:42px;height:42px;border-radius:50%;background:var(--soft2);display:flex;align-items:center;justify-content:center;flex:none">${ms('person_off', 22, 'var(--muted)')}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:800;color:var(--ink)">Guest</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--muted)">Log in to sync across devices</div>
+      </div>
+      <button ${h(settings.account.onLogin)} style="flex:none;border:none;background:#28b573;color:#fff;font-family:Nunito;font-weight:800;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer">Log in</button>
+    </div>`}
+  </div>
   <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pronunciation</div>
   <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:8px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1377,7 +1566,8 @@ function render() {
   }
 
   let html = '';
-  if (v.vHome)     html = renderHome(v);
+  if (v.vAuth)     html = renderAuth(v);
+  else if (v.vHome)     html = renderHome(v);
   else if (v.vStudy)    html = renderStudy(v);
   else if (v.vReadLib)  html = renderReadLib(v);
   else if (v.vReader)   html = renderReader(v);
@@ -1456,6 +1646,13 @@ async function bootstrap() {
 
     cardState = seedStates(data.CARDS, cardState);
 
+    // Restore any saved session / guest choice.
+    const savedAuth = loadAuth();
+    const auth = savedAuth && savedAuth.token
+      ? { token: savedAuth.token, user: savedAuth.user || null }
+      : { token: null, user: null };
+    const guest = !!(savedAuth && savedAuth.guest);
+
     // Rebuild study order with persisted source
     appState = { ...appState, data, cardState };
     const studyOrder = orderFor(studySource);
@@ -1465,10 +1662,12 @@ async function bootstrap() {
       study: { idx: 0, flipped: false, source: studySource, order: studyOrder },
       quiz: { ...appState.quiz, dir: quizDir, source: quizSource },
       browse, reviewedToday, streak, loaded: true,
+      auth, guest,
     });
 
     initVoices();
     registerServiceWorker();
+    if (auth.token) syncOnLogin(); // pull cross-device progress in the background
   } catch (err) {
     $content.innerHTML = `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--muted)"><div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">Could not load cards</div><div style="font-size:14px;font-weight:600">${esc(err.message)}</div></div>`;
   }

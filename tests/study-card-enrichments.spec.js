@@ -10,6 +10,10 @@ const { test, expect } = require("@playwright/test");
 // and then assert on the rendered text, exercising the real render + event path.
 
 test.beforeEach(async ({ page }) => {
+  // Boot straight into the app, past the landing/login gate.
+  await page.addInitScript(() => {
+    try { localStorage.setItem("spanishAuth.v1", JSON.stringify({ guest: true })); } catch (e) {}
+  });
   await page.goto("/");
   await page.waitForFunction(
     () => typeof appState !== "undefined" && appState.loaded && appState.data

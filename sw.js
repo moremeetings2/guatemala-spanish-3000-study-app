@@ -1,8 +1,9 @@
-const CACHE_NAME = "guatemala-spanish-3000-v13";
+const CACHE_NAME = "guatemala-spanish-3000-v14";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./api.js",
   "./app.js",
   "./manifest.webmanifest",
   "./data/guatemala_spanish_study_pack.json",

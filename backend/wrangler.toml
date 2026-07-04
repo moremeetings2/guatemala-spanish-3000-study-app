@@ -13,7 +13,7 @@ ALLOWED_ORIGINS = "https://moremeetings2.github.io,http://localhost:3400,http://
 [[d1_databases]]
 binding = "DB"
 database_name = "spanish3000"
-database_id = "PASTE_YOUR_DATABASE_ID_HERE"
+database_id = "207d48d3-b85b-4f15-af1c-7ea7f9f8ab2d"
 
 # Secrets (do NOT put these here — set them with `wrangler secret put`):
 #   ADMIN_EMAIL   the email address that is auto-granted the admin role on signup

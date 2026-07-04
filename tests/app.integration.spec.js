@@ -17,7 +17,14 @@ const IDB_STORE = "kv";
 const IDB_KEY = "state";
 const SW_CACHE_NAME = extractServiceWorkerCacheName();
 
+// Boot straight into the app (skip the landing/login gate) by pre-selecting guest mode.
+const bootAsGuest = (page) =>
+  page.addInitScript(() => {
+    try { localStorage.setItem("spanishAuth.v1", JSON.stringify({ guest: true })); } catch (e) {}
+  });
+
 test.beforeEach(async ({ page }) => {
+  await bootAsGuest(page);
   await page.goto("/");
   await waitForAppReady(page);
   await installSpeechStub(page);
@@ -205,6 +212,7 @@ test("exports a JSON backup and imports it into a clean profile", async ({ brows
   // Import the same backup into a brand-new browser context.
   const cleanContext = await browser.newContext({ acceptDownloads: true });
   const cleanPage = await cleanContext.newPage();
+  await bootAsGuest(cleanPage);
   await cleanPage.goto("/");
   await waitForAppReady(cleanPage);
   await installSpeechStub(cleanPage);

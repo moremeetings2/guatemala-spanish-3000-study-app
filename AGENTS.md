@@ -13,7 +13,9 @@
 
 - `index.html`: app shell and UI markup
 - `styles.css`: app styling
-- `app.js`: main client app logic, persistence, quiz, review, speech, import/export
+- `app.js`: main client app logic, persistence, quiz, review, speech, import/export, accounts + progress sync
+- `api.js`: backend API client (base URL overridable via `localStorage.spanishApiBase`); loaded before `app.js`
+- Auth/landing: signed-out users see a landing page (Log in / Sign up / Continue as guest). Guest keeps everything on-device; logged-in users sync progress to the backend. Session stored in `localStorage.spanishAuth.v1`.
 - `sw.js`: service worker for offline caching
 - `manifest.webmanifest`: PWA manifest
 - `data/guatemala_spanish_study_pack.json`: study content data
