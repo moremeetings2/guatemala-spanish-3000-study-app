@@ -25,6 +25,7 @@
 - `tools/generate_synonyms.py`: regenerates `data/synonyms.json` from WordNet (NLTK)
 - `playwright.config.js`: Playwright config
 - `tools/build_study_pack_from_csv_sources.py`: rebuilds study-pack data from CSV sources
+- `backend/`: Cloudflare Workers + D1 API (accounts, admin word management, progress sync). Frontend stays on GitHub Pages and calls this API. See `backend/README.md` for the deploy runbook. Not yet wired into the live app.
 - `tools/extract_guatemala_spanish_workbook.py`: legacy workbook extraction helper
 - `README.md`: setup, testing, and project overview
 

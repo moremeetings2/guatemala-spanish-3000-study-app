@@ -1,0 +1,5 @@
+node_modules/
+.wrangler/
+.dev.vars
+# Generated seed (regenerate with `npm run build:seed`); large and derived from /data.
+seed.sql

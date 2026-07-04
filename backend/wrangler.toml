@@ -1,0 +1,19 @@
+# Cloudflare Workers config for the Spanish 3000 API.
+# After `wrangler d1 create spanish3000`, paste the returned database_id below.
+name = "spanish3000-api"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Public read origins allowed to call the API (the study app front-ends).
+# Add/remove hosts as needed; the first entry is used as the CORS fallback.
+[vars]
+ALLOWED_ORIGINS = "https://moremeetings2.github.io,http://localhost:3400,http://127.0.0.1:3400,http://localhost:4173,http://127.0.0.1:4173"
+
+# D1 database binding (available as env.DB inside the Worker).
+[[d1_databases]]
+binding = "DB"
+database_name = "spanish3000"
+database_id = "PASTE_YOUR_DATABASE_ID_HERE"
+
+# Secrets (do NOT put these here — set them with `wrangler secret put`):
+#   ADMIN_EMAIL   the email address that is auto-granted the admin role on signup
