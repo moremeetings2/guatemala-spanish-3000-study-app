@@ -24,12 +24,33 @@
 - The "You" tab includes a Guatemalan Lexicon reference view (`renderLexicon`, route `lexicon`) showing each term with its example sentence
 - `tests/app.integration.spec.js`: Playwright integration tests for the core app (home, browse, study, quiz, settings, persistence, legacy migration, service worker) — current UI
 - `tests/study-card-enrichments.spec.js`: Playwright tests for synonyms + example-sentence card features and the Lexicon view (current UI)
+- `tests/auth.spec.js`: Playwright tests for the accounts/landing flow (landing, guest, signup, login, logout) with a mocked backend
 - `tools/generate_synonyms.py`: regenerates `data/synonyms.json` from WordNet (NLTK)
 - `playwright.config.js`: Playwright config
 - `tools/build_study_pack_from_csv_sources.py`: rebuilds study-pack data from CSV sources
-- `backend/`: Cloudflare Workers + D1 API (accounts, admin word management, progress sync). Frontend stays on GitHub Pages and calls this API. See `backend/README.md` for the deploy runbook. Not yet wired into the live app.
+- `backend/`: Cloudflare Workers + D1 API (accounts, admin word management, progress sync), deployed at `https://spanish3000-api.john-moore.workers.dev`. The frontend (GitHub Pages) calls it via `api.js`. See `backend/README.md` for the deploy runbook.
+- `.env` (gitignored): admin/testing account credentials — see "Admin & Testing Account" below. `.env.example` is the committed template.
 - `tools/extract_guatemala_spanish_workbook.py`: legacy workbook extraction helper
 - `README.md`: setup, testing, and project overview
+
+## Admin & Testing Account
+
+There is a dedicated **admin + testing account** for validating features against the real backend. Its credentials live in the gitignored `.env` at the repo root:
+
+- `ADMIN_EMAIL`, `ADMIN_PASSWORD` — the admin account (auto-granted admin because the email matches the Worker's `ADMIN_EMAIL` secret)
+- `API_BASE` — the deployed API base URL
+
+**Every agent working on this app MUST use this account to auto-login and validate its work in a real browser flow before finishing:**
+
+1. Load the credentials from `.env` (e.g. `set -a; source .env; set +a`). Never hardcode or print the password; never commit `.env`.
+2. In the browser (preview/Browser MCP), point the app at the API with `localStorage.setItem('spanishApiBase', <API_BASE>)`, then log in with `ADMIN_EMAIL` / `ADMIN_PASSWORD` (fill `[data-fid="auth-email"]` / `[data-fid="auth-password"]`, click **Log in**).
+3. **Exercise the feature you changed end-to-end** (and adjacent flows: study, quiz, progress sync, admin word add/edit/delete via the API, lexicon, settings, guest mode).
+4. **If anything is wrong, fix it and re-validate — do not finish with known-broken behavior.** Repeat until the flow works as expected.
+5. Also run the Playwright suite (`npx playwright test`) — all specs must pass on Chromium and WebKit.
+
+Cleanup rules when testing against the live API/DB:
+- Delete any test words you create (the catalog must stay at its real counts).
+- Neutralize any test progress you push to the admin account (reset touched cards to default) so the account stays clean.
 
 ## Development Rules
 

@@ -444,9 +444,21 @@ function resetProgress() {
     resetTimer = setTimeout(() => setState({ confirmReset: false }), 3000);
     return;
   }
+  // Remember which cards had real progress so we can clear them on the server too.
+  const priorProgressed = Object.keys(appState.cardState).filter(id => isMeaningfulProgress(appState.cardState[id]));
   const cardState = seedStates(appState.data.CARDS, {});
   setState({ cardState, saved: [], completed: {}, lookedUp: {}, confirmReset: false, reviewedToday: 0, streak: 0 });
   flash('Progress reset');
+  // For logged-in users, persist the reset to the backend by neutralizing those
+  // cards — otherwise the old progress would sync back on the next launch.
+  if (appState.auth.token && priorProgressed.length) {
+    clearTimeout(progressSyncTimer); dirtyCards = new Set();
+    const cleared = {};
+    priorProgressed.forEach(id => {
+      cleared[id] = { state: 'new', due: null, seen: false, correct: 0, wrong: 0, weak: false, star: false };
+    });
+    API.putProgress(appState.auth.token, cleared).catch(() => {});
+  }
 }
 
 // ===== Accounts & Sync =====

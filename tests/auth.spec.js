@@ -138,3 +138,36 @@ test("logout returns to the landing page", async ({ page }) => {
   await expect(content.getByRole("button", { name: "Continue as guest" })).toBeVisible();
   expect(await page.evaluate(() => appState.auth.user)).toBeNull();
 });
+
+test("Reset progress clears the server for a logged-in user", async ({ page }) => {
+  const puts = [];
+  // Record every progress upsert so we can assert the reset reaches the server.
+  await mockApi(page, {
+    "PUT /api/progress": (route, json) => {
+      const body = JSON.parse(route.request().postData() || "{}");
+      puts.push(body.cardState || {});
+      return json(200, { ok: true, saved: Object.keys(body.cardState || {}).length });
+    },
+  });
+
+  const content = page.locator("#content");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "jane@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => !!appState.auth.user)).toBe(true);
+
+  // Study a card.
+  await page.evaluate(() => setProg("main-0001", "known"));
+  await expect.poll(() => page.evaluate(() => appState.cardState["main-0001"].state)).toBe("known");
+
+  // Reset progress (two taps: arm, then confirm).
+  await page.evaluate(() => setState({ route: "settings" }));
+  await content.getByRole("button", { name: /Reset progress/ }).click();
+  await content.getByRole("button", { name: /confirm reset/i }).click();
+
+  // The card is neutralized locally AND a neutralizing upsert was sent to the server.
+  expect(await page.evaluate(() => appState.cardState["main-0001"].state)).toBe("new");
+  await expect
+    .poll(() => puts.some((cs) => cs["main-0001"] && cs["main-0001"].state === "new" && !cs["main-0001"].seen))
+    .toBe(true);
+});
