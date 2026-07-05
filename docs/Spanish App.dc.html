@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,500;1,400&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+@keyframes sheetUp{from{transform:translateY(110%)}to{transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+body{margin:0;background:#dedbd3;font-family:'Nunito',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+[data-theme="light"]{--bg:#fbfaf8;--surface:#ffffff;--ink:#2c2b2e;--muted:#8d8a83;--muted2:#b1aea6;--line:rgba(0,0,0,.06);--soft:#f0eee8;--soft2:#f4f2ec;--track:#eceae3;--g-soft:#e7f7ee;--g-ink:#1f8a57;--p-soft:#eef0ff;--a-soft:#fff5e3;--a-ink:#c97e12;--pk-soft:#fdeaf6;--pk-ink:#c23b9e;--r-soft:#fdeceb;--r-ink:#c23b2e;--bar:rgba(251,250,248,.94);--mix:#ffffff}
+[data-theme="dark"]{--bg:#15151a;--surface:#212128;--ink:#f1efe9;--muted:#9a978f;--muted2:#74726c;--line:rgba(255,255,255,.10);--soft:#2b2b33;--soft2:#26262d;--track:#34343d;--g-soft:rgba(40,181,115,.18);--g-ink:#54cf91;--p-soft:rgba(85,96,224,.26);--a-soft:rgba(245,165,36,.18);--a-ink:#e7ab44;--pk-soft:rgba(194,59,158,.24);--pk-ink:#e273c4;--r-soft:rgba(224,90,77,.20);--r-ink:#f08379;--bar:rgba(21,21,26,.92);--mix:#212128}
+.scrl{overflow-y:auto;scrollbar-width:none}.scrl::-webkit-scrollbar{width:0;height:0}
+.hrow{overflow-x:auto;scrollbar-width:none}.hrow::-webkit-scrollbar{height:0}
+.tapw:active{background:var(--g-soft)!important}
+.fld{font-family:'Nunito';font-weight:700;font-size:16px;color:var(--ink)}
+.fld::placeholder{color:var(--muted2)}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px">
+  <div style="position:relative;width:393px;height:852px;background:#1c1c1e;border-radius:56px;padding:11px;box-shadow:0 30px 70px rgba(0,0,0,.32),0 4px 14px rgba(0,0,0,.2)">
+    <div data-theme="{{ themeAttr }}" style="position:relative;width:100%;height:100%;background:var(--bg);border-radius:46px;overflow:hidden;display:flex;flex-direction:column">
+
+      <div style="flex:none;height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 7px;font-size:15px;font-weight:800;color:var(--ink);z-index:5">
+        <span>9:41</span>
+        <div style="position:absolute;left:50%;top:9px;transform:translateX(-50%);width:118px;height:32px;background:#1c1c1e;border-radius:18px"></div>
+        <span style="display:flex;gap:6px;align-items:center;font-family:'Material Symbols Rounded';font-size:17px;font-weight:400">signal_cellular_alt&#xa0;wifi&#xa0;battery_full</span>
+      </div>
+
+      <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700">Cargando…</div>
+      </sc-if>
+
+      <sc-if value="{{ ready }}">
+      <div class="scrl" style="flex:1;position:relative">
+
+        <!-- ===== HOME ===== -->
+        <sc-if value="{{ vHome }}">
+        <div style="padding:8px 22px 120px;animation:fadeIn .3s both">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px">
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--muted)">{{ greeting }}</div>
+              <div style="font-size:27px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-top:2px">¡Hola! 🇬🇹</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <button onClick="{{ onSettings }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:23px;color:var(--ink)">settings</span></button>
+              <div style="display:flex;align-items:center;gap:5px;background:var(--a-soft);border-radius:16px;padding:8px 12px">
+                <span style="font-family:'Material Symbols Rounded';font-size:21px;color:#f5a524">local_fire_department</span>
+                <span style="font-size:17px;font-weight:900;color:var(--a-ink)">{{ home.streak }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:linear-gradient(135deg,#28b573,#1f9d63);border-radius:24px;padding:22px;color:#fff;margin-bottom:14px;box-shadow:0 8px 22px rgba(40,181,115,.28)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-size:13px;font-weight:800;opacity:.85;text-transform:uppercase;letter-spacing:.5px">Today's reviews</div>
+                <div style="font-size:23px;font-weight:900;margin-top:4px;white-space:nowrap">{{ home.goalDone }} / {{ home.goalTotal }} done</div>
+                <div style="font-size:13px;font-weight:700;opacity:.85;margin-top:2px">{{ home.dueCount }} cards due today</div>
+              </div>
+              <div style="position:relative;width:66px;height:66px;border-radius:50%;background:conic-gradient(#fff {{ home.goalPct }}%, rgba(255,255,255,.28) 0)">
+                <div style="position:absolute;inset:7px;border-radius:50%;background:#239a60;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900">{{ home.goalPct }}%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- review queue card -->
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <div style="display:flex;gap:10px;margin-bottom:13px">
+              <div style="flex:1;text-align:center;background:var(--p-soft);border-radius:14px;padding:12px"><div style="font-size:24px;font-weight:900;color:#5560e0">{{ home.dueCount }}</div><div style="font-size:11.5px;font-weight:800;color:var(--muted)">Due today</div></div>
+              <div style="flex:1;text-align:center;background:var(--r-soft);border-radius:14px;padding:12px"><div style="font-size:24px;font-weight:900;color:var(--r-ink)">{{ home.weakCount }}</div><div style="font-size:11.5px;font-weight:800;color:var(--muted)">Weak spots</div></div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button onClick="{{ home.onReviewDue }}" style="flex:1;border:none;background:#28b573;color:#fff;font-family:'Nunito';font-size:14.5px;font-weight:800;padding:13px;border-radius:13px;cursor:pointer">Review due</button>
+              <button onClick="{{ home.onReviewWeak }}" style="flex:1;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:'Nunito';font-size:14.5px;font-weight:800;padding:13px;border-radius:13px;cursor:pointer">Weak spots</button>
+            </div>
+          </div>
+
+          <div onClick="{{ home.onContinue }}" style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <div style="width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;background:{{ home.contTint }}">
+              <span style="font-family:'Material Symbols Rounded';font-size:27px;color:{{ home.contColor }}">{{ home.contIcon }}</span>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:800;color:{{ home.contColor }};text-transform:uppercase;letter-spacing:.4px">{{ home.contKicker }}</div>
+              <div style="font-size:17px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ home.contTitle }}</div>
+            </div>
+            <span style="font-family:'Material Symbols Rounded';font-size:26px;color:var(--muted2)">chevron_right</span>
+          </div>
+
+          <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Jump back in</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <sc-for list="{{ home.actions }}" as="a" hint-placeholder-count="4">
+              <div onClick="{{ a.onClick }}" style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px 16px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+                <div style="width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:{{ a.tint }};margin-bottom:12px">
+                  <span style="font-family:'Material Symbols Rounded';font-size:24px;color:{{ a.color }}">{{ a.icon }}</span>
+                </div>
+                <div style="font-size:16px;font-weight:800;color:var(--ink)">{{ a.label }}</div>
+                <div style="font-size:13px;font-weight:600;color:var(--muted)">{{ a.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ===== STUDY ===== -->
+        <sc-if value="{{ vStudy }}">
+        <div style="padding:8px 22px 120px;animation:fadeIn .3s both;height:100%;display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.6px">Study</div>
+            <button onClick="{{ study.onBrowse }}" style="display:flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);border-radius:13px;padding:8px 12px;cursor:pointer;font-family:'Nunito';font-weight:800;font-size:13px;color:var(--ink)"><span style="font-family:'Material Symbols Rounded';font-size:18px">tune</span>Filters</button>
+          </div>
+          <div class="hrow" style="display:flex;gap:8px;margin-bottom:18px;padding-bottom:2px">
+            <sc-for list="{{ study.sources }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for>
+          </div>
+
+          <sc-if value="{{ study.empty }}">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted)">
+              <span style="font-family:'Material Symbols Rounded';font-size:48px;color:var(--muted2);margin-bottom:10px">check_circle</span>
+              <div style="font-size:16px;font-weight:800;color:var(--ink)">Nothing here right now</div>
+              <div style="font-size:14px;font-weight:600;max-width:230px;margin-top:4px">{{ study.emptyMsg }}</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ study.has }}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:13px;font-weight:700;color:var(--muted)">{{ study.deckLabel }}</div>
+            <div style="font-size:14px;font-weight:800;color:var(--muted)">{{ study.counter }}</div>
+          </div>
+          <div onClick="{{ study.onFlip }}" style="flex:1;min-height:300px;background:var(--surface);border:1px solid var(--line);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.07);position:relative;padding:30px;text-align:center">
+            <button onClick="{{ study.onStar }}" style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:28px;color:{{ study.starColor }}">{{ study.starIcon }}</span></button>
+            <div style="position:absolute;top:20px;left:20px;font-size:11px;font-weight:800;color:#fff;background:{{ study.deckAccent }};padding:4px 10px;border-radius:9px">{{ study.deckShort }}</div>
+            <div style="font-size:13px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">{{ study.faceLabel }}</div>
+            <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">{{ study.faceText }}</div>
+            <button onClick="{{ study.onSpeak }}" style="margin-top:22px;border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:25px;color:var(--g-ink)">volume_up</span></button>
+          </div>
+          <div style="margin-top:14px">
+            <div style="font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Mark as</div>
+            <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px">
+              <sc-for list="{{ study.states }}" as="st"><button onClick="{{ st.onClick }}" style="{{ st.style }}">{{ st.label }}</button></sc-for>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:14px">
+            <button onClick="{{ study.onShuffle }}" style="flex:none;width:56px;border:1px solid var(--line);background:var(--surface);border-radius:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:15px 0"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:var(--ink)">shuffle</span></button>
+            <button onClick="{{ study.onNext }}" style="flex:1;border:none;background:var(--ink);color:var(--surface);font-family:'Nunito';font-size:17px;font-weight:800;padding:15px;border-radius:18px;cursor:pointer">Next card</button>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- ===== READING LIBRARY ===== -->
+        <sc-if value="{{ vReadLib }}">
+        <div style="padding:8px 22px 120px;animation:fadeIn .3s both">
+          <div style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.6px;margin-bottom:3px">Read</div>
+          <div style="font-size:15px;font-weight:600;color:var(--muted);margin-bottom:22px">Short stories. Tap any word to translate.</div>
+          <sc-for list="{{ levels }}" as="lv" hint-placeholder-count="5">
+            <div style="margin-bottom:26px">
+              <div style="display:flex;align-items:center;gap:11px;margin-bottom:13px">
+                <div style="width:34px;height:34px;border-radius:11px;background:{{ lv.color }};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px">{{ lv.n }}</div>
+                <div>
+                  <div style="font-size:16px;font-weight:800;color:var(--ink);line-height:1.1">{{ lv.name }}</div>
+                  <div style="font-size:12px;font-weight:700;color:var(--muted2)">{{ lv.es }}</div>
+                </div>
+              </div>
+              <sc-for list="{{ lv.stories }}" as="st">
+                <sc-if value="{{ st.real }}">
+                  <div onClick="{{ st.onClick }}" style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:15px;display:flex;align-items:center;gap:14px;margin-bottom:10px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+                    <div style="width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:{{ st.tint }}">
+                      <span style="font-family:'Material Symbols Rounded';font-size:26px;color:{{ st.color }}">{{ st.icon }}</span>
+                    </div>
+                    <div style="flex:1;min-width:0">
+                      <div style="font-size:16px;font-weight:800;color:var(--ink)">{{ st.title }}</div>
+                      <div style="font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ st.teaser }}</div>
+                      <div style="font-size:12px;font-weight:700;color:var(--muted2);margin-top:3px">{{ st.meta }}</div>
+                    </div>
+                    <sc-if value="{{ st.done }}"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#28b573">check_circle</span></sc-if>
+                    <sc-if value="{{ st.notDone }}"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:var(--muted2)">chevron_right</span></sc-if>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ st.locked }}">
+                  <div style="border:1.5px dashed var(--line);border-radius:18px;padding:13px 15px;display:flex;align-items:center;gap:12px;margin-bottom:10px;opacity:.7">
+                    <span style="font-family:'Material Symbols Rounded';font-size:22px;color:var(--muted2)">lock</span>
+                    <div style="font-size:14px;font-weight:700;color:var(--muted)">More stories coming soon</div>
+                  </div>
+                </sc-if>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        </sc-if>
+
+        <!-- ===== READER ===== -->
+        <sc-if value="{{ vReader }}">
+        <div style="animation:fadeIn .3s both">
+          <div style="position:sticky;top:0;z-index:4;background:var(--bar);backdrop-filter:blur(8px);padding:6px 16px 12px;border-bottom:1px solid var(--line)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <button onClick="{{ reader.onBack }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:var(--ink)">arrow_back</span></button>
+              <div style="display:flex;align-items:center;gap:6px;background:{{ reader.tint }};padding:6px 12px;border-radius:13px"><span style="font-size:13px;font-weight:800;color:{{ reader.color }}">{{ reader.levelName }}</span></div>
+              <button onClick="{{ reader.onSpeak }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:23px;color:var(--ink)">volume_up</span></button>
+            </div>
+            <div style="margin-top:11px;height:6px;border-radius:4px;background:var(--track);overflow:hidden"><div style="height:100%;width:{{ reader.pct }}%;background:#28b573;border-radius:4px;transition:width .3s"></div></div>
+            <div style="font-size:12px;font-weight:700;color:var(--muted2);margin-top:5px">{{ reader.lookedUp }} words explored</div>
+          </div>
+          <div style="padding:20px 24px 40px">
+            <div style="font-size:25px;font-weight:900;color:var(--ink);letter-spacing:-.4px;line-height:1.15">{{ reader.title }}</div>
+            <div style="font-size:14px;font-weight:600;color:var(--muted);font-style:italic;margin:5px 0 22px">{{ reader.titleEn }}</div>
+            <sc-for list="{{ reader.paragraphs }}" as="para" hint-placeholder-count="3">
+              <p style="font-family:'Lora',Georgia,serif;font-size:19.5px;line-height:1.95;color:var(--ink);margin:0 0 18px"><sc-for list="{{ para.tokens }}" as="tok"><sc-if value="{{ tok.tappable }}"><span class="tapw" style="{{ tok.style }}" onClick="{{ tok.onClick }}">{{ tok.text }}</span></sc-if><sc-if value="{{ tok.plain }}"><span>{{ tok.text }}</span></sc-if></sc-for></p>
+            </sc-for>
+            <button onClick="{{ reader.onFinish }}" style="margin-top:14px;width:100%;border:none;background:#28b573;color:#fff;font-family:'Nunito';font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;box-shadow:0 6px 16px rgba(40,181,115,.3)">I finished — check my understanding</button>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ===== COMPREHENSION ===== -->
+        <sc-if value="{{ vQuestion }}">
+        <div style="padding:18px 24px 40px;animation:fadeIn .3s both;min-height:100%;display:flex;flex-direction:column">
+          <button onClick="{{ reader.onBack }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:24px"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:var(--ink)">close</span></button>
+          <div style="font-size:13px;font-weight:800;color:#28b573;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Comprehension</div>
+          <div style="font-size:23px;font-weight:900;color:var(--ink);line-height:1.3;margin-bottom:26px">{{ comp.q }}</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ comp.options }}" as="op" hint-placeholder-count="4">
+              <button onClick="{{ op.onClick }}" style="{{ op.style }}"><span>{{ op.text }}</span><sc-if value="{{ op.showIcon }}"><span style="font-family:'Material Symbols Rounded';font-size:23px">{{ op.icon }}</span></sc-if></button>
+            </sc-for>
+          </div>
+          <div style="flex:1"></div>
+          <sc-if value="{{ comp.answered }}">
+            <div style="background:{{ comp.fbTint }};border-radius:18px;padding:16px;margin-top:24px;animation:pop .25s">
+              <div style="font-size:16px;font-weight:900;color:{{ comp.fbColor }}">{{ comp.fbTitle }}</div>
+              <button onClick="{{ comp.onNext }}" style="margin-top:12px;width:100%;border:none;background:{{ comp.fbColor }};color:#fff;font-family:'Nunito';font-size:16px;font-weight:800;padding:14px;border-radius:14px;cursor:pointer">Continue</button>
+            </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- ===== DONE ===== -->
+        <sc-if value="{{ vDone }}">
+        <div style="padding:40px 28px;animation:fadeIn .3s both;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+          <div style="width:96px;height:96px;border-radius:50%;background:var(--g-soft);display:flex;align-items:center;justify-content:center;margin-bottom:22px;animation:pop .4s"><span style="font-family:'Material Symbols Rounded';font-size:54px;color:#28b573">verified</span></div>
+          <div style="font-size:27px;font-weight:900;color:var(--ink);letter-spacing:-.5px">¡Bien hecho!</div>
+          <div style="font-size:15px;font-weight:600;color:var(--muted);margin-top:6px;max-width:240px">You finished “{{ done.title }}”.</div>
+          <div style="display:flex;gap:14px;margin:28px 0 30px">
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 22px;box-shadow:0 4px 14px rgba(0,0,0,.04)"><div style="font-size:28px;font-weight:900;color:#28b573">{{ done.looked }}</div><div style="font-size:12px;font-weight:700;color:var(--muted)">words explored</div></div>
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 22px;box-shadow:0 4px 14px rgba(0,0,0,.04)"><div style="font-size:28px;font-weight:900;color:#f5a524">{{ done.saved }}</div><div style="font-size:12px;font-weight:700;color:var(--muted)">saved to deck</div></div>
+          </div>
+          <button onClick="{{ done.onBack }}" style="width:100%;border:none;background:#28b573;color:#fff;font-family:'Nunito';font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;box-shadow:0 6px 16px rgba(40,181,115,.3)">Back to library</button>
+        </div>
+        </sc-if>
+
+        <!-- ===== QUIZ ===== -->
+        <sc-if value="{{ vQuiz }}">
+        <div style="padding:8px 22px 120px;animation:fadeIn .3s both;height:100%;display:flex;flex-direction:column">
+          <sc-if value="{{ quiz.intro }}">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+              <div style="width:80px;height:80px;border-radius:24px;background:var(--p-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 18px"><span style="font-family:'Material Symbols Rounded';font-size:44px;color:#5560e0">quiz</span></div>
+              <div style="font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-.5px;text-align:center">Quick quiz</div>
+              <div style="font-size:14px;font-weight:600;color:var(--muted);margin:6px auto 24px;text-align:center;max-width:250px">Multiple choice, scored, with spaced-repetition updates.</div>
+              <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Direction</div>
+              <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px;margin-bottom:18px"><sc-for list="{{ quiz.dirs }}" as="d"><button onClick="{{ d.onClick }}" style="{{ d.style }}">{{ d.label }}</button></sc-for></div>
+              <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Source</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:26px"><sc-for list="{{ quiz.sources }}" as="s"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for></div>
+              <button onClick="{{ quiz.onStart }}" style="width:100%;border:none;background:#5560e0;color:#fff;font-family:'Nunito';font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;box-shadow:0 6px 16px rgba(85,96,224,.3)">Start quiz · {{ quiz.startCount }} cards</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ quiz.playing }}">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+              <div style="flex:1;height:8px;border-radius:5px;background:var(--track);overflow:hidden"><div style="height:100%;width:{{ quiz.pct }}%;background:#5560e0;border-radius:5px;transition:width .3s"></div></div>
+              <div style="font-size:14px;font-weight:800;color:var(--muted)">{{ quiz.counter }}</div>
+            </div>
+            <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">{{ quiz.ask }}</div>
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:30px 20px;text-align:center;margin-bottom:20px;box-shadow:0 6px 18px rgba(0,0,0,.05);position:relative">
+              <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px">{{ quiz.prompt }}</div>
+              <button onClick="{{ quiz.onSpeak }}" style="position:absolute;top:12px;right:12px;border:none;background:var(--g-soft);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:21px;color:var(--g-ink)">volume_up</span></button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ quiz.options }}" as="op" hint-placeholder-count="4"><button onClick="{{ op.onClick }}" style="{{ op.style }}"><span>{{ op.text }}</span><sc-if value="{{ op.showIcon }}"><span style="font-family:'Material Symbols Rounded';font-size:23px">{{ op.icon }}</span></sc-if></button></sc-for>
+            </div>
+            <div style="flex:1"></div>
+            <sc-if value="{{ quiz.answered }}"><button onClick="{{ quiz.onNext }}" style="width:100%;border:none;background:#5560e0;color:#fff;font-family:'Nunito';font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer;animation:fadeIn .2s">{{ quiz.nextLabel }}</button></sc-if>
+          </sc-if>
+          <sc-if value="{{ quiz.done }}">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+              <div style="width:96px;height:96px;border-radius:50%;background:var(--p-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:pop .4s"><span style="font-family:'Material Symbols Rounded';font-size:54px;color:#5560e0">emoji_events</span></div>
+              <div style="font-size:27px;font-weight:900;color:var(--ink)">Quiz complete!</div>
+              <div style="font-size:54px;font-weight:900;color:#5560e0;margin:14px 0 2px;letter-spacing:-1px">{{ quiz.accuracy }}%</div>
+              <div style="font-size:15px;font-weight:700;color:var(--muted);margin-bottom:28px">{{ quiz.scoreLine }} · schedule updated</div>
+              <button onClick="{{ quiz.onRestart }}" style="width:100%;border:none;background:#5560e0;color:#fff;font-family:'Nunito';font-size:17px;font-weight:800;padding:16px;border-radius:18px;cursor:pointer">Done</button>
+            </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- ===== PROGRESS ===== -->
+        <sc-if value="{{ vProgress }}">
+        <div style="padding:8px 22px 120px;animation:fadeIn .3s both">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+            <div style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.6px">Progress</div>
+            <button onClick="{{ onSettings }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:23px;color:var(--ink)">settings</span></button>
+          </div>
+          <div style="background:linear-gradient(135deg,#2c2b2e,#46443f);border-radius:24px;padding:22px;color:#fff;margin-bottom:18px">
+            <div style="font-size:13px;font-weight:800;opacity:.75;text-transform:uppercase;letter-spacing:.5px">Cards in catalog</div>
+            <div style="font-size:40px;font-weight:900;letter-spacing:-1px;margin:2px 0 14px">{{ prog.total }}</div>
+            <div style="display:flex;gap:18px">
+              <div><div style="font-size:20px;font-weight:900;color:#7ee2ab">{{ prog.known }}</div><div style="font-size:12px;font-weight:700;opacity:.7">Known</div></div>
+              <div><div style="font-size:20px;font-weight:900;color:#ffd27a">{{ prog.learning }}</div><div style="font-size:12px;font-weight:700;opacity:.7">Learning</div></div>
+              <div><div style="font-size:20px;font-weight:900;color:#9aa3ff">{{ prog.fresh }}</div><div style="font-size:12px;font-weight:700;opacity:.7">New</div></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+            <sc-for list="{{ prog.stats }}" as="s" hint-placeholder-count="4">
+              <div onClick="{{ s.onClick }}" style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.04);cursor:pointer">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:{{ s.color }}">{{ s.icon }}</span><span style="font-size:13px;font-weight:700;color:var(--muted)">{{ s.label }}</span></div>
+                <div style="font-size:26px;font-weight:900;color:var(--ink)">{{ s.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Decks</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+            <sc-for list="{{ prog.decks }}" as="d" hint-placeholder-count="6">
+              <div onClick="{{ d.onClick }}" style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 15px;display:flex;align-items:center;gap:13px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+                <div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:{{ d.tint }}"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:{{ d.accent }}">{{ d.icon }}</span></div>
+                <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800;color:var(--ink)">{{ d.name }}</div><div style="font-size:12.5px;font-weight:700;color:var(--muted)">{{ d.sub }}</div></div>
+                <span style="font-family:'Material Symbols Rounded';font-size:22px;color:var(--muted2)">chevron_right</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:16px;font-weight:800;color:var(--ink)">Reading</div><div style="font-size:14px;font-weight:800;color:#28b573">{{ prog.storiesDone }}/{{ prog.storiesTotal }} stories</div></div>
+            <div style="height:8px;border-radius:5px;background:var(--track);overflow:hidden"><div style="height:100%;width:{{ prog.readPct }}%;background:#28b573;border-radius:5px"></div></div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ===== BROWSE ===== -->
+        <sc-if value="{{ vBrowse }}">
+        <div style="animation:slideIn .25s both">
+          <div style="position:sticky;top:0;z-index:4;background:var(--bar);backdrop-filter:blur(8px);padding:6px 16px 12px;border-bottom:1px solid var(--line)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+              <button onClick="{{ browse.onBack }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:var(--ink)">arrow_back</span></button>
+              <div style="font-size:20px;font-weight:900;color:var(--ink)">Browse cards</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;background:var(--soft2);border-radius:13px;padding:0 12px;margin-bottom:10px">
+              <span style="font-family:'Material Symbols Rounded';font-size:20px;color:var(--muted)">search</span>
+              <input class="fld" type="text" placeholder="Search Spanish or English…" value="{{ browse.q }}" onInput="{{ browse.onSearch }}" style="flex:1;border:none;background:transparent;outline:none;padding:11px 0">
+              <sc-if value="{{ browse.hasQ }}"><button onClick="{{ browse.onClearQ }}" style="border:none;background:transparent;cursor:pointer;display:flex"><span style="font-family:'Material Symbols Rounded';font-size:20px;color:var(--muted)">cancel</span></button></sc-if>
+            </div>
+            <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px"><sc-for list="{{ browse.deckChips }}" as="c"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div>
+            <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px"><sc-for list="{{ browse.typeChips }}" as="c"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div>
+            <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px"><sc-for list="{{ browse.stateChips }}" as="c"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div>
+            <div class="hrow" style="display:flex;gap:7px;margin-bottom:7px"><sc-for list="{{ browse.bandChips }}" as="c"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div>
+            <div class="hrow" style="display:flex;gap:7px"><sc-for list="{{ browse.sessionChips }}" as="c"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div>
+          </div>
+          <div style="padding:14px 18px 30px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div style="font-size:13px;font-weight:800;color:var(--muted)">{{ browse.count }} cards</div>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ browse.onStudy }}" style="border:none;background:var(--g-soft);color:var(--g-ink);font-family:'Nunito';font-weight:800;font-size:13px;padding:8px 14px;border-radius:11px;cursor:pointer">Study these</button>
+                <button onClick="{{ browse.onQuiz }}" style="border:none;background:var(--p-soft);color:#5560e0;font-family:'Nunito';font-weight:800;font-size:13px;padding:8px 14px;border-radius:11px;cursor:pointer">Quiz these</button>
+              </div>
+            </div>
+            <sc-if value="{{ browse.none }}"><div style="text-align:center;color:var(--muted);padding:40px 0;font-weight:700">No cards match these filters.</div></sc-if>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <sc-for list="{{ browse.results }}" as="r" hint-placeholder-count="6">
+                <div onClick="{{ r.onOpen }}" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer">
+                  <div style="width:9px;height:9px;border-radius:50%;background:{{ r.stateColor }};flex:none"></div>
+                  <div style="flex:1;min-width:0"><div style="font-size:15.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.es }}</div><div style="font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.en }}</div></div>
+                  <button onClick="{{ r.onStar }}" style="border:none;background:transparent;cursor:pointer;flex:none;display:flex"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:{{ r.starColor }}">{{ r.starIcon }}</span></button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ===== CARD DETAIL ===== -->
+        <sc-if value="{{ vCard }}">
+        <div style="animation:slideIn .25s both;padding:6px 22px 40px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+            <button onClick="{{ card.onBack }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:var(--ink)">arrow_back</span></button>
+            <div style="display:flex;align-items:center;gap:6px;background:{{ card.deckTint }};padding:6px 12px;border-radius:12px"><span style="font-size:13px;font-weight:800;color:{{ card.deckAccent }}">{{ card.deckName }}</span></div>
+            <button onClick="{{ card.onStar }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:23px;color:{{ card.starColor }}">{{ card.starIcon }}</span></button>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:30px 24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.07);margin-bottom:18px">
+            <div style="font-size:32px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">{{ card.es }}</div>
+            <div style="font-size:18px;font-weight:700;color:var(--muted);margin-top:10px">{{ card.en }}</div>
+            <div style="display:flex;gap:8px;justify-content:center;margin-top:14px">
+              <span style="font-size:12px;font-weight:800;color:var(--muted);background:var(--soft2);padding:4px 11px;border-radius:9px">{{ card.typeLabel }}</span>
+              <sc-if value="{{ card.hasBand }}"><span style="font-size:12px;font-weight:800;color:var(--muted);background:var(--soft2);padding:4px 11px;border-radius:9px">Band {{ card.bandLabel }}</span></sc-if>
+            </div>
+            <button onClick="{{ card.onSpeak }}" style="margin-top:22px;border:none;background:var(--g-soft);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto;margin-right:auto"><span style="font-family:'Material Symbols Rounded';font-size:28px;color:var(--g-ink)">volume_up</span></button>
+          </div>
+          <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Progress state</div>
+          <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px;margin-bottom:14px"><sc-for list="{{ card.states }}" as="st"><button onClick="{{ st.onClick }}" style="{{ st.style }}">{{ st.label }}</button></sc-for></div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px 16px;display:flex;align-items:center;gap:10px">
+            <span style="font-family:'Material Symbols Rounded';font-size:21px;color:var(--muted)">schedule</span>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">{{ card.dueText }}</div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ===== SETTINGS ===== -->
+        <sc-if value="{{ vSettings }}">
+        <div style="animation:slideIn .25s both;padding:6px 22px 40px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <button onClick="{{ settings.onBack }}" style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:var(--ink)">arrow_back</span></button>
+            <div style="font-size:24px;font-weight:900;color:var(--ink)">Settings</div>
+          </div>
+
+          <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pronunciation</div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:8px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="font-size:15px;font-weight:800;color:var(--ink)">Speed</div><button onClick="{{ settings.onTest }}" style="border:none;background:var(--g-soft);color:var(--g-ink);font-family:'Nunito';font-weight:800;font-size:12.5px;padding:6px 12px;border-radius:10px;cursor:pointer">Test voice</button></div>
+            <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px"><sc-for list="{{ settings.speeds }}" as="sp"><button onClick="{{ sp.onClick }}" style="{{ sp.style }}">{{ sp.label }}</button></sc-for></div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px">Voice</div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:12px">{{ settings.voiceNote }}</div>
+            <div class="scrl" style="display:flex;flex-direction:column;gap:7px;max-height:210px">
+              <sc-for list="{{ settings.voices }}" as="v" hint-placeholder-count="3">
+                <button onClick="{{ v.onClick }}" style="{{ v.style }}">
+                  <div style="text-align:left"><div style="font-size:14px;font-weight:800">{{ v.name }}</div><div style="font-size:11.5px;font-weight:600;opacity:.7">{{ v.sub }}</div></div>
+                  <sc-if value="{{ v.active }}"><span style="font-family:'Material Symbols Rounded';font-size:21px;color:#28b573">check_circle</span></sc-if>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Appearance</div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:10px">Theme</div>
+            <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px"><sc-for list="{{ settings.themes }}" as="t"><button onClick="{{ t.onClick }}" style="{{ t.style }}"><span style="font-family:'Material Symbols Rounded';font-size:18px;margin-right:5px;vertical-align:-4px">{{ t.icon }}</span>{{ t.label }}</button></sc-for></div>
+          </div>
+
+          <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Your data</div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <button onClick="{{ settings.onExport }}" style="width:100%;border:none;background:transparent;display:flex;align-items:center;gap:13px;padding:13px;cursor:pointer;border-radius:12px"><span style="font-family:'Material Symbols Rounded';font-size:23px;color:var(--ink)">download</span><div style="text-align:left;flex:1"><div style="font-size:15px;font-weight:800;color:var(--ink)">Export progress</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Download a JSON backup</div></div></button>
+            <label style="width:100%;display:flex;align-items:center;gap:13px;padding:13px;cursor:pointer;border-radius:12px;border-top:1px solid var(--line)"><span style="font-family:'Material Symbols Rounded';font-size:23px;color:var(--ink)">upload</span><div style="text-align:left;flex:1"><div style="font-size:15px;font-weight:800;color:var(--ink)">Import progress</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Restore from a JSON file</div></div><input type="file" accept="application/json,.json" onChange="{{ settings.onImport }}" style="display:none"></label>
+            <button onClick="{{ settings.onReset }}" style="width:100%;border:none;background:transparent;display:flex;align-items:center;gap:13px;padding:13px;cursor:pointer;border-radius:12px;border-top:1px solid var(--line)"><span style="font-family:'Material Symbols Rounded';font-size:23px;color:var(--r-ink)">restart_alt</span><div style="text-align:left;flex:1"><div style="font-size:15px;font-weight:800;color:var(--r-ink)">{{ settings.resetLabel }}</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Reset all states to defaults</div></div></button>
+          </div>
+
+          <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">App</div>
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+            <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px"><span style="font-family:'Material Symbols Rounded';font-size:22px;color:#28b573">wifi_off</span><div><div style="font-size:14.5px;font-weight:800;color:var(--ink)">Works offline</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">Cards & progress are stored on your device</div></div></div>
+            <button onClick="{{ settings.onInstall }}" style="width:100%;border:none;background:var(--ink);color:var(--surface);font-family:'Nunito';font-size:15px;font-weight:800;padding:14px;border-radius:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><span style="font-family:'Material Symbols Rounded';font-size:20px">add_to_home_screen</span>{{ settings.installLabel }}</button>
+            <div style="font-size:12px;font-weight:600;color:var(--muted);margin-top:9px;text-align:center">{{ settings.installHint }}</div>
+          </div>
+        </div>
+        </sc-if>
+
+      </div>
+      </sc-if>
+
+      <!-- ===== TAB BAR ===== -->
+      <sc-if value="{{ showTabs }}">
+      <div style="flex:none;display:flex;justify-content:space-around;align-items:center;padding:9px 8px 26px;background:var(--bar);backdrop-filter:blur(10px);border-top:1px solid var(--line);position:absolute;bottom:0;left:0;right:0;z-index:6">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+          <button onClick="{{ t.onClick }}" style="border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:4px 0">
+            <span style="font-family:'Material Symbols Rounded';font-size:26px;color:{{ t.color }};font-variation-settings:'FILL' {{ t.fill }}">{{ t.icon }}</span>
+            <span style="font-size:10.5px;font-weight:800;color:{{ t.color }}">{{ t.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+      </sc-if>
+
+      <!-- ===== WORD SHEET ===== -->
+      <sc-if value="{{ word.show }}">
+      <div onClick="{{ word.onClose }}" style="position:absolute;inset:0;background:rgba(20,18,15,.4);z-index:20;animation:fadeIn .2s;display:flex;align-items:flex-end">
+        <div onClick="{{ word.stop }}" style="width:100%;background:var(--surface);border-radius:28px 28px 0 0;padding:10px 24px 34px;animation:sheetUp .28s cubic-bezier(.2,.9,.3,1)">
+          <div style="width:42px;height:5px;border-radius:3px;background:var(--track);margin:0 auto 18px"></div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px">{{ word.es }}</div>
+              <div style="display:inline-block;font-size:12px;font-weight:800;color:var(--muted);background:var(--soft2);padding:3px 9px;border-radius:8px;margin-top:6px;text-transform:lowercase">{{ word.pos }}</div>
+            </div>
+            <button onClick="{{ word.onSpeak }}" style="flex:none;border:none;background:var(--g-soft);width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:28px;color:var(--g-ink)">volume_up</span></button>
+          </div>
+          <div style="font-size:21px;font-weight:700;color:var(--ink);margin:16px 0 22px;line-height:1.35">{{ word.en }}</div>
+          <button onClick="{{ word.onSave }}" style="{{ word.saveStyle }}"><span style="font-family:'Material Symbols Rounded';font-size:22px">{{ word.saveIcon }}</span><span>{{ word.saveLabel }}</span></button>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===== TOAST ===== -->
+      <sc-if value="{{ toast.show }}">
+      <div style="position:absolute;bottom:104px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);font-size:14px;font-weight:800;padding:12px 20px;border-radius:14px;z-index:30;animation:pop .25s;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.25)">{{ toast.text }}</div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:393,&quot;height&quot;:852},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
+const KEY = 'spanishStudyApp.v1';
+class Component extends DCLogic {
+  state = {
+    data: null, loaded: false, tab: 'home', route: null,
+    readView: 'lib', storyId: 's1',
+    activeWord: null, lookedUp: {}, saved: [], completed: {},
+    compSel: null, compAnswered: false,
+    study: { idx: 0, flipped: false, order: [], source: 'all' },
+    quiz: { phase: 'intro', idx: 0, sel: null, answered: false, score: 0, qs: null, dir: 'es-en', source: 'all' },
+    cardState: {}, browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any' },
+    detailId: null, settings: { speed: 1, voiceURI: 'auto', theme: 'light' },
+    voices: [], canInstall: false, confirmReset: false,
+    reviewedToday: 0, toast: null,
+  };
+
+  async componentDidMount() {
+    const data = await import('./reading-data.js');
+    const persisted = await this.loadState();
+    const cardState = this.seedStates(data.CARDS, (persisted && persisted.cardState) || {});
+    const studySource = (persisted && persisted.study && persisted.study.source) || 'all';
+    this.state.data = data; this.state.cardState = cardState; // available to orderFor below
+    this.setState({
+      data, cardState,
+      saved: (persisted && persisted.saved) || [],
+      completed: (persisted && persisted.completed) || {},
+      lookedUp: (persisted && persisted.lookedUp) || {},
+      storyId: (persisted && persisted.storyId) || 's1',
+      settings: { ...this.state.settings, ...((persisted && persisted.settings) || {}) },
+      quiz: { ...this.state.quiz, dir: (persisted && persisted.quiz && persisted.quiz.dir) || 'es-en', source: (persisted && persisted.quiz && persisted.quiz.source) || 'all' },
+      browse: { ...this.state.browse, ...((persisted && persisted.browse) || {}) },
+      study: { ...this.state.study, source: studySource, order: this.orderFor(studySource) },
+      loaded: true,
+    });
+    this.initVoices();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); this._prompt = e; this.setState({ canInstall: true }); });
+    }
+  }
+  componentDidUpdate() { if (this.state.loaded) { clearTimeout(this._save); this._save = setTimeout(() => this.saveState(), 300); } }
+
+  // ---------- persistence ----------
+  persistable() {
+    const S = this.state;
+    return { cardState: S.cardState, saved: S.saved, completed: S.completed, lookedUp: S.lookedUp, storyId: S.storyId,
+      settings: S.settings, study: { source: S.study.source }, quiz: { dir: S.quiz.dir, source: S.quiz.source }, browse: S.browse };
+  }
+  saveState() { const o = this.persistable(); try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} this.idbSet(o); }
+  idbDB() { return new Promise((res) => { try { if (!window.indexedDB) return res(null); const r = indexedDB.open('spanishApp', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => res(null); } catch (e) { res(null); } }); }
+  async idbSet(o) { try { const db = await this.idbDB(); if (!db) return; db.transaction('kv', 'readwrite').objectStore('kv').put(o, 'state'); } catch (e) {} }
+  async idbGet() { try { const db = await this.idbDB(); if (!db) return null; return await new Promise((res) => { const rq = db.transaction('kv', 'readonly').objectStore('kv').get('state'); rq.onsuccess = () => res(rq.result || null); rq.onerror = () => res(null); }); } catch (e) { return null; } }
+  async loadState() { let o = await this.idbGet(); if (!o) { try { o = JSON.parse(localStorage.getItem(KEY)); } catch (e) {} } return o; }
+
+  // ---------- helpers ----------
+  shuffle(n) { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  hash(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h; }
+  norm(w) { return w.toLowerCase().replace(/[^a-záéíóúüñ]/gi, ''); }
+  flash(m) { this.setState({ toast: m }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: null }), 1700); }
+  story() { return this.state.data.STORIES.find((s) => s.id === this.state.storyId); }
+  goTab(t) { this.setState({ tab: t, route: null, activeWord: null }); }
+  DAY() { return 86400000; }
+
+  seedStates(cards, ex) {
+    const out = { ...ex }; const now = Date.now(); const D = this.DAY();
+    cards.forEach((c) => {
+      if (out[c.id]) return;
+      const h = this.hash(c.id); const r = h % 100;
+      let st;
+      if (r < 24) st = { state: 'known', due: now + (2 + h % 6) * D, seen: true, correct: 3, wrong: 0, weak: false, star: r % 11 === 0 };
+      else if (r < 56) st = { state: 'learning', due: (h % 2 ? now - D : now + D), seen: true, correct: 1, wrong: h % 3 === 0 ? 1 : 0, weak: h % 4 === 0, star: false };
+      else st = { state: 'new', due: now, seen: false, correct: 0, wrong: 0, weak: false, star: false };
+      out[c.id] = st;
+    });
+    return out;
+  }
+  cs(id) { return this.state.cardState[id] || { state: 'new', due: Date.now(), seen: false, correct: 0, wrong: 0, weak: false, star: false }; }
+  isDue(id) { const s = this.cs(id); return s.seen && s.due <= Date.now(); }
+
+  filterCards(f) {
+    const cards = this.state.data.CARDS; const now = Date.now();
+    return cards.filter((c) => {
+      const s = this.cs(c.id);
+      if (f.deck && f.deck !== 'all' && c.deck !== f.deck) return false;
+      if (f.type && f.type !== 'all' && c.type !== f.type) return false;
+      if (f.band && f.band !== 'all' && String(c.band) !== String(f.band)) return false;
+      if (f.state && f.state !== 'all' && s.state !== f.state) return false;
+      if (f.session === 'seen' && !s.seen) return false;
+      if (f.session === 'unseen' && s.seen) return false;
+      if (f.star && !s.star) return false;
+      if (f.weak && !s.weak) return false;
+      if (f.due && !(s.seen && s.due <= now)) return false;
+      if (f.q) { const q = f.q.toLowerCase(); if (!(c.es.toLowerCase().includes(q) || c.en.toLowerCase().includes(q))) return false; }
+      return true;
+    });
+  }
+  sourceCards(src) {
+    if (src === 'due') return this.filterCards({ due: true });
+    if (src === 'weak') return this.filterCards({ weak: true });
+    if (src === 'starred') return this.filterCards({ star: true });
+    if (src === 'filter') return this.filterCards(this.state.browse);
+    if (src && src.indexOf('deck:') === 0) return this.filterCards({ deck: src.slice(5) });
+    return this.state.data.CARDS;
+  }
+  orderFor(src) {
+    const ids = this.sourceCards(src).map((c) => c.id); const sh = this.shuffle(ids.length);
+    return sh.map((i) => ids[i]);
+  }
+  setStudySource(src) { this.setState({ study: { idx: 0, flipped: false, source: src, order: this.orderFor(src) } }); }
+
+  // ---------- spaced repetition ----------
+  grade(id, correct) {
+    const cs = { ...this.state.cardState }; const c = { ...this.cs(id) }; const D = this.DAY(); c.seen = true;
+    if (correct) { c.correct = (c.correct || 0) + 1; c.weak = false;
+      c.state = c.state === 'new' ? 'learning' : (c.state === 'learning' ? (c.correct >= 3 ? 'known' : 'learning') : 'known');
+      const iv = c.state === 'known' ? 7 : c.state === 'learning' ? 2 : 1; c.due = Date.now() + iv * D;
+    } else { c.wrong = (c.wrong || 0) + 1; c.weak = true; c.state = c.state === 'known' ? 'learning' : 'learning'; c.due = Date.now(); }
+    cs[id] = c; this.setState({ cardState: cs, reviewedToday: this.state.reviewedToday + 1 });
+  }
+  setProg(id, state) {
+    const cs = { ...this.state.cardState }; const c = { ...this.cs(id) }; const D = this.DAY();
+    c.state = state; if (state !== 'new') c.seen = true;
+    if (state === 'known') { c.weak = false; c.due = Date.now() + 7 * D; }
+    else if (state === 'learning') { c.due = Date.now(); }
+    else { c.weak = false; c.due = Date.now(); c.seen = false; }
+    cs[id] = c; this.setState({ cardState: cs });
+  }
+  toggleStar(id) { const cs = { ...this.state.cardState }; const c = { ...this.cs(id) }; c.star = !c.star; cs[id] = c; this.setState({ cardState: cs }); }
+
+  // ---------- voices / speech ----------
+  initVoices() {
+    const load = () => { try { const v = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter((x) => /^es/i.test(x.lang)); this.setState({ voices: v }); } catch (e) {} };
+    load(); try { if (window.speechSynthesis) speechSynthesis.onvoiceschanged = load; } catch (e) {}
+  }
+  bestVoice() { const v = this.state.voices; if (!v.length) return null; return v.find((x) => /es-ES/i.test(x.lang) && x.localService) || v.find((x) => /es-ES/i.test(x.lang)) || v.find((x) => x.localService) || v[0]; }
+  speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'es-ES'; u.rate = this.state.settings.speed; const uri = this.state.settings.voiceURI; let voice = null; if (uri && uri !== 'auto') voice = this.state.voices.find((x) => x.voiceURI === uri); if (!voice) voice = this.bestVoice(); if (voice) u.voice = voice; speechSynthesis.speak(u); } catch (e) {} }
+
+  // ---------- word lookup ----------
+  openWord(norm, display) {
+    const d = this.state.data.DICT[norm]; if (!d) return;
+    const sid = this.state.storyId; const lu = { ...this.state.lookedUp }; lu[sid] = { ...(lu[sid] || {}), [norm]: true };
+    this.setState({ activeWord: { es: display, en: d.en, pos: d.pos }, lookedUp: lu });
+  }
+  saveWord() { const w = this.state.activeWord; if (!w) return; if (this.state.saved.some((s) => s.es === w.es)) return; this.setState({ saved: [...this.state.saved, { es: w.es, en: w.en }] }); this.flash('Saved “' + w.es + '” to deck'); }
+  tokenize(sentence) {
+    const re = /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g; const lu = this.state.lookedUp[this.state.storyId] || {};
+    const toks = []; let last = 0, m, k = 0;
+    while ((m = re.exec(sentence))) {
+      if (m.index > last) toks.push({ text: sentence.slice(last, m.index), plain: true, tappable: false, key: 'p' + k++ });
+      const word = m[0]; const nrm = this.norm(word); const d = this.state.data.DICT[nrm];
+      if (d) { const seen = !!lu[nrm];
+        const style = seen ? { background: 'var(--g-soft)', color: 'var(--g-ink)', borderBottom: '2px solid #28b573', borderRadius: '5px', padding: '0 3px', cursor: 'pointer', fontStyle: 'normal' }
+          : { borderBottom: '2px dotted rgba(40,181,115,.55)', cursor: 'pointer', color: 'inherit', fontStyle: 'normal' };
+        toks.push({ text: word, tappable: true, plain: false, style, key: 'w' + k++, onClick: () => this.openWord(nrm, word) });
+      } else toks.push({ text: word, plain: true, tappable: false, key: 'x' + k++ });
+      last = m.index + word.length;
+    }
+    if (last < sentence.length) toks.push({ text: sentence.slice(last), plain: true, tappable: false, key: 'e' + k++ });
+    return toks;
+  }
+
+  // ---------- quiz ----------
+  buildQuiz() {
+    const cards = this.state.data.CARDS; const dir = this.state.quiz.dir;
+    let src = this.sourceCards(this.state.quiz.source); if (src.length < 4) src = cards;
+    const order = this.shuffle(src.length).slice(0, Math.min(8, src.length));
+    const qs = order.map((i) => {
+      const card = src[i]; const prompt = dir === 'es-en' ? card.es : card.en; const correct = dir === 'es-en' ? card.en : card.es;
+      const pool = cards.filter((c) => c.id !== card.id).map((c) => (dir === 'es-en' ? c.en : c.es));
+      const opts = [correct]; while (opts.length < 4 && pool.length) { const j = (Math.random() * pool.length) | 0; opts.push(pool.splice(j, 1)[0]); }
+      for (let x = opts.length - 1; x > 0; x--) { const j = (Math.random() * (x + 1)) | 0; [opts[x], opts[j]] = [opts[j], opts[x]]; }
+      return { id: card.id, es: card.es, prompt, options: opts, answer: opts.indexOf(correct) };
+    });
+    this.setState({ quiz: { ...this.state.quiz, phase: 'play', idx: 0, sel: null, answered: false, score: 0, qs } });
+  }
+  answerQuiz(i) { const q = this.state.quiz; if (q.answered) return; const cur = q.qs[q.idx]; const correct = i === cur.answer; this.grade(cur.id, correct); this.setState({ quiz: { ...this.state.quiz, sel: i, answered: true, score: q.score + (correct ? 1 : 0) } }); }
+  nextQuiz() { const q = this.state.quiz; if (q.idx + 1 >= q.qs.length) { this.setState({ quiz: { ...q, phase: 'done' } }); return; } this.setState({ quiz: { ...q, idx: q.idx + 1, sel: null, answered: false } }); }
+
+  // ---------- comprehension ----------
+  answerComp(i) { if (this.state.compAnswered) return; this.setState({ compSel: i, compAnswered: true }); }
+  finishStory() { this.setState({ completed: { ...this.state.completed, [this.state.storyId]: true }, readView: 'done' }); }
+
+  // ---------- data tools ----------
+  exportJSON() { try { const blob = new Blob([JSON.stringify(this.persistable(), null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'spanish-progress.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); this.flash('Progress exported'); } catch (e) { this.flash('Export failed'); } }
+  importJSON(e) { const file = e.target.files && e.target.files[0]; if (!file) return; const r = new FileReader(); r.onload = () => { try { const o = JSON.parse(r.result); this.setState({ cardState: { ...this.state.cardState, ...(o.cardState || {}) }, saved: o.saved || this.state.saved, completed: o.completed || this.state.completed, lookedUp: o.lookedUp || this.state.lookedUp, settings: { ...this.state.settings, ...(o.settings || {}) } }); this.flash('Progress imported'); } catch (err) { this.flash('Invalid file'); } }; r.readAsText(file); e.target.value = ''; }
+  resetProgress() { if (!this.state.confirmReset) { this.setState({ confirmReset: true }); clearTimeout(this._rc); this._rc = setTimeout(() => this.setState({ confirmReset: false }), 3000); return; } const cs = this.seedStates(this.state.data.CARDS, {}); this.setState({ cardState: cs, saved: [], completed: {}, lookedUp: {}, confirmReset: false, reviewedToday: 0 }); this.flash('Progress reset'); }
+  install() { if (this._prompt) { this._prompt.prompt(); this._prompt = null; this.setState({ canInstall: false }); } else { this.flash('Use Share → Add to Home Screen'); } }
+
+  // ---------- style helpers ----------
+  seg(active) { return { flex: 1, border: 'none', fontFamily: 'Nunito', fontSize: '13.5px', fontWeight: 800, padding: '10px 4px', borderRadius: '10px', cursor: 'pointer', background: active ? 'var(--surface)' : 'transparent', color: active ? 'var(--ink)' : 'var(--muted)', boxShadow: active ? '0 2px 6px rgba(0,0,0,.12)' : 'none', whiteSpace: 'nowrap' }; }
+  chip(active) { return { border: '1.5px solid ' + (active ? '#28b573' : 'var(--line)'), background: active ? 'var(--g-soft)' : 'var(--surface)', color: active ? 'var(--g-ink)' : 'var(--muted)', fontFamily: 'Nunito', fontWeight: 800, fontSize: '12.5px', padding: '7px 13px', borderRadius: '999px', cursor: 'pointer', whiteSpace: 'nowrap', flex: 'none' }; }
+  optStyle(state) {
+    const base = { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', fontFamily: 'Nunito', fontSize: '16px', fontWeight: 800, padding: '17px 18px', borderRadius: '16px', cursor: 'pointer', textAlign: 'left', transition: 'all .15s', border: '2px solid' };
+    if (state === 'correct') return { ...base, background: 'var(--g-soft)', borderColor: '#28b573', color: 'var(--g-ink)' };
+    if (state === 'wrong') return { ...base, background: 'var(--r-soft)', borderColor: '#e05a4d', color: 'var(--r-ink)' };
+    if (state === 'dim') return { ...base, background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--muted2)' };
+    return { ...base, background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--ink)' };
+  }
+  stateColor(s) { return s === 'known' ? '#28b573' : s === 'learning' ? '#f5a524' : 'var(--muted2)'; }
+
+  renderVals() {
+    const S = this.state;
+    const themeAttr = S.settings.theme || (this.props && this.props.theme) || 'light';
+    if (!S.data) return { loading: true, ready: false, showTabs: false, themeAttr, word: { show: false }, toast: { show: false } };
+    const { STORIES, LEVELS, CARDS, DECKS, TYPES, BANDS, DICT } = S.data;
+    const tab = S.tab; const route = S.route; const now = Date.now();
+    const inReader = tab === 'read' && S.readView === 'reader' && !route;
+    const inQuestion = tab === 'read' && S.readView === 'question' && !route;
+    const inDone = tab === 'read' && S.readView === 'done' && !route;
+    const deckOf = (id) => DECKS.find((d) => d.id === id);
+    const deckTint = (a) => 'color-mix(in oklch, ' + a + ' 16%, var(--mix))';
+
+    // tabs
+    const tabs = [
+      { key: 'home', icon: 'home', label: 'Home' }, { key: 'study', icon: 'style', label: 'Study' },
+      { key: 'read', icon: 'menu_book', label: 'Read' }, { key: 'quiz', icon: 'quiz', label: 'Quiz' },
+      { key: 'progress', icon: 'insights', label: 'You' },
+    ].map((t) => { const a = tab === t.key && !route; return { ...t, fill: a ? 1 : 0, color: a ? '#28b573' : 'var(--muted2)', onClick: () => this.goTab(t.key) }; });
+
+    // counts
+    let known = 0, learning = 0, fresh = 0, due = 0, weak = 0, tc = 0, tw = 0, starCount = 0;
+    CARDS.forEach((c) => { const s = this.cs(c.id); if (s.state === 'known') known++; else if (s.state === 'learning') learning++; else fresh++; if (s.seen && s.due <= now) due++; if (s.weak) weak++; tc += s.correct || 0; tw += s.wrong || 0; if (s.star) starCount++; });
+    const acc = tc + tw ? Math.round((tc / (tc + tw)) * 100) : 0;
+    const favorites = S.saved.length + starCount;
+
+    // library
+    const levels = LEVELS.map((lv) => {
+      const stories = STORIES.filter((s) => s.level === lv.n).map((s) => {
+        const done = !!S.completed[s.id];
+        return { real: true, locked: false, title: s.title, teaser: s.teaser, icon: s.icon, color: lv.color, tint: deckTint(lv.color), meta: s.minutes + ' min read' + (done ? ' · completed' : ''), done, notDone: !done,
+          onClick: () => this.setState({ tab: 'read', route: null, readView: 'reader', storyId: s.id, activeWord: null, compSel: null, compAnswered: false }) };
+      });
+      stories.push({ real: false, locked: true });
+      return { n: lv.n, name: lv.name, es: lv.es, color: lv.color, stories };
+    });
+
+    // home
+    const firstInc = STORIES.find((s) => !S.completed[s.id]) || STORIES[0]; const fiL = LEVELS.find((l) => l.n === firstInc.level);
+    const goalTotal = 30; const goalDone = Math.min(goalTotal, S.reviewedToday); const goalPct = Math.round((goalDone / goalTotal) * 100);
+    const home = {
+      streak: 7, goalDone, goalTotal, goalPct, dueCount: due, weakCount: weak,
+      contKicker: S.completed[firstInc.id] ? 'Read again' : 'Continue reading', contTitle: firstInc.title, contIcon: firstInc.icon, contColor: fiL.color, contTint: deckTint(fiL.color),
+      onContinue: () => this.setState({ tab: 'read', route: null, readView: 'reader', storyId: firstInc.id, activeWord: null, compSel: null, compAnswered: false }),
+      onReviewDue: () => { this.setStudySource('due'); this.setState({ tab: 'study', route: null }); },
+      onReviewWeak: () => { this.setStudySource('weak'); this.setState({ tab: 'study', route: null }); },
+      actions: [
+        { label: 'Flashcards', sub: 'Flip & learn', icon: 'style', color: 'var(--g-ink)', tint: 'var(--g-soft)', onClick: () => this.goTab('study') },
+        { label: 'Quiz', sub: 'Test recall', icon: 'quiz', color: '#5560e0', tint: 'var(--p-soft)', onClick: () => this.goTab('quiz') },
+        { label: 'Read', sub: '5 levels', icon: 'menu_book', color: 'var(--a-ink)', tint: 'var(--a-soft)', onClick: () => this.goTab('read') },
+        { label: 'Browse', sub: CARDS.length + ' cards', icon: 'search', color: 'var(--pk-ink)', tint: 'var(--pk-soft)', onClick: () => this.openBrowse({}) },
+      ],
+    };
+
+    // study
+    const order = S.study.order || []; const sLen = order.length;
+    const stStates = [{ v: 'new', l: 'New' }, { v: 'learning', l: 'Learning' }, { v: 'known', l: 'Known' }];
+    const studyMsg = { due: 'No cards are due right now — great work!', weak: 'No weak cards. Keep it up!', starred: 'Star cards to build a custom set.' }[S.study.source] || 'This set is empty.';
+    let study = { sources: [], empty: sLen === 0, has: sLen > 0, emptyMsg: studyMsg, onBrowse: () => this.openBrowse({}),
+      sources: [{ v: 'all', l: 'All' }, { v: 'due', l: 'Due' }, { v: 'weak', l: 'Weak' }, { v: 'starred', l: '★ Starred' }].map((x) => ({ label: x.l, onClick: () => this.setStudySource(x.v), style: { ...this.chip(S.study.source === x.v) } })) };
+    if (sLen > 0) {
+      const id = order[S.study.idx % sLen]; const card = CARDS.find((c) => c.id === id); const cst = this.cs(id); const dk = deckOf(card.deck);
+      study.deckLabel = dk.name; study.deckShort = dk.short; study.deckAccent = dk.accent;
+      study.counter = (S.study.idx % sLen + 1) + ' / ' + sLen;
+      study.faceLabel = S.study.flipped ? 'English' : 'Español'; study.faceText = S.study.flipped ? card.en : card.es;
+      study.starIcon = cst.star ? 'star' : 'star_outline'; study.starColor = cst.star ? '#f5a524' : 'var(--muted2)';
+      study.onFlip = () => this.setState({ study: { ...S.study, flipped: !S.study.flipped } });
+      study.onNext = () => this.setState({ study: { ...S.study, idx: S.study.idx + 1, flipped: false } });
+      study.onShuffle = () => { this.setStudySource(S.study.source); this.flash('Shuffled'); };
+      study.onSpeak = () => this.speak(card.es); study.onStar = () => this.toggleStar(id);
+      study.states = stStates.map((x) => ({ label: x.l, onClick: () => this.setProg(id, x.v), style: this.seg(cst.state === x.v) }));
+    }
+
+    // reader
+    const st = this.story(); const lvl = LEVELS.find((l) => l.n === st.level);
+    const paragraphs = st.body.map((p, i) => ({ tokens: this.tokenize(p), key: 'pr' + i }));
+    let total = 0, seen2 = 0; const luSet = S.lookedUp[st.id] || {};
+    st.body.forEach((p) => { (p.match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g) || []).forEach((w) => { const n = this.norm(w); if (DICT[n]) { total++; if (luSet[n]) seen2++; } }); });
+    const reader = { title: st.title, titleEn: st.titleEn, levelName: lvl.name, color: lvl.color, tint: deckTint(lvl.color), paragraphs, lookedUp: Object.keys(luSet).length, pct: total ? Math.round((seen2 / total) * 100) : 0,
+      onBack: () => this.setState({ readView: 'lib', activeWord: null }), onSpeak: () => this.speak(st.body.join(' ')), onFinish: () => this.setState({ readView: 'question', compSel: null, compAnswered: false }) };
+
+    // comprehension
+    const cq = st.question;
+    const comp = { q: cq.q, answered: S.compAnswered,
+      options: cq.options.map((o, i) => { let stt = 'idle'; if (S.compAnswered) { if (i === cq.answer) stt = 'correct'; else if (i === S.compSel) stt = 'wrong'; else stt = 'dim'; } return { text: o, style: this.optStyle(stt), showIcon: S.compAnswered && (i === cq.answer || i === S.compSel), icon: i === cq.answer ? 'check_circle' : 'cancel', onClick: () => this.answerComp(i) }; }),
+      fbTint: S.compSel === cq.answer ? 'var(--g-soft)' : 'var(--r-soft)', fbColor: S.compSel === cq.answer ? '#28b573' : '#e05a4d', fbTitle: S.compSel === cq.answer ? '¡Correcto! Well done.' : 'Not quite — review and keep going.', onNext: () => this.finishStory() };
+    const done = { title: st.title, looked: Object.keys(luSet).length, saved: S.saved.length, onBack: () => this.setState({ readView: 'lib', activeWord: null }) };
+
+    // quiz
+    const q = S.quiz; const qSrcCount = (() => { const c = this.sourceCards(q.source).length; return Math.min(8, c < 4 ? CARDS.length : c); })();
+    let quiz = { intro: q.phase === 'intro', playing: q.phase === 'play', done: q.phase === 'done', startCount: qSrcCount,
+      dirs: [{ v: 'es-en', l: 'Español → English' }, { v: 'en-es', l: 'English → Español' }].map((x) => ({ label: x.l, onClick: () => this.setState({ quiz: { ...q, dir: x.v } }), style: this.seg(q.dir === x.v) })),
+      sources: [{ v: 'all', l: 'All cards' }, { v: 'due', l: 'Due today' }, { v: 'weak', l: 'Weak spots' }, { v: 'filter', l: 'Current filter' }].map((x) => ({ label: x.l, onClick: () => this.setState({ quiz: { ...q, source: x.v } }), style: this.seg(q.source === x.v) })),
+      onStart: () => this.buildQuiz() };
+    if (q.phase === 'play') {
+      const cur = q.qs[q.idx]; quiz.prompt = cur.prompt; quiz.counter = (q.idx + 1) + ' / ' + q.qs.length; quiz.pct = Math.round((q.idx / q.qs.length) * 100); quiz.answered = q.answered;
+      quiz.ask = q.dir === 'es-en' ? 'What does this mean?' : 'How do you say this?'; quiz.nextLabel = q.idx + 1 >= q.qs.length ? 'See results' : 'Next question'; quiz.onNext = () => this.nextQuiz(); quiz.onSpeak = () => this.speak(cur.es);
+      quiz.options = cur.options.map((o, i) => { let stt = 'idle'; if (q.answered) { if (i === cur.answer) stt = 'correct'; else if (i === q.sel) stt = 'wrong'; else stt = 'dim'; } return { text: o, style: this.optStyle(stt), showIcon: q.answered && (i === cur.answer || i === q.sel), icon: i === cur.answer ? 'check_circle' : 'cancel', onClick: () => this.answerQuiz(i) }; });
+    } else if (q.phase === 'done') { quiz.accuracy = Math.round((q.score / q.qs.length) * 100); quiz.scoreLine = q.score + ' of ' + q.qs.length + ' correct'; quiz.onRestart = () => this.setState({ quiz: { ...q, phase: 'intro' } }); }
+
+    // progress
+    const prog = { total: '3,599', known, learning, fresh, storiesDone: Object.keys(S.completed).length, storiesTotal: STORIES.length, readPct: Math.round((Object.keys(S.completed).length / STORIES.length) * 100),
+      stats: [
+        { label: 'Due today', value: due, icon: 'event_available', color: '#5560e0', onClick: () => { this.setStudySource('due'); this.setState({ tab: 'study', route: null }); } },
+        { label: 'Weak spots', value: weak, icon: 'bolt', color: '#e0843c', onClick: () => { this.setStudySource('weak'); this.setState({ tab: 'study', route: null }); } },
+        { label: 'Favorites', value: favorites, icon: 'bookmark', color: 'var(--pk-ink)', onClick: () => this.openBrowse({}) },
+        { label: 'Quiz accuracy', value: acc + '%', icon: 'target', color: '#28b573', onClick: () => this.goTab('quiz') },
+      ],
+      decks: DECKS.map((d) => { const dk = CARDS.filter((c) => c.deck === d.id); const kn = dk.filter((c) => this.cs(c.id).state === 'known').length; return { name: d.name, icon: d.icon, accent: d.accent, tint: deckTint(d.accent), sub: d.count.toLocaleString() + ' cards · ' + kn + ' known in set', onClick: () => this.openBrowse({ deck: d.id }) }; }),
+    };
+
+    // browse
+    const bf = S.browse; const results = this.filterCards(bf);
+    const mkChips = (arr, keyName) => arr.map((o) => ({ label: o.label, onClick: () => this.setBrowse({ [keyName]: o.val }), style: this.chip(String(bf[keyName]) === String(o.val)) }));
+    const browse = {
+      q: bf.q, hasQ: !!bf.q, onSearch: (e) => this.setBrowse({ q: e.target.value }), onClearQ: () => this.setBrowse({ q: '' }),
+      deckChips: mkChips([{ label: 'All decks', val: 'all' }].concat(DECKS.map((d) => ({ label: d.short, val: d.id }))), 'deck'),
+      typeChips: mkChips([{ label: 'All types', val: 'all' }].concat(TYPES.map((t) => ({ label: t.label, val: t.id }))), 'type'),
+      stateChips: mkChips([{ label: 'Any state', val: 'all' }, { label: 'New', val: 'new' }, { label: 'Learning', val: 'learning' }, { label: 'Known', val: 'known' }], 'state'),
+      bandChips: mkChips([{ label: 'All bands', val: 'all' }].concat(BANDS.map((b) => ({ label: b.label, val: b.id }))), 'band'),
+      sessionChips: mkChips([{ label: 'Any session', val: 'any' }, { label: 'Seen', val: 'seen' }, { label: 'Not seen', val: 'unseen' }], 'session'),
+      count: results.length, none: results.length === 0,
+      onBack: () => this.setState({ route: null }),
+      onStudy: () => { this.setState({ study: { idx: 0, flipped: false, source: 'filter', order: this.orderFor('filter') }, tab: 'study', route: null }); },
+      onQuiz: () => { this.setState({ quiz: { ...q, source: 'filter', phase: 'intro' }, tab: 'quiz', route: null }); },
+      results: results.map((c) => { const s = this.cs(c.id); return { es: c.es, en: c.en, stateColor: this.stateColor(s.state), starIcon: s.star ? 'star' : 'star_outline', starColor: s.star ? '#f5a524' : 'var(--muted2)', onOpen: () => this.setState({ route: 'card', detailId: c.id }), onStar: (e) => { e.stopPropagation(); this.toggleStar(c.id); } }; }),
+    };
+
+    // card detail
+    let card = {};
+    if (route === 'card' && S.detailId) {
+      const c = CARDS.find((x) => x.id === S.detailId); const s = this.cs(c.id); const dk = deckOf(c.deck);
+      const ddays = Math.round((s.due - now) / this.DAY());
+      const dueText = s.state === 'new' ? 'New card — not in review yet' : (s.due <= now ? 'Due for review now' : 'Next review in ' + ddays + ' day' + (ddays === 1 ? '' : 's'));
+      card = { es: c.es, en: c.en, deckName: dk.short, deckAccent: dk.accent, deckTint: deckTint(dk.accent), typeLabel: (TYPES.find((t) => t.id === c.type) || {}).label || c.type, hasBand: !!c.band, bandLabel: c.band ? (BANDS.find((b) => b.id === c.band) || {}).label : '', dueText,
+        starIcon: s.star ? 'star' : 'star_outline', starColor: s.star ? '#f5a524' : 'var(--ink)', onStar: () => this.toggleStar(c.id), onSpeak: () => this.speak(c.es), onBack: () => this.setState({ route: 'browse' }),
+        states: stStates.map((x) => ({ label: x.l, onClick: () => this.setProg(c.id, x.v), style: this.seg(s.state === x.v) })) };
+    }
+
+    // settings
+    const voiceOpts = [{ uri: 'auto', name: 'Auto — best Spanish voice', sub: this.bestVoice() ? this.bestVoice().name : 'Detecting device voices…' }].concat(S.voices.map((v) => ({ uri: v.voiceURI, name: v.name, sub: v.lang + (v.localService ? ' · on-device' : '') })));
+    const settings = {
+      voiceNote: S.voices.length ? S.voices.length + ' Spanish voice(s) on this device' : 'Spanish voices load on a real device',
+      voices: voiceOpts.map((v) => ({ name: v.name, sub: v.sub, active: S.settings.voiceURI === v.uri, onClick: () => { this.setState({ settings: { ...S.settings, voiceURI: v.uri } }); }, style: { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', border: '1.5px solid ' + (S.settings.voiceURI === v.uri ? '#28b573' : 'var(--line)'), background: S.settings.voiceURI === v.uri ? 'var(--g-soft)' : 'var(--surface)', color: 'var(--ink)', padding: '11px 13px', borderRadius: '12px', cursor: 'pointer' } })),
+      speeds: [{ v: 0.75, l: 'Slow' }, { v: 1, l: 'Normal' }, { v: 1.25, l: 'Fast' }].map((x) => ({ label: x.l, onClick: () => { this.setState({ settings: { ...S.settings, speed: x.v } }); setTimeout(() => this.speak('Hola, buenos días'), 30); }, style: this.seg(S.settings.speed === x.v) })),
+      themes: [{ v: 'light', l: 'Light', i: 'light_mode' }, { v: 'dark', l: 'Dark', i: 'dark_mode' }].map((x) => ({ label: x.l, icon: x.i, onClick: () => this.setState({ settings: { ...S.settings, theme: x.v } }), style: this.seg(themeAttr === x.v) })),
+      onTest: () => this.speak('Hola, ¿cómo estás? Buenos días.'), onExport: () => this.exportJSON(), onImport: (e) => this.importJSON(e), onReset: () => this.resetProgress(), resetLabel: S.confirmReset ? 'Tap again to confirm reset' : 'Reset progress',
+      onInstall: () => this.install(), installLabel: S.canInstall ? 'Install app' : 'Add to Home Screen', installHint: S.canInstall ? 'Install as a standalone app' : 'In Safari: Share → Add to Home Screen', onBack: () => this.setState({ route: null }),
+    };
+
+    // word sheet
+    const aw = S.activeWord; const isSaved = aw && S.saved.some((s) => s.es === aw.es);
+    const word = { show: !!aw, es: aw ? aw.es : '', en: aw ? aw.en : '', pos: aw ? aw.pos : '', onClose: () => this.setState({ activeWord: null }), stop: (e) => e.stopPropagation(), onSpeak: () => aw && this.speak(aw.es), onSave: () => this.saveWord(),
+      saveIcon: isSaved ? 'bookmark_added' : 'bookmark_add', saveLabel: isSaved ? 'Saved to your deck' : 'Save to deck',
+      saveStyle: { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Nunito', fontSize: '16px', fontWeight: 800, padding: '15px', borderRadius: '16px', cursor: 'pointer', border: 'none', background: isSaved ? 'var(--g-soft)' : '#28b573', color: isSaved ? 'var(--g-ink)' : '#fff' } };
+
+    return {
+      loading: false, ready: true, themeAttr,
+      vHome: tab === 'home' && !route, vStudy: tab === 'study' && !route, vQuiz: tab === 'quiz' && !route, vProgress: tab === 'progress' && !route,
+      vReadLib: tab === 'read' && S.readView === 'lib' && !route, vReader: inReader, vQuestion: inQuestion, vDone: inDone,
+      vBrowse: route === 'browse', vCard: route === 'card', vSettings: route === 'settings',
+      showTabs: !inReader && !inQuestion && !inDone && !route,
+      onSettings: () => this.setState({ route: 'settings' }),
+      tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word,
+      greeting: 'Good morning', toast: { show: !!S.toast, text: S.toast || '' },
+    };
+  }
+  // browse navigation
+  openBrowse(patch) { this.setState({ route: 'browse', browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any', ...patch } }); }
+  setBrowse(patch) { this.setState({ browse: { ...this.state.browse, ...patch } }); }
+}
+</script>
+</body>
+</html>
