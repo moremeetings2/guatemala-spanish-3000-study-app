@@ -556,12 +556,19 @@ async function sendChat() {
   const system = ctx && ctx.system ? ctx.system : AI_SYSTEM;
   const history = [...appState.chat.messages, { role: 'user', content: text }];
   setState({ chat: { ...appState.chat, messages: history, input: '', busy: true, streaming: '' } });
+  // Stream tokens straight into the live DOM node — calling setState per token
+  // re-rendered the whole app and replayed the panel animation (the flicker).
+  const onToken = (acc) => {
+    const node = document.getElementById('chat-stream-text');
+    if (node) node.textContent = acc;
+    const list = document.getElementById('chat-messages');
+    if (list) list.scrollTop = list.scrollHeight;
+  };
   try {
-    const full = await AI.chat(
-      [{ role: 'system', content: system }, ...history],
-      { onToken: (acc) => setState({ chat: { ...appState.chat, streaming: acc } }) }
-    );
-    setState({ chat: { ...appState.chat, messages: [...appState.chat.messages, { role: 'assistant', content: full || '…' }], busy: false, streaming: '' } });
+    const recent = history.slice(-8); // cap context so long chats don't overflow
+    const full = await AI.chat([{ role: 'system', content: system }, ...recent], { onToken });
+    const answer = (full || '').trim() || "Sorry, I couldn't come up with an answer — try rephrasing.";
+    setState({ chat: { ...appState.chat, messages: [...appState.chat.messages, { role: 'assistant', content: answer }], busy: false, streaming: '' } });
   } catch (e) {
     const msg = (e && e.message) || 'Something went wrong.';
     setState({ chat: { ...appState.chat, messages: [...appState.chat.messages, { role: 'assistant', content: '⚠️ ' + msg }], busy: false, streaming: '' } });
@@ -1344,7 +1351,11 @@ function renderChat(c) {
   };
 
   const bubbles = c.messages.map(m => bubble(m.role, m.content)).join('');
-  const streamBubble = c.busy ? bubble('assistant', c.streaming || '', true) : '';
+  // Streaming bubble: an inner span (id chat-stream-text) that sendChat patches
+  // directly as tokens arrive — no per-token re-render.
+  const streamBubble = c.busy
+    ? `<div style="align-self:flex-start;max-width:86%;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:11px 14px;font-size:15px;font-weight:600;line-height:1.5;white-space:pre-wrap;word-break:break-word;box-shadow:0 2px 8px rgba(0,0,0,.04)"><span id="chat-stream-text">${esc(c.streaming || '')}</span><span style="opacity:.4"> ▍</span></div>`
+    : '';
   const showIntro = !c.messages.length && !c.busy;
   const intro = showIntro ? `
     <div style="text-align:center;margin:auto 0;padding:14px 8px">
@@ -1378,7 +1389,7 @@ function renderChat(c) {
   }
 
   return `
-<div style="position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);animation:sheetUp .28s cubic-bezier(.4,1,.4,1);padding-top:env(safe-area-inset-top,0px)">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);padding-top:env(safe-area-inset-top,0px)">
   <div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line);background:var(--bar);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
     <button ${h(c.onClose)} style="flex:none;border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 23, 'var(--ink)')}</button>
     <div style="flex:1;min-width:0">

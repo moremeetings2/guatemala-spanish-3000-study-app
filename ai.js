@@ -125,20 +125,17 @@
     await ensureLoaded();
     const onToken = typeof opts.onToken === 'function' ? opts.onToken : () => {};
     let full = '';
-    const req = {
+    // Keep this call to the minimal, verified-working shape — extra params
+    // (sampling/temperature/onNewToken) were the source of a completion error.
+    await wllama.createChatCompletion({
       messages,
       stream: true,
-      onNewToken: undefined, // prefer onData below
+      nPredict: opts.maxTokens || 400,
       onData: (chunk) => {
         const piece = chunk && chunk.choices && chunk.choices[0] && chunk.choices[0].delta && chunk.choices[0].delta.content;
         if (piece) { full += piece; onToken(full, piece); }
       },
-      sampling: { temp: 0.5, top_k: 40, top_p: 0.9 },
-      temperature: 0.5, top_k: 40, top_p: 0.9,
-      nPredict: opts.maxTokens || 512,
-    };
-    if (opts.abortSignal) req.abortSignal = opts.abortSignal;
-    await wllama.createChatCompletion(req);
+    });
     return full;
   }
 
