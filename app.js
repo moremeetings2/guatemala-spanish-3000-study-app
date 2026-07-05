@@ -1183,10 +1183,10 @@ function renderLanding(a) {
     { n: '3', title: 'Watch it stick', desc: 'Spaced review brings words back at the right moment, so they last.' },
   ];
   const modules = [
-    { name: 'Guatemala',   tag: 'Available now', tagIcon: 'check_circle', tagColor: '#1c6e48', bg: '#e7f6ee', border: 'rgba(40,181,115,.3)', chip: '#28b573' },
-    { name: 'Mexico',      tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
-    { name: 'Honduras',    tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
-    { name: 'El Salvador', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
+    { name: 'Guatemala',   flag: '🇬🇹', tag: 'Available now', tagIcon: 'check_circle', tagColor: '#1c6e48', bg: '#e7f6ee', border: 'rgba(40,181,115,.3)', chip: '#28b573' },
+    { name: 'Mexico',      flag: '🇲🇽', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
+    { name: 'Honduras',    flag: '🇭🇳', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
+    { name: 'El Salvador', flag: '🇸🇻', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
   ];
   const stats = [
     { n: '3,000', l: 'most-used words', c: 'var(--ink)' },
@@ -1288,7 +1288,7 @@ function renderLanding(a) {
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px">
       ${modules.map(m => `<div style="padding:22px;border-radius:20px;background:${m.bg};border:1.5px solid ${m.border}">
-        <div style="width:44px;height:44px;border-radius:12px;background:${m.chip};margin-bottom:16px"></div>
+        <div style="width:44px;height:44px;border-radius:12px;background:${m.chip};margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1">${m.flag}</div>
         <h3 style="margin:0 0 6px;font-weight:800;font-size:18px;letter-spacing:-.01em;color:var(--ink)">${esc(m.name)}</h3>
         <div style="display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12.5px;color:${m.tagColor}">${ms(m.tagIcon, 15, m.tagColor)}${esc(m.tag)}</div>
       </div>`).join('')}
