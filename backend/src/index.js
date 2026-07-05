@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import authRoutes from './routes/auth.js';
 import wordRoutes from './routes/words.js';
 import progressRoutes from './routes/progress.js';
+import myWordsRoutes from './routes/myWords.js';
 
 const app = new Hono();
 
@@ -36,6 +37,7 @@ app.get('/api/health', async (c) => {
 app.route('/api/auth', authRoutes);
 app.route('/api/words', wordRoutes);
 app.route('/api/progress', progressRoutes);
+app.route('/api/my-words', myWordsRoutes);
 
 app.notFound((c) => c.json({ error: 'Not found' }, 404));
 app.onError((err, c) => {

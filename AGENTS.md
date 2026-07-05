@@ -25,10 +25,12 @@
 - `data/synonyms.json`: Spanish synonyms for Main 3000 words (shown on flashcards)
 - `data/sentences.json`: example sentences for all 3000 Main 3000 words (the "Use" button); top ~150 hand-authored, rest generated
 - The "You" tab includes a Guatemalan Lexicon reference view (`renderLexicon`, route `lexicon`) showing each term with its example sentence
+- **My Words**: every signed-in user has a private custom deck (route `mywords` from the You tab; `renderMyWords`). Words are stored per-user in D1 (`user_words` table, `/api/my-words` CRUD, cap 500/user), fetched after login (`loadMyWords`) and merged into `data.CARDS` as deck `myWords` (`applyMyWords`), so Study/Quiz/Browse/progress/AI-chat all pick them up. Cleared from the catalog on logout.
 - `tests/app.integration.spec.js`: Playwright integration tests for the core app (home, browse, study, quiz, settings, persistence, legacy migration, service worker) — current UI
 - `tests/study-card-enrichments.spec.js`: Playwright tests for synonyms + example-sentence card features and the Lexicon view (current UI)
 - `tests/auth.spec.js`: Playwright tests for the accounts/landing flow (landing, signup, login, logout, no-guest gating) with a mocked backend
 - `tests/ai-chat.spec.js`: Playwright tests for the AI tutor chat (general + vocab-card context) with a stubbed `window.AI` (no real model download)
+- `tests/my-words.spec.js`: Playwright tests for the My Words custom deck (boot load, add, duplicate rejection, delete, logout clearing) with a mocked backend
 - `tools/generate_synonyms.py`: regenerates `data/synonyms.json` from WordNet (NLTK)
 - `playwright.config.js`: Playwright config
 - `tools/build_study_pack_from_csv_sources.py`: rebuilds study-pack data from CSV sources

@@ -14,7 +14,12 @@ const DECK_DEFS = {
   everydayGuatemalaPhrases: { name: 'Everyday Phrases',   short: 'Everyday', accent: '#c23b9e', icon: 'chat' },
   guatemalaBonus:           { name: 'Guatemala Notes',    short: 'Notes',    accent: '#e0843c', icon: 'flag' },
   guatemalaLexicon:         { name: 'Guatemalan Lexicon', short: 'Lexicon',  accent: '#2c7a9e', icon: 'menu_book' },
+  // Per-user custom vocabulary — private to each account, synced via the API.
+  myWords:                  { name: 'My Words',           short: 'Mine',     accent: '#7b64e8', icon: 'edit_note' },
 };
+
+// Product rule: personal-deck cap (mirrors the server's MAX_WORDS_PER_USER).
+const MY_WORDS_MAX = 500;
 
 const TYPES_DEF = [
   { id: 'word',   label: 'Word' },
@@ -49,6 +54,9 @@ let appState = {
   // On-device AI tutor.
   chat: { open: false, context: null, messages: [], input: '', busy: false, streaming: '' },
   ai: { status: 'idle', progress: 0, size: '1.2B', error: '' },
+  // My Words: the user's private custom deck + the add-word form.
+  myWords: [],
+  mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, error: '' },
 };
 
 // Base persona for the on-device AI tutor. Context-specific prompts extend this.
@@ -526,6 +534,7 @@ async function doAuth(kind) {
     saveAuth();
     flash(kind === 'signup' ? 'Account created!' : 'Welcome back!');
     maybeStartAI();
+    loadMyWords();
     await syncOnLogin();
   } catch (e) {
     setState({ authBusy: false, authError: (e && e.message) || 'Something went wrong.' });
@@ -536,9 +545,76 @@ async function doLogout() {
   const token = appState.auth.token;
   try { if (token) await API.logout(token); } catch (e) {}
   clearTimeout(progressSyncTimer); dirtyCards = new Set();
-  setState({ auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home' });
+  applyMyWords([]); // custom words are account-scoped — drop them from the catalog
+  setState({ auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home', myWords: [], mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, error: '' } });
   saveAuth();
   flash('Logged out');
+}
+
+// ===== My Words (per-user custom deck) =====
+
+/** API word -> card shape used everywhere in the app. */
+function myWordToCard(w) {
+  return { id: w.id, es: w.es, en: w.en, deck: 'myWords', type: 'word', band: null, synonyms: [], sentence: w.sentence || null, cat: '' };
+}
+
+// Rebuild the catalog with the user's custom words as the "My Words" deck.
+// Custom cards join data.CARDS so every existing surface (study, quiz, browse,
+// progress counts, AI chat) picks them up with no special-casing.
+function applyMyWords(words) {
+  if (!appState.data) return;
+  const mine = (words || []).map(myWordToCard);
+  const CARDS = appState.data.CARDS.filter(c => c.deck !== 'myWords').concat(mine);
+  const DECKS = appState.data.DECKS.filter(d => d.id !== 'myWords');
+  if (mine.length) DECKS.push({ id: 'myWords', ...DECK_DEFS.myWords, count: mine.length });
+  const cardState = seedStates(mine, appState.cardState);
+  // Rebuild the study order so new words join the rotation, but keep the card
+  // the user is currently on so an add/delete doesn't yank the deck around.
+  const curId = appState.study.order.length ? appState.study.order[appState.study.idx % appState.study.order.length] : null;
+  appState = { ...appState, data: { ...appState.data, CARDS, DECKS }, cardState };
+  const order = orderFor(appState.study.source);
+  const idx = Math.max(0, order.indexOf(curId));
+  setState({ myWords: words || [], study: { ...appState.study, order, idx } });
+}
+
+async function loadMyWords() {
+  if (!appState.auth.token || !window.API || !API.getMyWords) return;
+  try {
+    const { words } = await API.getMyWords(appState.auth.token);
+    applyMyWords(words || []);
+  } catch (e) {
+    // Non-fatal: the deck just stays absent for this session.
+  }
+}
+
+async function addMyWord() {
+  const f = appState.mw;
+  if (f.busy) return;
+  const es = (f.es || '').trim(); const en = (f.en || '').trim();
+  if (!es || !en) { setState({ mw: { ...f, error: 'Both the Spanish word and its English meaning are required.' } }); return; }
+  if (appState.myWords.length >= MY_WORDS_MAX) { setState({ mw: { ...f, error: `You've reached the ${MY_WORDS_MAX}-word limit for My Words.` } }); return; }
+  setState({ mw: { ...f, busy: true, error: '' } });
+  try {
+    const body = { es, en };
+    const sEs = (f.sentEs || '').trim(); const sEn = (f.sentEn || '').trim();
+    if (sEs) body.sentence = { es: sEs, en: sEn };
+    const { word } = await API.addMyWord(appState.auth.token, body);
+    applyMyWords([word, ...appState.myWords]);
+    setState({ mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, error: '' } });
+    flash('Added to My Words');
+  } catch (e) {
+    setState({ mw: { ...appState.mw, busy: false, error: (e && e.message) || 'Could not add the word.' } });
+  }
+}
+
+async function deleteMyWord(id) {
+  try {
+    await API.deleteMyWord(appState.auth.token, id);
+    applyMyWords(appState.myWords.filter(w => w.id !== id));
+    flash('Word removed');
+  } catch (e) {
+    flash((e && e.message) || 'Could not remove the word.');
+  }
 }
 
 // ===== AI Tutor =====
@@ -955,6 +1031,42 @@ function computeVals() {
     lexCount: lexCards.length,
     lexAccent: lexDeckDef.accent, lexTint: deckTint(lexDeckDef.accent), lexIcon: lexDeckDef.icon,
     onLexicon: () => setState({ route: 'lexicon', lexQ: '' }),
+    myWordsCount: S.myWords.length,
+    onMyWords: () => setState({ route: 'mywords' }),
+  };
+
+  // My Words management screen (route 'mywords', reached from the You tab).
+  const mwDef = DECK_DEFS.myWords;
+  const myw = {
+    count: S.myWords.length, max: MY_WORDS_MAX,
+    accent: mwDef.accent, tint: deckTint(mwDef.accent),
+    form: {
+      es: S.mw.es, en: S.mw.en, sentEs: S.mw.sentEs, sentEn: S.mw.sentEn,
+      busy: S.mw.busy, error: S.mw.error,
+      canAdd: !S.mw.busy && !!(S.mw.es || '').trim() && !!(S.mw.en || '').trim(),
+      onEs: e => setState({ mw: { ...S.mw, es: e.target.value, error: '' } }),
+      onEn: e => setState({ mw: { ...S.mw, en: e.target.value, error: '' } }),
+      onSentEs: e => setState({ mw: { ...S.mw, sentEs: e.target.value } }),
+      onSentEn: e => setState({ mw: { ...S.mw, sentEn: e.target.value } }),
+      onAdd: () => addMyWord(),
+    },
+    items: S.myWords.map(w => ({
+      id: w.id, es: w.es, en: w.en,
+      sentEs: w.sentence ? w.sentence.es : '', sentEn: w.sentence ? w.sentence.en : '',
+      onSpeak: () => speak(w.es),
+      onDelete: () => deleteMyWord(w.id),
+      onChat: () => openChat({
+        type: 'word', title: w.es, subtitle: 'My Words · ' + w.en,
+        system: AI_SYSTEM + ` The learner added the Spanish word or phrase "${w.es}" (English: "${w.en}") to their personal deck. Center your help on this word: its meaning, natural example sentences, conjugation if it's a verb, and common related expressions.`,
+        suggestions: [
+          `What does "${w.es}" mean and when do I use it?`,
+          `Give me 2 example sentences with "${w.es}".`,
+          `Any Guatemalan tips for using "${w.es}"?`,
+        ],
+      }),
+    })),
+    onStudy: () => { setState({ browse: { ...S.browse, q: '', deck: 'myWords', type: 'all', state: 'all', band: 'all', session: 'any' } }); setState({ study: { idx: 0, flipped: false, source: 'filter', order: orderFor('filter') }, tab: 'study', route: null }); },
+    onBack: () => setState({ route: null }),
   };
 
   // Guatemalan Lexicon reference (in the "You" tab)
@@ -1150,10 +1262,10 @@ function computeVals() {
     vReadLib: tab === 'read' && S.readView === 'lib' && !route,
     vReader: inReader, vQuestion: inQuestion, vDone: inDone,
     vBrowse: route === 'browse', vCard: route === 'card', vSettings: route === 'settings',
-    vLexicon: route === 'lexicon',
+    vLexicon: route === 'lexicon', vMyWords: route === 'mywords',
     showTabs: !showAuth && !inReader && !inQuestion && !inDone && !route,
     onSettings: () => setState({ route: 'settings' }),
-    tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word, lexicon, chat,
+    tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word, lexicon, myw, chat,
     greeting: greeting(),
     toast: { show: !!S.toast, text: S.toast || '' },
   };
@@ -1772,6 +1884,15 @@ function renderProgress(v) {
       ${ms('chevron_right', 22, 'var(--muted2)')}
     </div>`).join('')}
   </div>
+  <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Your deck</div>
+  <button ${h(prog.onMyWords)} style="width:100%;text-align:left;border:none;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04);margin-bottom:18px">
+    <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:${deckTint('#7b64e8')};flex:none">${ms('edit_note', 26, '#7b64e8')}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:16px;font-weight:800;color:var(--ink)">My Words</div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${prog.myWordsCount ? prog.myWordsCount + ' custom word' + (prog.myWordsCount === 1 ? '' : 's') + ' · add more anytime' : 'Add your own words to study'}</div>
+    </div>
+    ${ms('chevron_right', 22, 'var(--muted2)')}
+  </button>
   <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Guatemala</div>
   <button ${h(prog.onLexicon)} style="width:100%;text-align:left;border:none;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04);margin-bottom:18px">
     <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:${prog.lexTint};flex:none">${ms(prog.lexIcon, 25, prog.lexAccent)}</div>
@@ -1787,6 +1908,68 @@ function renderProgress(v) {
       <div style="font-size:14px;font-weight:800;color:#28b573">${prog.storiesDone}/${prog.storiesTotal} stories</div>
     </div>
     <div style="height:8px;border-radius:5px;background:var(--track);overflow:hidden"><div style="height:100%;width:${prog.readPct}%;background:#28b573;border-radius:5px"></div></div>
+  </div>
+</div>`;
+}
+
+// My Words: the user's private custom deck — add, review, and remove words.
+function renderMyWords(v) {
+  const { myw } = v;
+  const f = myw.form;
+  const fld = (ph, val, handler, fid, extra = '') =>
+    `<input class="fld" type="text" placeholder="${ph}" value="${esc(val)}" data-fid="${fid}" ${hi(handler)} ${extra}
+      style="width:100%;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:11px 13px;font-family:Nunito;font-size:15px;font-weight:700;color:var(--ink);outline:none">`;
+  return `
+<div style="animation:slideIn .25s both">
+  <div style="position:sticky;top:0;z-index:4;background:var(--bar);backdrop-filter:blur(8px);padding:6px 16px 12px;border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button ${h(myw.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
+      <div style="min-width:0;flex:1">
+        <div style="font-size:20px;font-weight:900;color:var(--ink);line-height:1.1">My Words</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${myw.count} of ${myw.max} · private to your account, synced to your devices</div>
+      </div>
+      ${myw.count ? `<button ${h(myw.onStudy)} style="flex:none;border:none;background:${myw.accent};color:#fff;font-family:Nunito;font-weight:800;font-size:13px;padding:9px 14px;border-radius:12px;cursor:pointer">Study</button>` : ''}
+    </div>
+  </div>
+  <div style="padding:14px 16px 40px">
+
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+      <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:12px">Add a word</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        ${fld('Spanish word or phrase *', f.es, f.onEs, 'mw-es', 'autocapitalize="none"')}
+        ${fld('English meaning *', f.en, f.onEn, 'mw-en')}
+        ${fld('Example sentence in Spanish (optional)', f.sentEs, f.onSentEs, 'mw-sent-es', 'autocapitalize="none"')}
+        ${f.sentEs.trim() ? fld('Example sentence in English (optional)', f.sentEn, f.onSentEn, 'mw-sent-en') : ''}
+      </div>
+      ${f.error ? `<div style="background:var(--r-soft);color:var(--r-ink);font-size:13px;font-weight:700;padding:9px 12px;border-radius:10px;margin-top:10px">${esc(f.error)}</div>` : ''}
+      <button ${h(f.onAdd)} ${f.canAdd ? '' : 'disabled'} style="width:100%;margin-top:12px;border:none;background:${f.canAdd ? myw.accent : 'var(--track)'};color:${f.canAdd ? '#fff' : 'var(--muted2)'};font-family:Nunito;font-size:15px;font-weight:800;padding:13px;border-radius:13px;cursor:${f.canAdd ? 'pointer' : 'default'}">${f.busy ? 'Adding…' : 'Add to My Words'}</button>
+    </div>
+
+    ${myw.items.length === 0 ? `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;color:var(--muted)">
+      ${ms('edit_note', 46, 'var(--muted2)')}
+      <div style="font-size:16px;font-weight:800;color:var(--ink);margin-top:14px">No words yet</div>
+      <div style="font-size:14px;font-weight:600;margin-top:4px;max-width:280px;line-height:1.4">Words you add appear here and in Study, Quiz, and Browse as your own “My Words” deck.</div>
+    </div>` :
+    myw.items.map(it => `
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.3px">${esc(it.es)}</div>
+          <div style="font-size:14px;font-weight:600;color:var(--muted);margin-top:2px">${esc(it.en)}</div>
+        </div>
+        <div style="flex:none;display:flex;align-items:center;gap:8px">
+          <button ${h(it.onChat)} title="Ask the AI tutor" style="border:none;background:var(--p-soft);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('smart_toy', 20, '#5560e0')}</button>
+          <button ${h(it.onSpeak)} style="border:none;background:${myw.tint};width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 20, myw.accent)}</button>
+          <button ${h(it.onDelete)} title="Remove from My Words" style="border:none;background:var(--r-soft);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('delete', 19, 'var(--r-ink)')}</button>
+        </div>
+      </div>
+      ${it.sentEs ? `
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+        <div style="font-size:15px;font-weight:700;color:var(--ink);line-height:1.35">${esc(it.sentEs)}</div>
+        ${it.sentEn ? `<div style="font-size:13.5px;font-weight:600;color:var(--muted);margin-top:4px;line-height:1.3">${esc(it.sentEn)}</div>` : ''}
+      </div>` : ''}
+    </div>`).join('')}
   </div>
 </div>`;
 }
@@ -2071,6 +2254,7 @@ function render() {
   else if (v.vCard)     html = renderCard(v);
   else if (v.vSettings) html = renderSettings(v);
   else if (v.vLexicon)  html = renderLexicon(v);
+  else if (v.vMyWords)  html = renderMyWords(v);
 
   $content.innerHTML = html;
   $tabBar.innerHTML = v.showTabs ? renderTabBar(v.tabs) : '';
@@ -2164,6 +2348,7 @@ async function bootstrap() {
     registerServiceWorker();
     initAI();                       // mirror AI engine state into the UI
     if (auth.token) syncOnLogin();  // pull cross-device progress in the background
+    if (auth.token) loadMyWords();  // fetch the user's custom deck
     maybeStartAI();                 // begin the background model download if signed in
   } catch (err) {
     $content.innerHTML = `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--muted)"><div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">Could not load cards</div><div style="font-size:14px;font-weight:600">${esc(err.message)}</div></div>`;

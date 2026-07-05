@@ -36,6 +36,16 @@ and stored **hashed** — the raw token only lives on the client, sent as
 | GET | `/api/auth/me` | user | current user |
 | GET | `/api/progress` | user | this user's `cardState` |
 | PUT | `/api/progress` | user | upsert `{ cardState: { ... } }` |
+| GET | `/api/my-words` | user | this user's custom words (My Words deck) |
+| POST | `/api/my-words` | user | add a custom word (cap 500/user, per-user dupe check) |
+| PUT | `/api/my-words/:id` | user | edit one of the user's own words |
+| DELETE | `/api/my-words/:id` | user | remove one of the user's own words |
+
+Migrations live in `migrations/` and are applied with, e.g.:
+
+```bash
+npx wrangler d1 execute spanish3000 --remote --file=migrations/0002_user_words.sql
+```
 
 ## One-time deploy (run these on your machine)
 

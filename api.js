@@ -50,5 +50,10 @@ window.API = {
   me: (token) => apiFetch('/api/auth/me', { token }),
   getProgress: (token) => apiFetch('/api/progress', { token }),
   putProgress: (token, cardState) => apiFetch('/api/progress', { method: 'PUT', token, body: { cardState } }),
+  // My Words: the user's private custom-vocabulary deck.
+  getMyWords: (token) => apiFetch('/api/my-words', { token }),
+  addMyWord: (token, word) => apiFetch('/api/my-words', { method: 'POST', token, body: word }),
+  updateMyWord: (token, id, patch) => apiFetch('/api/my-words/' + encodeURIComponent(id), { method: 'PUT', token, body: patch }),
+  deleteMyWord: (token, id) => apiFetch('/api/my-words/' + encodeURIComponent(id), { method: 'DELETE', token }),
 };
 window.ApiError = ApiError;
