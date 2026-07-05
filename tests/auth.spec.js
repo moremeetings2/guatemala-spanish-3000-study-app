@@ -86,16 +86,10 @@ test("shows the landing page with all entry options when signed out", async ({ p
   await expect(content).toContainText("Learn the Spanish people");
   await expect(content.getByRole("button", { name: "Log in" })).toBeVisible();
   await expect(content.getByRole("button", { name: "Sign up" })).toBeVisible();
-  await expect(content.getByRole("button", { name: "Continue as guest" })).toBeVisible();
+  // Accounts are required — there is no guest entry point.
+  await expect(content.getByRole("button", { name: "Continue as guest" })).toHaveCount(0);
   // The app itself is gated — no tab bar yet.
   await expect(page.locator("#tab-bar")).toBeEmpty();
-});
-
-test("Continue as guest opens the app without an account", async ({ page }) => {
-  await page.locator("#content").getByRole("button", { name: "Continue as guest" }).click();
-  await expect.poll(() => page.evaluate(() => appState.guest)).toBe(true);
-  await expect(page.locator("#content")).toContainText("¡Hola! 🇬🇹");
-  await expect(page.locator("#tab-bar")).not.toBeEmpty();
 });
 
 test("signup logs the user in and enters the app", async ({ page }) => {
@@ -136,7 +130,9 @@ test("logout returns to the landing page", async ({ page }) => {
   await page.evaluate(() => setState({ route: "settings" }));
   await content.getByRole("button", { name: "Log out" }).click();
 
-  await expect(content.getByRole("button", { name: "Continue as guest" })).toBeVisible();
+  // Back on the landing page (Sign up entry point visible), signed out.
+  await expect(content).toContainText("Learn the Spanish people");
+  await expect(content.getByRole("button", { name: "Sign up" })).toBeVisible();
   expect(await page.evaluate(() => appState.auth.user)).toBeNull();
 });
 

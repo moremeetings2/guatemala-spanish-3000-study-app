@@ -8,7 +8,7 @@
 - GitHub repo: `https://github.com/moremeetings2/guatemala-spanish-3000-study-app`
 - GitHub Pages app: `https://moremeetings2.github.io/guatemala-spanish-3000-study-app/`
 - App type: static iPhone-friendly PWA for studying Guatemala Spanish
-- Brand: **Hablavos** ("Learn the Spanish people actually speak") — green `#28b573` "h" wordmark. Signed-out users land on a full marketing landing page (`renderLanding`, `authView: 'landing'`); Log in / Sign up open the auth form (`renderAuthForm`), and "Create free account" / "Continue as guest" start the account or guest flows.
+- Brand: **Hablavos** ("Learn the Spanish people actually speak") — green `#28b573` "h" wordmark. Signed-out users land on a full marketing landing page (`renderLanding`, `authView: 'landing'`); Log in / Sign up open the auth form (`renderAuthForm`). **Accounts are required** — there is no guest mode; the app is gated behind login (`showAuth = !authed`).
 
 ## Repo Structure
 
@@ -16,7 +16,7 @@
 - `styles.css`: app styling
 - `app.js`: main client app logic, persistence, quiz, review, speech, import/export, accounts + progress sync
 - `api.js`: backend API client (base URL overridable via `localStorage.spanishApiBase`); loaded before `app.js`
-- Auth/landing: signed-out users see a landing page (Log in / Sign up / Continue as guest). Guest keeps everything on-device; logged-in users sync progress to the backend. Session stored in `localStorage.spanishAuth.v1`.
+- Auth/landing: signed-out users see the marketing landing page (Log in / Sign up). An account is required to use the app; logged-in users sync progress to the backend. Session stored in `localStorage.spanishAuth.v1`.
 - `sw.js`: service worker for offline caching
 - `manifest.webmanifest`: PWA manifest
 - `data/guatemala_spanish_study_pack.json`: study content data
@@ -25,7 +25,7 @@
 - The "You" tab includes a Guatemalan Lexicon reference view (`renderLexicon`, route `lexicon`) showing each term with its example sentence
 - `tests/app.integration.spec.js`: Playwright integration tests for the core app (home, browse, study, quiz, settings, persistence, legacy migration, service worker) — current UI
 - `tests/study-card-enrichments.spec.js`: Playwright tests for synonyms + example-sentence card features and the Lexicon view (current UI)
-- `tests/auth.spec.js`: Playwright tests for the accounts/landing flow (landing, guest, signup, login, logout) with a mocked backend
+- `tests/auth.spec.js`: Playwright tests for the accounts/landing flow (landing, signup, login, logout, no-guest gating) with a mocked backend
 - `tools/generate_synonyms.py`: regenerates `data/synonyms.json` from WordNet (NLTK)
 - `playwright.config.js`: Playwright config
 - `tools/build_study_pack_from_csv_sources.py`: rebuilds study-pack data from CSV sources
@@ -45,7 +45,7 @@ There is a dedicated **admin + testing account** for validating features against
 
 1. Load the credentials from `.env` (e.g. `set -a; source .env; set +a`). Never hardcode or print the password; never commit `.env`.
 2. In the browser (preview/Browser MCP), point the app at the API with `localStorage.setItem('spanishApiBase', <API_BASE>)`, then log in with `ADMIN_EMAIL` / `ADMIN_PASSWORD` (fill `[data-fid="auth-email"]` / `[data-fid="auth-password"]`, click **Log in**).
-3. **Exercise the feature you changed end-to-end** (and adjacent flows: study, quiz, progress sync, admin word add/edit/delete via the API, lexicon, settings, guest mode).
+3. **Exercise the feature you changed end-to-end** (and adjacent flows: study, quiz, progress sync, admin word add/edit/delete via the API, lexicon, settings).
 4. **If anything is wrong, fix it and re-validate — do not finish with known-broken behavior.** Repeat until the flow works as expected.
 5. Also run the Playwright suite (`npx playwright test`) — all specs must pass on Chromium and WebKit.
 

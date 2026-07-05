@@ -17,14 +17,34 @@ const IDB_STORE = "kv";
 const IDB_KEY = "state";
 const SW_CACHE_NAME = extractServiceWorkerCacheName();
 
-// Boot straight into the app (skip the landing/login gate) by pre-selecting guest mode.
-const bootAsGuest = (page) =>
-  page.addInitScript(() => {
-    try { localStorage.setItem("spanishAuth.v1", JSON.stringify({ guest: true })); } catch (e) {}
+// Boot straight into the app (past the required login gate) as a signed-in user.
+// Accounts are mandatory now, so we seed a session and mock the backend so the
+// fake token doesn't 401 and bounce back to the landing page.
+const bootAsUser = async (page) => {
+  await page.route((url) => url.pathname.includes("/api/"), (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ cardState: {}, ok: true, saved: 0 }),
+    })
+  );
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("spanishApiBase", location.origin);
+      localStorage.setItem(
+        "spanishAuth.v1",
+        JSON.stringify({ token: "test-token", user: { id: "test-user", email: "tester@example.com", role: "user" } })
+      );
+      // Keep the service worker from intercepting the mocked /api/ calls (WebKit).
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register = () => Promise.resolve({ update() {}, addEventListener() {} });
+      }
+    } catch (e) {}
   });
+};
 
 test.beforeEach(async ({ page }) => {
-  await bootAsGuest(page);
+  await bootAsUser(page);
   await page.goto("/");
   await waitForAppReady(page);
   await installSpeechStub(page);
@@ -212,7 +232,7 @@ test("exports a JSON backup and imports it into a clean profile", async ({ brows
   // Import the same backup into a brand-new browser context.
   const cleanContext = await browser.newContext({ acceptDownloads: true });
   const cleanPage = await cleanContext.newPage();
-  await bootAsGuest(cleanPage);
+  await bootAsUser(cleanPage);
   await cleanPage.goto("/");
   await waitForAppReady(cleanPage);
   await installSpeechStub(cleanPage);

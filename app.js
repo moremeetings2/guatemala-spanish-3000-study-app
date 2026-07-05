@@ -43,7 +43,7 @@ let appState = {
   settings: { speed: 1, voiceURI: 'auto', theme: 'light' },
   voices: [], canInstall: false, confirmReset: false,
   reviewedToday: 0, streak: 0, toast: null,
-  auth: { token: null, user: null }, guest: false,
+  auth: { token: null, user: null },
   authView: 'landing', authEmail: '', authPassword: '', authError: '', authBusy: false,
   syncing: false,
 };
@@ -472,12 +472,10 @@ function loadAuth() {
 function saveAuth() {
   try {
     localStorage.setItem(AUTH_KEY, JSON.stringify({
-      token: appState.auth.token, user: appState.auth.user, guest: appState.guest,
+      token: appState.auth.token, user: appState.auth.user,
     }));
   } catch (e) {}
 }
-
-function continueAsGuest() { setState({ guest: true, authError: '' }); saveAuth(); }
 
 async function doAuth(kind) {
   const email = (appState.authEmail || '').trim();
@@ -489,7 +487,7 @@ async function doAuth(kind) {
   setState({ authBusy: true, authError: '' });
   try {
     const { token, user } = kind === 'signup' ? await API.signup(email, password) : await API.login(email, password);
-    setState({ auth: { token, user }, guest: false, authBusy: false, authPassword: '', authEmail: '' });
+    setState({ auth: { token, user }, authBusy: false, authPassword: '', authEmail: '' });
     saveAuth();
     flash(kind === 'signup' ? 'Account created!' : 'Welcome back!');
     await syncOnLogin();
@@ -502,7 +500,7 @@ async function doLogout() {
   const token = appState.auth.token;
   try { if (token) await API.logout(token); } catch (e) {}
   clearTimeout(progressSyncTimer); dirtyCards = new Set();
-  setState({ auth: { token: null, user: null }, guest: false, authView: 'landing', route: null, tab: 'home' });
+  setState({ auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home' });
   saveAuth();
   flash('Logged out');
 }
@@ -924,7 +922,6 @@ function computeVals() {
       isAdmin: !!(S.auth.user && S.auth.user.role === 'admin'),
       syncing: S.syncing,
       onLogout: () => doLogout(),
-      onLogin: () => setState({ guest: false, authView: 'login', authError: '' }),
     },
   };
 
@@ -937,9 +934,9 @@ function computeVals() {
     saveStyle: `width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Nunito;font-size:16px;font-weight:800;padding:15px;border-radius:16px;cursor:pointer;border:none;background:${isSaved ? 'var(--g-soft)' : '#28b573'};color:${isSaved ? 'var(--g-ink)' : '#fff'}`,
   };
 
-  // Auth (landing / login / signup) — shown until signed in or continuing as guest.
+  // Auth (landing / login / signup) — shown until signed in. Accounts are required.
   const authed = !!S.auth.user;
-  const showAuth = !authed && !S.guest;
+  const showAuth = !authed;
   const auth = {
     view: S.authView, email: S.authEmail, password: S.authPassword,
     error: S.authError, busy: S.authBusy,
@@ -948,7 +945,6 @@ function computeVals() {
     onShowLogin: () => setState({ authView: 'login', authError: '' }),
     onShowSignup: () => setState({ authView: 'signup', authError: '' }),
     onBack: () => setState({ authView: 'landing', authError: '' }),
-    onGuest: () => continueAsGuest(),
     onLogin: () => doAuth('login'),
     onSignup: () => doAuth('signup'),
     onSubmit: () => doAuth(S.authView === 'signup' ? 'signup' : 'login'),
@@ -1042,7 +1038,7 @@ function renderLanding(a) {
       <button ${h(a.onStartSignup)} style="padding:15px 20px;border-radius:14px;border:none;background:#28b573;color:#fff;font-family:Nunito;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 14px rgba(40,181,115,.3)">Create free account</button>
     </div>
     ${a.error ? `<p style="margin:0 0 10px;font-weight:700;font-size:13.5px;color:var(--r-ink)">${esc(a.error)}</p>` : ''}
-    <button ${h(a.onGuest)} style="width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:15px;padding:13px;border-radius:14px;cursor:pointer">Continue as guest</button>
+    <button ${h(a.onShowLogin)} style="width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:15px;padding:13px;border-radius:14px;cursor:pointer">I already have an account</button>
     <p style="margin:14px 2px 0;font-weight:700;font-size:13px;color:var(--muted2)">Free to start · No credit card · Works on any device</p>
   </div>
 
@@ -1184,7 +1180,6 @@ function renderAuthForm(a) {
       ? `<span style="font-size:14px;font-weight:600;color:var(--muted)">Already have an account? </span><button ${h(a.onShowLogin)} style="border:none;background:transparent;color:#28b573;font-family:Nunito;font-size:14px;font-weight:800;cursor:pointer;padding:0">Log in</button>`
       : `<span style="font-size:14px;font-weight:600;color:var(--muted)">New here? </span><button ${h(a.onShowSignup)} style="border:none;background:transparent;color:#28b573;font-family:Nunito;font-size:14px;font-weight:800;cursor:pointer;padding:0">Create an account</button>`}
   </div>
-  <button ${h(a.onGuest)} style="width:100%;border:none;background:transparent;color:var(--muted2);font-family:Nunito;font-size:14px;font-weight:800;padding:14px;border-radius:14px;cursor:pointer;margin-top:6px">Continue as guest</button>
 </div>`;
 }
 
@@ -1642,7 +1637,6 @@ function renderSettings(v) {
   </div>
   <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Account</div>
   <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
-    ${settings.account.authed ? `
     <div style="display:flex;align-items:center;gap:12px">
       <div style="width:42px;height:42px;border-radius:50%;background:var(--g-soft);display:flex;align-items:center;justify-content:center;flex:none">${ms('person', 24, 'var(--g-ink)')}</div>
       <div style="flex:1;min-width:0">
@@ -1650,15 +1644,7 @@ function renderSettings(v) {
         <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${settings.account.isAdmin ? 'Admin · ' : ''}${settings.account.syncing ? 'Syncing…' : 'Progress syncs across devices'}</div>
       </div>
       <button ${h(settings.account.onLogout)} style="flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:13px;padding:9px 14px;border-radius:12px;cursor:pointer">Log out</button>
-    </div>` : `
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:42px;height:42px;border-radius:50%;background:var(--soft2);display:flex;align-items:center;justify-content:center;flex:none">${ms('person_off', 22, 'var(--muted)')}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:15px;font-weight:800;color:var(--ink)">Guest</div>
-        <div style="font-size:12.5px;font-weight:700;color:var(--muted)">Log in to sync across devices</div>
-      </div>
-      <button ${h(settings.account.onLogin)} style="flex:none;border:none;background:#28b573;color:#fff;font-family:Nunito;font-weight:800;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer">Log in</button>
-    </div>`}
+    </div>
   </div>
   <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pronunciation</div>
   <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:8px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
@@ -1846,12 +1832,11 @@ async function bootstrap() {
 
     cardState = seedStates(data.CARDS, cardState);
 
-    // Restore any saved session / guest choice.
+    // Restore any saved session.
     const savedAuth = loadAuth();
     const auth = savedAuth && savedAuth.token
       ? { token: savedAuth.token, user: savedAuth.user || null }
       : { token: null, user: null };
-    const guest = !!(savedAuth && savedAuth.guest);
 
     // Rebuild study order with persisted source
     appState = { ...appState, data, cardState };
@@ -1862,7 +1847,7 @@ async function bootstrap() {
       study: { idx: 0, flipped: false, source: studySource, order: studyOrder },
       quiz: { ...appState.quiz, dir: quizDir, source: quizSource },
       browse, reviewedToday, streak, loaded: true,
-      auth, guest,
+      auth,
     });
 
     initVoices();

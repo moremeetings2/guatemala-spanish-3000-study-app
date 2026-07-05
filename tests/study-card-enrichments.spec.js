@@ -10,9 +10,27 @@ const { test, expect } = require("@playwright/test");
 // and then assert on the rendered text, exercising the real render + event path.
 
 test.beforeEach(async ({ page }) => {
-  // Boot straight into the app, past the landing/login gate.
+  // Boot straight into the app, past the required login gate, as a signed-in
+  // user. Accounts are mandatory, so seed a session and mock the backend so the
+  // fake token doesn't 401 and bounce back to the landing page.
+  await page.route((url) => url.pathname.includes("/api/"), (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ cardState: {}, ok: true, saved: 0 }),
+    })
+  );
   await page.addInitScript(() => {
-    try { localStorage.setItem("spanishAuth.v1", JSON.stringify({ guest: true })); } catch (e) {}
+    try {
+      localStorage.setItem("spanishApiBase", location.origin);
+      localStorage.setItem(
+        "spanishAuth.v1",
+        JSON.stringify({ token: "test-token", user: { id: "test-user", email: "tester@example.com", role: "user" } })
+      );
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register = () => Promise.resolve({ update() {}, addEventListener() {} });
+      }
+    } catch (e) {}
   });
   await page.goto("/");
   await page.waitForFunction(
