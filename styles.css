@@ -8,6 +8,8 @@ body{font-family:'Nunito',system-ui,sans-serif;-webkit-font-smoothing:antialiase
 #tab-bar{position:absolute;bottom:0;left:0;right:0;z-index:6}
 #word-sheet{position:absolute;inset:0;z-index:20;pointer-events:none}
 #word-sheet:not(:empty){pointer-events:auto}
+#chat-sheet{position:absolute;inset:0;z-index:25;pointer-events:none}
+#chat-sheet:not(:empty){pointer-events:auto}
 #toast-el{position:absolute;bottom:calc(104px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;white-space:nowrap}
 .scrl{overflow-y:auto;scrollbar-width:none}
 .scrl::-webkit-scrollbar{display:none}

@@ -16,6 +16,8 @@
 - `styles.css`: app styling
 - `app.js`: main client app logic, persistence, quiz, review, speech, import/export, accounts + progress sync
 - `api.js`: backend API client (base URL overridable via `localStorage.spanishApiBase`); loaded before `app.js`
+- `ai.js`: on-device AI tutor engine — wraps wllama (llama.cpp WASM) running LiquidAI LFM2 GGUF models fully in the browser, cached in OPFS. Exposes `window.AI` (loaded before `app.js`). Default model 1.2B; 350M/700M/1.2B selectable in Settings. Downloads in the background after login (skipped on data-saver until chat is opened). Tests set `window.__NO_AI__ = true` to prevent the model download.
+- AI chat: a full-screen overlay (`renderChat`, `#chat-sheet`) opened from the Home "AI tutor" card (general) or context buttons on study cards, the reader, and lexicon entries (each preloads a context-specific system prompt). Streams tokens; shows a one-time model-download progress bar when not yet ready.
 - Auth/landing: signed-out users see the marketing landing page (Log in / Sign up). An account is required to use the app; logged-in users sync progress to the backend. Session stored in `localStorage.spanishAuth.v1`.
 - `sw.js`: service worker for offline caching
 - `manifest.webmanifest`: PWA manifest
@@ -26,6 +28,7 @@
 - `tests/app.integration.spec.js`: Playwright integration tests for the core app (home, browse, study, quiz, settings, persistence, legacy migration, service worker) — current UI
 - `tests/study-card-enrichments.spec.js`: Playwright tests for synonyms + example-sentence card features and the Lexicon view (current UI)
 - `tests/auth.spec.js`: Playwright tests for the accounts/landing flow (landing, signup, login, logout, no-guest gating) with a mocked backend
+- `tests/ai-chat.spec.js`: Playwright tests for the AI tutor chat (general + vocab-card context) with a stubbed `window.AI` (no real model download)
 - `tools/generate_synonyms.py`: regenerates `data/synonyms.json` from WordNet (NLTK)
 - `playwright.config.js`: Playwright config
 - `tools/build_study_pack_from_csv_sources.py`: rebuilds study-pack data from CSV sources

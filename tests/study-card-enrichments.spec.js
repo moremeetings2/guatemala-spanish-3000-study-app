@@ -22,6 +22,7 @@ test.beforeEach(async ({ page }) => {
   );
   await page.addInitScript(() => {
     try {
+      window.__NO_AI__ = true; // don't download the on-device model in tests
       localStorage.setItem("spanishApiBase", location.origin);
       localStorage.setItem(
         "spanishAuth.v1",

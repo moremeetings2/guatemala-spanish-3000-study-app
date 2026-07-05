@@ -1,9 +1,10 @@
-const CACHE_NAME = "hablavos-v17";
+const CACHE_NAME = "hablavos-v18";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./api.js",
+  "./ai.js",
   "./app.js",
   "./manifest.webmanifest",
   "./data/guatemala_spanish_study_pack.json",
@@ -42,6 +43,13 @@ self.addEventListener("fetch", (event) => {
   }
 
   const requestUrl = new URL(event.request.url);
+
+  // Never touch cross-origin requests — the on-device AI pulls its WASM from a
+  // CDN and multi-hundred-MB model files from Hugging Face (cached in OPFS by
+  // wllama itself). Let the browser handle those natively.
+  if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
 
   if (event.request.mode === "navigate") {
     event.respondWith(networkFirst(event.request, OFFLINE_FALLBACK_URL));

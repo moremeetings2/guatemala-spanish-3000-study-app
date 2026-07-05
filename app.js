@@ -46,7 +46,13 @@ let appState = {
   auth: { token: null, user: null },
   authView: 'landing', authEmail: '', authPassword: '', authError: '', authBusy: false,
   syncing: false,
+  // On-device AI tutor.
+  chat: { open: false, context: null, messages: [], input: '', busy: false, streaming: '' },
+  ai: { status: 'idle', progress: 0, size: '1.2B', error: '' },
 };
+
+// Base persona for the on-device AI tutor. Context-specific prompts extend this.
+const AI_SYSTEM = "You are Hablavos, a warm, patient, and concise Spanish tutor for an English speaker learning the everyday Spanish spoken in Guatemala. Give clear, practical answers with short example sentences (Spanish followed by the English meaning). Note Guatemalan usage when it matters. Keep replies brief unless the user asks for more detail. If asked something unrelated to Spanish or Guatemala, gently steer back.";
 
 let installPrompt = null;
 let saveTimer = null;
@@ -78,6 +84,7 @@ const $screen = document.getElementById('screen');
 const $content = document.getElementById('content');
 const $tabBar = document.getElementById('tab-bar');
 const $wordSheet = document.getElementById('word-sheet');
+const $chatSheet = document.getElementById('chat-sheet');
 const $toastEl = document.getElementById('toast-el');
 
 // ===== Event Delegation =====
@@ -92,6 +99,13 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const el = e.target.closest('[data-hc]');
   if (el) handlers[el.dataset.hc]?.(e);
+});
+// Enter sends a chat message (Shift+Enter is free for future multiline).
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && e.target?.dataset?.fid === 'chat-input') {
+    e.preventDefault();
+    if (appState.chat.open) sendChat();
+  }
 });
 
 // ===== State Management =====
@@ -490,6 +504,7 @@ async function doAuth(kind) {
     setState({ auth: { token, user }, authBusy: false, authPassword: '', authEmail: '' });
     saveAuth();
     flash(kind === 'signup' ? 'Account created!' : 'Welcome back!');
+    maybeStartAI();
     await syncOnLogin();
   } catch (e) {
     setState({ authBusy: false, authError: (e && e.message) || 'Something went wrong.' });
@@ -503,6 +518,54 @@ async function doLogout() {
   setState({ auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home' });
   saveAuth();
   flash('Logged out');
+}
+
+// ===== AI Tutor =====
+
+// Mirror the AI engine's state into appState so the UI re-renders on progress,
+// and kick off the background model download once the user is in the app.
+function initAI() {
+  if (!window.AI) return;
+  AI.onChange((s) => setState({ ai: { status: s.status, progress: s.progress, size: s.size, error: s.error } }));
+  const s = AI.getState();
+  setState({ ai: { status: s.status, progress: s.progress, size: s.size, error: s.error } });
+}
+
+function maybeStartAI() {
+  if (window.__NO_AI__) return;               // test/opt-out escape hatch
+  if (!window.AI || !appState.auth.user) return;
+  // Respect data-saver: hold the big download until the user actually opens chat.
+  const saveData = navigator.connection && navigator.connection.saveData;
+  if (saveData) return;
+  AI.ensureLoaded().catch(() => {});
+}
+
+function openChat(context) {
+  setState({ chat: { open: true, context: context || null, messages: [], input: '', busy: false, streaming: '' } });
+  if (window.AI) AI.ensureLoaded().catch(() => {});
+}
+
+function closeChat() {
+  setState({ chat: { ...appState.chat, open: false } });
+}
+
+async function sendChat() {
+  const text = (appState.chat.input || '').trim();
+  if (!text || appState.chat.busy || !window.AI) return;
+  const ctx = appState.chat.context;
+  const system = ctx && ctx.system ? ctx.system : AI_SYSTEM;
+  const history = [...appState.chat.messages, { role: 'user', content: text }];
+  setState({ chat: { ...appState.chat, messages: history, input: '', busy: true, streaming: '' } });
+  try {
+    const full = await AI.chat(
+      [{ role: 'system', content: system }, ...history],
+      { onToken: (acc) => setState({ chat: { ...appState.chat, streaming: acc } }) }
+    );
+    setState({ chat: { ...appState.chat, messages: [...appState.chat.messages, { role: 'assistant', content: full || '…' }], busy: false, streaming: '' } });
+  } catch (e) {
+    const msg = (e && e.message) || 'Something went wrong.';
+    setState({ chat: { ...appState.chat, messages: [...appState.chat.messages, { role: 'assistant', content: '⚠️ ' + msg }], busy: false, streaming: '' } });
+  }
 }
 
 // A card is worth syncing only once the user has actually touched it — this keeps
@@ -712,6 +775,7 @@ function computeVals() {
     onContinue: firstInc ? () => setState({ tab: 'read', route: null, readView: 'reader', storyId: firstInc.id, activeWord: null, compSel: null, compAnswered: false }) : () => goTab('read'),
     onReviewDue: () => { setStudySource('due'); setState({ tab: 'study', route: null }); },
     onReviewWeak: () => { setStudySource('weak'); setState({ tab: 'study', route: null }); },
+    onChat: () => openChat(null),
     actions: [
       { label: 'Flashcards', sub: 'Flip & learn', icon: 'style', color: 'var(--g-ink)', tint: 'var(--g-soft)', onClick: () => goTab('study') },
       { label: 'Quiz', sub: 'Test recall', icon: 'quiz', color: '#5560e0', tint: 'var(--p-soft)', onClick: () => goTab('quiz') },
@@ -750,6 +814,15 @@ function computeVals() {
         onNext: () => setState({ study: { ...S.study, idx: S.study.idx + 1, flipped: false, showSentence: false } }),
         onShuffle: () => { setStudySource(S.study.source); flash('Shuffled'); },
         onSpeak: () => speak(card.es), onStar: () => toggleStar(id),
+        onChat: () => openChat({
+          type: 'word', title: card.es, subtitle: 'Vocabulary · ' + card.en,
+          system: AI_SYSTEM + ` The learner is studying the Spanish word or phrase "${card.es}" (English: "${card.en}"${card.pos ? ', ' + card.pos : ''}). Center your help on this word: its meaning, natural example sentences, conjugation if it's a verb, and common related expressions.`,
+          suggestions: [
+            `What does "${card.es}" mean and when do I use it?`,
+            `Give me 2 example sentences with "${card.es}".`,
+            `Any Guatemalan tips for using "${card.es}"?`,
+          ],
+        }),
         synonyms: (S.study.flipped || showSentence) ? [] : (card.synonyms || []),
         states: stStates.map(x => ({ label: x.l, onClick: () => setProg(id, x.v), style: seg(cst.state === x.v) })),
       };
@@ -766,6 +839,15 @@ function computeVals() {
     lookedUp: Object.keys(S.lookedUp[st.id] || {}).length, pct: 0,
     onBack: () => setState({ readView: 'lib', activeWord: null }),
     onSpeak: () => speak((st.body || []).join(' ')),
+    onChat: () => openChat({
+      type: 'story', title: st.title, subtitle: 'Story · ' + (st.titleEn || (stLv ? stLv.name : '')),
+      system: AI_SYSTEM + ` The learner is reading a short Spanish story titled "${st.title}"${st.titleEn ? ' ("' + st.titleEn + '")' : ''}. The story text is: """${(st.body || []).join(' ').slice(0, 1500)}""". Help them understand the vocabulary, grammar, and meaning of this story.`,
+      suggestions: [
+        'Summarize this story in simple English.',
+        'What are the key vocabulary words here?',
+        'Explain the grammar in the first sentence.',
+      ],
+    }),
     onFinish: () => setState({ readView: 'question', compSel: null, compAnswered: false }),
   } : { title: '', titleEn: '', levelName: '', color: '#28b573', tint: deckTint('#28b573'), paragraphs: [], lookedUp: 0, pct: 0, onBack: () => setState({ readView: 'lib' }), onSpeak: () => {}, onFinish: () => {} };
 
@@ -848,6 +930,15 @@ function computeVals() {
       sentEs: c.sentence ? c.sentence.es : '', sentEn: c.sentence ? c.sentence.en : '',
       onSpeakTerm: () => speak(c.es),
       onSpeakSentence: () => c.sentence && speak(c.sentence.es),
+      onChat: () => openChat({
+        type: 'lexicon', title: c.es, subtitle: 'Guatemalan term · ' + c.en,
+        system: AI_SYSTEM + ` The learner is looking at the Guatemalan Spanish term "${c.es}" (meaning: "${c.en}"${c.cat ? ', category: ' + c.cat : ''}). Explain what it means, how and when Guatemalans use it, its tone or register, and give natural example sentences.`,
+        suggestions: [
+          `What does "${c.es}" mean in Guatemala?`,
+          `Give me an example sentence using "${c.es}".`,
+          `Is "${c.es}" formal or casual?`,
+        ],
+      }),
     }));
   const lexicon = {
     total: lexCards.length, shown: lexItems.length,
@@ -923,6 +1014,26 @@ function computeVals() {
       syncing: S.syncing,
       onLogout: () => doLogout(),
     },
+    ai: (() => {
+      const size = S.ai.size;
+      const pct = Math.round((S.ai.progress || 0) * 100);
+      const supported = !!(window.AI && AI.isSupported());
+      const statusLabel = !supported ? 'Not supported on this device'
+        : S.ai.status === 'ready' ? 'Downloaded · ready to chat'
+        : S.ai.status === 'downloading' ? `Downloading… ${pct}%`
+        : S.ai.status === 'loading' ? 'Preparing the model…'
+        : S.ai.status === 'error' ? 'Load failed — open the chat to retry'
+        : 'Loads automatically in the background';
+      return {
+        supported, statusLabel,
+        busy: S.ai.status === 'downloading' || S.ai.status === 'loading',
+        options: window.AI ? Object.keys(AI.MODELS).map(k => ({
+          key: k, label: AI.MODELS[k].label, note: AI.MODELS[k].note, mb: AI.MODELS[k].mb,
+          active: size === k,
+          onSelect: () => { if (window.AI && size !== k) AI.setModelSize(k).catch(() => {}); },
+        })) : [],
+      };
+    })(),
   };
 
   // Word sheet
@@ -955,6 +1066,38 @@ function computeVals() {
     onScrollDown: () => { const c = document.getElementById('content'); if (c) c.scrollTo({ top: c.scrollTop + c.clientHeight * 0.86, behavior: 'smooth' }); },
   };
 
+  // AI tutor chat overlay.
+  const ai = S.ai;
+  const aiSupported = !!(window.AI && window.AI.isSupported());
+  const DEFAULT_SUGGESTIONS = [
+    'How do people say "good morning" in Guatemala?',
+    'Teach me a common Guatemalan slang word.',
+    'Help me practice ordering a coffee.',
+  ];
+  const chat = {
+    open: S.chat.open,
+    hasContext: !!S.chat.context,
+    title: S.chat.context ? S.chat.context.title : 'AI tutor',
+    subtitle: S.chat.context ? S.chat.context.subtitle : 'Ask anything about Guatemalan Spanish',
+    suggestions: (S.chat.context && S.chat.context.suggestions) ? S.chat.context.suggestions : DEFAULT_SUGGESTIONS,
+    messages: S.chat.messages,
+    input: S.chat.input,
+    busy: S.chat.busy,
+    streaming: S.chat.streaming,
+    ai: {
+      status: aiSupported ? ai.status : 'unsupported',
+      progress: ai.progress || 0,
+      pct: Math.round((ai.progress || 0) * 100),
+      error: ai.error,
+      sizeLabel: (window.AI && AI.MODELS[ai.size]) ? AI.MODELS[ai.size].label : ai.size,
+      sizeMb: (window.AI && AI.MODELS[ai.size]) ? AI.MODELS[ai.size].mb : 0,
+    },
+    onClose: () => closeChat(),
+    onInput: e => setState({ chat: { ...S.chat, input: e.target.value } }),
+    onSend: () => sendChat(),
+    onRetry: () => { if (window.AI) AI.ensureLoaded().catch(() => {}); },
+  };
+
   return {
     loading: false, ready: true, themeAttr,
     vAuth: showAuth, auth,
@@ -966,7 +1109,7 @@ function computeVals() {
     vLexicon: route === 'lexicon',
     showTabs: !showAuth && !inReader && !inQuestion && !inDone && !route,
     onSettings: () => setState({ route: 'settings' }),
-    tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word, lexicon,
+    tabs, levels, home, study, reader, comp, done, quiz, prog, browse, card, settings, word, lexicon, chat,
     greeting: greeting(),
     toast: { show: !!S.toast, text: S.toast || '' },
   };
@@ -1189,6 +1332,81 @@ function renderAuthForm(a) {
 </div>`;
 }
 
+// Full-screen AI tutor chat overlay.
+function renderChat(c) {
+  const ai = c.ai;
+  const ready = ai.status === 'ready';
+  const canSend = ready && !c.busy && c.input.trim().length > 0;
+
+  const bubble = (role, text, streaming) => {
+    const isUser = role === 'user';
+    return `<div style="align-self:${isUser ? 'flex-end' : 'flex-start'};max-width:86%;background:${isUser ? '#5560e0' : 'var(--surface)'};color:${isUser ? '#fff' : 'var(--ink)'};border:${isUser ? 'none' : '1px solid var(--line)'};border-radius:${isUser ? '18px 18px 6px 18px' : '18px 18px 18px 6px'};padding:11px 14px;font-size:15px;font-weight:600;line-height:1.5;white-space:pre-wrap;word-break:break-word;box-shadow:0 2px 8px rgba(0,0,0,.04)">${esc(text)}${streaming ? '<span style="opacity:.45">▍</span>' : ''}</div>`;
+  };
+
+  const bubbles = c.messages.map(m => bubble(m.role, m.content)).join('');
+  const streamBubble = c.busy ? bubble('assistant', c.streaming || '', true) : '';
+  const showIntro = !c.messages.length && !c.busy;
+  const intro = showIntro ? `
+    <div style="text-align:center;margin:auto 0;padding:14px 8px">
+      <div style="width:58px;height:58px;border-radius:18px;background:var(--p-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">${ms('smart_toy', 30, '#5560e0')}</div>
+      <div style="font-size:19px;font-weight:900;color:var(--ink);margin-bottom:6px">${esc(c.hasContext ? c.title : 'Your Spanish tutor')}</div>
+      <div style="font-size:14px;font-weight:600;color:var(--muted);max-width:320px;margin:0 auto 18px;line-height:1.45">${esc(c.subtitle)}</div>
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:360px;margin:0 auto">
+        ${c.suggestions.map(q => `<button ${h(() => { setState({ chat: { ...appState.chat, input: q } }); sendChat(); })} ${ready ? '' : 'disabled'} style="border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:700;font-size:13.5px;padding:11px 14px;border-radius:13px;cursor:${ready ? 'pointer' : 'default'};text-align:left;opacity:${ready ? '1' : '.5'}">${esc(q)}</button>`).join('')}
+      </div>
+    </div>` : '';
+
+  // Model status strip (above the input) — download progress, errors, or unsupported.
+  let strip = '';
+  if (ai.status === 'unsupported') {
+    strip = `<div style="padding:13px 16px;border-top:1px solid var(--line);background:var(--a-soft);color:var(--a-ink);font-size:13px;font-weight:700;line-height:1.4">This device can't run the on-device tutor. Try a recent Chrome, Edge, or Safari on a laptop or desktop.</div>`;
+  } else if (ai.status === 'error') {
+    strip = `<div style="padding:12px 16px;border-top:1px solid var(--line);background:var(--r-soft);color:var(--r-ink);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <span>Couldn't load the AI model.</span>
+      <button ${h(c.onRetry)} style="flex:none;border:none;background:var(--r-ink);color:#fff;font-family:Nunito;font-weight:800;font-size:12.5px;padding:8px 13px;border-radius:10px;cursor:pointer">Try again</button>
+    </div>`;
+  } else if (!ready) {
+    const label = ai.status === 'loading' ? 'Preparing the model…' : `Downloading the tutor (${ai.sizeLabel}, ~${ai.sizeMb} MB)`;
+    strip = `<div style="padding:12px 16px;border-top:1px solid var(--line);background:var(--surface)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:7px">${ms('hourglass_top', 17, '#5560e0')}${esc(label)}</div>
+        <div style="font-size:13px;font-weight:900;color:#5560e0">${ai.pct}%</div>
+      </div>
+      <div style="height:8px;border-radius:6px;background:var(--track);overflow:hidden"><div style="height:100%;width:${ai.pct}%;background:#5560e0;border-radius:6px;transition:width .3s"></div></div>
+      <div style="font-size:11.5px;font-weight:600;color:var(--muted2);margin-top:7px">One-time download — saved on your device so it's instant next time.</div>
+    </div>`;
+  }
+
+  return `
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);animation:sheetUp .28s cubic-bezier(.4,1,.4,1);padding-top:env(safe-area-inset-top,0px)">
+  <div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line);background:var(--bar);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
+    <button ${h(c.onClose)} style="flex:none;border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 23, 'var(--ink)')}</button>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:7px">
+        ${ms('smart_toy', 18, '#5560e0')}
+        <div style="font-size:17px;font-weight:900;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.title)}</div>
+      </div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.subtitle)}</div>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:${ready ? 'var(--g-ink)' : 'var(--muted2)'}">
+      <span style="width:8px;height:8px;border-radius:50%;background:${ready ? '#28b573' : 'var(--muted2)'}"></span>${ready ? 'Ready' : 'Loading'}
+    </div>
+  </div>
+
+  <div id="chat-messages" class="scrl" style="flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:12px">
+    ${intro}${bubbles}${streamBubble}
+  </div>
+
+  ${strip}
+
+  <div style="padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;background:var(--surface)">
+    <input class="fld" data-fid="chat-input" type="text" enterkeyhint="send" placeholder="${ready ? 'Ask a question…' : 'Preparing your tutor…'}" value="${esc(c.input)}" ${hi(c.onInput)} ${ready && !c.busy ? '' : 'disabled'}
+      style="flex:1;min-width:0;border:1.5px solid var(--line);background:var(--bg);border-radius:22px;padding:12px 16px;font-family:Nunito;font-size:15px;font-weight:600;color:var(--ink);outline:none">
+    <button ${h(c.onSend)} ${canSend ? '' : 'disabled'} style="flex:none;border:none;width:46px;height:46px;border-radius:50%;background:${canSend ? '#5560e0' : 'var(--track)'};color:#fff;display:flex;align-items:center;justify-content:center;cursor:${canSend ? 'pointer' : 'default'}">${ms(c.busy ? 'more_horiz' : 'arrow_upward', 24, canSend ? '#fff' : 'var(--muted2)')}</button>
+  </div>
+</div>`;
+}
+
 function renderHome(v) {
   const { home, greeting: g, onSettings } = v;
   return `
@@ -1248,6 +1466,14 @@ function renderHome(v) {
     </div>
     ${ms('chevron_right', 26, 'var(--muted2)')}
   </div>
+  <div ${h(home.onChat)} style="background:linear-gradient(135deg,#5560e0,#7b64e8);border-radius:22px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:20px;cursor:pointer;box-shadow:0 8px 22px rgba(85,96,224,.28)">
+    <div style="width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.18);flex:none">${ms('smart_toy', 28, '#fff')}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:12px;font-weight:800;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.4px">AI tutor</div>
+      <div style="font-size:17px;font-weight:800;color:#fff">Ask anything in Spanish</div>
+    </div>
+    ${ms('chevron_right', 26, 'rgba(255,255,255,.8)')}
+  </div>
   <div style="font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Jump back in</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
     ${home.actions.map(a => `
@@ -1296,6 +1522,7 @@ function renderStudy(v) {
     <div style="display:flex;align-items:center;gap:10px;margin-top:22px">
       <button ${h(study.onSpeak)} style="border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 25, 'var(--g-ink)')}</button>
       ${study.hasSentence ? `<button ${h(study.onUse)} style="display:flex;align-items:center;justify-content:center;border:none;background:var(--p-soft);color:#5560e0;font-family:Nunito;font-weight:800;font-size:15px;padding:0 26px;height:50px;border-radius:25px;cursor:pointer">Use</button>` : ''}
+      <button ${h(study.onChat)} title="Ask the AI tutor" style="border:none;background:var(--p-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('smart_toy', 24, '#5560e0')}</button>
     </div>
     ${study.synonyms && study.synonyms.length ? `
     <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:7px;justify-content:center">
@@ -1364,7 +1591,10 @@ function renderReader(v) {
     <div style="display:flex;align-items:center;justify-content:space-between">
       <button ${h(reader.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
       <div style="display:flex;align-items:center;gap:6px;background:${reader.tint};padding:6px 12px;border-radius:13px"><span style="font-size:13px;font-weight:800;color:${reader.color}">${esc(reader.levelName)}</span></div>
-      <button ${h(reader.onSpeak)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 23, 'var(--ink)')}</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button ${h(reader.onChat)} title="Ask the AI tutor" style="border:none;background:var(--p-soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('smart_toy', 22, '#5560e0')}</button>
+        <button ${h(reader.onSpeak)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 23, 'var(--ink)')}</button>
+      </div>
     </div>
     <div style="margin-top:11px;height:6px;border-radius:4px;background:var(--track);overflow:hidden"><div style="height:100%;width:${reader.pct}%;background:#28b573;border-radius:4px;transition:width .3s"></div></div>
     <div style="font-size:12px;font-weight:700;color:var(--muted2);margin-top:5px">${reader.lookedUp} words explored</div>
@@ -1545,7 +1775,10 @@ function renderLexicon(v) {
           <div style="font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.3px">${esc(it.term)}</div>
           <div style="font-size:14px;font-weight:600;color:var(--muted);margin-top:2px">${esc(it.meaning)}</div>
         </div>
-        <button ${h(it.onSpeakTerm)} style="flex:none;border:none;background:${lx.tint};width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 20, lx.accent)}</button>
+        <div style="flex:none;display:flex;align-items:center;gap:8px">
+          <button ${h(it.onChat)} title="Ask the AI tutor" style="border:none;background:var(--p-soft);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('smart_toy', 20, '#5560e0')}</button>
+          <button ${h(it.onSpeakTerm)} style="border:none;background:${lx.tint};width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 20, lx.accent)}</button>
+        </div>
       </div>
       ${it.cat ? `<div style="display:inline-block;margin-top:10px;font-size:11px;font-weight:800;color:${lx.accent};background:${lx.tint};padding:3px 9px;border-radius:8px;text-transform:capitalize">${esc(it.cat)}</div>` : ''}
       ${it.hasSentence ? `
@@ -1652,6 +1885,25 @@ function renderSettings(v) {
       <button ${h(settings.account.onLogout)} style="flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:13px;padding:9px 14px;border-radius:12px;cursor:pointer">Log out</button>
     </div>
   </div>
+  ${settings.ai.supported ? `
+  <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">AI tutor</div>
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+      <div style="width:38px;height:38px;border-radius:11px;background:var(--p-soft);display:flex;align-items:center;justify-content:center;flex:none">${ms('smart_toy', 22, '#5560e0')}</div>
+      <div style="min-width:0"><div style="font-size:14.5px;font-weight:800;color:var(--ink)">On-device model</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">${esc(settings.ai.statusLabel)}</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${settings.ai.options.map(o => `
+      <button ${h(o.onSelect)} style="display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid ${o.active ? '#5560e0' : 'var(--line)'};background:${o.active ? 'var(--p-soft)' : 'var(--surface)'};padding:12px 14px;border-radius:13px;cursor:pointer">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14.5px;font-weight:800;color:var(--ink)">${esc(o.label)} <span style="font-weight:700;color:var(--muted2);font-size:12.5px">· ${o.mb} MB</span></div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted)">${esc(o.note)}</div>
+        </div>
+        ${o.active ? msf('check_circle', 22, '#5560e0') : `<span style="width:22px;height:22px;border-radius:50%;border:2px solid var(--muted2);flex:none"></span>`}
+      </button>`).join('')}
+    </div>
+    <div style="font-size:11.5px;font-weight:600;color:var(--muted2);margin-top:10px;line-height:1.4">Bigger models answer better but take longer to download. Switching downloads the new model once, then it's cached on your device.</div>
+  </div>` : ''}
   <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pronunciation</div>
   <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:8px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1775,7 +2027,11 @@ function render() {
   $content.innerHTML = html;
   $tabBar.innerHTML = v.showTabs ? renderTabBar(v.tabs) : '';
   $wordSheet.innerHTML = v.word.show ? renderWordSheet(v.word) : '';
+  $chatSheet.innerHTML = v.chat.open ? renderChat(v.chat) : '';
   $toastEl.innerHTML = v.toast.show ? renderToast(v.toast) : '';
+
+  // Keep the chat pinned to the latest message as answers stream in.
+  if (v.chat.open) { const m = document.getElementById('chat-messages'); if (m) m.scrollTop = m.scrollHeight; }
 
   // Restore focus
   if (focusId) {
@@ -1858,7 +2114,9 @@ async function bootstrap() {
 
     initVoices();
     registerServiceWorker();
-    if (auth.token) syncOnLogin(); // pull cross-device progress in the background
+    initAI();                       // mirror AI engine state into the UI
+    if (auth.token) syncOnLogin();  // pull cross-device progress in the background
+    maybeStartAI();                 // begin the background model download if signed in
   } catch (err) {
     $content.innerHTML = `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--muted)"><div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">Could not load cards</div><div style="font-size:14px;font-weight:600">${esc(err.message)}</div></div>`;
   }

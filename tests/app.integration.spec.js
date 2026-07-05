@@ -30,6 +30,7 @@ const bootAsUser = async (page) => {
   );
   await page.addInitScript(() => {
     try {
+      window.__NO_AI__ = true; // don't download the on-device model in tests
       localStorage.setItem("spanishApiBase", location.origin);
       localStorage.setItem(
         "spanishAuth.v1",
@@ -182,7 +183,7 @@ test("settings persist speed and theme and drive the pronunciation rate", async 
   await page.evaluate(() => setState({ route: "settings" }));
   const content = page.locator("#content");
 
-  await content.getByRole("button", { name: "Fast" }).click();
+  await content.getByRole("button", { name: "Fast", exact: true }).click();
   await content.getByRole("button", { name: /Dark/ }).click();
 
   // Theme is reflected on the root element and stored in settings.

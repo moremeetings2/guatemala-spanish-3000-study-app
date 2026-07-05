@@ -36,6 +36,7 @@ async function mockApi(page, overrides = {}) {
 async function freshAuthPage(page) {
   await page.addInitScript(() => {
     try {
+      window.__NO_AI__ = true; // don't download the on-device model in tests
       localStorage.setItem("spanishApiBase", location.origin);
       localStorage.removeItem("spanishAuth.v1");
       // Prevent the service worker from registering so it can't intercept the
