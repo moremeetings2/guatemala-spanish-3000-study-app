@@ -187,5 +187,6 @@
     currentSize: savedSize,
     // True when the previous load never completed (page likely crashed mid-load).
     hadLoadCrash: () => hadLoadCrash,
+    isMobileDevice: () => IS_MOBILE,
   };
 })();

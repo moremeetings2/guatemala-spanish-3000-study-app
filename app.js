@@ -546,6 +546,9 @@ function maybeStartAI() {
   // don't auto-load again; wait for the user to explicitly open the chat,
   // which will retry with the stepped-down model size.
   if (AI.hadLoadCrash && AI.hadLoadCrash()) return;
+  // Mobile browsers, especially iOS Safari, have tight per-tab memory limits.
+  // Load the model only after an explicit tutor tap so normal app use stays stable.
+  if (AI.isMobileDevice && AI.isMobileDevice()) return;
   // Respect data-saver: hold the big download until the user actually opens chat.
   const saveData = navigator.connection && navigator.connection.saveData;
   if (saveData) return;
@@ -1042,6 +1045,7 @@ function computeVals() {
         : S.ai.status === 'downloading' ? `Downloading… ${pct}%`
         : S.ai.status === 'loading' ? 'Preparing the model…'
         : S.ai.status === 'error' ? 'Load failed — open the chat to retry'
+        : (window.AI && AI.isMobileDevice && AI.isMobileDevice()) ? 'Downloads when you open the tutor'
         : 'Loads automatically in the background';
       return {
         supported, statusLabel,
