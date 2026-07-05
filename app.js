@@ -1288,6 +1288,8 @@ function renderLanding(a) {
     { title: 'Quiz',                       desc: 'Quick, gentle checks that turn recognition into recall.',                icon: 'quiz',         tint: '#ecedfb', ink: '#3b45c4' },
     { title: 'Little Things Locals Know',  desc: 'Culture, context and the small things locals just know.',                icon: 'explore',      tint: '#fbeade', ink: '#b45e1f' },
     { title: 'Guatemalan Lexicon',         desc: "Regional words and slang you won't find in a textbook.",                 icon: 'menu_book',    tint: '#e3eff4', ink: '#1f5e7c' },
+    { title: 'AI Tutor',                   desc: 'A private tutor that runs on your device — ask anything about a word, phrase, or story.', icon: 'smart_toy', tint: '#ecedfb', ink: '#3b45c4' },
+    { title: 'My Words',                   desc: 'Add your own words and build a personal deck that syncs to all your devices.', icon: 'edit_note', tint: '#efeafc', ink: '#6b4fd8' },
   ];
   const steps = [
     { n: '1', title: 'Create your free account', desc: "One tap to start. Pick Guatemala and you're learning in under a minute." },
@@ -1303,7 +1305,7 @@ function renderLanding(a) {
   const stats = [
     { n: '3,000', l: 'most-used words', c: 'var(--ink)' },
     { n: '5 min', l: 'a day is enough', c: '#28b573' },
-    { n: '6',     l: 'ways to practice', c: 'var(--ink)' },
+    { n: '8',     l: 'ways to practice', c: 'var(--ink)' },
     { n: 'Free',  l: 'to get started',  c: 'var(--ink)' },
   ];
   const emailField = (fid) =>
@@ -1364,8 +1366,8 @@ function renderLanding(a) {
   <div style="max-width:1120px;margin:0 auto;padding:clamp(8px,2vw,20px) ${SIDE} clamp(36px,5vw,64px)">
     <div style="max-width:600px;margin-bottom:clamp(22px,3vw,36px)">
       <div style="font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#28b573;margin-bottom:10px">What you'll practice</div>
-      <h2 style="margin:0 0 12px;font-weight:900;font-size:clamp(26px,3.4vw,40px);line-height:1.08;letter-spacing:-.03em;color:var(--ink)">Six kinds of practice, one calm home.</h2>
-      <p style="margin:0;font-size:clamp(15px,1.4vw,18px);line-height:1.5;font-weight:600;color:var(--muted)">Each part of the app has its own colour and rhythm — so you always know where you are and what you're building.</p>
+      <h2 style="margin:0 0 12px;font-weight:900;font-size:clamp(26px,3.4vw,40px);line-height:1.08;letter-spacing:-.03em;color:var(--ink)">Everything you need, one calm home.</h2>
+      <p style="margin:0;font-size:clamp(15px,1.4vw,18px);line-height:1.5;font-weight:600;color:var(--muted)">Curated decks, an on-device AI tutor, and a personal deck you build yourself — each with its own colour and rhythm, so you always know where you are.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
       ${features.map(f => `<div style="padding:22px;border-radius:20px;background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 20px rgba(0,0,0,.04)">
