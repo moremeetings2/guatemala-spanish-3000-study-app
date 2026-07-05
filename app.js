@@ -542,6 +542,10 @@ function initAI() {
 function maybeStartAI() {
   if (window.__NO_AI__) return;               // test/opt-out escape hatch
   if (!window.AI || !appState.auth.user) return;
+  // The previous load crashed the page (e.g. Safari's out-of-memory kill) —
+  // don't auto-load again; wait for the user to explicitly open the chat,
+  // which will retry with the stepped-down model size.
+  if (AI.hadLoadCrash && AI.hadLoadCrash()) return;
   // Respect data-saver: hold the big download until the user actually opens chat.
   const saveData = navigator.connection && navigator.connection.saveData;
   if (saveData) return;

@@ -28,12 +28,36 @@
     '700M': { repo: 'LiquidAI/LFM2-700M-GGUF', file: 'LFM2-700M-Q4_K_M.gguf', mb: 469, label: '700M', note: 'Balanced' },
     '1.2B': { repo: 'LiquidAI/LFM2-1.2B-GGUF', file: 'LFM2-1.2B-Q4_K_M.gguf', mb: 731, label: '1.2B', note: 'Best answers · largest download' },
   };
-  const DEFAULT_SIZE = '1.2B';
+  // Device profile: phones get the small model and a smaller context. iOS
+  // Safari kills any tab that grows past roughly a gigabyte, and the 1.2B
+  // model (731MB of weights alone) crashes the page with Safari's
+  // "A problem repeatedly occurred" screen. Desktop defaults to the best model.
+  const IS_MOBILE = /iPhone|iPod|Android/i.test(navigator.userAgent)
+    || (navigator.maxTouchPoints > 1 && /Mac|iPad/i.test(navigator.userAgent)); // iPadOS reports as Mac
+  const SIZE_ORDER = ['350M', '700M', '1.2B'];
+  const DEFAULT_SIZE = IS_MOBILE ? '350M' : '1.2B';
   const SIZE_KEY = 'spanishAiModelSize.v1';
-  const N_CTX = 2048;
+  const GUARD_KEY = 'spanishAiLoadGuard.v1';
+  const N_CTX = IS_MOBILE ? 1024 : 2048;
 
   const state = { status: 'idle', progress: 0, size: DEFAULT_SIZE, error: '' };
   const listeners = new Set();
+
+  // Crash guard: a marker is set just before a model load and cleared when the
+  // load finishes (or fails with a normal error). If it's still there at boot,
+  // the page died mid-load — usually Safari's out-of-memory kill. Step down one
+  // model size and let the app know not to auto-load again this session.
+  let hadLoadCrash = false;
+  try {
+    const guard = localStorage.getItem(GUARD_KEY);
+    if (guard) {
+      hadLoadCrash = true;
+      localStorage.removeItem(GUARD_KEY);
+      const idx = SIZE_ORDER.indexOf(guard);
+      localStorage.setItem(SIZE_KEY, SIZE_ORDER[Math.max(0, idx - 1)]);
+    }
+  } catch (e) {}
+
   let WllamaCtor = null;
   let WasmCdn = null;
   let wllama = null;
@@ -75,6 +99,7 @@
     const model = MODELS[size] || MODELS[DEFAULT_SIZE];
     set({ status: 'downloading', progress: 0, size, error: '' });
     try {
+      try { localStorage.setItem(GUARD_KEY, size); } catch (e) {}
       await importWllama();
       wllama = new WllamaCtor(WasmCdn, { logger: quietLogger });
       // The download fires a progress event per network chunk — hundreds per
@@ -97,8 +122,11 @@
           },
         }
       );
+      try { localStorage.removeItem(GUARD_KEY); } catch (e) {}
       set({ status: 'ready', progress: 1, error: '' });
     } catch (e) {
+      // A normal JS error (not a crash) — clear the guard so we don't misread it.
+      try { localStorage.removeItem(GUARD_KEY); } catch (_) {}
       // A half-downloaded file can poison the cache — clear it so a retry is clean.
       try { if (wllama && wllama.cacheManager) await wllama.cacheManager.clear(); } catch (_) {}
       try { if (wllama && wllama.exit) await wllama.exit(); } catch (_) {}
@@ -157,5 +185,7 @@
     setModelSize,
     chat,
     currentSize: savedSize,
+    // True when the previous load never completed (page likely crashed mid-load).
+    hadLoadCrash: () => hadLoadCrash,
   };
 })();
