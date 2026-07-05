@@ -526,9 +526,17 @@ async function doLogout() {
 // and kick off the background model download once the user is in the app.
 function initAI() {
   if (!window.AI) return;
-  AI.onChange((s) => setState({ ai: { status: s.status, progress: s.progress, size: s.size, error: s.error } }));
-  const s = AI.getState();
-  setState({ ai: { status: s.status, progress: s.progress, size: s.size, error: s.error } });
+  // Only re-render when something the UI shows actually changed — the engine
+  // can emit rapid-fire progress events during the model download.
+  const apply = (s) => {
+    const cur = appState.ai;
+    const pct = Math.floor((s.progress || 0) * 100);
+    if (cur.status === s.status && Math.floor((cur.progress || 0) * 100) === pct
+        && cur.size === s.size && cur.error === s.error) return;
+    setState({ ai: { status: s.status, progress: s.progress, size: s.size, error: s.error } });
+  };
+  AI.onChange(apply);
+  apply(AI.getState());
 }
 
 function maybeStartAI() {

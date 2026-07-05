@@ -77,6 +77,10 @@
     try {
       await importWllama();
       wllama = new WllamaCtor(WasmCdn, { logger: quietLogger });
+      // The download fires a progress event per network chunk — hundreds per
+      // second. Each emit re-renders the app, so only emit on whole-percent
+      // changes (≤100 emits for the entire download).
+      let lastPct = -1;
       await wllama.loadModelFromHF(
         { repo: model.repo, file: model.file },
         {
@@ -85,6 +89,9 @@
           progressCallback: ({ loaded, total }) => {
             if (!total) return;
             const p = Math.min(1, loaded / total);
+            const pct = Math.floor(p * 100);
+            if (pct === lastPct) return;
+            lastPct = pct;
             // Once bytes are in, the WASM still has to build the model: show that as "loading".
             set({ status: p >= 1 ? 'loading' : 'downloading', progress: p });
           },
