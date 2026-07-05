@@ -82,7 +82,8 @@ test.beforeEach(async ({ page }) => {
 
 test("shows the landing page with all entry options when signed out", async ({ page }) => {
   const content = page.locator("#content");
-  await expect(content).toContainText("Spanish 3000");
+  await expect(content).toContainText("Hablavos");
+  await expect(content).toContainText("Learn the Spanish people");
   await expect(content.getByRole("button", { name: "Log in" })).toBeVisible();
   await expect(content.getByRole("button", { name: "Sign up" })).toBeVisible();
   await expect(content.getByRole("button", { name: "Continue as guest" })).toBeVisible();

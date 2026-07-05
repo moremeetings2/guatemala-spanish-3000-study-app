@@ -1,6 +1,6 @@
-# Guatemala Spanish 3000 Study App
+# Hablavos
 
-Small static PWA built from the study-pack dataset, CSV-fed phrase content, a dedicated everyday-phrases source file, and a curated Guatemalan lexicon source file.
+**Learn the Spanish people actually speak.** Small static PWA (brand name **Hablavos**) built from the study-pack dataset, CSV-fed phrase content, a dedicated everyday-phrases source file, and a curated Guatemalan lexicon source file. Starts with Guatemala; more regions on the roadmap.
 
 ## What it does
 

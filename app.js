@@ -600,6 +600,16 @@ function greeting() {
   return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
 }
 
+function isValidEmail(v) {
+  return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((v || '').trim());
+}
+
+// Hablavos wordmark: the green rounded "h" tile. size = tile px, fs = glyph px.
+function brandMark(size, fs) {
+  const r = Math.round(size * 0.31);
+  return `<div style="width:${size}px;height:${size}px;border-radius:${r}px;background:#28b573;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:${fs}px;box-shadow:0 3px 10px rgba(40,181,115,.35);flex:0 0 auto">h</div>`;
+}
+
 // Pick the best example sentence for a card: authored sentence first,
 // then the word's mini-phrase, then a lexicon example. Returns null when none exists.
 function sentenceFor(deckId, es, entry, sents) {
@@ -933,7 +943,7 @@ function computeVals() {
   const auth = {
     view: S.authView, email: S.authEmail, password: S.authPassword,
     error: S.authError, busy: S.authBusy,
-    onEmail: e => setState({ authEmail: e.target.value }),
+    onEmail: e => setState({ authEmail: e.target.value, authError: '' }),
     onPassword: e => setState({ authPassword: e.target.value }),
     onShowLogin: () => setState({ authView: 'login', authError: '' }),
     onShowSignup: () => setState({ authView: 'signup', authError: '' }),
@@ -942,6 +952,11 @@ function computeVals() {
     onLogin: () => doAuth('login'),
     onSignup: () => doAuth('signup'),
     onSubmit: () => doAuth(S.authView === 'signup' ? 'signup' : 'login'),
+    // Landing "Create free account": carry the entered email into the real signup form.
+    onStartSignup: () => isValidEmail(S.authEmail)
+      ? setState({ authView: 'signup', authError: '' })
+      : setState({ authError: 'Please enter a valid email address.' }),
+    onScrollDown: () => { const c = document.getElementById('content'); if (c) c.scrollTo({ top: c.scrollTop + c.clientHeight * 0.86, behavior: 'smooth' }); },
   };
 
   return {
@@ -965,7 +980,182 @@ function computeVals() {
 
 function renderAuth(v) {
   const a = v.auth;
-  const landing = a.view === 'landing';
+  if (a.view === 'landing') return renderLanding(a);
+  return renderAuthForm(a);
+}
+
+// Signed-out marketing landing — the Hablavos brand home. Scrolls inside #content.
+function renderLanding(a) {
+  const features = [
+    { title: 'Main 3000',                  desc: 'The 3,000 words that carry real conversations, learned in smart order.', icon: 'translate',    tint: '#e7f6ee', ink: '#1c6e48' },
+    { title: 'Coffee Phrases',             desc: 'Warm, everyday openers for cafés, markets and small talk.',              icon: 'local_cafe',   tint: '#fdf1dd', ink: '#a86c11' },
+    { title: 'Everyday Phrases',           desc: "The sentences you'll actually reach for, ready when you need them.",      icon: 'chat_bubble',  tint: '#f8e5f2', ink: '#a12b83' },
+    { title: 'Quiz',                       desc: 'Quick, gentle checks that turn recognition into recall.',                icon: 'quiz',         tint: '#ecedfb', ink: '#3b45c4' },
+    { title: 'Little Things Locals Know',  desc: 'Culture, context and the small things locals just know.',                icon: 'explore',      tint: '#fbeade', ink: '#b45e1f' },
+    { title: 'Guatemalan Lexicon',         desc: "Regional words and slang you won't find in a textbook.",                 icon: 'menu_book',    tint: '#e3eff4', ink: '#1f5e7c' },
+  ];
+  const steps = [
+    { n: '1', title: 'Create your free account', desc: "One tap to start. Pick Guatemala and you're learning in under a minute." },
+    { n: '2', title: 'Practice five minutes a day', desc: 'Words, phrases and quizzes in short, calm sessions that fit real life.' },
+    { n: '3', title: 'Watch it stick', desc: 'Spaced review brings words back at the right moment, so they last.' },
+  ];
+  const modules = [
+    { name: 'Guatemala',   tag: 'Available now', tagIcon: 'check_circle', tagColor: '#1c6e48', bg: '#e7f6ee', border: 'rgba(40,181,115,.3)', chip: '#28b573' },
+    { name: 'Mexico',      tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
+    { name: 'Honduras',    tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
+    { name: 'El Salvador', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
+  ];
+  const stats = [
+    { n: '3,000', l: 'most-used words', c: 'var(--ink)' },
+    { n: '5 min', l: 'a day is enough', c: '#28b573' },
+    { n: '6',     l: 'ways to practice', c: 'var(--ink)' },
+    { n: 'Free',  l: 'to get started',  c: 'var(--ink)' },
+  ];
+  const emailField = (fid) =>
+    `<input class="fld" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" value="${esc(a.email)}" data-fid="${fid}" ${hi(a.onEmail)}
+      style="width:100%;padding:15px 18px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-family:Nunito;font-size:16px;font-weight:600;color:var(--ink);outline:none">`;
+
+  return `
+<div style="animation:fadeIn .3s both;padding-bottom:8px">
+
+  <div style="position:sticky;top:0;z-index:20;background:var(--bar);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <div style="display:flex;align-items:center;gap:9px">
+      ${brandMark(30, 18)}
+      <span style="font-weight:900;font-size:19px;letter-spacing:-.02em;color:var(--ink)">Hablavos</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button ${h(a.onShowLogin)} style="border:none;background:transparent;font-family:Nunito;font-weight:800;font-size:15px;color:var(--muted);cursor:pointer;padding:8px 4px">Log in</button>
+      <button ${h(a.onShowSignup)} style="border:none;padding:9px 18px;border-radius:999px;background:#28b573;color:#fff;font-family:Nunito;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 3px 12px rgba(40,181,115,.28)">Sign up</button>
+    </div>
+  </div>
+
+  <div style="padding:26px 22px 30px">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 13px 6px 10px;border-radius:999px;background:var(--g-soft);margin-bottom:18px">
+      <span style="width:7px;height:7px;border-radius:50%;background:#28b573;box-shadow:0 0 0 3px rgba(40,181,115,.18)"></span>
+      <span style="font-weight:800;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--g-ink)">Module 01</span>
+    </div>
+    <h1 style="margin:0 0 16px;font-weight:900;font-size:38px;line-height:1.04;letter-spacing:-.035em;color:var(--ink)">Learn the Spanish people <span style="color:#28b573">actually speak.</span></h1>
+    <p style="margin:0 0 22px;font-size:17px;line-height:1.5;font-weight:600;color:var(--muted)">A calm, daily way to build real vocabulary, phrases, and listening — the warm, everyday Spanish people actually use. Five minutes a day is enough.</p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px">
+      ${emailField('landing-email')}
+      <button ${h(a.onStartSignup)} style="padding:15px 20px;border-radius:14px;border:none;background:#28b573;color:#fff;font-family:Nunito;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 14px rgba(40,181,115,.3)">Create free account</button>
+    </div>
+    ${a.error ? `<p style="margin:0 0 10px;font-weight:700;font-size:13.5px;color:var(--r-ink)">${esc(a.error)}</p>` : ''}
+    <button ${h(a.onGuest)} style="width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:15px;padding:13px;border-radius:14px;cursor:pointer">Continue as guest</button>
+    <p style="margin:14px 2px 0;font-weight:700;font-size:13px;color:var(--muted2)">Free to start · No credit card · Works on any device</p>
+  </div>
+
+  <div style="padding:0 22px 26px">
+    ${renderPhoneMock()}
+  </div>
+
+  <button ${h(a.onScrollDown)} style="display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 auto 30px;border:none;background:transparent;cursor:pointer">
+    <span style="font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2)">Scroll</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.05)">${ms('keyboard_arrow_down', 24, '#28b573')}</span>
+  </button>
+
+  <div style="padding:0 22px 30px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;padding:18px;border-radius:22px;background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 22px rgba(0,0,0,.04)">
+      ${stats.map(s => `<div style="flex:1 1 40%;text-align:center;padding:6px 4px">
+        <div style="font-weight:900;font-size:26px;letter-spacing:-.03em;color:${s.c}">${s.n}</div>
+        <div style="font-weight:700;font-size:12.5px;color:var(--muted)">${s.l}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div style="padding:6px 22px 30px">
+    <div style="font-weight:800;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#28b573;margin-bottom:10px">What you'll practice</div>
+    <h2 style="margin:0 0 8px;font-weight:900;font-size:27px;line-height:1.1;letter-spacing:-.03em;color:var(--ink)">Six kinds of practice, one calm home.</h2>
+    <p style="margin:0 0 18px;font-size:15px;line-height:1.5;font-weight:600;color:var(--muted)">Each part of the app has its own colour and rhythm — so you always know where you are and what you're building.</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${features.map(f => `<div style="padding:18px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 20px rgba(0,0,0,.04)">
+        <div style="display:flex;align-items:center;gap:13px">
+          <div style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:${f.tint};flex:0 0 auto">${ms(f.icon, 24, f.ink)}</div>
+          <div>
+            <h3 style="margin:0 0 3px;font-weight:800;font-size:16.5px;letter-spacing:-.01em;color:var(--ink)">${esc(f.title)}</h3>
+            <p style="margin:0;font-size:13.5px;line-height:1.45;font-weight:600;color:var(--muted)">${esc(f.desc)}</p>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div style="padding:28px 22px;background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div style="font-weight:800;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#28b573;margin-bottom:10px">How it works</div>
+    <h2 style="margin:0 0 20px;font-weight:900;font-size:27px;line-height:1.1;letter-spacing:-.03em;color:var(--ink)">Start today, stay consistent, actually remember.</h2>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      ${steps.map(s => `<div style="display:flex;gap:14px;align-items:flex-start">
+        <div style="width:44px;height:44px;border-radius:14px;background:var(--g-soft);color:var(--g-ink);font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">${s.n}</div>
+        <div>
+          <h3 style="margin:0 0 4px;font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--ink)">${esc(s.title)}</h3>
+          <p style="margin:0;font-size:14.5px;line-height:1.5;font-weight:600;color:var(--muted)">${esc(s.desc)}</p>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div style="padding:30px 22px">
+    <div style="font-weight:800;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#28b573;margin-bottom:10px">One app, every accent</div>
+    <h2 style="margin:0 0 8px;font-weight:900;font-size:27px;line-height:1.1;letter-spacing:-.03em;color:var(--ink)">Begin with Guatemala. More countries are on the way.</h2>
+    <p style="margin:0 0 18px;font-size:15px;line-height:1.5;font-weight:600;color:var(--muted)">Spanish isn't one thing — it changes with every border. Master one region at a time, in the words locals really use.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      ${modules.map(m => `<div style="padding:18px;border-radius:18px;background:${m.bg};border:1.5px solid ${m.border}">
+        <div style="width:40px;height:40px;border-radius:12px;background:${m.chip};margin-bottom:14px"></div>
+        <h3 style="margin:0 0 6px;font-weight:800;font-size:16px;letter-spacing:-.01em;color:var(--ink)">${esc(m.name)}</h3>
+        <div style="display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12px;color:${m.tagColor}">${ms(m.tagIcon, 15, m.tagColor)}${esc(m.tag)}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div style="padding:0 22px 30px">
+    <div style="position:relative;overflow:hidden;border-radius:26px;background:linear-gradient(135deg,#28b573,#1f9c62);padding:32px 24px;text-align:center;box-shadow:0 20px 44px -18px rgba(40,181,115,.5)">
+      <div style="position:absolute;top:-50px;right:-30px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.09)"></div>
+      <div style="position:absolute;bottom:-70px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.07)"></div>
+      <div style="position:relative;z-index:1">
+        <h2 style="margin:0 0 12px;font-weight:900;font-size:26px;line-height:1.08;letter-spacing:-.03em;color:#fff">Your first Spanish words are five minutes away.</h2>
+        <p style="margin:0 0 20px;font-size:15.5px;line-height:1.45;font-weight:600;color:rgba(255,255,255,.9)">Create a free account and start today. No card, no pressure.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${emailField('landing-email-cta')}
+          <button ${h(a.onStartSignup)} style="padding:15px 20px;border-radius:14px;border:none;background:#2c2b2e;color:#fff;font-family:Nunito;font-weight:800;font-size:16px;cursor:pointer">Create free account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:0 22px 34px;display:flex;align-items:center;justify-content:center;gap:9px;color:var(--muted2)">
+    ${brandMark(26, 15)}
+    <span style="font-weight:900;font-size:16px;letter-spacing:-.02em;color:var(--ink)">Hablavos</span>
+    <span style="font-weight:700;font-size:12.5px">· Real Spanish, one region at a time</span>
+  </div>
+
+</div>`;
+}
+
+// Small decorative flashcard preview shown on the landing hero.
+function renderPhoneMock() {
+  return `
+<div style="max-width:300px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:22px 20px;box-shadow:0 24px 50px -22px rgba(0,0,0,.28)">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+    <div style="display:flex;align-items:center;gap:6px;background:var(--g-soft);border-radius:999px;padding:5px 11px">
+      ${ms('dictionary', 16, 'var(--g-ink)')}<span style="font-weight:800;font-size:12px;color:var(--g-ink)">Main 3000</span>
+    </div>
+    <span style="font-weight:800;font-size:12px;color:var(--muted2)">12 / 20</span>
+  </div>
+  <div style="text-align:center;padding:14px 0 18px">
+    <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px">el trabajo</div>
+    <div style="font-size:15px;font-weight:700;color:var(--muted);margin-top:6px">work · the job</div>
+    <div style="display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;background:#28b573;color:#fff;border-radius:999px;padding:9px 16px;font-weight:800;font-size:13px">${ms('volume_up', 18, '#fff')} Escuchar</div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <div style="flex:1;text-align:center;background:var(--r-soft);color:var(--r-ink);border-radius:12px;padding:10px;font-weight:800;font-size:13px">Again</div>
+    <div style="flex:1;text-align:center;background:var(--g-soft);color:var(--g-ink);border-radius:12px;padding:10px;font-weight:800;font-size:13px">Got it</div>
+  </div>
+</div>`;
+}
+
+// Login / signup form card — reachable from the landing.
+function renderAuthForm(a) {
   const isSignup = a.view === 'signup';
   const primaryLabel = isSignup ? 'Create account' : 'Log in';
   const field = (label, type, value, handler, fid, extra = '') =>
@@ -976,17 +1166,12 @@ function renderAuth(v) {
     </label>`;
   return `
 <div style="min-height:100%;display:flex;flex-direction:column;justify-content:center;padding:32px 26px;animation:fadeIn .3s both">
-  <div style="text-align:center;margin-bottom:26px">
-    <div style="font-size:40px;margin-bottom:6px">🇬🇹</div>
-    <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.6px">Spanish 3000</div>
-    <div style="font-size:15px;font-weight:600;color:var(--muted);margin-top:4px">Learn Guatemalan Spanish, one card at a time.</div>
+  <button ${h(a.onBack)} style="align-self:flex-start;display:flex;align-items:center;gap:4px;border:none;background:transparent;color:var(--muted);font-family:Nunito;font-size:14px;font-weight:800;cursor:pointer;padding:0 0 18px">${ms('arrow_back', 20, 'var(--muted)')} Back</button>
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:22px">
+    ${brandMark(52, 30)}
+    <div style="font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-top:12px">Hablavos</div>
+    <div style="font-size:15px;font-weight:600;color:var(--muted);margin-top:3px">Learn the Spanish people actually speak.</div>
   </div>
-  ${landing ? `
-  <button ${h(a.onShowLogin)} style="width:100%;border:none;background:#28b573;color:#fff;font-family:Nunito;font-size:17px;font-weight:800;padding:15px;border-radius:16px;cursor:pointer;margin-bottom:11px;box-shadow:0 6px 16px rgba(40,181,115,.3)">Log in</button>
-  <button ${h(a.onShowSignup)} style="width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-size:17px;font-weight:800;padding:15px;border-radius:16px;cursor:pointer;margin-bottom:11px">Sign up</button>
-  <button ${h(a.onGuest)} style="width:100%;border:none;background:transparent;color:var(--muted);font-family:Nunito;font-size:15px;font-weight:800;padding:13px;border-radius:16px;cursor:pointer">Continue as guest</button>
-  <div style="font-size:12.5px;font-weight:600;color:var(--muted2);text-align:center;margin-top:14px;line-height:1.4">Sign in to sync your progress across devices.<br>Guest mode keeps everything on this device.</div>
-  ` : `
   <div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 6px 18px rgba(0,0,0,.05)">
     <div style="font-size:19px;font-weight:900;color:var(--ink);margin-bottom:16px">${isSignup ? 'Create your account' : 'Welcome back'}</div>
     ${field('Email', 'email', a.email, a.onEmail, 'auth-email', 'autocomplete="email" inputmode="email"')}
@@ -1000,7 +1185,6 @@ function renderAuth(v) {
       : `<span style="font-size:14px;font-weight:600;color:var(--muted)">New here? </span><button ${h(a.onShowSignup)} style="border:none;background:transparent;color:#28b573;font-family:Nunito;font-size:14px;font-weight:800;cursor:pointer;padding:0">Create an account</button>`}
   </div>
   <button ${h(a.onGuest)} style="width:100%;border:none;background:transparent;color:var(--muted2);font-family:Nunito;font-size:14px;font-weight:800;padding:14px;border-radius:14px;cursor:pointer;margin-top:6px">Continue as guest</button>
-  `}
 </div>`;
 }
 
@@ -1008,6 +1192,10 @@ function renderHome(v) {
   const { home, greeting: g, onSettings } = v;
   return `
 <div style="padding:8px 22px 120px;animation:fadeIn .3s both">
+  <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px">
+    ${brandMark(24, 14)}
+    <span style="font-weight:900;font-size:15px;letter-spacing:-.02em;color:var(--ink)">Hablavos</span>
+  </div>
   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px">
     <div>
       <div style="font-size:14px;font-weight:700;color:var(--muted)">${esc(g)}</div>

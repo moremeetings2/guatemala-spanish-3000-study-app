@@ -8,6 +8,7 @@
 - GitHub repo: `https://github.com/moremeetings2/guatemala-spanish-3000-study-app`
 - GitHub Pages app: `https://moremeetings2.github.io/guatemala-spanish-3000-study-app/`
 - App type: static iPhone-friendly PWA for studying Guatemala Spanish
+- Brand: **Hablavos** ("Learn the Spanish people actually speak") — green `#28b573` "h" wordmark. Signed-out users land on a full marketing landing page (`renderLanding`, `authView: 'landing'`); Log in / Sign up open the auth form (`renderAuthForm`), and "Create free account" / "Continue as guest" start the account or guest flows.
 
 ## Repo Structure
 

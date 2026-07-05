@@ -1,7 +1,7 @@
 {
-  "name": "Guatemala Spanish 3000",
-  "short_name": "Spanish 3000",
-  "description": "Offline-friendly Spanish study app for iPhone and other mobile devices.",
+  "name": "Hablavos — Learn the Spanish people actually speak",
+  "short_name": "Hablavos",
+  "description": "Learn the warm, everyday Spanish people actually use. Real vocabulary, phrases, and listening — five minutes a day. Starting with Guatemala.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f7f1e8",
