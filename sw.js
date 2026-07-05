@@ -1,4 +1,4 @@
-const CACHE_NAME = "hablavos-v24";
+const CACHE_NAME = "hablavos-v25";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -20,7 +20,11 @@ const OFFLINE_FALLBACK_URL = new URL("./index.html", self.location.href).href;
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_ASSETS))
+      // GitHub Pages serves assets with max-age=600, so a plain fetch here can
+      // seed the new cache with copies up to 10 minutes stale — users then see
+      // the previous deploy even after the SW updates. `no-cache` forces
+      // revalidation with the server (cheap 304 when unchanged).
+      .then((cache) => cache.addAll(APP_ASSETS.map((url) => new Request(url, { cache: "no-cache" }))))
       .then(() => self.skipWaiting())
   );
 });
@@ -68,7 +72,13 @@ async function networkFirst(request, fallbackUrl = null) {
   const cache = await caches.open(CACHE_NAME);
 
   try {
-    const response = await fetch(request);
+    // "Network-first" must actually reach the server. A plain fetch(request)
+    // consults the browser's HTTP cache, and GitHub Pages marks assets
+    // cacheable for 10 minutes (max-age=600) — so right after a deploy users
+    // kept getting the previous app.js even on refresh. `no-cache` forces
+    // revalidation (304 when unchanged, fresh body when a deploy changed it).
+    // Fetch by URL because navigation Requests can't be re-constructed.
+    const response = await fetch(request.url, { cache: "no-cache" });
     if (response.ok) {
       await cache.put(request, response.clone());
     }
