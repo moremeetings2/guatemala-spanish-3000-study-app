@@ -3,3 +3,7 @@ Icon?
 node_modules/
 playwright-report/
 test-results/
+# Local secrets — never commit
+.env
+.env.*
+!.env.example
