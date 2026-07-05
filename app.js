@@ -1874,12 +1874,20 @@ async function bootstrap() {
 }
 
 function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
-        .then(r => r.update().catch(() => {})).catch(() => {});
-    });
-  }
+  if (!('serviceWorker' in navigator)) return;
+  // When a newly deployed service worker takes control, reload once so the
+  // fresh HTML/JS replaces the old cached version instead of getting stuck.
+  const hadController = !!navigator.serviceWorker.controller;
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing || !hadController) return; // skip the first-ever install
+    refreshing = true;
+    window.location.reload();
+  });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+      .then(r => r.update().catch(() => {})).catch(() => {});
+  });
 }
 
 bootstrap();
