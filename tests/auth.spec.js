@@ -93,6 +93,48 @@ test("shows the landing page with all entry options when signed out", async ({ p
   await expect(page.locator("#tab-bar")).toBeEmpty();
 });
 
+test("landing stays mounted when non-visible voice state loads", async ({ page }) => {
+  const stayedMounted = await page.evaluate(() => {
+    const root = document.querySelector("#content > div");
+    root.dataset.stabilityProbe = "landing";
+    setState({ voices: [{ voiceURI: "es-test", name: "Spanish Test", lang: "es-GT", localService: true }] });
+    return document.querySelector("#content > div")?.dataset.stabilityProbe === "landing";
+  });
+
+  expect(stayedMounted).toBe(true);
+});
+
+test("typing in auth fields does not replace the focused input", async ({ page }) => {
+  const content = page.locator("#content");
+  await content.getByRole("button", { name: "Log in" }).click();
+
+  const result = await page.evaluate(() => {
+    const email = document.querySelector('[data-fid="auth-email"]');
+    email.dataset.stabilityProbe = "email";
+    email.value = "j";
+    email.dispatchEvent(new Event("input", { bubbles: true }));
+
+    const password = document.querySelector('[data-fid="auth-password"]');
+    password.dataset.stabilityProbe = "password";
+    password.value = "p";
+    password.dispatchEvent(new Event("input", { bubbles: true }));
+
+    return {
+      emailStable: document.querySelector('[data-fid="auth-email"]')?.dataset.stabilityProbe === "email",
+      passwordStable: document.querySelector('[data-fid="auth-password"]')?.dataset.stabilityProbe === "password",
+      stateEmail: appState.authEmail,
+      statePassword: appState.authPassword,
+    };
+  });
+
+  expect(result).toEqual({
+    emailStable: true,
+    passwordStable: true,
+    stateEmail: "j",
+    statePassword: "p",
+  });
+});
+
 test("signup logs the user in and enters the app", async ({ page }) => {
   const content = page.locator("#content");
   await content.getByRole("button", { name: "Sign up" }).click();

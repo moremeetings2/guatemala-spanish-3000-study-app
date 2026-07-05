@@ -110,9 +110,30 @@ document.addEventListener('keydown', e => {
 
 // ===== State Management =====
 function setState(patch) {
-  appState = { ...appState, ...patch };
-  render();
+  const next = { ...appState, ...patch };
+  const keys = Object.keys(patch);
+  const signedOut = !(next.auth && next.auth.user);
+  const invisibleSignedOut = keys.length > 0 && keys.every(k => k === 'voices' || k === 'ai' || k === 'syncing');
+  appState = next;
+  if (!signedOut || !invisibleSignedOut) render();
   if (appState.loaded) schedSave();
+}
+
+function setAuthDraft(patch) {
+  appState = { ...appState, ...patch };
+  if (Object.prototype.hasOwnProperty.call(patch, 'authEmail')) {
+    document.querySelectorAll('[data-fid="auth-email"],[data-fid="landing-email"],[data-fid="landing-email-cta"]').forEach(el => {
+      if (el !== document.activeElement) el.value = appState.authEmail || '';
+    });
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, 'authPassword')) {
+    document.querySelectorAll('[data-fid="auth-password"]').forEach(el => {
+      if (el !== document.activeElement) el.value = appState.authPassword || '';
+    });
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, 'authError') && !patch.authError) {
+    document.querySelectorAll('[data-auth-error]').forEach(el => { el.hidden = true; });
+  }
 }
 
 function schedSave() {
@@ -1074,8 +1095,8 @@ function computeVals() {
   const auth = {
     view: S.authView, email: S.authEmail, password: S.authPassword,
     error: S.authError, busy: S.authBusy,
-    onEmail: e => setState({ authEmail: e.target.value, authError: '' }),
-    onPassword: e => setState({ authPassword: e.target.value }),
+    onEmail: e => setAuthDraft({ authEmail: e.target.value, authError: '' }),
+    onPassword: e => setAuthDraft({ authPassword: e.target.value }),
     onShowLogin: () => setState({ authView: 'login', authError: '' }),
     onShowSignup: () => setState({ authView: 'signup', authError: '' }),
     onBack: () => setState({ authView: 'landing', authError: '' }),
@@ -1207,7 +1228,7 @@ function renderLanding(a) {
           <div style="flex:1 1 220px;min-width:0">${emailField('landing-email')}</div>
           <button ${h(a.onStartSignup)} style="flex:0 0 auto;padding:15px 24px;border-radius:14px;border:none;background:#28b573;color:#fff;font-family:Nunito;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 14px rgba(40,181,115,.3)">Create free account</button>
         </div>
-        ${a.error ? `<p style="margin:0 0 10px;font-weight:700;font-size:13.5px;color:var(--r-ink)">${esc(a.error)}</p>` : ''}
+        ${a.error ? `<p data-auth-error style="margin:0 0 10px;font-weight:700;font-size:13.5px;color:var(--r-ink)">${esc(a.error)}</p>` : ''}
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <button ${h(a.onShowLogin)} style="border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:15px;padding:12px 20px;border-radius:14px;cursor:pointer">I already have an account</button>
           <span style="font-weight:700;font-size:13px;color:var(--muted2)">Free · No credit card</span>
@@ -1344,7 +1365,7 @@ function renderAuthForm(a) {
     <div style="font-size:19px;font-weight:900;color:var(--ink);margin-bottom:16px">${isSignup ? 'Create your account' : 'Welcome back'}</div>
     ${field('Email', 'email', a.email, a.onEmail, 'auth-email', 'autocomplete="email" inputmode="email"')}
     ${field('Password', 'password', a.password, a.onPassword, 'auth-password', `autocomplete="${isSignup ? 'new-password' : 'current-password'}"`)}
-    ${a.error ? `<div style="background:var(--r-soft);color:var(--r-ink);font-size:13.5px;font-weight:700;padding:10px 12px;border-radius:11px;margin-bottom:12px">${esc(a.error)}</div>` : ''}
+    ${a.error ? `<div data-auth-error style="background:var(--r-soft);color:var(--r-ink);font-size:13.5px;font-weight:700;padding:10px 12px;border-radius:11px;margin-bottom:12px">${esc(a.error)}</div>` : ''}
     <button ${h(a.onSubmit)} ${a.busy ? 'disabled' : ''} style="width:100%;border:none;background:#28b573;color:#fff;font-family:Nunito;font-size:16px;font-weight:800;padding:14px;border-radius:14px;cursor:${a.busy ? 'default' : 'pointer'};opacity:${a.busy ? '.6' : '1'}">${a.busy ? 'Please wait…' : primaryLabel}</button>
   </div>
   <div style="text-align:center;margin-top:16px">
