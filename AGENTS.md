@@ -65,6 +65,10 @@ Cleanup rules when testing against the live API/DB:
 - Use Playwright in HEADFUL mode for real browser-based verification when testing changes.
 - Preferred real-browser command: `npm run test:integration:headed`
 - Also run `npm run test:integration` when useful for full regression coverage.
+- Whenever an agent finishes a chunk of work, commit the completed work with a **highly detailed commit message** that explains the context, root cause or requirement, implementation details, tests run, and deployment/verification evidence.
+- After committing a completed chunk, deploy or push the work through the appropriate project path so the live app is updated when the change is intended for production.
+- Keep documentation up to date with behavior, setup, deployment, and testing changes made during the work.
+- Add concise inline code comments when code is written to satisfy a spec, requirement, workaround, or non-obvious product rule that would not be clear from reading the code alone.
 
 ## Debugging And Repro
 
