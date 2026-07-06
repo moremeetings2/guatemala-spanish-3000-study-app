@@ -117,7 +117,7 @@ test("opens the Guatemalan Lexicon from the You tab with example sentences", asy
   const content = page.locator("#content");
 
   // Entry point card lives in the You tab.
-  const entry = content.getByRole("button", { name: /Guatemalan Lexicon/ });
+  const entry = content.getByRole("button", { name: /Country Lexicons/ });
   await expect(entry).toBeVisible();
   await entry.click();
 
@@ -136,6 +136,34 @@ test("search filters the Guatemalan Lexicon list", async ({ page }) => {
   await expect(content).toContainText("of 356");
   await expect(content).toContainText("chapín / chapina");
   await expect(content).not.toContainText("356 words & phrases");
+});
+
+test("lexicon country picker switches between countries and searches within one", async ({ page }) => {
+  await page.evaluate(() => setState({ route: "lexicon", lexQ: "", lexCountry: "guatemala" }));
+  const content = page.locator("#content");
+
+  // Guatemala is the default with the full studyable deck.
+  await expect(content).toContainText("Guatemalan Lexicon");
+  await expect(content).toContainText("356 words & phrases");
+  // All-country chips are present (spot-check far ends of the list).
+  await expect(content.getByRole("button", { name: /Mexico/ })).toBeVisible();
+  await expect(content.getByRole("button", { name: /Equatorial Guinea/ })).toBeVisible();
+
+  // Switching to Mexico swaps title, count, and content.
+  await content.getByRole("button", { name: /Mexico/ }).click();
+  await expect(content).toContainText("Mexico Lexicon");
+  await expect(content).toContainText("40 words & phrases");
+  await expect(content).toContainText("güey");
+
+  // Search stays scoped to the selected country.
+  await page.evaluate(() => setState({ lexQ: "chido" }));
+  await expect(content).toContainText("of 40");
+  await expect(content).toContainText("Tu carro está muy chido.");
+
+  // Switching countries clears the search.
+  await content.getByRole("button", { name: /Argentina/ }).click();
+  await expect(content).toContainText("Argentina Lexicon");
+  expect(await page.evaluate(() => appState.lexQ)).toBe("");
 });
 
 test("does not offer a Use button on cards without an example sentence", async ({ page }) => {

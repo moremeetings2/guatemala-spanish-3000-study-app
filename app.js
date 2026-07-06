@@ -43,13 +43,14 @@ let appState = {
   quiz: { phase: 'intro', idx: 0, sel: null, answered: false, score: 0, qs: null, dir: 'es-en', source: 'all' },
   cardState: {},
   browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any' },
-  lexQ: '',
+  lexQ: '', lexCountry: 'guatemala',
   detailId: null,
   settings: { speed: 1, voiceURI: 'auto', theme: 'light' },
   voices: [], canInstall: false, confirmReset: false,
   reviewedToday: 0, streak: 0, toast: null,
   auth: { token: null, user: null },
   authView: 'landing', authEmail: '', authPassword: '', authError: '', authBusy: false,
+  landingMore: false, // landing country grid: collapsed (4) vs all 21
   syncing: false,
   // On-device AI tutor.
   chat: { open: false, context: null, messages: [], input: '', busy: false, streaming: '' },
@@ -1075,6 +1076,7 @@ function computeVals() {
       return { name: d.name, icon: d.icon, accent: d.accent, tint: deckTint(d.accent), sub: d.count.toLocaleString() + ' cards · ' + kn + ' known', onClick: () => openBrowse({ deck: d.id }) };
     }),
     lexCount: lexCards.length,
+    lexCountryCount: 1 + (S.data.COUNTRY_LEX || []).length,
     lexAccent: lexDeckDef.accent, lexTint: deckTint(lexDeckDef.accent), lexIcon: lexDeckDef.icon,
     onLexicon: () => setState({ route: 'lexicon', lexQ: '' }),
     myWordsCount: S.myWords.length,
@@ -1125,37 +1127,54 @@ function computeVals() {
     onBack: () => setState({ route: null }),
   };
 
-  // Guatemalan Lexicon reference (in the "You" tab)
+  // Lexicon reference (in the "You" tab). Guatemala is the featured, studyable
+  // deck; every other Spanish-speaking country gets a browsable lexicon from
+  // data/country_lexicons.json, selectable via flag chips.
+  const COUNTRY_LEX = S.data.COUNTRY_LEX || [];
+  const lexCountries = [{ id: 'guatemala', name: 'Guatemala', flag: '🇬🇹' }]
+    .concat(COUNTRY_LEX.map(c => ({ id: c.id, name: c.name, flag: c.flag })));
+  const lexSel = lexCountries.some(c => c.id === S.lexCountry) ? S.lexCountry : 'guatemala';
+  const lexCountryName = (lexCountries.find(c => c.id === lexSel) || {}).name || 'Guatemala';
+  // Normalize both sources (deck cards vs. reference entries) to one shape.
+  const lexEntries = lexSel === 'guatemala'
+    ? lexCards.map(c => ({ es: c.es, en: c.en, cat: c.cat || '', sentEs: c.sentence ? c.sentence.es : '', sentEn: c.sentence ? c.sentence.en : '' }))
+    : ((COUNTRY_LEX.find(c => c.id === lexSel) || {}).entries || []).map(e => ({ es: e.es, en: e.en, cat: e.cat || '', sentEs: e.example ? e.example.es : '', sentEn: e.example ? (e.example.en || '') : '' }));
   const lq = (S.lexQ || '').trim().toLowerCase();
-  const lexItems = lexCards
-    .filter(c => {
+  const lexItems = lexEntries
+    .filter(e => {
       if (!lq) return true;
-      return c.es.toLowerCase().includes(lq)
-        || c.en.toLowerCase().includes(lq)
-        || (c.cat && c.cat.toLowerCase().includes(lq))
-        || (c.sentence && c.sentence.es.toLowerCase().includes(lq));
+      return e.es.toLowerCase().includes(lq)
+        || e.en.toLowerCase().includes(lq)
+        || (e.cat && e.cat.toLowerCase().includes(lq))
+        || (e.sentEs && e.sentEs.toLowerCase().includes(lq));
     })
-    .map(c => ({
-      term: c.es, meaning: c.en, cat: c.cat || '',
-      hasSentence: !!c.sentence,
-      sentEs: c.sentence ? c.sentence.es : '', sentEn: c.sentence ? c.sentence.en : '',
-      onSpeakTerm: () => speak(c.es),
-      onSpeakSentence: () => c.sentence && speak(c.sentence.es),
+    .map(e => ({
+      term: e.es, meaning: e.en, cat: e.cat,
+      hasSentence: !!e.sentEs,
+      sentEs: e.sentEs, sentEn: e.sentEn,
+      onSpeakTerm: () => speak(e.es),
+      onSpeakSentence: () => e.sentEs && speak(e.sentEs),
       onChat: () => openChat({
-        type: 'lexicon', title: c.es, subtitle: 'Guatemalan term · ' + c.en,
-        system: AI_SYSTEM + ` The learner is looking at the Guatemalan Spanish term "${c.es}" (meaning: "${c.en}"${c.cat ? ', category: ' + c.cat : ''}). Explain what it means, how and when Guatemalans use it, its tone or register, and give natural example sentences.`,
+        type: 'lexicon', title: e.es, subtitle: `${lexCountryName} term · ` + e.en,
+        system: AI_SYSTEM + ` The learner is looking at the Spanish term "${e.es}" (meaning: "${e.en}"${e.cat ? ', category: ' + e.cat : ''}) as used in ${lexCountryName}. Explain what it means, how and when people in ${lexCountryName} use it, its tone or register, and give natural example sentences.`,
         suggestions: [
-          `What does "${c.es}" mean in Guatemala?`,
-          `Give me an example sentence using "${c.es}".`,
-          `Is "${c.es}" formal or casual?`,
+          `What does "${e.es}" mean in ${lexCountryName}?`,
+          `Give me an example sentence using "${e.es}".`,
+          `Is "${e.es}" formal or casual?`,
         ],
       }),
     }));
   const lexicon = {
-    total: lexCards.length, shown: lexItems.length,
+    total: lexEntries.length, shown: lexItems.length,
     q: S.lexQ || '', hasQ: !!(S.lexQ && S.lexQ.trim()),
     accent: lexDeckDef.accent, tint: deckTint(lexDeckDef.accent), icon: lexDeckDef.icon,
     items: lexItems,
+    isGT: lexSel === 'guatemala',
+    countryName: lexCountryName,
+    countries: lexCountries.map(c => ({
+      ...c, active: c.id === lexSel,
+      onClick: () => setState({ lexCountry: c.id, lexQ: '' }),
+    })),
     onBack: () => setState({ route: null, lexQ: '' }),
     onSearch: e => setState({ lexQ: e.target.value }),
     onClearQ: () => setState({ lexQ: '' }),
@@ -1276,6 +1295,8 @@ function computeVals() {
       ? setState({ authView: 'signup', authError: '' })
       : setState({ authError: 'Please enter a valid email address.' }),
     onScrollDown: () => { const c = document.getElementById('content'); if (c) c.scrollTo({ top: c.scrollTop + c.clientHeight * 0.86, behavior: 'smooth' }); },
+    showAllCountries: S.landingMore,
+    onToggleCountries: () => setState({ landingMore: !S.landingMore }),
   };
 
   // AI tutor chat overlay.
@@ -1343,7 +1364,7 @@ function renderLanding(a) {
     { title: 'Everyday Phrases',           desc: "The sentences you'll actually reach for, ready when you need them.",      icon: 'chat_bubble',  tint: '#f8e5f2', ink: '#a12b83' },
     { title: 'Quiz',                       desc: 'Quick, gentle checks that turn recognition into recall.',                icon: 'quiz',         tint: '#ecedfb', ink: '#3b45c4' },
     { title: 'Little Things Locals Know',  desc: 'Culture, context and the small things locals just know.',                icon: 'explore',      tint: '#fbeade', ink: '#b45e1f' },
-    { title: 'Guatemalan Lexicon',         desc: "Regional words and slang you won't find in a textbook.",                 icon: 'menu_book',    tint: '#e3eff4', ink: '#1f5e7c' },
+    { title: 'Country Lexicons',           desc: "Regional slang from every Spanish-speaking country, with examples.",     icon: 'menu_book',    tint: '#e3eff4', ink: '#1f5e7c' },
     { title: 'AI Tutor',                   desc: 'A private tutor that runs on your device — ask anything about a word, phrase, or story.', icon: 'smart_toy', tint: '#ecedfb', ink: '#3b45c4' },
     { title: 'My Words',                   desc: 'Add your own words and build a personal deck that syncs to all your devices.', icon: 'edit_note', tint: '#efeafc', ink: '#6b4fd8' },
   ];
@@ -1352,12 +1373,20 @@ function renderLanding(a) {
     { n: '2', title: 'Practice five minutes a day', desc: 'Words, phrases and quizzes in short, calm sessions that fit real life.' },
     { n: '3', title: 'Watch it stick', desc: 'Spaced review brings words back at the right moment, so they last.' },
   ];
-  const modules = [
-    { name: 'Guatemala',   flag: '🇬🇹', tag: 'Available now', tagIcon: 'check_circle', tagColor: '#1c6e48', bg: '#e7f6ee', border: 'rgba(40,181,115,.3)', chip: '#28b573' },
-    { name: 'Mexico',      flag: '🇲🇽', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
-    { name: 'Honduras',    flag: '🇭🇳', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
-    { name: 'El Salvador', flag: '🇸🇻', tag: 'Coming soon',   tagIcon: 'schedule',     tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' },
+  // All 21 Spanish-speaking countries — Guatemala live, the rest on the roadmap.
+  // Collapsed view shows the first 4; `landingMore` expands the full list.
+  const soon = (name, flag) => ({ name, flag, tag: 'Coming soon', tagIcon: 'schedule', tagColor: 'var(--muted2)', bg: 'var(--surface)', border: 'var(--line)', chip: 'var(--track)' });
+  const allModules = [
+    { name: 'Guatemala', flag: '🇬🇹', tag: 'Available now', tagIcon: 'check_circle', tagColor: '#1c6e48', bg: '#e7f6ee', border: 'rgba(40,181,115,.3)', chip: '#28b573' },
+    soon('Mexico', '🇲🇽'), soon('Honduras', '🇭🇳'), soon('El Salvador', '🇸🇻'),
+    soon('Nicaragua', '🇳🇮'), soon('Costa Rica', '🇨🇷'), soon('Panama', '🇵🇦'),
+    soon('Cuba', '🇨🇺'), soon('Dominican Republic', '🇩🇴'), soon('Puerto Rico', '🇵🇷'),
+    soon('Colombia', '🇨🇴'), soon('Venezuela', '🇻🇪'), soon('Ecuador', '🇪🇨'),
+    soon('Peru', '🇵🇪'), soon('Bolivia', '🇧🇴'), soon('Chile', '🇨🇱'),
+    soon('Argentina', '🇦🇷'), soon('Uruguay', '🇺🇾'), soon('Paraguay', '🇵🇾'),
+    soon('Spain', '🇪🇸'), soon('Equatorial Guinea', '🇬🇶'),
   ];
+  const modules = a.showAllCountries ? allModules : allModules.slice(0, 4);
   const stats = [
     { n: '3,000', l: 'most-used words', c: 'var(--ink)' },
     { n: '5 min', l: 'a day is enough', c: '#28b573' },
@@ -1463,6 +1492,9 @@ function renderLanding(a) {
         <div style="display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12.5px;color:${m.tagColor}">${ms(m.tagIcon, 15, m.tagColor)}${esc(m.tag)}</div>
       </div>`).join('')}
     </div>
+    <button ${h(a.onToggleCountries)} style="display:flex;align-items:center;justify-content:center;gap:7px;margin:18px auto 0;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:Nunito;font-weight:800;font-size:14.5px;padding:12px 22px;border-radius:999px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.05)">
+      ${ms(a.showAllCountries ? 'keyboard_arrow_up' : 'keyboard_arrow_down', 20, '#28b573')}${a.showAllCountries ? 'Show fewer countries' : `See all ${allModules.length} countries`}
+    </button>
   </div>
 
   <div style="max-width:1120px;margin:0 auto;padding:0 ${SIDE} clamp(40px,5vw,72px)">
@@ -1955,8 +1987,8 @@ function renderProgress(v) {
   <button ${h(prog.onLexicon)} style="width:100%;text-align:left;border:none;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.04);margin-bottom:18px">
     <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:${prog.lexTint};flex:none">${ms(prog.lexIcon, 25, prog.lexAccent)}</div>
     <div style="flex:1;min-width:0">
-      <div style="font-size:16px;font-weight:800;color:var(--ink)">Guatemalan Lexicon</div>
-      <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${prog.lexCount} Guatemalan words & phrases with examples</div>
+      <div style="font-size:16px;font-weight:800;color:var(--ink)">Country Lexicons</div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${prog.lexCountryCount > 1 ? prog.lexCountryCount + ' countries · regional slang with examples' : prog.lexCount + ' Guatemalan words & phrases with examples'}</div>
     </div>
     ${ms('chevron_right', 22, 'var(--muted2)')}
   </button>
@@ -2043,9 +2075,12 @@ function renderLexicon(v) {
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
       <button ${h(lx.onBack)} style="border:none;background:var(--soft);width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('arrow_back', 24, 'var(--ink)')}</button>
       <div style="min-width:0">
-        <div style="font-size:20px;font-weight:900;color:var(--ink);line-height:1.1">Guatemalan Lexicon</div>
+        <div style="font-size:20px;font-weight:900;color:var(--ink);line-height:1.1">${lx.isGT ? 'Guatemalan Lexicon' : esc(lx.countryName) + ' Lexicon'}</div>
         <div style="font-size:12.5px;font-weight:700;color:var(--muted)">${lx.hasQ ? lx.shown + ' of ' + lx.total : lx.total + ' words & phrases'}</div>
       </div>
+    </div>
+    <div class="hrow" style="display:flex;gap:8px;margin-bottom:11px;padding-bottom:2px">
+      ${lx.countries.map(c => `<button ${h(c.onClick)} style="flex:none;display:flex;align-items:center;gap:6px;border:1.5px solid ${c.active ? lx.accent : 'var(--line)'};background:${c.active ? lx.tint : 'var(--surface)'};color:${c.active ? lx.accent : 'var(--muted)'};font-family:Nunito;font-weight:800;font-size:13px;padding:8px 13px;border-radius:999px;cursor:pointer;white-space:nowrap"><span style="font-size:15px;line-height:1">${c.flag}</span>${esc(c.name)}</button>`).join('')}
     </div>
     <div style="display:flex;align-items:center;gap:8px;background:var(--soft2);border-radius:13px;padding:0 12px">
       ${ms('search', 20, 'var(--muted)')}
@@ -2341,12 +2376,13 @@ async function bootstrap() {
   render(); // show loading state
 
   try {
-    const [persisted, response, readingResp, synResp, sentResp] = await Promise.all([
+    const [persisted, response, readingResp, synResp, sentResp, countryLexResp] = await Promise.all([
       loadState(),
       fetch(DATA_URL),
       fetch('./data/reading-data.json'),
       fetch('./data/synonyms.json'),
       fetch('./data/sentences.json'),
+      fetch('./data/country_lexicons.json'),
     ]);
 
     if (!response.ok) throw new Error(`Failed to load data (${response.status})`);
@@ -2354,10 +2390,15 @@ async function bootstrap() {
     let reading = null;
     let synonymsMap = {};
     let sentencesMap = {};
+    let countryLex = [];
     try { reading = await readingResp.json(); } catch(e) {}
     try { synonymsMap = await synResp.json(); } catch(e) {}
     try { sentencesMap = await sentResp.json(); } catch(e) {}
+    try { const cl = await countryLexResp.json(); countryLex = Array.isArray(cl) ? cl : (cl.countries || []); } catch(e) {}
     const data = transformData(raw, reading, synonymsMap, sentencesMap);
+    // Per-country lexicon references (all Spanish-speaking countries except
+    // Guatemala, whose lexicon is the studyable in-catalog deck).
+    data.COUNTRY_LEX = countryLex;
 
     let cardState = {};
     let settings = appState.settings;

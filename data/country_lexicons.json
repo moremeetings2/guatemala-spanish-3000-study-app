@@ -1,0 +1,7191 @@
+[
+ {
+  "id": "mexico",
+  "name": "Mexico",
+  "es": "México",
+  "flag": "🇲🇽",
+  "entries": [
+   {
+    "es": "güey",
+    "en": "dude, buddy",
+    "cat": "people",
+    "example": {
+     "es": "¿Qué onda, güey? ¿Cómo estás?",
+     "en": "What's up, dude? How are you?"
+    }
+   },
+   {
+    "es": "¿qué onda?",
+    "en": "what's up?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Hola! ¿Qué onda? ¿Todo bien?",
+     "en": "Hi! What's up? Everything good?"
+    }
+   },
+   {
+    "es": "chido",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "Tu carro está muy chido.",
+     "en": "Your car is really cool."
+    }
+   },
+   {
+    "es": "padre",
+    "en": "cool, awesome",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué padre está la fiesta!",
+     "en": "The party is so cool!"
+    }
+   },
+   {
+    "es": "órale",
+    "en": "wow / okay / come on",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Ganaste el premio? ¡Órale!",
+     "en": "You won the prize? Wow!"
+    }
+   },
+   {
+    "es": "ándale",
+    "en": "that's right / hurry up",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Ándale, vamos a llegar tarde!",
+     "en": "Come on, we're going to be late!"
+    }
+   },
+   {
+    "es": "aguas",
+    "en": "watch out!",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Aguas con el escalón!",
+     "en": "Watch out for the step!"
+    }
+   },
+   {
+    "es": "no manches",
+    "en": "no way, you're kidding",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Viste el precio? ¡No manches!",
+     "en": "Did you see the price? No way!"
+    }
+   },
+   {
+    "es": "la neta",
+    "en": "the truth, honestly",
+    "cat": "slang",
+    "example": {
+     "es": "La neta, no me gusta esa película.",
+     "en": "Honestly, I don't like that movie."
+    }
+   },
+   {
+    "es": "sale",
+    "en": "okay, deal",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Nos vemos a las ocho? —Sale.",
+     "en": "See you at eight? —Okay."
+    }
+   },
+   {
+    "es": "híjole",
+    "en": "wow, yikes",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Híjole, se me olvidó la tarea!",
+     "en": "Yikes, I forgot my homework!"
+    }
+   },
+   {
+    "es": "¿a poco?",
+    "en": "really? seriously?",
+    "cat": "expressions",
+    "example": {
+     "es": "¿A poco vives en Cancún?",
+     "en": "Really? You live in Cancún?"
+    }
+   },
+   {
+    "es": "ni modo",
+    "en": "oh well, too bad",
+    "cat": "expressions",
+    "example": {
+     "es": "Ya cerró la tienda. Ni modo.",
+     "en": "The store already closed. Oh well."
+    }
+   },
+   {
+    "es": "mande",
+    "en": "pardon? yes? (polite reply)",
+    "cat": "everyday",
+    "example": {
+     "es": "—¡Juan! —¿Mande, mamá?",
+     "en": "—Juan! —Yes, Mom?"
+    }
+   },
+   {
+    "es": "ahorita",
+    "en": "right now / in a little bit",
+    "cat": "everyday",
+    "example": {
+     "es": "Ahorita voy, dame un minuto.",
+     "en": "I'm coming in a bit, give me a minute."
+    }
+   },
+   {
+    "es": "chamba",
+    "en": "work, job",
+    "cat": "everyday",
+    "example": {
+     "es": "Mañana tengo mucha chamba.",
+     "en": "Tomorrow I have a lot of work."
+    }
+   },
+   {
+    "es": "lana",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo lana para el cine.",
+     "en": "I don't have money for the movies."
+    }
+   },
+   {
+    "es": "feria",
+    "en": "money, change",
+    "cat": "money",
+    "example": {
+     "es": "¿Traes feria para el camión?",
+     "en": "Do you have change for the bus?"
+    }
+   },
+   {
+    "es": "varo",
+    "en": "peso, buck",
+    "cat": "money",
+    "example": {
+     "es": "El taco cuesta veinte varos.",
+     "en": "The taco costs twenty pesos."
+    }
+   },
+   {
+    "es": "codo",
+    "en": "stingy, cheap",
+    "cat": "money",
+    "example": {
+     "es": "No seas codo, invita los tacos.",
+     "en": "Don't be stingy, treat us to tacos."
+    }
+   },
+   {
+    "es": "chela",
+    "en": "beer",
+    "cat": "food",
+    "example": {
+     "es": "¿Quieres una chela bien fría?",
+     "en": "Do you want a nice cold beer?"
+    }
+   },
+   {
+    "es": "botana",
+    "en": "snack, appetizer",
+    "cat": "food",
+    "example": {
+     "es": "Trajeron botana para la fiesta.",
+     "en": "They brought snacks for the party."
+    }
+   },
+   {
+    "es": "elote",
+    "en": "corn on the cob",
+    "cat": "food",
+    "example": {
+     "es": "Compré un elote con chile y limón.",
+     "en": "I bought a corn on the cob with chili and lime."
+    }
+   },
+   {
+    "es": "torta",
+    "en": "Mexican sandwich",
+    "cat": "food",
+    "example": {
+     "es": "Quiero una torta de jamón, por favor.",
+     "en": "I want a ham sandwich, please."
+    }
+   },
+   {
+    "es": "tianguis",
+    "en": "open-air street market",
+    "cat": "everyday",
+    "example": {
+     "es": "Los domingos hay tianguis en mi colonia.",
+     "en": "On Sundays there's a street market in my neighborhood."
+    }
+   },
+   {
+    "es": "popote",
+    "en": "drinking straw",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Me das un popote para el jugo?",
+     "en": "Can you give me a straw for the juice?"
+    }
+   },
+   {
+    "es": "camión",
+    "en": "city bus",
+    "cat": "everyday",
+    "example": {
+     "es": "Tomo el camión para ir al trabajo.",
+     "en": "I take the bus to go to work."
+    }
+   },
+   {
+    "es": "platicar",
+    "en": "to chat, to talk",
+    "cat": "everyday",
+    "example": {
+     "es": "Vamos a platicar con un café.",
+     "en": "Let's chat over a coffee."
+    }
+   },
+   {
+    "es": "de volada",
+    "en": "right away, quickly",
+    "cat": "everyday",
+    "example": {
+     "es": "Voy a la tienda de volada.",
+     "en": "I'm going to the store real quick."
+    }
+   },
+   {
+    "es": "chavo",
+    "en": "young guy, kid",
+    "cat": "people",
+    "example": {
+     "es": "Ese chavo es mi vecino.",
+     "en": "That guy is my neighbor."
+    }
+   },
+   {
+    "es": "cuate",
+    "en": "buddy, close friend",
+    "cat": "people",
+    "example": {
+     "es": "Voy al futbol con mis cuates.",
+     "en": "I'm going to the soccer game with my buddies."
+    }
+   },
+   {
+    "es": "morro",
+    "en": "kid, young boy",
+    "cat": "people",
+    "example": {
+     "es": "El morro juega en el parque.",
+     "en": "The kid is playing in the park."
+    }
+   },
+   {
+    "es": "fresa",
+    "en": "preppy, snobby person",
+    "cat": "people",
+    "example": {
+     "es": "Ella es muy fresa, solo compra ropa cara.",
+     "en": "She's very preppy, she only buys expensive clothes."
+    }
+   },
+   {
+    "es": "chilango",
+    "en": "person from Mexico City",
+    "cat": "people",
+    "example": {
+     "es": "Mi primo es chilango, vive en la capital.",
+     "en": "My cousin is a chilango, he lives in the capital."
+    }
+   },
+   {
+    "es": "güero",
+    "en": "blond, fair-skinned person",
+    "cat": "people",
+    "example": {
+     "es": "El güero de la tienda es muy amable.",
+     "en": "The blond guy at the store is very friendly."
+    }
+   },
+   {
+    "es": "crudo",
+    "en": "hungover",
+    "cat": "slang",
+    "example": {
+     "es": "Hoy estoy crudo por la fiesta de anoche.",
+     "en": "I'm hungover today from last night's party."
+    }
+   },
+   {
+    "es": "me da hueva",
+    "en": "I don't feel like it, it's a drag",
+    "cat": "emotions",
+    "example": {
+     "es": "Me da hueva lavar los trastes.",
+     "en": "I don't feel like washing the dishes."
+    }
+   },
+   {
+    "es": "gacho",
+    "en": "mean, lousy",
+    "cat": "slang",
+    "example": {
+     "es": "No seas gacho, ayúdame tantito.",
+     "en": "Don't be mean, help me a little."
+    }
+   },
+   {
+    "es": "chafa",
+    "en": "cheap, poor quality",
+    "cat": "slang",
+    "example": {
+     "es": "Ese teléfono es muy chafa.",
+     "en": "That phone is really cheap quality."
+    }
+   },
+   {
+    "es": "apapachar",
+    "en": "to cuddle, to pamper",
+    "cat": "emotions",
+    "example": {
+     "es": "Mi abuela siempre me apapacha.",
+     "en": "My grandma always pampers me."
+    }
+   }
+  ]
+ },
+ {
+  "id": "el-salvador",
+  "name": "El Salvador",
+  "es": "El Salvador",
+  "flag": "🇸🇻",
+  "entries": [
+   {
+    "es": "cipote",
+    "en": "kid, child",
+    "cat": "people",
+    "example": {
+     "es": "El cipote juega en la calle.",
+     "en": "The kid is playing in the street."
+    }
+   },
+   {
+    "es": "chero",
+    "en": "friend, buddy",
+    "cat": "people",
+    "example": {
+     "es": "Voy al cine con mi chero.",
+     "en": "I'm going to the movies with my friend."
+    }
+   },
+   {
+    "es": "chivo",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué chivo tu carro!",
+     "en": "Your car is so cool!"
+    }
+   },
+   {
+    "es": "vaya pues",
+    "en": "okay then, alright (also used to say goodbye)",
+    "cat": "expressions",
+    "example": {
+     "es": "Nos vemos mañana, ¡vaya pues!",
+     "en": "See you tomorrow, alright then!"
+    }
+   },
+   {
+    "es": "pisto",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo pisto para el bus.",
+     "en": "I don't have money for the bus."
+    }
+   },
+   {
+    "es": "chucho",
+    "en": "dog",
+    "cat": "everyday",
+    "example": {
+     "es": "El chucho ladra mucho.",
+     "en": "The dog barks a lot."
+    }
+   },
+   {
+    "es": "cabal",
+    "en": "exactly, that's right",
+    "cat": "expressions",
+    "example": {
+     "es": "—¿Son diez dólares? —Cabal.",
+     "en": "'Is it ten dollars?' 'Exactly.'"
+    }
+   },
+   {
+    "es": "bayunco",
+    "en": "silly, goofy",
+    "cat": "people",
+    "example": {
+     "es": "No seás bayunco en la fiesta.",
+     "en": "Don't be silly at the party."
+    }
+   },
+   {
+    "es": "chambroso",
+    "en": "gossipy person",
+    "cat": "people",
+    "example": {
+     "es": "Mi vecino es bien chambroso.",
+     "en": "My neighbor is a big gossip."
+    }
+   },
+   {
+    "es": "chamba",
+    "en": "work, job",
+    "cat": "everyday",
+    "example": {
+     "es": "Encontré chamba en el mercado.",
+     "en": "I found work at the market."
+    }
+   },
+   {
+    "es": "pupusa",
+    "en": "stuffed corn tortilla, the national dish",
+    "cat": "food",
+    "example": {
+     "es": "Quiero dos pupusas de queso.",
+     "en": "I want two cheese pupusas."
+    }
+   },
+   {
+    "es": "minuta",
+    "en": "shaved ice with syrup",
+    "cat": "food",
+    "example": {
+     "es": "Con este calor, comprá una minuta.",
+     "en": "In this heat, buy a shaved ice."
+    }
+   },
+   {
+    "es": "casamiento",
+    "en": "rice and beans mixed together",
+    "cat": "food",
+    "example": {
+     "es": "Desayuné casamiento con crema.",
+     "en": "I had rice and beans with cream for breakfast."
+    }
+   },
+   {
+    "es": "atol de elote",
+    "en": "warm sweet corn drink",
+    "cat": "food",
+    "example": {
+     "es": "En la tarde tomamos atol de elote.",
+     "en": "In the afternoon we drink corn atol."
+    }
+   },
+   {
+    "es": "charamusca",
+    "en": "frozen treat in a plastic bag",
+    "cat": "food",
+    "example": {
+     "es": "La niña vende charamuscas de coco.",
+     "en": "The girl sells frozen coconut treats."
+    }
+   },
+   {
+    "es": "bolo",
+    "en": "drunk",
+    "cat": "slang",
+    "example": {
+     "es": "Ese señor anda bolo.",
+     "en": "That man is drunk."
+    }
+   },
+   {
+    "es": "goma",
+    "en": "hangover",
+    "cat": "slang",
+    "example": {
+     "es": "Hoy amanecí con goma.",
+     "en": "I woke up with a hangover today."
+    }
+   },
+   {
+    "es": "chele",
+    "en": "fair-skinned or blond person",
+    "cat": "people",
+    "example": {
+     "es": "Mi primo es chele y alto.",
+     "en": "My cousin is fair-skinned and tall."
+    }
+   },
+   {
+    "es": "dundo",
+    "en": "silly, dumb",
+    "cat": "people",
+    "example": {
+     "es": "No seás dundo, leé bien.",
+     "en": "Don't be silly, read it carefully."
+    }
+   },
+   {
+    "es": "paja",
+    "en": "a lie, nonsense",
+    "cat": "slang",
+    "example": {
+     "es": "Eso es pura paja, no le creás.",
+     "en": "That's a total lie, don't believe him."
+    }
+   },
+   {
+    "es": "¿qué ondas?",
+    "en": "what's up?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Qué ondas! ¿Cómo estás?",
+     "en": "What's up! How are you?"
+    }
+   },
+   {
+    "es": "¡puchica!",
+    "en": "wow!, dang! (mild exclamation)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Puchica, qué calor hace!",
+     "en": "Dang, it's so hot!"
+    }
+   },
+   {
+    "es": "guanaco",
+    "en": "Salvadoran person",
+    "cat": "people",
+    "example": {
+     "es": "Mi abuelo es guanaco de corazón.",
+     "en": "My grandfather is Salvadoran at heart."
+    }
+   },
+   {
+    "es": "chunche",
+    "en": "thing, thingamajig",
+    "cat": "everyday",
+    "example": {
+     "es": "Pasame ese chunche, por favor.",
+     "en": "Pass me that thingy, please."
+    }
+   },
+   {
+    "es": "colocho",
+    "en": "curly hair; curly-haired person",
+    "cat": "people",
+    "example": {
+     "es": "El bebé tiene el pelo colocho.",
+     "en": "The baby has curly hair."
+    }
+   },
+   {
+    "es": "chinear",
+    "en": "to carry in one's arms, to pamper",
+    "cat": "everyday",
+    "example": {
+     "es": "La abuela chinea al bebé.",
+     "en": "Grandma carries the baby in her arms."
+    }
+   },
+   {
+    "es": "codo",
+    "en": "stingy, cheap",
+    "cat": "money",
+    "example": {
+     "es": "No seás codo, pagá la cena.",
+     "en": "Don't be stingy, pay for dinner."
+    }
+   },
+   {
+    "es": "volado",
+    "en": "thing; favor",
+    "cat": "everyday",
+    "example": {
+     "es": "Haceme un volado: comprá pan.",
+     "en": "Do me a favor: buy some bread."
+    }
+   },
+   {
+    "es": "casaca",
+    "en": "lie, empty talk",
+    "cat": "slang",
+    "example": {
+     "es": "No me eches casaca, decí la verdad.",
+     "en": "Don't feed me lies, tell the truth."
+    }
+   },
+   {
+    "es": "cachimbón",
+    "en": "awesome, excellent",
+    "cat": "slang",
+    "example": {
+     "es": "El concierto estuvo cachimbón.",
+     "en": "The concert was awesome."
+    }
+   },
+   {
+    "es": "tanate",
+    "en": "a bunch, a pile",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo un tanate de ropa que lavar.",
+     "en": "I have a pile of clothes to wash."
+    }
+   },
+   {
+    "es": "¡achís!",
+    "en": "yuck!, expression of surprise or disgust",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Achís! ¿Y ese olor?",
+     "en": "Yuck! What's that smell?"
+    }
+   },
+   {
+    "es": "¡salú!",
+    "en": "bye!, see you! (casual farewell)",
+    "cat": "greetings",
+    "example": {
+     "es": "Ya me voy, ¡salú!",
+     "en": "I'm leaving now, bye!"
+    }
+   },
+   {
+    "es": "de choto",
+    "en": "for free; in vain",
+    "cat": "slang",
+    "example": {
+     "es": "Entramos al museo de choto.",
+     "en": "We got into the museum for free."
+    }
+   },
+   {
+    "es": "chiche",
+    "en": "easy",
+    "cat": "slang",
+    "example": {
+     "es": "El examen estuvo chiche.",
+     "en": "The exam was easy."
+    }
+   },
+   {
+    "es": "yuca",
+    "en": "hard, difficult",
+    "cat": "slang",
+    "example": {
+     "es": "Está yuca encontrar trabajo.",
+     "en": "It's tough to find work."
+    }
+   },
+   {
+    "es": "andar hule",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "No puedo salir, ando hule.",
+     "en": "I can't go out, I'm broke."
+    }
+   },
+   {
+    "es": "guacal",
+    "en": "plastic bowl or basin",
+    "cat": "everyday",
+    "example": {
+     "es": "Echá el agua en el guacal.",
+     "en": "Pour the water into the bowl."
+    }
+   },
+   {
+    "es": "chota",
+    "en": "the police",
+    "cat": "slang",
+    "example": {
+     "es": "Ahí viene la chota.",
+     "en": "Here come the cops."
+    }
+   },
+   {
+    "es": "enchibolado",
+    "en": "confused, mixed up",
+    "cat": "emotions",
+    "example": {
+     "es": "Estoy enchibolado con estas calles.",
+     "en": "I'm all confused by these streets."
+    }
+   }
+  ]
+ },
+ {
+  "id": "honduras",
+  "name": "Honduras",
+  "es": "Honduras",
+  "flag": "🇭🇳",
+  "entries": [
+   {
+    "es": "catracho",
+    "en": "Honduran person",
+    "cat": "people",
+    "example": {
+     "es": "Mi amigo es catracho, de Tegucigalpa.",
+     "en": "My friend is Honduran, from Tegucigalpa."
+    }
+   },
+   {
+    "es": "maje",
+    "en": "dude, guy",
+    "cat": "people",
+    "example": {
+     "es": "Ese maje es mi vecino.",
+     "en": "That guy is my neighbor."
+    }
+   },
+   {
+    "es": "¡cheque!",
+    "en": "okay!, deal!",
+    "cat": "expressions",
+    "example": {
+     "es": "—¿Nos vemos a las cinco? —¡Cheque!",
+     "en": "'See you at five?' 'Okay!'"
+    }
+   },
+   {
+    "es": "pisto",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "Necesito pisto para el mercado.",
+     "en": "I need money for the market."
+    }
+   },
+   {
+    "es": "baleada",
+    "en": "flour tortilla with beans and cheese, classic Honduran food",
+    "cat": "food",
+    "example": {
+     "es": "Comí dos baleadas con huevo.",
+     "en": "I ate two baleadas with egg."
+    }
+   },
+   {
+    "es": "cipote",
+    "en": "kid, child",
+    "cat": "people",
+    "example": {
+     "es": "Los cipotes juegan fútbol.",
+     "en": "The kids are playing soccer."
+    }
+   },
+   {
+    "es": "pulpería",
+    "en": "small corner store",
+    "cat": "everyday",
+    "example": {
+     "es": "Comprá jabón en la pulpería.",
+     "en": "Buy soap at the corner store."
+    }
+   },
+   {
+    "es": "chamba",
+    "en": "work, job",
+    "cat": "everyday",
+    "example": {
+     "es": "Hay chamba en la construcción.",
+     "en": "There's work in construction."
+    }
+   },
+   {
+    "es": "paja",
+    "en": "lies, nonsense",
+    "cat": "slang",
+    "example": {
+     "es": "No hablés paja, contá la verdad.",
+     "en": "Don't talk nonsense, tell the truth."
+    }
+   },
+   {
+    "es": "macizo",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué macizo está tu celular!",
+     "en": "Your phone is so cool!"
+    }
+   },
+   {
+    "es": "güirro",
+    "en": "little kid",
+    "cat": "people",
+    "example": {
+     "es": "El güirro no quiere dormir.",
+     "en": "The little kid doesn't want to sleep."
+    }
+   },
+   {
+    "es": "jalón",
+    "en": "a ride, a lift",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Me das jalón al centro?",
+     "en": "Can you give me a ride downtown?"
+    }
+   },
+   {
+    "es": "alero",
+    "en": "best friend, close buddy",
+    "cat": "people",
+    "example": {
+     "es": "Carlos es mi alero desde niños.",
+     "en": "Carlos has been my best friend since we were kids."
+    }
+   },
+   {
+    "es": "ni cinco",
+    "en": "not a cent, no money at all",
+    "cat": "money",
+    "example": {
+     "es": "No tengo ni cinco en la bolsa.",
+     "en": "I don't have a cent in my pocket."
+    }
+   },
+   {
+    "es": "bolo",
+    "en": "drunk",
+    "cat": "slang",
+    "example": {
+     "es": "El vecino llegó bolo anoche.",
+     "en": "The neighbor came home drunk last night."
+    }
+   },
+   {
+    "es": "andar de goma",
+    "en": "to have a hangover",
+    "cat": "slang",
+    "example": {
+     "es": "Ando de goma después de la fiesta.",
+     "en": "I'm hungover after the party."
+    }
+   },
+   {
+    "es": "fresco",
+    "en": "soda, soft drink",
+    "cat": "food",
+    "example": {
+     "es": "¿Querés un fresco bien frío?",
+     "en": "Do you want a nice cold soda?"
+    }
+   },
+   {
+    "es": "tapado",
+    "en": "hearty coconut seafood stew from the north coast",
+    "cat": "food",
+    "example": {
+     "es": "Probá el tapado de mariscos.",
+     "en": "Try the seafood stew."
+    }
+   },
+   {
+    "es": "guaro",
+    "en": "liquor, strong drink",
+    "cat": "slang",
+    "example": {
+     "es": "No tomés tanto guaro.",
+     "en": "Don't drink so much liquor."
+    }
+   },
+   {
+    "es": "¡púchica!",
+    "en": "dang!, wow! (mild exclamation)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Púchica, se fue la luz!",
+     "en": "Dang, the power went out!"
+    }
+   },
+   {
+    "es": "vaya pues",
+    "en": "alright then, okay (also a goodbye)",
+    "cat": "expressions",
+    "example": {
+     "es": "Vaya pues, ahí nos vemos.",
+     "en": "Alright then, see you there."
+    }
+   },
+   {
+    "es": "chele",
+    "en": "fair-skinned or blond person",
+    "cat": "people",
+    "example": {
+     "es": "Mi amiga es chele de ojos claros.",
+     "en": "My friend is fair-skinned with light eyes."
+    }
+   },
+   {
+    "es": "chunche",
+    "en": "thing, gadget",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Para qué sirve este chunche?",
+     "en": "What's this gadget for?"
+    }
+   },
+   {
+    "es": "tajadas",
+    "en": "fried plantain slices",
+    "cat": "food",
+    "example": {
+     "es": "Pedí pollo con tajadas.",
+     "en": "I ordered chicken with fried plantain slices."
+    }
+   },
+   {
+    "es": "catrachas",
+    "en": "fried tortillas with beans and cheese",
+    "cat": "food",
+    "example": {
+     "es": "Las catrachas llevan frijoles y queso.",
+     "en": "Catrachas have beans and cheese on top."
+    }
+   },
+   {
+    "es": "mínimo",
+    "en": "banana",
+    "cat": "food",
+    "example": {
+     "es": "Comé un mínimo de postre.",
+     "en": "Have a banana for dessert."
+    }
+   },
+   {
+    "es": "rapidito",
+    "en": "small city minibus",
+    "cat": "everyday",
+    "example": {
+     "es": "Tomá el rapidito al centro.",
+     "en": "Take the minibus downtown."
+    }
+   },
+   {
+    "es": "Tegus",
+    "en": "nickname for Tegucigalpa",
+    "cat": "everyday",
+    "example": {
+     "es": "Mañana viajo a Tegus.",
+     "en": "Tomorrow I'm traveling to Tegucigalpa."
+    }
+   },
+   {
+    "es": "ahorita",
+    "en": "right now, in a little bit",
+    "cat": "everyday",
+    "example": {
+     "es": "Ahorita vengo, esperame.",
+     "en": "I'll be right back, wait for me."
+    }
+   },
+   {
+    "es": "¡a la gran!",
+    "en": "wow!, good grief!",
+    "cat": "expressions",
+    "example": {
+     "es": "¡A la gran, qué aguacero!",
+     "en": "Wow, what a downpour!"
+    }
+   },
+   {
+    "es": "chepos",
+    "en": "the police (slang)",
+    "cat": "slang",
+    "example": {
+     "es": "Los chepos pararon el bus.",
+     "en": "The cops stopped the bus."
+    }
+   },
+   {
+    "es": "dundo",
+    "en": "dumb, slow",
+    "cat": "people",
+    "example": {
+     "es": "No te hagás el dundo.",
+     "en": "Don't play dumb."
+    }
+   },
+   {
+    "es": "lempira",
+    "en": "Honduran currency",
+    "cat": "money",
+    "example": {
+     "es": "El jugo cuesta veinte lempiras.",
+     "en": "The juice costs twenty lempiras."
+    }
+   },
+   {
+    "es": "encachimbado",
+    "en": "furious, really angry",
+    "cat": "emotions",
+    "example": {
+     "es": "Anda encachimbado por el tráfico.",
+     "en": "He's furious because of the traffic."
+    }
+   },
+   {
+    "es": "chucho",
+    "en": "dog",
+    "cat": "everyday",
+    "example": {
+     "es": "Ese chucho sigue a los niños.",
+     "en": "That dog follows the kids around."
+    }
+   },
+   {
+    "es": "chinear",
+    "en": "to carry (a child) in one's arms",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Podés chinear a la niña?",
+     "en": "Can you carry the little girl?"
+    }
+   },
+   {
+    "es": "yuca",
+    "en": "hard, tough",
+    "cat": "slang",
+    "example": {
+     "es": "La prueba estuvo yuca.",
+     "en": "The test was tough."
+    }
+   },
+   {
+    "es": "potra",
+    "en": "pickup soccer game",
+    "cat": "everyday",
+    "example": {
+     "es": "Vamos a jugar una potra.",
+     "en": "Let's play a pickup soccer game."
+    }
+   },
+   {
+    "es": "¿qué onda?",
+    "en": "what's up?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Qué onda! ¿Todo bien?",
+     "en": "What's up! All good?"
+    }
+   },
+   {
+    "es": "¡buenas!",
+    "en": "hello! (greeting when entering a shop or home)",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Buenas! ¿Hay tortillas?",
+     "en": "Hello! Do you have tortillas?"
+    }
+   }
+  ]
+ },
+ {
+  "id": "nicaragua",
+  "name": "Nicaragua",
+  "es": "Nicaragua",
+  "flag": "🇳🇮",
+  "entries": [
+   {
+    "es": "nica",
+    "en": "Nicaraguan person",
+    "cat": "people",
+    "example": {
+     "es": "Mi esposa es nica, de León.",
+     "en": "My wife is Nicaraguan, from León."
+    }
+   },
+   {
+    "es": "pinolero",
+    "en": "Nicaraguan person (affectionate)",
+    "cat": "people",
+    "example": {
+     "es": "Soy pinolero y orgulloso.",
+     "en": "I'm Nicaraguan and proud."
+    }
+   },
+   {
+    "es": "tuani",
+    "en": "cool, nice",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué tuani está la playa!",
+     "en": "The beach is so cool!"
+    }
+   },
+   {
+    "es": "chele",
+    "en": "fair-skinned or blond person",
+    "cat": "people",
+    "example": {
+     "es": "El chele no habla español.",
+     "en": "The fair-skinned guy doesn't speak Spanish."
+    }
+   },
+   {
+    "es": "maje",
+    "en": "dude, guy",
+    "cat": "people",
+    "example": {
+     "es": "Ese maje vende frutas.",
+     "en": "That guy sells fruit."
+    }
+   },
+   {
+    "es": "chavalo",
+    "en": "kid, young person",
+    "cat": "people",
+    "example": {
+     "es": "Los chavalos van a la escuela.",
+     "en": "The kids go to school."
+    }
+   },
+   {
+    "es": "chigüín",
+    "en": "small child",
+    "cat": "people",
+    "example": {
+     "es": "El chigüín quiere un dulce.",
+     "en": "The little kid wants a candy."
+    }
+   },
+   {
+    "es": "compa",
+    "en": "buddy, pal",
+    "cat": "people",
+    "example": {
+     "es": "Voy al juego con mi compa.",
+     "en": "I'm going to the game with my buddy."
+    }
+   },
+   {
+    "es": "broder",
+    "en": "friend, bro",
+    "cat": "people",
+    "example": {
+     "es": "Tranquilo, broder, todo está bien.",
+     "en": "Relax, bro, everything's fine."
+    }
+   },
+   {
+    "es": "reales",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo reales para el taxi.",
+     "en": "I don't have money for the taxi."
+    }
+   },
+   {
+    "es": "córdoba",
+    "en": "Nicaraguan currency",
+    "cat": "money",
+    "example": {
+     "es": "Cuesta cincuenta córdobas.",
+     "en": "It costs fifty córdobas."
+    }
+   },
+   {
+    "es": "andar palmado",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "Ando palmado hasta el viernes.",
+     "en": "I'm broke until Friday."
+    }
+   },
+   {
+    "es": "pegue",
+    "en": "job, work",
+    "cat": "everyday",
+    "example": {
+     "es": "Encontré pegue en el hotel.",
+     "en": "I found a job at the hotel."
+    }
+   },
+   {
+    "es": "gallo pinto",
+    "en": "rice and beans, the everyday national dish",
+    "cat": "food",
+    "example": {
+     "es": "Desayunamos gallo pinto con queso.",
+     "en": "We have gallo pinto with cheese for breakfast."
+    }
+   },
+   {
+    "es": "fritanga",
+    "en": "street stand with grilled and fried food",
+    "cat": "food",
+    "example": {
+     "es": "Cenamos en la fritanga de la esquina.",
+     "en": "We had dinner at the corner food stand."
+    }
+   },
+   {
+    "es": "vigorón",
+    "en": "yuca, pork rind and cabbage salad on a banana leaf",
+    "cat": "food",
+    "example": {
+     "es": "En Granada probá el vigorón.",
+     "en": "In Granada, try the vigorón."
+    }
+   },
+   {
+    "es": "nacatamal",
+    "en": "large tamale cooked in banana leaves",
+    "cat": "food",
+    "example": {
+     "es": "Los domingos comemos nacatamal.",
+     "en": "On Sundays we eat nacatamal."
+    }
+   },
+   {
+    "es": "quesillo",
+    "en": "soft cheese in a tortilla with cream and onions",
+    "cat": "food",
+    "example": {
+     "es": "Compramos quesillo en el camino.",
+     "en": "We bought quesillo on the way."
+    }
+   },
+   {
+    "es": "pinolillo",
+    "en": "traditional corn and cacao drink",
+    "cat": "food",
+    "example": {
+     "es": "Tomá pinolillo bien frío.",
+     "en": "Drink pinolillo nice and cold."
+    }
+   },
+   {
+    "es": "fresco",
+    "en": "fresh fruit drink",
+    "cat": "food",
+    "example": {
+     "es": "¿Hay fresco de cacao?",
+     "en": "Is there a cacao drink?"
+    }
+   },
+   {
+    "es": "tostones",
+    "en": "fried green plantain slices",
+    "cat": "food",
+    "example": {
+     "es": "Pedí tostones con queso frito.",
+     "en": "I ordered fried plantains with fried cheese."
+    }
+   },
+   {
+    "es": "rosquilla",
+    "en": "baked corn and cheese ring",
+    "cat": "food",
+    "example": {
+     "es": "Las rosquillas de Somoto son famosas.",
+     "en": "Somoto's rosquillas are famous."
+    }
+   },
+   {
+    "es": "dale pues",
+    "en": "okay then, sounds good (also a goodbye)",
+    "cat": "expressions",
+    "example": {
+     "es": "—Nos vemos a las seis. —Dale pues.",
+     "en": "'See you at six.' 'Okay then.'"
+    }
+   },
+   {
+    "es": "¡ideay!",
+    "en": "hey!, what's going on? (very Nicaraguan exclamation)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Ideay! ¿Vos aquí?",
+     "en": "Hey! What are you doing here?"
+    }
+   },
+   {
+    "es": "deacachimba",
+    "en": "awesome, fantastic",
+    "cat": "slang",
+    "example": {
+     "es": "El concierto estuvo deacachimba.",
+     "en": "The concert was amazing."
+    }
+   },
+   {
+    "es": "¡chocho!",
+    "en": "wow! (exclamation of surprise)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Chocho, qué carro tan bonito!",
+     "en": "Wow, what a beautiful car!"
+    }
+   },
+   {
+    "es": "¡salvaje!",
+    "en": "awesome!, great!",
+    "cat": "slang",
+    "example": {
+     "es": "—¿Te gustó? —¡Salvaje!",
+     "en": "'Did you like it?' 'Awesome!'"
+    }
+   },
+   {
+    "es": "¡qué barbaridad!",
+    "en": "good grief!, unbelievable!",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Qué barbaridad, todo está caro!",
+     "en": "Good grief, everything's expensive!"
+    }
+   },
+   {
+    "es": "ponete chiva",
+    "en": "watch out, stay alert",
+    "cat": "expressions",
+    "example": {
+     "es": "Ponete chiva con tu mochila.",
+     "en": "Keep an eye on your backpack."
+    }
+   },
+   {
+    "es": "¡adiós!",
+    "en": "hello/bye said when passing someone on the street",
+    "cat": "greetings",
+    "example": {
+     "es": "La señora pasó y me dijo: ¡adiós!",
+     "en": "The lady walked by and said hello to me."
+    }
+   },
+   {
+    "es": "¿qué me contás?",
+    "en": "what's new?, how's it going?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Hola! ¿Qué me contás?",
+     "en": "Hi! What's new?"
+    }
+   },
+   {
+    "es": "bacanal",
+    "en": "big party",
+    "cat": "slang",
+    "example": {
+     "es": "Hubo bacanal donde el vecino.",
+     "en": "There was a big party at the neighbor's."
+    }
+   },
+   {
+    "es": "andar de goma",
+    "en": "to have a hangover",
+    "cat": "slang",
+    "example": {
+     "es": "No grités, ando de goma.",
+     "en": "Don't shout, I'm hungover."
+    }
+   },
+   {
+    "es": "bolo",
+    "en": "drunk",
+    "cat": "slang",
+    "example": {
+     "es": "Anda bolo desde el mediodía.",
+     "en": "He's been drunk since noon."
+    }
+   },
+   {
+    "es": "guaro",
+    "en": "liquor, strong drink",
+    "cat": "slang",
+    "example": {
+     "es": "El guaro de aquí es fuerte.",
+     "en": "The liquor here is strong."
+    }
+   },
+   {
+    "es": "chunche",
+    "en": "thing, thingamajig",
+    "cat": "everyday",
+    "example": {
+     "es": "Ese chunche no funciona.",
+     "en": "That thingy doesn't work."
+    }
+   },
+   {
+    "es": "tapudo",
+    "en": "big mouth, gossip",
+    "cat": "people",
+    "example": {
+     "es": "No seás tapudo, es un secreto.",
+     "en": "Don't be a blabbermouth, it's a secret."
+    }
+   },
+   {
+    "es": "un cachipil",
+    "en": "a whole bunch, a lot",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo un cachipil de mangos.",
+     "en": "I have a ton of mangoes."
+    }
+   },
+   {
+    "es": "chimbomba",
+    "en": "balloon",
+    "cat": "everyday",
+    "example": {
+     "es": "Compramos chimbombas para el cumpleaños.",
+     "en": "We bought balloons for the birthday party."
+    }
+   },
+   {
+    "es": "caponera",
+    "en": "motorized rickshaw or pedicab taxi",
+    "cat": "everyday",
+    "example": {
+     "es": "Tomá una caponera al mercado.",
+     "en": "Take a caponera to the market."
+    }
+   }
+  ]
+ },
+ {
+  "id": "costa-rica",
+  "name": "Costa Rica",
+  "es": "Costa Rica",
+  "flag": "🇨🇷",
+  "entries": [
+   {
+    "es": "pura vida",
+    "en": "hello, goodbye, all good — the Costa Rican motto",
+    "cat": "greetings",
+    "example": {
+     "es": "—¿Cómo estás? —¡Pura vida!",
+     "en": "'How are you?' 'Pura vida!'"
+    }
+   },
+   {
+    "es": "mae",
+    "en": "dude, guy (used constantly)",
+    "cat": "people",
+    "example": {
+     "es": "Mae, ¿vamos a la playa?",
+     "en": "Dude, want to go to the beach?"
+    }
+   },
+   {
+    "es": "tico",
+    "en": "Costa Rican person",
+    "cat": "people",
+    "example": {
+     "es": "Los ticos son muy amables.",
+     "en": "Costa Ricans are very friendly."
+    }
+   },
+   {
+    "es": "tuanis",
+    "en": "cool, nice",
+    "cat": "slang",
+    "example": {
+     "es": "Todo tuanis por aquí.",
+     "en": "Everything's cool around here."
+    }
+   },
+   {
+    "es": "chunche",
+    "en": "thing, thingamajig",
+    "cat": "everyday",
+    "example": {
+     "es": "Guardá ese chunche en la caja.",
+     "en": "Put that thingy in the box."
+    }
+   },
+   {
+    "es": "¡qué chiva!",
+    "en": "how cool!",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué chiva tu bici!",
+     "en": "Your bike is so cool!"
+    }
+   },
+   {
+    "es": "harina",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No me alcanza la harina este mes.",
+     "en": "I don't have enough money this month."
+    }
+   },
+   {
+    "es": "un rojo",
+    "en": "a 1,000-colón bill",
+    "cat": "money",
+    "example": {
+     "es": "El taxi me costó un rojo.",
+     "en": "The taxi cost me a thousand colones."
+    }
+   },
+   {
+    "es": "una teja",
+    "en": "a hundred colones",
+    "cat": "money",
+    "example": {
+     "es": "Présteme una teja para el bus.",
+     "en": "Lend me a hundred colones for the bus."
+    }
+   },
+   {
+    "es": "casado",
+    "en": "typical lunch plate with rice, beans, salad and meat",
+    "cat": "food",
+    "example": {
+     "es": "Pedí un casado con pescado.",
+     "en": "I ordered a casado with fish."
+    }
+   },
+   {
+    "es": "gallo pinto",
+    "en": "rice and beans, the classic breakfast",
+    "cat": "food",
+    "example": {
+     "es": "Desayuné gallo pinto con huevo.",
+     "en": "I had gallo pinto with egg for breakfast."
+    }
+   },
+   {
+    "es": "chifrijo",
+    "en": "bar dish with rice, beans, pork and pico de gallo",
+    "cat": "food",
+    "example": {
+     "es": "En el bar pedimos chifrijo.",
+     "en": "At the bar we ordered chifrijo."
+    }
+   },
+   {
+    "es": "soda",
+    "en": "small, cheap local restaurant",
+    "cat": "food",
+    "example": {
+     "es": "Almorzamos en la soda del barrio.",
+     "en": "We had lunch at the neighborhood diner."
+    }
+   },
+   {
+    "es": "birra",
+    "en": "beer",
+    "cat": "food",
+    "example": {
+     "es": "¿Nos tomamos una birra?",
+     "en": "Shall we have a beer?"
+    }
+   },
+   {
+    "es": "güila",
+    "en": "kid, child",
+    "cat": "people",
+    "example": {
+     "es": "La güila dibuja muy bonito.",
+     "en": "The little girl draws very nicely."
+    }
+   },
+   {
+    "es": "brete",
+    "en": "work, job",
+    "cat": "everyday",
+    "example": {
+     "es": "Mañana tengo mucho brete.",
+     "en": "Tomorrow I have a lot of work."
+    }
+   },
+   {
+    "es": "mejenga",
+    "en": "pickup soccer game",
+    "cat": "everyday",
+    "example": {
+     "es": "El sábado hay mejenga en la plaza.",
+     "en": "On Saturday there's a pickup game at the field."
+    }
+   },
+   {
+    "es": "¡qué torta!",
+    "en": "what a mess!, what a screw-up!",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Qué torta! Olvidé las llaves.",
+     "en": "What a screw-up! I forgot the keys."
+    }
+   },
+   {
+    "es": "diay",
+    "en": "well..., so... (all-purpose filler word)",
+    "cat": "expressions",
+    "example": {
+     "es": "Diay, ¿qué le vamos a hacer?",
+     "en": "Well, what can you do?"
+    }
+   },
+   {
+    "es": "al chile",
+    "en": "seriously, for real",
+    "cat": "slang",
+    "example": {
+     "es": "¿Al chile me lo regalás?",
+     "en": "Seriously, you're giving it to me?"
+    }
+   },
+   {
+    "es": "¡qué pereza!",
+    "en": "what a drag!, I can't be bothered",
+    "cat": "emotions",
+    "example": {
+     "es": "¡Qué pereza ir al banco hoy!",
+     "en": "What a drag going to the bank today!"
+    }
+   },
+   {
+    "es": "andar de goma",
+    "en": "to have a hangover",
+    "cat": "slang",
+    "example": {
+     "es": "Amanecí de goma, quiero café.",
+     "en": "I woke up hungover, I want coffee."
+    }
+   },
+   {
+    "es": "tapis",
+    "en": "drunk, tipsy",
+    "cat": "slang",
+    "example": {
+     "es": "Anoche andaba tapis.",
+     "en": "Last night he was tipsy."
+    }
+   },
+   {
+    "es": "jupa",
+    "en": "head",
+    "cat": "everyday",
+    "example": {
+     "es": "Me duele la jupa.",
+     "en": "My head hurts."
+    }
+   },
+   {
+    "es": "chema",
+    "en": "shirt",
+    "cat": "everyday",
+    "example": {
+     "es": "Me compré una chema nueva.",
+     "en": "I bought a new shirt."
+    }
+   },
+   {
+    "es": "presa",
+    "en": "traffic jam",
+    "cat": "everyday",
+    "example": {
+     "es": "Hay mucha presa en la autopista.",
+     "en": "There's a lot of traffic on the highway."
+    }
+   },
+   {
+    "es": "a cachete",
+    "en": "great, perfectly fine",
+    "cat": "slang",
+    "example": {
+     "es": "—¿Todo bien? —Todo a cachete.",
+     "en": "'All good?' 'Everything's great.'"
+    }
+   },
+   {
+    "es": "chante",
+    "en": "house, home",
+    "cat": "everyday",
+    "example": {
+     "es": "Vamos a mi chante a ver el partido.",
+     "en": "Let's go to my house to watch the game."
+    }
+   },
+   {
+    "es": "vara",
+    "en": "thing, matter, deal",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Cuál es la vara con el ruido?",
+     "en": "What's the deal with the noise?"
+    }
+   },
+   {
+    "es": "zaguate",
+    "en": "street dog, mutt",
+    "cat": "everyday",
+    "example": {
+     "es": "Adoptamos un zaguate del barrio.",
+     "en": "We adopted a street dog from the neighborhood."
+    }
+   },
+   {
+    "es": "chinamo",
+    "en": "street stall, market stand",
+    "cat": "everyday",
+    "example": {
+     "es": "Compré frutas en el chinamo.",
+     "en": "I bought fruit at the street stall."
+    }
+   },
+   {
+    "es": "¡upe!",
+    "en": "hello! (called out at someone's door)",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Upe! ¿Hay alguien en casa?",
+     "en": "Hello! Anyone home?"
+    }
+   },
+   {
+    "es": "con gusto",
+    "en": "you're welcome (the standard Costa Rican reply)",
+    "cat": "expressions",
+    "example": {
+     "es": "—¡Muchas gracias! —Con gusto.",
+     "en": "'Thank you very much!' 'You're welcome.'"
+    }
+   },
+   {
+    "es": "¡qué chicha!",
+    "en": "how annoying!, how frustrating!",
+    "cat": "emotions",
+    "example": {
+     "es": "¡Qué chicha! Perdí el bus.",
+     "en": "How annoying! I missed the bus."
+    }
+   },
+   {
+    "es": "salado",
+    "en": "unlucky; tough luck",
+    "cat": "emotions",
+    "example": {
+     "es": "¿Perdiste el vuelo? ¡Qué salado!",
+     "en": "You missed the flight? Tough luck!"
+    }
+   },
+   {
+    "es": "buena nota",
+    "en": "nice, cool (person or thing)",
+    "cat": "people",
+    "example": {
+     "es": "Tu amiga es muy buena nota.",
+     "en": "Your friend is really cool."
+    }
+   },
+   {
+    "es": "por dicha",
+    "en": "luckily, thankfully",
+    "cat": "expressions",
+    "example": {
+     "es": "Por dicha no llovió.",
+     "en": "Luckily it didn't rain."
+    }
+   },
+   {
+    "es": "un toque",
+    "en": "a moment, a second",
+    "cat": "everyday",
+    "example": {
+     "es": "Espereme un toque, ya vengo.",
+     "en": "Wait a moment, I'll be right back."
+    }
+   },
+   {
+    "es": "Tiquicia",
+    "en": "affectionate name for Costa Rica",
+    "cat": "everyday",
+    "example": {
+     "es": "Extraño Tiquicia cuando viajo.",
+     "en": "I miss Costa Rica when I travel."
+    }
+   },
+   {
+    "es": "macha",
+    "en": "blond or fair-haired woman",
+    "cat": "people",
+    "example": {
+     "es": "Le dicen Macha por su pelo claro.",
+     "en": "They call her Macha because of her light hair."
+    }
+   }
+  ]
+ },
+ {
+  "id": "panama",
+  "name": "Panama",
+  "es": "Panamá",
+  "flag": "🇵🇦",
+  "entries": [
+   {
+    "es": "chévere",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué chévere está la música!",
+     "en": "The music is so cool!"
+    }
+   },
+   {
+    "es": "vaina",
+    "en": "thing, stuff",
+    "cat": "everyday",
+    "example": {
+     "es": "Pásame esa vaina, porfa.",
+     "en": "Pass me that thing, please."
+    }
+   },
+   {
+    "es": "fren",
+    "en": "friend (from English 'friend')",
+    "cat": "people",
+    "example": {
+     "es": "Salgo con mis frens el sábado.",
+     "en": "I'm going out with my friends on Saturday."
+    }
+   },
+   {
+    "es": "pelao",
+    "en": "kid, young person",
+    "cat": "people",
+    "example": {
+     "es": "El pelaíto juega en el parque.",
+     "en": "The little kid plays in the park."
+    }
+   },
+   {
+    "es": "¿qué xopá?",
+    "en": "what's up? ('pasó' with syllables flipped)",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Qué xopá? ¿Todo bien?",
+     "en": "What's up? All good?"
+    }
+   },
+   {
+    "es": "buco",
+    "en": "a lot, tons (from French 'beaucoup')",
+    "cat": "slang",
+    "example": {
+     "es": "Había buco gente en el metro.",
+     "en": "There were tons of people on the metro."
+    }
+   },
+   {
+    "es": "chantin",
+    "en": "house, home",
+    "cat": "everyday",
+    "example": {
+     "es": "Te espero en mi chantin.",
+     "en": "I'll wait for you at my place."
+    }
+   },
+   {
+    "es": "palo",
+    "en": "a dollar/balboa",
+    "cat": "money",
+    "example": {
+     "es": "El pasaje cuesta dos palos.",
+     "en": "The fare costs two bucks."
+    }
+   },
+   {
+    "es": "balboa",
+    "en": "Panamanian currency (equal to the US dollar)",
+    "cat": "money",
+    "example": {
+     "es": "Son cinco balboas con veinte.",
+     "en": "That's five balboas twenty."
+    }
+   },
+   {
+    "es": "plata",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "Estoy ahorrando plata para viajar.",
+     "en": "I'm saving money to travel."
+    }
+   },
+   {
+    "es": "chen chen",
+    "en": "money (very Panamanian)",
+    "cat": "money",
+    "example": {
+     "es": "Sin chen chen no hay fiesta.",
+     "en": "No money, no party."
+    }
+   },
+   {
+    "es": "camarón",
+    "en": "odd job, side gig",
+    "cat": "money",
+    "example": {
+     "es": "Hice un camarón el fin de semana.",
+     "en": "I did an odd job over the weekend."
+    }
+   },
+   {
+    "es": "estar limpio",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "No puedo ir, estoy limpio.",
+     "en": "I can't go, I'm broke."
+    }
+   },
+   {
+    "es": "fonda",
+    "en": "small, cheap local eatery",
+    "cat": "food",
+    "example": {
+     "es": "Almorcé barato en la fonda.",
+     "en": "I had a cheap lunch at the fonda."
+    }
+   },
+   {
+    "es": "sancocho",
+    "en": "chicken soup, the national comfort dish",
+    "cat": "food",
+    "example": {
+     "es": "El sancocho de gallina está listo.",
+     "en": "The chicken sancocho is ready."
+    }
+   },
+   {
+    "es": "patacones",
+    "en": "fried green plantain slices",
+    "cat": "food",
+    "example": {
+     "es": "Pedimos pescado con patacones.",
+     "en": "We ordered fish with patacones."
+    }
+   },
+   {
+    "es": "raspao",
+    "en": "shaved ice with syrup",
+    "cat": "food",
+    "example": {
+     "es": "Con este calor, quiero un raspao.",
+     "en": "In this heat, I want a shaved ice."
+    }
+   },
+   {
+    "es": "chicha",
+    "en": "fresh fruit drink",
+    "cat": "food",
+    "example": {
+     "es": "¿Tienes chicha de piña?",
+     "en": "Do you have pineapple chicha?"
+    }
+   },
+   {
+    "es": "hojaldre",
+    "en": "fried bread eaten at breakfast",
+    "cat": "food",
+    "example": {
+     "es": "Desayuné hojaldre con queso.",
+     "en": "I had fried bread with cheese for breakfast."
+    }
+   },
+   {
+    "es": "guandú",
+    "en": "pigeon peas (as in arroz con guandú)",
+    "cat": "food",
+    "example": {
+     "es": "En diciembre comemos arroz con guandú.",
+     "en": "In December we eat rice with pigeon peas."
+    }
+   },
+   {
+    "es": "una fría",
+    "en": "a cold beer",
+    "cat": "food",
+    "example": {
+     "es": "Dame una fría bien helada.",
+     "en": "Give me an ice-cold beer."
+    }
+   },
+   {
+    "es": "seco",
+    "en": "Panama's typical sugarcane liquor",
+    "cat": "food",
+    "example": {
+     "es": "El seco es el licor típico de aquí.",
+     "en": "Seco is the typical liquor here."
+    }
+   },
+   {
+    "es": "conflei",
+    "en": "breakfast cereal (from 'cornflakes')",
+    "cat": "food",
+    "example": {
+     "es": "El niño desayuna conflei.",
+     "en": "The kid has cereal for breakfast."
+    }
+   },
+   {
+    "es": "mamallena",
+    "en": "bread pudding",
+    "cat": "food",
+    "example": {
+     "es": "De postre hay mamallena.",
+     "en": "For dessert there's bread pudding."
+    }
+   },
+   {
+    "es": "diablo rojo",
+    "en": "old colorfully painted city bus",
+    "cat": "everyday",
+    "example": {
+     "es": "El diablo rojo va pintado de colores.",
+     "en": "The diablo rojo bus is painted in bright colors."
+    }
+   },
+   {
+    "es": "tranque",
+    "en": "traffic jam",
+    "cat": "everyday",
+    "example": {
+     "es": "Salí temprano por el tranque.",
+     "en": "I left early because of the traffic jam."
+    }
+   },
+   {
+    "es": "guachimán",
+    "en": "watchman, security guard",
+    "cat": "everyday",
+    "example": {
+     "es": "El guachimán cuida el edificio.",
+     "en": "The watchman guards the building."
+    }
+   },
+   {
+    "es": "el interior",
+    "en": "the countryside, anywhere outside the capital",
+    "cat": "everyday",
+    "example": {
+     "es": "Mi familia vive en el interior.",
+     "en": "My family lives in the countryside."
+    }
+   },
+   {
+    "es": "yeyé",
+    "en": "posh, preppy, high-class",
+    "cat": "people",
+    "example": {
+     "es": "Esa tienda es muy yeyé.",
+     "en": "That store is very posh."
+    }
+   },
+   {
+    "es": "priti",
+    "en": "pretty, nice (from English 'pretty')",
+    "cat": "slang",
+    "example": {
+     "es": "Tu vestido está priti.",
+     "en": "Your dress is really pretty."
+    }
+   },
+   {
+    "es": "¡chuleta!",
+    "en": "dang!, shoot! (mild exclamation)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Chuleta! Olvidé mi celular.",
+     "en": "Dang! I forgot my phone."
+    }
+   },
+   {
+    "es": "juega vivo",
+    "en": "street-smart opportunism, looking out for number one",
+    "cat": "expressions",
+    "example": {
+     "es": "Cuidado, aquí hay mucho juega vivo.",
+     "en": "Careful, there are a lot of opportunists here."
+    }
+   },
+   {
+    "es": "mopri",
+    "en": "buddy, cousin ('primo' with syllables flipped)",
+    "cat": "people",
+    "example": {
+     "es": "Tranquilo, mopri, yo pago.",
+     "en": "Relax, buddy, I'll pay."
+    }
+   },
+   {
+    "es": "tongo",
+    "en": "police officer (slang)",
+    "cat": "slang",
+    "example": {
+     "es": "El tongo dirige el tránsito.",
+     "en": "The cop is directing traffic."
+    }
+   },
+   {
+    "es": "ofi",
+    "en": "okay, deal",
+    "cat": "expressions",
+    "example": {
+     "es": "—¿Nos vemos a las ocho? —Ofi.",
+     "en": "'See you at eight?' 'Okay.'"
+    }
+   },
+   {
+    "es": "man",
+    "en": "guy, dude (also used for women)",
+    "cat": "people",
+    "example": {
+     "es": "Ese man vende raspaos.",
+     "en": "That guy sells shaved ice."
+    }
+   },
+   {
+    "es": "buay",
+    "en": "boy, young guy (from English 'boy')",
+    "cat": "people",
+    "example": {
+     "es": "Ese buay es mi vecino.",
+     "en": "That boy is my neighbor."
+    }
+   },
+   {
+    "es": "salao",
+    "en": "unlucky",
+    "cat": "emotions",
+    "example": {
+     "es": "Perdí el bus otra vez, ¡qué salao!",
+     "en": "I missed the bus again, what bad luck!"
+    }
+   },
+   {
+    "es": "me da pena",
+    "en": "I'm embarrassed, I'm shy",
+    "cat": "emotions",
+    "example": {
+     "es": "Me da pena bailar en público.",
+     "en": "I'm embarrassed to dance in public."
+    }
+   },
+   {
+    "es": "¿qué es lo que es?",
+    "en": "what's up?, what's going on?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Ey! ¿Qué es lo que es?",
+     "en": "Hey! What's up?"
+    }
+   }
+  ]
+ },
+ {
+  "id": "cuba",
+  "name": "Cuba",
+  "es": "Cuba",
+  "flag": "🇨🇺",
+  "entries": [
+   {
+    "es": "asere",
+    "en": "buddy, pal",
+    "cat": "people",
+    "example": {
+     "es": "¿Qué bolá, asere? ¿Cómo andas?",
+     "en": "What's up, buddy? How are you doing?"
+    }
+   },
+   {
+    "es": "¿qué bolá?",
+    "en": "what's up?",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Qué bolá? ¡Cuánto tiempo sin verte!",
+     "en": "What's up? Long time no see!"
+    }
+   },
+   {
+    "es": "chao pescao",
+    "en": "bye-bye (playful goodbye)",
+    "cat": "greetings",
+    "example": {
+     "es": "Me voy, ¡chao pescao!",
+     "en": "I'm leaving, bye-bye!"
+    }
+   },
+   {
+    "es": "dale",
+    "en": "okay, go ahead, let's do it",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Nos vemos a las cinco? —Dale.",
+     "en": "See you at five? —Okay."
+    }
+   },
+   {
+    "es": "¡ño!",
+    "en": "wow! (surprise)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Ño, qué calor hace hoy!",
+     "en": "Wow, it's so hot today!"
+    }
+   },
+   {
+    "es": "¡qué clase de...!",
+    "en": "what a...! (emphasis)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Qué clase de fiesta fue esa!",
+     "en": "What a party that was!"
+    }
+   },
+   {
+    "es": "radio bemba",
+    "en": "the grapevine, word of mouth",
+    "cat": "expressions",
+    "example": {
+     "es": "Lo supe por radio bemba.",
+     "en": "I heard it through the grapevine."
+    }
+   },
+   {
+    "es": "estar en candela",
+    "en": "to be in trouble / be a mess",
+    "cat": "expressions",
+    "example": {
+     "es": "Sin trabajo y sin dinero, estoy en candela.",
+     "en": "No job and no money, I'm in trouble."
+    }
+   },
+   {
+    "es": "yuma",
+    "en": "foreigner (especially American)",
+    "cat": "people",
+    "example": {
+     "es": "El yuma quiere visitar el Malecón.",
+     "en": "The foreigner wants to visit the Malecón."
+    }
+   },
+   {
+    "es": "socio",
+    "en": "buddy, friend",
+    "cat": "people",
+    "example": {
+     "es": "Oye, socio, ayúdame con esto.",
+     "en": "Hey, buddy, help me with this."
+    }
+   },
+   {
+    "es": "compay",
+    "en": "pal, friend (from compadre)",
+    "cat": "people",
+    "example": {
+     "es": "Compay, vamos a jugar dominó.",
+     "en": "Pal, let's play dominoes."
+    }
+   },
+   {
+    "es": "jeva",
+    "en": "girlfriend, young woman",
+    "cat": "people",
+    "example": {
+     "es": "Mi jeva llega ahora del trabajo.",
+     "en": "My girlfriend is arriving from work now."
+    }
+   },
+   {
+    "es": "fiñe",
+    "en": "kid, child",
+    "cat": "people",
+    "example": {
+     "es": "Los fiñes juegan pelota en la calle.",
+     "en": "The kids are playing ball in the street."
+    }
+   },
+   {
+    "es": "mis puros",
+    "en": "my parents",
+    "cat": "people",
+    "example": {
+     "es": "Mis puros viven en Santiago.",
+     "en": "My parents live in Santiago."
+    }
+   },
+   {
+    "es": "temba",
+    "en": "middle-aged person",
+    "cat": "people",
+    "example": {
+     "es": "En la fiesta había mucha temba bailando.",
+     "en": "At the party there were a lot of middle-aged folks dancing."
+    }
+   },
+   {
+    "es": "guajiro",
+    "en": "person from the countryside",
+    "cat": "people",
+    "example": {
+     "es": "Mi abuelo es guajiro de Pinar del Río.",
+     "en": "My grandfather is a countryman from Pinar del Río."
+    }
+   },
+   {
+    "es": "ser un mango",
+    "en": "to be very attractive",
+    "cat": "slang",
+    "example": {
+     "es": "Ese actor es un mango.",
+     "en": "That actor is really good-looking."
+    }
+   },
+   {
+    "es": "guagua",
+    "en": "bus",
+    "cat": "everyday",
+    "example": {
+     "es": "La guagua viene llena otra vez.",
+     "en": "The bus is coming full again."
+    }
+   },
+   {
+    "es": "máquina",
+    "en": "shared classic-car taxi",
+    "cat": "everyday",
+    "example": {
+     "es": "Cogimos una máquina hasta el Vedado.",
+     "en": "We took a shared taxi to Vedado."
+    }
+   },
+   {
+    "es": "almendrón",
+    "en": "old American classic car",
+    "cat": "everyday",
+    "example": {
+     "es": "Ese almendrón es de los años cincuenta.",
+     "en": "That classic car is from the fifties."
+    }
+   },
+   {
+    "es": "coger botella",
+    "en": "to hitchhike, get a free ride",
+    "cat": "everyday",
+    "example": {
+     "es": "Cogimos botella hasta la playa.",
+     "en": "We hitched a ride to the beach."
+    }
+   },
+   {
+    "es": "gao",
+    "en": "house, home",
+    "cat": "slang",
+    "example": {
+     "es": "Vamos para mi gao a ver el juego.",
+     "en": "Let's go to my place to watch the game."
+    }
+   },
+   {
+    "es": "espejuelos",
+    "en": "eyeglasses",
+    "cat": "everyday",
+    "example": {
+     "es": "No veo nada sin mis espejuelos.",
+     "en": "I can't see anything without my glasses."
+    }
+   },
+   {
+    "es": "pincha",
+    "en": "work, job",
+    "cat": "everyday",
+    "example": {
+     "es": "Mañana voy temprano para la pincha.",
+     "en": "Tomorrow I'm going to work early."
+    }
+   },
+   {
+    "es": "resolver",
+    "en": "to manage, to get what you need",
+    "cat": "everyday",
+    "example": {
+     "es": "Tenemos que resolver algo para la cena.",
+     "en": "We have to figure something out for dinner."
+    }
+   },
+   {
+    "es": "fajarse",
+    "en": "to fight, to argue",
+    "cat": "everyday",
+    "example": {
+     "es": "Los vecinos se fajaron por el ruido.",
+     "en": "The neighbors got into a fight over the noise."
+    }
+   },
+   {
+    "es": "jama",
+    "en": "food, grub",
+    "cat": "food",
+    "example": {
+     "es": "La jama ya está en la mesa.",
+     "en": "The food is already on the table."
+    }
+   },
+   {
+    "es": "paladar",
+    "en": "small private restaurant",
+    "cat": "food",
+    "example": {
+     "es": "Cenamos en un paladar de La Habana Vieja.",
+     "en": "We had dinner at a private restaurant in Old Havana."
+    }
+   },
+   {
+    "es": "congrí",
+    "en": "rice with beans",
+    "cat": "food",
+    "example": {
+     "es": "Hoy hay congrí con pollo asado.",
+     "en": "Today there's rice and beans with roast chicken."
+    }
+   },
+   {
+    "es": "moros y cristianos",
+    "en": "black beans with white rice",
+    "cat": "food",
+    "example": {
+     "es": "Pedí moros y cristianos con lechón.",
+     "en": "I ordered black beans and rice with roast pork."
+    }
+   },
+   {
+    "es": "guarapo",
+    "en": "sugarcane juice",
+    "cat": "food",
+    "example": {
+     "es": "Con este calor, un guarapo frío es lo mejor.",
+     "en": "In this heat, a cold sugarcane juice is the best."
+    }
+   },
+   {
+    "es": "fruta bomba",
+    "en": "papaya (Cuban word)",
+    "cat": "food",
+    "example": {
+     "es": "Quiero un batido de fruta bomba.",
+     "en": "I want a papaya smoothie."
+    }
+   },
+   {
+    "es": "baro",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo baro para salir hoy.",
+     "en": "I don't have money to go out today."
+    }
+   },
+   {
+    "es": "fula",
+    "en": "dollar",
+    "cat": "money",
+    "example": {
+     "es": "Eso cuesta como diez fulas.",
+     "en": "That costs about ten dollars."
+    }
+   },
+   {
+    "es": "tremendo",
+    "en": "huge, amazing (emphasis)",
+    "cat": "slang",
+    "example": {
+     "es": "Anoche hubo tremenda fiesta en el barrio.",
+     "en": "Last night there was a huge party in the neighborhood."
+    }
+   },
+   {
+    "es": "bárbaro",
+    "en": "awesome, great",
+    "cat": "slang",
+    "example": {
+     "es": "El concierto estuvo bárbaro.",
+     "en": "The concert was awesome."
+    }
+   },
+   {
+    "es": "una pila de",
+    "en": "a lot of, tons of",
+    "cat": "slang",
+    "example": {
+     "es": "Había una pila de gente en la playa.",
+     "en": "There were tons of people at the beach."
+    }
+   },
+   {
+    "es": "embullarse",
+    "en": "to get excited about something",
+    "cat": "emotions",
+    "example": {
+     "es": "Me embullé con el viaje a Varadero.",
+     "en": "I got excited about the trip to Varadero."
+    }
+   },
+   {
+    "es": "coger un berro",
+    "en": "to get really angry",
+    "cat": "emotions",
+    "example": {
+     "es": "Cogió un berro porque perdió la guagua.",
+     "en": "He got really mad because he missed the bus."
+    }
+   },
+   {
+    "es": "coger lucha",
+    "en": "to stress out, worry too much",
+    "cat": "emotions",
+    "example": {
+     "es": "No cojas lucha con eso, todo va a salir bien.",
+     "en": "Don't stress about that, everything will be fine."
+    }
+   }
+  ]
+ },
+ {
+  "id": "dominican-republic",
+  "name": "Dominican Republic",
+  "es": "República Dominicana",
+  "flag": "🇩🇴",
+  "entries": [
+   {
+    "es": "¿qué lo que?",
+    "en": "what's up?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Hola, pana! ¿Qué lo que?",
+     "en": "Hey, buddy! What's up?"
+    }
+   },
+   {
+    "es": "tato",
+    "en": "okay, all good",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Nos vemos a las tres? —Tato.",
+     "en": "See you at three? —All good."
+    }
+   },
+   {
+    "es": "dique",
+    "en": "supposedly, so they say",
+    "cat": "expressions",
+    "example": {
+     "es": "Dique va a llover esta tarde.",
+     "en": "Supposedly it's going to rain this afternoon."
+    }
+   },
+   {
+    "es": "vaina",
+    "en": "thing, stuff",
+    "cat": "everyday",
+    "example": {
+     "es": "Pásame esa vaina que está en la mesa.",
+     "en": "Pass me that thing on the table."
+    }
+   },
+   {
+    "es": "un chin",
+    "en": "a little bit",
+    "cat": "everyday",
+    "example": {
+     "es": "Dame un chin de café, por favor.",
+     "en": "Give me a little bit of coffee, please."
+    }
+   },
+   {
+    "es": "ñapa",
+    "en": "a little extra (free bonus)",
+    "cat": "everyday",
+    "example": {
+     "es": "El vendedor me dio dos mangos de ñapa.",
+     "en": "The seller gave me two mangoes as a free extra."
+    }
+   },
+   {
+    "es": "ahorita",
+    "en": "later (not now!)",
+    "cat": "everyday",
+    "example": {
+     "es": "Ahorita paso por tu casa, ahora no puedo.",
+     "en": "I'll come by your house later, I can't right now."
+    }
+   },
+   {
+    "es": "zafacón",
+    "en": "trash can",
+    "cat": "everyday",
+    "example": {
+     "es": "Tira eso en el zafacón.",
+     "en": "Throw that in the trash can."
+    }
+   },
+   {
+    "es": "chichigua",
+    "en": "kite",
+    "cat": "everyday",
+    "example": {
+     "es": "Los niños vuelan chichiguas en la playa.",
+     "en": "The kids fly kites at the beach."
+    }
+   },
+   {
+    "es": "motoconcho",
+    "en": "motorcycle taxi",
+    "cat": "everyday",
+    "example": {
+     "es": "Cogí un motoconcho para llegar rápido.",
+     "en": "I took a motorcycle taxi to get there fast."
+    }
+   },
+   {
+    "es": "concho",
+    "en": "shared route taxi",
+    "cat": "everyday",
+    "example": {
+     "es": "El concho me deja cerca del trabajo.",
+     "en": "The shared taxi drops me near work."
+    }
+   },
+   {
+    "es": "guagua",
+    "en": "bus",
+    "cat": "everyday",
+    "example": {
+     "es": "La guagua para Santiago sale a las ocho.",
+     "en": "The bus to Santiago leaves at eight."
+    }
+   },
+   {
+    "es": "colmado",
+    "en": "corner store",
+    "cat": "everyday",
+    "example": {
+     "es": "Voy al colmado a comprar pan.",
+     "en": "I'm going to the corner store to buy bread."
+    }
+   },
+   {
+    "es": "tíguere",
+    "en": "street-smart guy",
+    "cat": "people",
+    "example": {
+     "es": "Ese tíguere conoce todo el barrio.",
+     "en": "That street-smart guy knows the whole neighborhood."
+    }
+   },
+   {
+    "es": "pana",
+    "en": "friend, buddy",
+    "cat": "people",
+    "example": {
+     "es": "Voy al juego con mis panas.",
+     "en": "I'm going to the game with my buddies."
+    }
+   },
+   {
+    "es": "manito",
+    "en": "bro, brother",
+    "cat": "people",
+    "example": {
+     "es": "¡Dímelo, manito! ¿Todo bien?",
+     "en": "Talk to me, bro! All good?"
+    }
+   },
+   {
+    "es": "jevo",
+    "en": "boyfriend",
+    "cat": "people",
+    "example": {
+     "es": "Su jevo la busca todos los días.",
+     "en": "Her boyfriend picks her up every day."
+    }
+   },
+   {
+    "es": "hablador",
+    "en": "liar, big talker",
+    "cat": "people",
+    "example": {
+     "es": "No le creas, ese tipo es un hablador.",
+     "en": "Don't believe him, that guy is a liar."
+    }
+   },
+   {
+    "es": "popi",
+    "en": "posh, preppy person",
+    "cat": "people",
+    "example": {
+     "es": "Ella es popi, siempre anda en carro nuevo.",
+     "en": "She's posh, she's always in a new car."
+    }
+   },
+   {
+    "es": "ponerse guapo",
+    "en": "to get angry",
+    "cat": "emotions",
+    "example": {
+     "es": "No te pongas guapo, era una broma.",
+     "en": "Don't get mad, it was a joke."
+    }
+   },
+   {
+    "es": "quillao",
+    "en": "angry, upset",
+    "cat": "emotions",
+    "example": {
+     "es": "Está quillao porque llegamos tarde.",
+     "en": "He's mad because we arrived late."
+    }
+   },
+   {
+    "es": "un pique",
+    "en": "anger, annoyance",
+    "cat": "emotions",
+    "example": {
+     "es": "Cogí un pique cuando perdí el celular.",
+     "en": "I got so annoyed when I lost my phone."
+    }
+   },
+   {
+    "es": "jarto",
+    "en": "full (of food) / fed up",
+    "cat": "emotions",
+    "example": {
+     "es": "Comí mucho, estoy jarto.",
+     "en": "I ate a lot, I'm stuffed."
+    }
+   },
+   {
+    "es": "mangú",
+    "en": "mashed green plantains",
+    "cat": "food",
+    "example": {
+     "es": "Desayuné mangú con huevos.",
+     "en": "I had mashed plantains with eggs for breakfast."
+    }
+   },
+   {
+    "es": "la bandera",
+    "en": "typical lunch (rice, beans, meat)",
+    "cat": "food",
+    "example": {
+     "es": "Hoy almorzamos la bandera en casa.",
+     "en": "Today we had the typical rice-and-beans lunch at home."
+    }
+   },
+   {
+    "es": "tostones",
+    "en": "fried green plantain slices",
+    "cat": "food",
+    "example": {
+     "es": "Pedí pollo con tostones.",
+     "en": "I ordered chicken with fried plantains."
+    }
+   },
+   {
+    "es": "morir soñando",
+    "en": "milk and orange juice drink",
+    "cat": "food",
+    "example": {
+     "es": "Con este calor quiero un morir soñando.",
+     "en": "In this heat I want a morir soñando drink."
+    }
+   },
+   {
+    "es": "chimi",
+    "en": "Dominican street burger",
+    "cat": "food",
+    "example": {
+     "es": "Anoche compramos un chimi en la esquina.",
+     "en": "Last night we bought a street burger on the corner."
+    }
+   },
+   {
+    "es": "chinola",
+    "en": "passion fruit",
+    "cat": "food",
+    "example": {
+     "es": "El jugo de chinola está muy rico.",
+     "en": "The passion fruit juice is delicious."
+    }
+   },
+   {
+    "es": "una fría",
+    "en": "a cold beer",
+    "cat": "food",
+    "example": {
+     "es": "Dame una fría, que hace calor.",
+     "en": "Give me a cold beer, it's hot out."
+    }
+   },
+   {
+    "es": "cuartos",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo cuartos para salir este fin de semana.",
+     "en": "I don't have money to go out this weekend."
+    }
+   },
+   {
+    "es": "ni un chele",
+    "en": "not a cent",
+    "cat": "money",
+    "example": {
+     "es": "No me queda ni un chele.",
+     "en": "I don't have a cent left."
+    }
+   },
+   {
+    "es": "estar en olla",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "Estoy en olla hasta el viernes.",
+     "en": "I'm broke until Friday."
+    }
+   },
+   {
+    "es": "jevi",
+    "en": "cool, nice",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué jevi está tu casa nueva!",
+     "en": "Your new house is so cool!"
+    }
+   },
+   {
+    "es": "bacano",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "Ese concierto estuvo bacano.",
+     "en": "That concert was great."
+    }
+   },
+   {
+    "es": "chulo",
+    "en": "nice, cute, cool",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué chulo tu vestido!",
+     "en": "Your dress is so cute!"
+    }
+   },
+   {
+    "es": "figurear",
+    "en": "to show off",
+    "cat": "slang",
+    "example": {
+     "es": "A él le gusta figurear con su carro.",
+     "en": "He likes to show off with his car."
+    }
+   },
+   {
+    "es": "allante",
+    "en": "bluff, showing off",
+    "cat": "slang",
+    "example": {
+     "es": "Eso es puro allante, no tiene dinero.",
+     "en": "That's all show, he has no money."
+    }
+   },
+   {
+    "es": "coro",
+    "en": "hangout, get-together with friends",
+    "cat": "slang",
+    "example": {
+     "es": "El coro es en casa de Juan esta noche.",
+     "en": "The hangout is at Juan's house tonight."
+    }
+   },
+   {
+    "es": "chercha",
+    "en": "joking around, fun banter",
+    "cat": "slang",
+    "example": {
+     "es": "Pasamos la tarde en chercha con los panas.",
+     "en": "We spent the afternoon joking around with friends."
+    }
+   }
+  ]
+ },
+ {
+  "id": "puerto-rico",
+  "name": "Puerto Rico",
+  "es": "Puerto Rico",
+  "flag": "🇵🇷",
+  "entries": [
+   {
+    "es": "¡wepa!",
+    "en": "yay! all right! (joy)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Wepa! ¡Ganamos el partido!",
+     "en": "All right! We won the game!"
+    }
+   },
+   {
+    "es": "¡ay bendito!",
+    "en": "oh dear, poor thing",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Ay bendito, el nene está enfermo!",
+     "en": "Oh dear, the little boy is sick!"
+    }
+   },
+   {
+    "es": "¡acho!",
+    "en": "man! wow! (from muchacho)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Acho, qué tapón hay hoy!",
+     "en": "Man, what a traffic jam today!"
+    }
+   },
+   {
+    "es": "¿qué es la que hay?",
+    "en": "what's up?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Dímelo! ¿Qué es la que hay?",
+     "en": "Talk to me! What's up?"
+    }
+   },
+   {
+    "es": "al garete",
+    "en": "out of control, without direction",
+    "cat": "expressions",
+    "example": {
+     "es": "Ese plan está al garete.",
+     "en": "That plan is a total mess."
+    }
+   },
+   {
+    "es": "boricua",
+    "en": "Puerto Rican",
+    "cat": "people",
+    "example": {
+     "es": "Mi mamá es boricua de Ponce.",
+     "en": "My mom is a Puerto Rican from Ponce."
+    }
+   },
+   {
+    "es": "corillo",
+    "en": "group of friends, crew",
+    "cat": "people",
+    "example": {
+     "es": "Salí a la playa con el corillo.",
+     "en": "I went to the beach with the crew."
+    }
+   },
+   {
+    "es": "nene / nena",
+    "en": "boy / girl (also friendly address)",
+    "cat": "people",
+    "example": {
+     "es": "Nena, ven acá un momento.",
+     "en": "Girl, come here a moment."
+    }
+   },
+   {
+    "es": "jíbaro",
+    "en": "person from the countryside",
+    "cat": "people",
+    "example": {
+     "es": "Mi abuelo era un jíbaro de la montaña.",
+     "en": "My grandfather was a countryman from the mountains."
+    }
+   },
+   {
+    "es": "presentao",
+    "en": "nosy, meddling person",
+    "cat": "people",
+    "example": {
+     "es": "No seas presentao, eso no es tu problema.",
+     "en": "Don't be nosy, that's not your problem."
+    }
+   },
+   {
+    "es": "chavos",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo chavos para el cine.",
+     "en": "I don't have money for the movies."
+    }
+   },
+   {
+    "es": "estar pelao",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "Estoy pelao hasta que me paguen.",
+     "en": "I'm broke until I get paid."
+    }
+   },
+   {
+    "es": "china",
+    "en": "orange (the fruit)",
+    "cat": "food",
+    "example": {
+     "es": "Quiero un jugo de china frío.",
+     "en": "I want a cold orange juice."
+    }
+   },
+   {
+    "es": "parcha",
+    "en": "passion fruit",
+    "cat": "food",
+    "example": {
+     "es": "El helado de parcha es mi favorito.",
+     "en": "Passion fruit ice cream is my favorite."
+    }
+   },
+   {
+    "es": "mofongo",
+    "en": "mashed fried plantain dish",
+    "cat": "food",
+    "example": {
+     "es": "Pedí mofongo con camarones.",
+     "en": "I ordered mofongo with shrimp."
+    }
+   },
+   {
+    "es": "amarillos",
+    "en": "fried sweet plantains",
+    "cat": "food",
+    "example": {
+     "es": "El arroz viene con amarillos.",
+     "en": "The rice comes with sweet plantains."
+    }
+   },
+   {
+    "es": "alcapurria",
+    "en": "fried fritter with meat",
+    "cat": "food",
+    "example": {
+     "es": "Compré una alcapurria en el kiosco.",
+     "en": "I bought a fritter at the food stand."
+    }
+   },
+   {
+    "es": "piragua",
+    "en": "shaved ice with syrup",
+    "cat": "food",
+    "example": {
+     "es": "Con este calor quiero una piragua de coco.",
+     "en": "In this heat I want a coconut shaved ice."
+    }
+   },
+   {
+    "es": "limber",
+    "en": "frozen fruit ice treat",
+    "cat": "food",
+    "example": {
+     "es": "La vecina vende limbers de coco.",
+     "en": "The neighbor sells coconut ice treats."
+    }
+   },
+   {
+    "es": "lechonera",
+    "en": "roast pork restaurant",
+    "cat": "food",
+    "example": {
+     "es": "Fuimos a una lechonera en Guavate.",
+     "en": "We went to a roast pork place in Guavate."
+    }
+   },
+   {
+    "es": "chinchorro",
+    "en": "cheap roadside bar or eatery",
+    "cat": "everyday",
+    "example": {
+     "es": "Paramos en un chinchorro en la carretera.",
+     "en": "We stopped at a little roadside bar."
+    }
+   },
+   {
+    "es": "guagua",
+    "en": "bus",
+    "cat": "everyday",
+    "example": {
+     "es": "Espero la guagua en la parada.",
+     "en": "I'm waiting for the bus at the stop."
+    }
+   },
+   {
+    "es": "zafacón",
+    "en": "trash can",
+    "cat": "everyday",
+    "example": {
+     "es": "Bota la botella en el zafacón.",
+     "en": "Throw the bottle in the trash can."
+    }
+   },
+   {
+    "es": "mahones",
+    "en": "jeans",
+    "cat": "everyday",
+    "example": {
+     "es": "Me compré unos mahones nuevos.",
+     "en": "I bought some new jeans."
+    }
+   },
+   {
+    "es": "dar pon",
+    "en": "to give someone a ride",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Me das pon hasta mi casa?",
+     "en": "Can you give me a ride home?"
+    }
+   },
+   {
+    "es": "tapón",
+    "en": "traffic jam",
+    "cat": "everyday",
+    "example": {
+     "es": "Llegué tarde por el tapón en la autopista.",
+     "en": "I arrived late because of the traffic jam on the highway."
+    }
+   },
+   {
+    "es": "monga",
+    "en": "cold, flu",
+    "cat": "everyday",
+    "example": {
+     "es": "No voy a trabajar, tengo monga.",
+     "en": "I'm not going to work, I have the flu."
+    }
+   },
+   {
+    "es": "chiringa",
+    "en": "kite",
+    "cat": "everyday",
+    "example": {
+     "es": "Volamos chiringas en el parque del Morro.",
+     "en": "We flew kites at the Morro park."
+    }
+   },
+   {
+    "es": "revolú",
+    "en": "mess, commotion",
+    "cat": "everyday",
+    "example": {
+     "es": "Hay un revolú en la cocina.",
+     "en": "There's a big mess in the kitchen."
+    }
+   },
+   {
+    "es": "bochinche",
+    "en": "gossip",
+    "cat": "everyday",
+    "example": {
+     "es": "A ella le encanta el bochinche del barrio.",
+     "en": "She loves the neighborhood gossip."
+    }
+   },
+   {
+    "es": "embuste",
+    "en": "lie, fib",
+    "cat": "everyday",
+    "example": {
+     "es": "Eso es un embuste, no le creas.",
+     "en": "That's a lie, don't believe him."
+    }
+   },
+   {
+    "es": "sato",
+    "en": "mixed-breed dog",
+    "cat": "everyday",
+    "example": {
+     "es": "Adoptamos un perro sato de la calle.",
+     "en": "We adopted a mixed-breed dog from the street."
+    }
+   },
+   {
+    "es": "bregar",
+    "en": "to deal with, to handle",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo que bregar con ese problema mañana.",
+     "en": "I have to deal with that problem tomorrow."
+    }
+   },
+   {
+    "es": "janguear",
+    "en": "to hang out",
+    "cat": "slang",
+    "example": {
+     "es": "Vamos a janguear en Río Piedras esta noche.",
+     "en": "Let's hang out in Río Piedras tonight."
+    }
+   },
+   {
+    "es": "gufear",
+    "en": "to joke around, goof off",
+    "cat": "slang",
+    "example": {
+     "es": "Pasamos la tarde gufeando con el corillo.",
+     "en": "We spent the afternoon goofing around with the crew."
+    }
+   },
+   {
+    "es": "pichear",
+    "en": "to ignore, to let it go",
+    "cat": "slang",
+    "example": {
+     "es": "Pichea eso, no vale la pena.",
+     "en": "Let that go, it's not worth it."
+    }
+   },
+   {
+    "es": "estar guillao",
+    "en": "to be conceited, act like a big shot",
+    "cat": "slang",
+    "example": {
+     "es": "Anda guillao desde que compró ese carro.",
+     "en": "He's been acting like a big shot since he bought that car."
+    }
+   },
+   {
+    "es": "a fuego",
+    "en": "awesome, amazing",
+    "cat": "slang",
+    "example": {
+     "es": "La playa hoy está a fuego.",
+     "en": "The beach is amazing today."
+    }
+   },
+   {
+    "es": "brutal",
+    "en": "awesome, incredible",
+    "cat": "slang",
+    "example": {
+     "es": "El concierto de anoche estuvo brutal.",
+     "en": "Last night's concert was incredible."
+    }
+   },
+   {
+    "es": "nítido",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "¡Nítido! Nos vemos el sábado entonces.",
+     "en": "Cool! See you Saturday then."
+    }
+   }
+  ]
+ },
+ {
+  "id": "colombia",
+  "name": "Colombia",
+  "es": "Colombia",
+  "flag": "🇨🇴",
+  "entries": [
+   {
+    "es": "¿Quiubo?",
+    "en": "what's up? (from '¿qué hubo?')",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Quiubo, parce! ¿Cómo vas?",
+     "en": "What's up, buddy! How's it going?"
+    }
+   },
+   {
+    "es": "¿Qué más?",
+    "en": "how's it going?, what's new?",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Qué más? ¿Todo bien?",
+     "en": "How's it going? Everything good?"
+    }
+   },
+   {
+    "es": "sumercé",
+    "en": "you (warm, respectful; Bogotá region)",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Sumercé quiere un tinto?",
+     "en": "Would you like a black coffee?"
+    }
+   },
+   {
+    "es": "parcero / parce",
+    "en": "buddy, close friend",
+    "cat": "people",
+    "example": {
+     "es": "Voy al cine con mi parcero.",
+     "en": "I'm going to the movies with my buddy."
+    }
+   },
+   {
+    "es": "parche",
+    "en": "group of friends; a plan or hangout",
+    "cat": "people",
+    "example": {
+     "es": "Esta noche hay parche en mi casa.",
+     "en": "Tonight there's a hangout at my house."
+    }
+   },
+   {
+    "es": "pelado / pelada",
+    "en": "kid, young person",
+    "cat": "people",
+    "example": {
+     "es": "Ese pelado juega muy bien fútbol.",
+     "en": "That kid plays soccer really well."
+    }
+   },
+   {
+    "es": "chino / china",
+    "en": "kid (Bogotá)",
+    "cat": "people",
+    "example": {
+     "es": "Los chinos están jugando en el parque.",
+     "en": "The kids are playing in the park."
+    }
+   },
+   {
+    "es": "cucho / cucha",
+    "en": "old man / old woman; also mom and dad",
+    "cat": "people",
+    "example": {
+     "es": "Mis cuchos viven en Medellín.",
+     "en": "My folks live in Medellín."
+    }
+   },
+   {
+    "es": "mono / mona",
+    "en": "blond, fair-haired person",
+    "cat": "people",
+    "example": {
+     "es": "La mona de la tienda es muy amable.",
+     "en": "The blond girl from the shop is very nice."
+    }
+   },
+   {
+    "es": "berraco",
+    "en": "hardworking, brave, impressive person",
+    "cat": "people",
+    "example": {
+     "es": "Mi mamá es una berraca, trabaja mucho.",
+     "en": "My mom is amazing, she works a lot."
+    }
+   },
+   {
+    "es": "tinto",
+    "en": "small black coffee",
+    "cat": "food",
+    "example": {
+     "es": "¿Me regala un tinto, por favor?",
+     "en": "Can I get a black coffee, please?"
+    }
+   },
+   {
+    "es": "pola",
+    "en": "beer",
+    "cat": "food",
+    "example": {
+     "es": "Vamos por unas polas después del trabajo.",
+     "en": "Let's go for some beers after work."
+    }
+   },
+   {
+    "es": "guaro",
+    "en": "aguardiente (anise liquor)",
+    "cat": "food",
+    "example": {
+     "es": "En la fiesta había guaro y música.",
+     "en": "At the party there was aguardiente and music."
+    }
+   },
+   {
+    "es": "arepa",
+    "en": "corn cake, eaten daily",
+    "cat": "food",
+    "example": {
+     "es": "Desayuno arepa con queso todos los días.",
+     "en": "I have arepa with cheese for breakfast every day."
+    }
+   },
+   {
+    "es": "corrientazo",
+    "en": "cheap set lunch",
+    "cat": "food",
+    "example": {
+     "es": "Almorcé un corrientazo cerca de la oficina.",
+     "en": "I had a cheap set lunch near the office."
+    }
+   },
+   {
+    "es": "onces",
+    "en": "afternoon snack with coffee or chocolate",
+    "cat": "food",
+    "example": {
+     "es": "A las cinco tomamos las onces.",
+     "en": "At five we have our afternoon snack."
+    }
+   },
+   {
+    "es": "mecato",
+    "en": "snacks, junk food",
+    "cat": "food",
+    "example": {
+     "es": "Compramos mecato para el viaje.",
+     "en": "We bought snacks for the trip."
+    }
+   },
+   {
+    "es": "plata",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo plata para el taxi.",
+     "en": "I don't have money for the taxi."
+    }
+   },
+   {
+    "es": "lucas",
+    "en": "thousands of pesos",
+    "cat": "money",
+    "example": {
+     "es": "El almuerzo cuesta quince lucas.",
+     "en": "Lunch costs fifteen thousand pesos."
+    }
+   },
+   {
+    "es": "estar en la olla",
+    "en": "to be broke, in a bad situation",
+    "cat": "money",
+    "example": {
+     "es": "Este mes estoy en la olla.",
+     "en": "This month I'm totally broke."
+    }
+   },
+   {
+    "es": "tusa",
+    "en": "heartbreak after a breakup",
+    "cat": "emotions",
+    "example": {
+     "es": "Ella tiene tusa por su ex novio.",
+     "en": "She's heartbroken over her ex-boyfriend."
+    }
+   },
+   {
+    "es": "mamado",
+    "en": "exhausted, fed up",
+    "cat": "emotions",
+    "example": {
+     "es": "Estoy mamado de tanto trabajo.",
+     "en": "I'm exhausted from so much work."
+    }
+   },
+   {
+    "es": "desparchado",
+    "en": "bored, with nothing to do",
+    "cat": "emotions",
+    "example": {
+     "es": "Estoy desparchado, ¿hacemos algo?",
+     "en": "I'm bored, want to do something?"
+    }
+   },
+   {
+    "es": "jartera",
+    "en": "a drag, something boring or annoying",
+    "cat": "emotions",
+    "example": {
+     "es": "Qué jartera esta fila tan larga.",
+     "en": "What a drag, this line is so long."
+    }
+   },
+   {
+    "es": "amañado",
+    "en": "happily settled in a place",
+    "cat": "emotions",
+    "example": {
+     "es": "Estoy muy amañado en Bogotá.",
+     "en": "I feel really at home in Bogotá."
+    }
+   },
+   {
+    "es": "camello",
+    "en": "work, job",
+    "cat": "everyday",
+    "example": {
+     "es": "Mañana tengo mucho camello.",
+     "en": "Tomorrow I have a lot of work."
+    }
+   },
+   {
+    "es": "rumba",
+    "en": "party, night out",
+    "cat": "everyday",
+    "example": {
+     "es": "La rumba del sábado estuvo buenísima.",
+     "en": "Saturday's party was great."
+    }
+   },
+   {
+    "es": "vaina",
+    "en": "thing, stuff (all-purpose word)",
+    "cat": "everyday",
+    "example": {
+     "es": "Pásame esa vaina que está en la mesa.",
+     "en": "Pass me that thing on the table."
+    }
+   },
+   {
+    "es": "embolatado",
+    "en": "very busy, tied up",
+    "cat": "everyday",
+    "example": {
+     "es": "No puedo ir, estoy muy embolatado.",
+     "en": "I can't go, I'm really tied up."
+    }
+   },
+   {
+    "es": "juicioso",
+    "en": "well-behaved, responsible, hardworking",
+    "cat": "everyday",
+    "example": {
+     "es": "Hoy estoy juicioso estudiando español.",
+     "en": "Today I'm being good and studying Spanish."
+    }
+   },
+   {
+    "es": "a la orden",
+    "en": "at your service; you're welcome",
+    "cat": "expressions",
+    "example": {
+     "es": "—Gracias. —¡A la orden!",
+     "en": "—Thanks. —You're welcome!"
+    }
+   },
+   {
+    "es": "¡Qué pena!",
+    "en": "sorry!, excuse me! (very common)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Qué pena! ¿Me repite la dirección?",
+     "en": "So sorry! Can you repeat the address?"
+    }
+   },
+   {
+    "es": "de una",
+    "en": "right away, let's do it!",
+    "cat": "expressions",
+    "example": {
+     "es": "—¿Vamos a comer? —¡De una!",
+     "en": "—Shall we go eat? —Let's do it!"
+    }
+   },
+   {
+    "es": "¡Listo!",
+    "en": "okay!, deal!, done!",
+    "cat": "expressions",
+    "example": {
+     "es": "—Nos vemos a las ocho. —¡Listo!",
+     "en": "—See you at eight. —Okay!"
+    }
+   },
+   {
+    "es": "dar papaya",
+    "en": "to make yourself an easy target",
+    "cat": "expressions",
+    "example": {
+     "es": "No des papaya con el celular en la calle.",
+     "en": "Don't ask for trouble with your phone out on the street."
+    }
+   },
+   {
+    "es": "mamar gallo",
+    "en": "to joke around, tease",
+    "cat": "expressions",
+    "example": {
+     "es": "No me creas, estoy mamando gallo.",
+     "en": "Don't believe me, I'm just kidding."
+    }
+   },
+   {
+    "es": "bacano",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "Tu apartamento está muy bacano.",
+     "en": "Your apartment is really cool."
+    }
+   },
+   {
+    "es": "chévere",
+    "en": "cool, nice",
+    "cat": "slang",
+    "example": {
+     "es": "El concierto estuvo muy chévere.",
+     "en": "The concert was really cool."
+    }
+   },
+   {
+    "es": "paila",
+    "en": "too bad, out of luck, ruined",
+    "cat": "slang",
+    "example": {
+     "es": "Se acabaron los boletos, paila.",
+     "en": "The tickets are sold out, tough luck."
+    }
+   },
+   {
+    "es": "guayabo",
+    "en": "hangover",
+    "cat": "slang",
+    "example": {
+     "es": "Hoy tengo un guayabo terrible.",
+     "en": "Today I have a terrible hangover."
+    }
+   }
+  ]
+ },
+ {
+  "id": "venezuela",
+  "name": "Venezuela",
+  "es": "Venezuela",
+  "flag": "🇻🇪",
+  "entries": [
+   {
+    "es": "¡Épale!",
+    "en": "hey!, hi there!",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Épale, chamo! ¿Cómo estás?",
+     "en": "Hey, dude! How are you?"
+    }
+   },
+   {
+    "es": "¿Cómo está la vaina?",
+    "en": "how are things going?",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Qué pasó, pana? ¿Cómo está la vaina?",
+     "en": "What's up, buddy? How are things?"
+    }
+   },
+   {
+    "es": "chamo / chama",
+    "en": "kid; dude, guy or girl",
+    "cat": "people",
+    "example": {
+     "es": "Ese chamo es mi vecino.",
+     "en": "That guy is my neighbor."
+    }
+   },
+   {
+    "es": "pana",
+    "en": "friend, buddy",
+    "cat": "people",
+    "example": {
+     "es": "Voy a la playa con mis panas.",
+     "en": "I'm going to the beach with my friends."
+    }
+   },
+   {
+    "es": "jeva",
+    "en": "girlfriend",
+    "cat": "people",
+    "example": {
+     "es": "Él sale con su jeva los viernes.",
+     "en": "He goes out with his girlfriend on Fridays."
+    }
+   },
+   {
+    "es": "sifrino",
+    "en": "posh, preppy person",
+    "cat": "people",
+    "example": {
+     "es": "Ese restaurante es de gente sifrina.",
+     "en": "That restaurant is for posh people."
+    }
+   },
+   {
+    "es": "catire / catira",
+    "en": "blond, fair-haired person",
+    "cat": "people",
+    "example": {
+     "es": "El catire trabaja en la panadería.",
+     "en": "The blond guy works at the bakery."
+    }
+   },
+   {
+    "es": "musiú",
+    "en": "foreigner (especially European)",
+    "cat": "people",
+    "example": {
+     "es": "El musiú habla poco español.",
+     "en": "The foreigner speaks little Spanish."
+    }
+   },
+   {
+    "es": "arepa",
+    "en": "corn cake, the national staple",
+    "cat": "food",
+    "example": {
+     "es": "Quiero una arepa con queso.",
+     "en": "I want an arepa with cheese."
+    }
+   },
+   {
+    "es": "cachapa",
+    "en": "sweet corn pancake with cheese",
+    "cat": "food",
+    "example": {
+     "es": "La cachapa con queso de mano es deliciosa.",
+     "en": "Cachapa with soft cheese is delicious."
+    }
+   },
+   {
+    "es": "tequeños",
+    "en": "fried cheese sticks, party food",
+    "cat": "food",
+    "example": {
+     "es": "En toda fiesta hay tequeños.",
+     "en": "There are tequeños at every party."
+    }
+   },
+   {
+    "es": "cambur",
+    "en": "banana",
+    "cat": "food",
+    "example": {
+     "es": "Como un cambur en el desayuno.",
+     "en": "I eat a banana at breakfast."
+    }
+   },
+   {
+    "es": "patilla",
+    "en": "watermelon",
+    "cat": "food",
+    "example": {
+     "es": "La patilla está muy dulce hoy.",
+     "en": "The watermelon is very sweet today."
+    }
+   },
+   {
+    "es": "caraotas",
+    "en": "black beans",
+    "cat": "food",
+    "example": {
+     "es": "El almuerzo trae arroz y caraotas.",
+     "en": "Lunch comes with rice and black beans."
+    }
+   },
+   {
+    "es": "guayoyo",
+    "en": "light black coffee",
+    "cat": "food",
+    "example": {
+     "es": "Por la mañana tomo un guayoyo.",
+     "en": "In the morning I drink a light black coffee."
+    }
+   },
+   {
+    "es": "marrón",
+    "en": "coffee with a little milk",
+    "cat": "food",
+    "example": {
+     "es": "Un marrón pequeño, por favor.",
+     "en": "A small coffee with milk, please."
+    }
+   },
+   {
+    "es": "reales",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo reales para el bus.",
+     "en": "I don't have money for the bus."
+    }
+   },
+   {
+    "es": "plata",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "Necesito plata para el mercado.",
+     "en": "I need money for groceries."
+    }
+   },
+   {
+    "es": "estar pelando",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "Este mes estoy pelando.",
+     "en": "This month I'm broke."
+    }
+   },
+   {
+    "es": "pelabola",
+    "en": "broke person, down on their luck",
+    "cat": "money",
+    "example": {
+     "es": "Ando de pelabola hasta que me paguen.",
+     "en": "I'm broke until I get paid."
+    }
+   },
+   {
+    "es": "arrecho",
+    "en": "angry, furious",
+    "cat": "emotions",
+    "example": {
+     "es": "Está arrecho porque perdió el bus.",
+     "en": "He's angry because he missed the bus."
+    }
+   },
+   {
+    "es": "ladilla",
+    "en": "annoying thing, a drag",
+    "cat": "emotions",
+    "example": {
+     "es": "¡Qué ladilla esta cola tan larga!",
+     "en": "What a drag, this line is so long!"
+    }
+   },
+   {
+    "es": "pavoso",
+    "en": "unlucky, jinxed",
+    "cat": "emotions",
+    "example": {
+     "es": "Hoy ando pavoso, todo me sale mal.",
+     "en": "I'm jinxed today, everything goes wrong."
+    }
+   },
+   {
+    "es": "vaina",
+    "en": "thing, stuff (all-purpose word)",
+    "cat": "everyday",
+    "example": {
+     "es": "Dame esa vaina, por favor.",
+     "en": "Give me that thing, please."
+    }
+   },
+   {
+    "es": "corotos",
+    "en": "belongings, stuff",
+    "cat": "everyday",
+    "example": {
+     "es": "Recoge tus corotos, nos vamos.",
+     "en": "Pick up your stuff, we're leaving."
+    }
+   },
+   {
+    "es": "macundales",
+    "en": "all one's things and belongings",
+    "cat": "everyday",
+    "example": {
+     "es": "Agarró sus macundales y se mudó.",
+     "en": "He grabbed all his stuff and moved out."
+    }
+   },
+   {
+    "es": "dar la cola",
+    "en": "to give someone a ride",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Me das la cola hasta el centro?",
+     "en": "Can you give me a ride downtown?"
+    }
+   },
+   {
+    "es": "bochinche",
+    "en": "ruckus, noisy party or commotion",
+    "cat": "everyday",
+    "example": {
+     "es": "Los vecinos tienen un bochinche arriba.",
+     "en": "The neighbors are having a ruckus upstairs."
+    }
+   },
+   {
+    "es": "rumba",
+    "en": "party",
+    "cat": "everyday",
+    "example": {
+     "es": "La rumba empieza a las diez.",
+     "en": "The party starts at ten."
+    }
+   },
+   {
+    "es": "palo de agua",
+    "en": "heavy rain, downpour",
+    "cat": "everyday",
+    "example": {
+     "es": "Cayó un palo de agua esta tarde.",
+     "en": "There was a downpour this afternoon."
+    }
+   },
+   {
+    "es": "¡Cónchale!",
+    "en": "oh man!, darn! (mild surprise)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Cónchale, olvidé las llaves!",
+     "en": "Oh man, I forgot my keys!"
+    }
+   },
+   {
+    "es": "de pana",
+    "en": "seriously, for real",
+    "cat": "expressions",
+    "example": {
+     "es": "De pana, la comida estaba buenísima.",
+     "en": "Seriously, the food was amazing."
+    }
+   },
+   {
+    "es": "echarle pichón",
+    "en": "to put effort into something",
+    "cat": "expressions",
+    "example": {
+     "es": "Hay que echarle pichón al estudio.",
+     "en": "You have to put effort into studying."
+    }
+   },
+   {
+    "es": "chévere",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "Tu idea me parece muy chévere.",
+     "en": "I think your idea is really cool."
+    }
+   },
+   {
+    "es": "fino",
+    "en": "great, cool, okay",
+    "cat": "slang",
+    "example": {
+     "es": "—Nos vemos mañana. —¡Fino!",
+     "en": "—See you tomorrow. —Cool!"
+    }
+   },
+   {
+    "es": "burda",
+    "en": "very, a lot",
+    "cat": "slang",
+    "example": {
+     "es": "La película está burda de buena.",
+     "en": "The movie is really good."
+    }
+   },
+   {
+    "es": "chimbo",
+    "en": "lousy, low quality, fake",
+    "cat": "slang",
+    "example": {
+     "es": "Ese teléfono es chimbo, no lo compres.",
+     "en": "That phone is lousy, don't buy it."
+    }
+   },
+   {
+    "es": "chalequeo",
+    "en": "friendly teasing",
+    "cat": "slang",
+    "example": {
+     "es": "Es puro chalequeo, no te molestes.",
+     "en": "It's just teasing, don't get upset."
+    }
+   },
+   {
+    "es": "ratón",
+    "en": "hangover",
+    "cat": "slang",
+    "example": {
+     "es": "Amanecí con un ratón horrible.",
+     "en": "I woke up with a horrible hangover."
+    }
+   },
+   {
+    "es": "full",
+    "en": "a lot, very; totally full",
+    "cat": "slang",
+    "example": {
+     "es": "El metro estaba full esta mañana.",
+     "en": "The metro was packed this morning."
+    }
+   }
+  ]
+ },
+ {
+  "id": "ecuador",
+  "name": "Ecuador",
+  "es": "Ecuador",
+  "flag": "🇪🇨",
+  "entries": [
+   {
+    "es": "¿Qué fue?",
+    "en": "what's up? (coastal greeting)",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Qué fue, ñaño? ¿Todo bien?",
+     "en": "What's up, bro? All good?"
+    }
+   },
+   {
+    "es": "¿Qué más, mijín?",
+    "en": "what's up, buddy?",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Qué más, mijín? ¿Cómo estás?",
+     "en": "What's up, buddy? How are you?"
+    }
+   },
+   {
+    "es": "ñaño / ñaña",
+    "en": "brother / sister; close friend",
+    "cat": "people",
+    "example": {
+     "es": "Mi ñaña vive en Cuenca.",
+     "en": "My sister lives in Cuenca."
+    }
+   },
+   {
+    "es": "pana",
+    "en": "friend, buddy",
+    "cat": "people",
+    "example": {
+     "es": "Salí a comer con mis panas.",
+     "en": "I went out to eat with my friends."
+    }
+   },
+   {
+    "es": "guagua",
+    "en": "baby, small child (from Quichua)",
+    "cat": "people",
+    "example": {
+     "es": "La guagua está dormida.",
+     "en": "The baby is asleep."
+    }
+   },
+   {
+    "es": "guambra",
+    "en": "kid, youngster (highlands)",
+    "cat": "people",
+    "example": {
+     "es": "Los guambras juegan en la calle.",
+     "en": "The kids are playing in the street."
+    }
+   },
+   {
+    "es": "pelado / pelada",
+    "en": "boyfriend / girlfriend; young person",
+    "cat": "people",
+    "example": {
+     "es": "Voy al cine con mi pelada.",
+     "en": "I'm going to the movies with my girlfriend."
+    }
+   },
+   {
+    "es": "man",
+    "en": "guy (used for men and women)",
+    "cat": "people",
+    "example": {
+     "es": "Ese man es buena gente.",
+     "en": "That guy is a good person."
+    }
+   },
+   {
+    "es": "taita",
+    "en": "dad, father (from Quichua)",
+    "cat": "people",
+    "example": {
+     "es": "Mi taita trabaja en el campo.",
+     "en": "My dad works in the countryside."
+    }
+   },
+   {
+    "es": "suco / suca",
+    "en": "blond, fair-haired person",
+    "cat": "people",
+    "example": {
+     "es": "El suco de la esquina vende frutas.",
+     "en": "The blond guy on the corner sells fruit."
+    }
+   },
+   {
+    "es": "aniñado",
+    "en": "rich kid, posh person (Guayaquil)",
+    "cat": "people",
+    "example": {
+     "es": "Ese barrio es de gente aniñada.",
+     "en": "That neighborhood is for posh people."
+    }
+   },
+   {
+    "es": "biela",
+    "en": "beer",
+    "cat": "food",
+    "example": {
+     "es": "Vamos por unas bielas heladas.",
+     "en": "Let's go for some cold beers."
+    }
+   },
+   {
+    "es": "canelazo",
+    "en": "hot cinnamon drink with sugarcane liquor",
+    "cat": "food",
+    "example": {
+     "es": "En Quito de noche tomamos canelazo.",
+     "en": "In Quito at night we drink canelazo."
+    }
+   },
+   {
+    "es": "encebollado",
+    "en": "fish and onion soup, coastal favorite",
+    "cat": "food",
+    "example": {
+     "es": "El encebollado es perfecto para el desayuno.",
+     "en": "Encebollado is perfect for breakfast."
+    }
+   },
+   {
+    "es": "bolón",
+    "en": "fried green plantain ball",
+    "cat": "food",
+    "example": {
+     "es": "Pedí un bolón con queso y café.",
+     "en": "I ordered a plantain ball with cheese and coffee."
+    }
+   },
+   {
+    "es": "llapingachos",
+    "en": "potato patties with cheese",
+    "cat": "food",
+    "example": {
+     "es": "Los llapingachos vienen con huevo frito.",
+     "en": "The potato patties come with a fried egg."
+    }
+   },
+   {
+    "es": "cuy",
+    "en": "roasted guinea pig, Andean dish",
+    "cat": "food",
+    "example": {
+     "es": "En la fiesta del pueblo comimos cuy.",
+     "en": "At the town festival we ate guinea pig."
+    }
+   },
+   {
+    "es": "cola",
+    "en": "any soft drink, soda",
+    "cat": "food",
+    "example": {
+     "es": "¿Quieres una cola con el almuerzo?",
+     "en": "Do you want a soda with lunch?"
+    }
+   },
+   {
+    "es": "plata",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No me alcanza la plata este mes.",
+     "en": "My money isn't enough this month."
+    }
+   },
+   {
+    "es": "estar chiro",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "No puedo salir, estoy chiro.",
+     "en": "I can't go out, I'm broke."
+    }
+   },
+   {
+    "es": "billete",
+    "en": "cash, money",
+    "cat": "money",
+    "example": {
+     "es": "Ese negocio deja buen billete.",
+     "en": "That business makes good money."
+    }
+   },
+   {
+    "es": "chuchaqui",
+    "en": "hangover (from Quichua)",
+    "cat": "slang",
+    "example": {
+     "es": "Amanecí con un chuchaqui terrible.",
+     "en": "I woke up with a terrible hangover."
+    }
+   },
+   {
+    "es": "chumado",
+    "en": "drunk",
+    "cat": "slang",
+    "example": {
+     "es": "Anoche estaba un poco chumado.",
+     "en": "Last night he was a bit drunk."
+    }
+   },
+   {
+    "es": "chapa",
+    "en": "police officer",
+    "cat": "slang",
+    "example": {
+     "es": "Los chapas están en la esquina.",
+     "en": "The cops are on the corner."
+    }
+   },
+   {
+    "es": "camarón",
+    "en": "bad driver",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué camarón! Casi choca el carro.",
+     "en": "What a bad driver! He almost crashed the car."
+    }
+   },
+   {
+    "es": "sapo",
+    "en": "nosy or sneaky person",
+    "cat": "slang",
+    "example": {
+     "es": "No seas sapo, esa no es tu conversación.",
+     "en": "Don't be nosy, that's not your conversation."
+    }
+   },
+   {
+    "es": "chendo",
+    "en": "just kidding (Quito youth slang)",
+    "cat": "slang",
+    "example": {
+     "es": "Te ves viejo... ¡chendo, chendo!",
+     "en": "You look old... just kidding!"
+    }
+   },
+   {
+    "es": "bacán",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "Tu bici nueva está bacán.",
+     "en": "Your new bike is cool."
+    }
+   },
+   {
+    "es": "chévere",
+    "en": "cool, nice",
+    "cat": "slang",
+    "example": {
+     "es": "El paseo a la playa estuvo chévere.",
+     "en": "The trip to the beach was cool."
+    }
+   },
+   {
+    "es": "farra",
+    "en": "party, night out",
+    "cat": "everyday",
+    "example": {
+     "es": "El viernes hay farra donde mi pana.",
+     "en": "Friday there's a party at my friend's place."
+    }
+   },
+   {
+    "es": "camellar",
+    "en": "to work",
+    "cat": "everyday",
+    "example": {
+     "es": "Mañana tengo que camellar temprano.",
+     "en": "Tomorrow I have to work early."
+    }
+   },
+   {
+    "es": "ya mismo",
+    "en": "very soon (flexible Ecuadorian time)",
+    "cat": "everyday",
+    "example": {
+     "es": "Ya mismo llego, espérame.",
+     "en": "I'll be there really soon, wait for me."
+    }
+   },
+   {
+    "es": "de gana",
+    "en": "for no reason",
+    "cat": "everyday",
+    "example": {
+     "es": "Se enojó de gana, yo no dije nada.",
+     "en": "He got angry for no reason, I didn't say anything."
+    }
+   },
+   {
+    "es": "buseta",
+    "en": "small city bus",
+    "cat": "everyday",
+    "example": {
+     "es": "Tomo la buseta para ir al centro.",
+     "en": "I take the small bus to go downtown."
+    }
+   },
+   {
+    "es": "de ley",
+    "en": "for sure, definitely",
+    "cat": "expressions",
+    "example": {
+     "es": "—¿Vienes mañana? —De ley.",
+     "en": "—Are you coming tomorrow? —For sure."
+    }
+   },
+   {
+    "es": "¡Chuta!",
+    "en": "shoot!, wow! (mild surprise)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Chuta! Olvidé mi paraguas.",
+     "en": "Shoot! I forgot my umbrella."
+    }
+   },
+   {
+    "es": "¡Achachay!",
+    "en": "brr, it's cold! (from Quichua)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Achachay! Qué frío hace en Quito.",
+     "en": "Brr! It's so cold in Quito."
+    }
+   },
+   {
+    "es": "¡Atatay!",
+    "en": "yuck!, gross! (from Quichua)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Atatay! Esta sopa está fría.",
+     "en": "Yuck! This soup is cold."
+    }
+   },
+   {
+    "es": "no seas malito",
+    "en": "pretty please, be a dear",
+    "cat": "expressions",
+    "example": {
+     "es": "No seas malito, ayúdame con esto.",
+     "en": "Pretty please, help me with this."
+    }
+   },
+   {
+    "es": "fresco",
+    "en": "no worries, it's fine",
+    "cat": "expressions",
+    "example": {
+     "es": "—Perdón por llegar tarde. —Fresco, no pasa nada.",
+     "en": "—Sorry for being late. —No worries, it's fine."
+    }
+   }
+  ]
+ },
+ {
+  "id": "peru",
+  "name": "Peru",
+  "es": "Perú",
+  "flag": "🇵🇪",
+  "entries": [
+   {
+    "es": "¡Habla!",
+    "en": "hey!, what's up? (greeting)",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Habla, causa! ¿Qué tal?",
+     "en": "Hey, buddy! How's it going?"
+    }
+   },
+   {
+    "es": "oe",
+    "en": "hey (very informal)",
+    "cat": "greetings",
+    "example": {
+     "es": "Oe, ¿vamos a almorzar?",
+     "en": "Hey, shall we go have lunch?"
+    }
+   },
+   {
+    "es": "pata",
+    "en": "friend, buddy; guy",
+    "cat": "people",
+    "example": {
+     "es": "Un pata mío vive en Cusco.",
+     "en": "A friend of mine lives in Cusco."
+    }
+   },
+   {
+    "es": "causa",
+    "en": "close friend, buddy",
+    "cat": "people",
+    "example": {
+     "es": "Voy al estadio con mi causa.",
+     "en": "I'm going to the stadium with my buddy."
+    }
+   },
+   {
+    "es": "chibolo / chibola",
+    "en": "kid, young person",
+    "cat": "people",
+    "example": {
+     "es": "Los chibolos juegan fútbol en la calle.",
+     "en": "The kids play soccer in the street."
+    }
+   },
+   {
+    "es": "flaco / flaca",
+    "en": "boyfriend / girlfriend",
+    "cat": "people",
+    "example": {
+     "es": "Mi flaca cocina un ceviche riquísimo.",
+     "en": "My girlfriend makes a delicious ceviche."
+    }
+   },
+   {
+    "es": "pituco",
+    "en": "posh, wealthy person",
+    "cat": "people",
+    "example": {
+     "es": "Esa tienda es para pitucos.",
+     "en": "That store is for posh people."
+    }
+   },
+   {
+    "es": "figureti",
+    "en": "show-off, attention seeker",
+    "cat": "people",
+    "example": {
+     "es": "Ese man es un figureti en las fotos.",
+     "en": "That guy is a show-off in photos."
+    }
+   },
+   {
+    "es": "chela",
+    "en": "beer",
+    "cat": "food",
+    "example": {
+     "es": "Nos tomamos unas chelas el viernes.",
+     "en": "We had some beers on Friday."
+    }
+   },
+   {
+    "es": "chifa",
+    "en": "Peruvian-Chinese food or restaurant",
+    "cat": "food",
+    "example": {
+     "es": "Hoy pedimos chifa para la cena.",
+     "en": "Today we ordered Chinese food for dinner."
+    }
+   },
+   {
+    "es": "menú",
+    "en": "cheap set lunch of the day",
+    "cat": "food",
+    "example": {
+     "es": "El menú cuesta diez soles con sopa.",
+     "en": "The set lunch costs ten soles with soup."
+    }
+   },
+   {
+    "es": "anticucho",
+    "en": "grilled beef-heart skewer, street food",
+    "cat": "food",
+    "example": {
+     "es": "Los anticuchos de la esquina son los mejores.",
+     "en": "The anticuchos on the corner are the best."
+    }
+   },
+   {
+    "es": "canchita",
+    "en": "toasted corn snack; popcorn",
+    "cat": "food",
+    "example": {
+     "es": "El ceviche viene con canchita.",
+     "en": "The ceviche comes with toasted corn."
+    }
+   },
+   {
+    "es": "choclo",
+    "en": "large-kernel Andean corn",
+    "cat": "food",
+    "example": {
+     "es": "Quiero choclo con queso, por favor.",
+     "en": "I want corn with cheese, please."
+    }
+   },
+   {
+    "es": "chicha morada",
+    "en": "sweet purple corn drink",
+    "cat": "food",
+    "example": {
+     "es": "Con el almuerzo tomo chicha morada.",
+     "en": "With lunch I drink chicha morada."
+    }
+   },
+   {
+    "es": "luca",
+    "en": "one sol (money)",
+    "cat": "money",
+    "example": {
+     "es": "El pasaje cuesta dos lucas.",
+     "en": "The fare costs two soles."
+    }
+   },
+   {
+    "es": "plata",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "Estoy ahorrando plata para viajar.",
+     "en": "I'm saving money to travel."
+    }
+   },
+   {
+    "es": "misio",
+    "en": "broke, without money",
+    "cat": "money",
+    "example": {
+     "es": "No puedo salir, ando misio.",
+     "en": "I can't go out, I'm broke."
+    }
+   },
+   {
+    "es": "roche",
+    "en": "embarrassment, shame",
+    "cat": "emotions",
+    "example": {
+     "es": "Me da roche hablar en público.",
+     "en": "It embarrasses me to speak in public."
+    }
+   },
+   {
+    "es": "¡Qué palta!",
+    "en": "how embarrassing!",
+    "cat": "emotions",
+    "example": {
+     "es": "¡Qué palta! Me caí delante de todos.",
+     "en": "How embarrassing! I fell in front of everyone."
+    }
+   },
+   {
+    "es": "piña",
+    "en": "bad luck; unlucky",
+    "cat": "emotions",
+    "example": {
+     "es": "Perdió el bus otra vez, qué piña.",
+     "en": "He missed the bus again, what bad luck."
+    }
+   },
+   {
+    "es": "chamba",
+    "en": "work, job",
+    "cat": "everyday",
+    "example": {
+     "es": "Conseguí chamba nueva en Lima.",
+     "en": "I got a new job in Lima."
+    }
+   },
+   {
+    "es": "chambear",
+    "en": "to work",
+    "cat": "everyday",
+    "example": {
+     "es": "Hoy chambeo hasta las seis.",
+     "en": "Today I work until six."
+    }
+   },
+   {
+    "es": "jato",
+    "en": "house, home",
+    "cat": "everyday",
+    "example": {
+     "es": "Vamos a mi jato a ver la película.",
+     "en": "Let's go to my place to watch the movie."
+    }
+   },
+   {
+    "es": "tono",
+    "en": "party",
+    "cat": "everyday",
+    "example": {
+     "es": "Hay un tono en la casa de mi pata.",
+     "en": "There's a party at my friend's house."
+    }
+   },
+   {
+    "es": "al toque",
+    "en": "right away, immediately",
+    "cat": "everyday",
+    "example": {
+     "es": "Espérame, vuelvo al toque.",
+     "en": "Wait for me, I'll be right back."
+    }
+   },
+   {
+    "es": "yapa",
+    "en": "a little extra for free (from Quechua)",
+    "cat": "everyday",
+    "example": {
+     "es": "Casera, ¿me da mi yapa?",
+     "en": "Ma'am, can I get my little extra?"
+    }
+   },
+   {
+    "es": "combi",
+    "en": "small minibus for public transport",
+    "cat": "everyday",
+    "example": {
+     "es": "Tomo la combi para ir al trabajo.",
+     "en": "I take the minibus to go to work."
+    }
+   },
+   {
+    "es": "chompa",
+    "en": "sweater",
+    "cat": "everyday",
+    "example": {
+     "es": "Lleva una chompa, hace frío en Cusco.",
+     "en": "Take a sweater, it's cold in Cusco."
+    }
+   },
+   {
+    "es": "soroche",
+    "en": "altitude sickness",
+    "cat": "everyday",
+    "example": {
+     "es": "En la montaña me dio soroche.",
+     "en": "In the mountains I got altitude sickness."
+    }
+   },
+   {
+    "es": "pe",
+    "en": "filler word from 'pues' (well, then)",
+    "cat": "expressions",
+    "example": {
+     "es": "Ya pe, vamos de una vez.",
+     "en": "Come on then, let's go already."
+    }
+   },
+   {
+    "es": "¡Asu!",
+    "en": "wow!, whoa!",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Asu! Qué grande es esta plaza.",
+     "en": "Wow! This square is so big."
+    }
+   },
+   {
+    "es": "ni michi",
+    "en": "nothing at all ('michi' means cat)",
+    "cat": "expressions",
+    "example": {
+     "es": "No entendí ni michi de la clase.",
+     "en": "I didn't understand a thing in class."
+    }
+   },
+   {
+    "es": "bacán",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "Tu departamento está bacán.",
+     "en": "Your apartment is cool."
+    }
+   },
+   {
+    "es": "¡Qué paja!",
+    "en": "how cool!, awesome!",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué paja! Ganamos el partido.",
+     "en": "Awesome! We won the game."
+    }
+   },
+   {
+    "es": "huachafo",
+    "en": "tacky, in bad taste",
+    "cat": "slang",
+    "example": {
+     "es": "Esa decoración es un poco huachafa.",
+     "en": "That decoration is a bit tacky."
+    }
+   },
+   {
+    "es": "lechero",
+    "en": "lucky person",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué lechero! Ganó otra vez.",
+     "en": "So lucky! He won again."
+    }
+   },
+   {
+    "es": "mostro",
+    "en": "awesome, excellent",
+    "cat": "slang",
+    "example": {
+     "es": "El concierto estuvo mostro.",
+     "en": "The concert was awesome."
+    }
+   },
+   {
+    "es": "tombo",
+    "en": "police officer",
+    "cat": "slang",
+    "example": {
+     "es": "El tombo dirige el tráfico en la esquina.",
+     "en": "The cop is directing traffic on the corner."
+    }
+   },
+   {
+    "es": "choro",
+    "en": "thief",
+    "cat": "slang",
+    "example": {
+     "es": "Cuidado con los choros en el mercado.",
+     "en": "Watch out for thieves in the market."
+    }
+   }
+  ]
+ },
+ {
+  "id": "bolivia",
+  "name": "Bolivia",
+  "es": "Bolivia",
+  "flag": "🇧🇴",
+  "entries": [
+   {
+    "es": "wawa",
+    "en": "baby, small child",
+    "cat": "people",
+    "example": {
+     "es": "La wawa está durmiendo.",
+     "en": "The baby is sleeping."
+    }
+   },
+   {
+    "es": "chango",
+    "en": "kid, young guy",
+    "cat": "people",
+    "example": {
+     "es": "Ese chango juega bien al fútbol.",
+     "en": "That kid plays soccer well."
+    }
+   },
+   {
+    "es": "cholita",
+    "en": "traditional Aymara or Quechua woman",
+    "cat": "people",
+    "example": {
+     "es": "La cholita vende frutas en el mercado.",
+     "en": "The cholita sells fruit at the market."
+    }
+   },
+   {
+    "es": "caserita",
+    "en": "friendly address for a market vendor or regular customer",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Caserita, dame dos salteñas por favor!",
+     "en": "Ma'am, give me two salteñas please!"
+    }
+   },
+   {
+    "es": "cumpa",
+    "en": "buddy, pal",
+    "cat": "people",
+    "example": {
+     "es": "Hola, cumpa, ¿cómo estás?",
+     "en": "Hi, buddy, how are you?"
+    }
+   },
+   {
+    "es": "jailón",
+    "en": "posh, preppy person",
+    "cat": "people",
+    "example": {
+     "es": "Él es muy jailón, siempre va a lugares caros.",
+     "en": "He is very posh, he always goes to expensive places."
+    }
+   },
+   {
+    "es": "camba",
+    "en": "person from the eastern lowlands",
+    "cat": "people",
+    "example": {
+     "es": "Mi amigo es camba, es de Santa Cruz.",
+     "en": "My friend is a camba, he is from Santa Cruz."
+    }
+   },
+   {
+    "es": "colla",
+    "en": "person from the highlands",
+    "cat": "people",
+    "example": {
+     "es": "Mi abuela es colla, vive en La Paz.",
+     "en": "My grandmother is a colla, she lives in La Paz."
+    }
+   },
+   {
+    "es": "tombo",
+    "en": "cop, police officer",
+    "cat": "slang",
+    "example": {
+     "es": "Hay un tombo en la esquina.",
+     "en": "There is a cop on the corner."
+    }
+   },
+   {
+    "es": "opa",
+    "en": "silly, foolish",
+    "cat": "slang",
+    "example": {
+     "es": "No seas opa, piensa un poco.",
+     "en": "Don't be silly, think a little."
+    }
+   },
+   {
+    "es": "chura",
+    "en": "cool, pretty, nice",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué chura tu chamarra!",
+     "en": "Your jacket is so cool!"
+    }
+   },
+   {
+    "es": "chaqui",
+    "en": "hangover",
+    "cat": "slang",
+    "example": {
+     "es": "Estoy con chaqui por la fiesta de anoche.",
+     "en": "I have a hangover from last night's party."
+    }
+   },
+   {
+    "es": "farra",
+    "en": "party, night out drinking",
+    "cat": "slang",
+    "example": {
+     "es": "Anoche hubo farra en casa de Juan.",
+     "en": "Last night there was a party at Juan's house."
+    }
+   },
+   {
+    "es": "chupar",
+    "en": "to drink alcohol",
+    "cat": "slang",
+    "example": {
+     "es": "Fueron a chupar el viernes.",
+     "en": "They went drinking on Friday."
+    }
+   },
+   {
+    "es": "estar yesca",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "No puedo salir, estoy yesca.",
+     "en": "I can't go out, I'm broke."
+    }
+   },
+   {
+    "es": "plata",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo plata para el taxi.",
+     "en": "I don't have money for the taxi."
+    }
+   },
+   {
+    "es": "yapa",
+    "en": "a little extra given for free",
+    "cat": "money",
+    "example": {
+     "es": "Me dio dos naranjas de yapa.",
+     "en": "She gave me two oranges as a freebie."
+    }
+   },
+   {
+    "es": "mañudo",
+    "en": "mischievous, tricky",
+    "cat": "slang",
+    "example": {
+     "es": "Mi hermanito es bien mañudo.",
+     "en": "My little brother is really mischievous."
+    }
+   },
+   {
+    "es": "estar camote",
+    "en": "to have a crush, to be in love",
+    "cat": "emotions",
+    "example": {
+     "es": "Juan está camote de María.",
+     "en": "Juan has a crush on María."
+    }
+   },
+   {
+    "es": "k'encha",
+    "en": "bad luck, jinx",
+    "cat": "emotions",
+    "example": {
+     "es": "No digas eso, es k'encha.",
+     "en": "Don't say that, it's bad luck."
+    }
+   },
+   {
+    "es": "macurca",
+    "en": "muscle soreness",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo macurca por el ejercicio de ayer.",
+     "en": "I'm sore from yesterday's exercise."
+    }
+   },
+   {
+    "es": "trancadera",
+    "en": "traffic jam",
+    "cat": "everyday",
+    "example": {
+     "es": "Hay mucha trancadera en el centro.",
+     "en": "There is a big traffic jam downtown."
+    }
+   },
+   {
+    "es": "trufi",
+    "en": "shared fixed-route taxi",
+    "cat": "everyday",
+    "example": {
+     "es": "Tomo el trufi para ir al trabajo.",
+     "en": "I take the trufi to go to work."
+    }
+   },
+   {
+    "es": "micro",
+    "en": "city bus",
+    "cat": "everyday",
+    "example": {
+     "es": "El micro pasa por la plaza.",
+     "en": "The bus goes by the square."
+    }
+   },
+   {
+    "es": "chompa",
+    "en": "sweater",
+    "cat": "everyday",
+    "example": {
+     "es": "Ponte tu chompa, hace frío.",
+     "en": "Put on your sweater, it's cold."
+    }
+   },
+   {
+    "es": "polera",
+    "en": "t-shirt",
+    "cat": "everyday",
+    "example": {
+     "es": "Compré una polera roja.",
+     "en": "I bought a red t-shirt."
+    }
+   },
+   {
+    "es": "salteña",
+    "en": "juicy baked pastry filled with meat",
+    "cat": "food",
+    "example": {
+     "es": "Las salteñas se comen en la mañana.",
+     "en": "Salteñas are eaten in the morning."
+    }
+   },
+   {
+    "es": "api",
+    "en": "hot purple corn drink",
+    "cat": "food",
+    "example": {
+     "es": "Quiero un api con pastel.",
+     "en": "I want an api with a fried pastry."
+    }
+   },
+   {
+    "es": "marraqueta",
+    "en": "crusty bread roll",
+    "cat": "food",
+    "example": {
+     "es": "Compra marraqueta para el desayuno.",
+     "en": "Buy marraqueta bread for breakfast."
+    }
+   },
+   {
+    "es": "silpancho",
+    "en": "breaded beef dish from Cochabamba",
+    "cat": "food",
+    "example": {
+     "es": "El silpancho es típico de Cochabamba.",
+     "en": "Silpancho is typical of Cochabamba."
+    }
+   },
+   {
+    "es": "chuflay",
+    "en": "cocktail of singani and ginger ale",
+    "cat": "food",
+    "example": {
+     "es": "Probé el chuflay en La Paz.",
+     "en": "I tried chuflay in La Paz."
+    }
+   },
+   {
+    "es": "tucumana",
+    "en": "fried filled empanada",
+    "cat": "food",
+    "example": {
+     "es": "Venden tucumanas cerca de la universidad.",
+     "en": "They sell tucumanas near the university."
+    }
+   },
+   {
+    "es": "pues",
+    "en": "sentence-final word for emphasis, often shortened to ps",
+    "cat": "expressions",
+    "example": {
+     "es": "Vamos pues, ya es tarde.",
+     "en": "Come on then, it's already late."
+    }
+   },
+   {
+    "es": "¿no ve?",
+    "en": "right?, isn't it? (tag question)",
+    "cat": "expressions",
+    "example": {
+     "es": "Está bonito el día, ¿no ve?",
+     "en": "It's a nice day, right?"
+    }
+   },
+   {
+    "es": "elay puej",
+    "en": "there you go!, see! (Santa Cruz)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Elay puej, así se hace!",
+     "en": "There you go, that's how it's done!"
+    }
+   },
+   {
+    "es": "¡pucha!",
+    "en": "darn!, shoot!",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Pucha, olvidé mis llaves!",
+     "en": "Darn, I forgot my keys!"
+    }
+   },
+   {
+    "es": "harto",
+    "en": "a lot, lots of",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo harto trabajo hoy.",
+     "en": "I have a lot of work today."
+    }
+   },
+   {
+    "es": "de una",
+    "en": "right away, for sure",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Vamos al cine? ¡De una!",
+     "en": "Shall we go to the movies? For sure!"
+    }
+   },
+   {
+    "es": "lagartear",
+    "en": "to laze around",
+    "cat": "slang",
+    "example": {
+     "es": "El domingo me gusta lagartear en casa.",
+     "en": "On Sundays I like to laze around at home."
+    }
+   },
+   {
+    "es": "chacharse",
+    "en": "to skip class",
+    "cat": "slang",
+    "example": {
+     "es": "Se chachó la clase de inglés.",
+     "en": "He skipped English class."
+    }
+   }
+  ]
+ },
+ {
+  "id": "chile",
+  "name": "Chile",
+  "es": "Chile",
+  "flag": "🇨🇱",
+  "entries": [
+   {
+    "es": "po",
+    "en": "untranslatable word added for emphasis",
+    "cat": "expressions",
+    "example": {
+     "es": "Ya po, apúrate.",
+     "en": "Come on, hurry up."
+    }
+   },
+   {
+    "es": "cachai",
+    "en": "you know?, get it?",
+    "cat": "expressions",
+    "example": {
+     "es": "Está lejos, ¿cachai?",
+     "en": "It's far away, you know?"
+    }
+   },
+   {
+    "es": "¿cómo estai?",
+    "en": "how are you? (Chilean voseo)",
+    "cat": "greetings",
+    "example": {
+     "es": "Hola, ¿cómo estai?",
+     "en": "Hi, how are you?"
+    }
+   },
+   {
+    "es": "chao pescao",
+    "en": "bye-bye (playful goodbye)",
+    "cat": "greetings",
+    "example": {
+     "es": "Me voy, ¡chao pescao!",
+     "en": "I'm leaving, bye-bye!"
+    }
+   },
+   {
+    "es": "weón",
+    "en": "dude, buddy (very informal, among friends)",
+    "cat": "people",
+    "example": {
+     "es": "Ese weón es mi mejor amigo.",
+     "en": "That guy is my best friend."
+    }
+   },
+   {
+    "es": "bacán",
+    "en": "awesome, great",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué bacán tu casa!",
+     "en": "Your house is so cool!"
+    }
+   },
+   {
+    "es": "fome",
+    "en": "boring, dull",
+    "cat": "slang",
+    "example": {
+     "es": "La película estuvo fome.",
+     "en": "The movie was boring."
+    }
+   },
+   {
+    "es": "pololo",
+    "en": "boyfriend (polola: girlfriend)",
+    "cat": "people",
+    "example": {
+     "es": "Mi pololo se llama Diego.",
+     "en": "My boyfriend's name is Diego."
+    }
+   },
+   {
+    "es": "pololear",
+    "en": "to date, to be in a relationship",
+    "cat": "everyday",
+    "example": {
+     "es": "Están pololeando hace un año.",
+     "en": "They have been dating for a year."
+    }
+   },
+   {
+    "es": "carrete",
+    "en": "party",
+    "cat": "slang",
+    "example": {
+     "es": "El sábado hay carrete en mi casa.",
+     "en": "On Saturday there is a party at my house."
+    }
+   },
+   {
+    "es": "carretear",
+    "en": "to party, to go out",
+    "cat": "slang",
+    "example": {
+     "es": "Salimos a carretear el viernes.",
+     "en": "We went out partying on Friday."
+    }
+   },
+   {
+    "es": "la once",
+    "en": "afternoon tea with bread and snacks",
+    "cat": "food",
+    "example": {
+     "es": "Vamos a tomar once a las seis.",
+     "en": "We are having afternoon tea at six."
+    }
+   },
+   {
+    "es": "luca",
+    "en": "one thousand pesos",
+    "cat": "money",
+    "example": {
+     "es": "El menú cuesta cinco lucas.",
+     "en": "The set menu costs five thousand pesos."
+    }
+   },
+   {
+    "es": "gamba",
+    "en": "one hundred pesos",
+    "cat": "money",
+    "example": {
+     "es": "Me faltan dos gambas para el pasaje.",
+     "en": "I need two hundred more pesos for the fare."
+    }
+   },
+   {
+    "es": "andar pato",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "No puedo ir, ando pato.",
+     "en": "I can't go, I'm broke."
+    }
+   },
+   {
+    "es": "pega",
+    "en": "job, work",
+    "cat": "money",
+    "example": {
+     "es": "Mañana tengo pega temprano.",
+     "en": "Tomorrow I have work early."
+    }
+   },
+   {
+    "es": "caleta",
+    "en": "a lot, tons",
+    "cat": "everyday",
+    "example": {
+     "es": "Había caleta de gente en la feria.",
+     "en": "There were tons of people at the street market."
+    }
+   },
+   {
+    "es": "al tiro",
+    "en": "right away, immediately",
+    "cat": "expressions",
+    "example": {
+     "es": "Voy al tiro, espérame.",
+     "en": "I'm coming right away, wait for me."
+    }
+   },
+   {
+    "es": "piola",
+    "en": "chill, low-key, nice",
+    "cat": "slang",
+    "example": {
+     "es": "Es un lugar piola y tranquilo.",
+     "en": "It's a chill, quiet place."
+    }
+   },
+   {
+    "es": "flaite",
+    "en": "sketchy, trashy (person or place)",
+    "cat": "people",
+    "example": {
+     "es": "Ese barrio es medio flaite.",
+     "en": "That neighborhood is a bit sketchy."
+    }
+   },
+   {
+    "es": "cuico",
+    "en": "posh, upper-class person",
+    "cat": "people",
+    "example": {
+     "es": "Vive en un barrio cuico.",
+     "en": "He lives in a posh neighborhood."
+    }
+   },
+   {
+    "es": "guagua",
+    "en": "baby",
+    "cat": "people",
+    "example": {
+     "es": "La guagua tiene sueño.",
+     "en": "The baby is sleepy."
+    }
+   },
+   {
+    "es": "cabro chico",
+    "en": "little kid",
+    "cat": "people",
+    "example": {
+     "es": "El cabro chico corre por todos lados.",
+     "en": "The little kid runs everywhere."
+    }
+   },
+   {
+    "es": "gallo",
+    "en": "guy, dude",
+    "cat": "people",
+    "example": {
+     "es": "Ese gallo trabaja conmigo.",
+     "en": "That guy works with me."
+    }
+   },
+   {
+    "es": "seco",
+    "en": "very skilled, talented",
+    "cat": "slang",
+    "example": {
+     "es": "Eres seco para cocinar.",
+     "en": "You are really good at cooking."
+    }
+   },
+   {
+    "es": "copete",
+    "en": "alcoholic drink",
+    "cat": "slang",
+    "example": {
+     "es": "¿Quieres un copete o un jugo?",
+     "en": "Do you want a drink or a juice?"
+    }
+   },
+   {
+    "es": "curado",
+    "en": "drunk",
+    "cat": "slang",
+    "example": {
+     "es": "Anoche quedó curado en la fiesta.",
+     "en": "Last night he got drunk at the party."
+    }
+   },
+   {
+    "es": "andar con la caña",
+    "en": "to have a hangover",
+    "cat": "slang",
+    "example": {
+     "es": "Amanecí con la caña.",
+     "en": "I woke up with a hangover."
+    }
+   },
+   {
+    "es": "completo",
+    "en": "Chilean loaded hot dog",
+    "cat": "food",
+    "example": {
+     "es": "Pedí un completo italiano.",
+     "en": "I ordered an Italian-style hot dog."
+    }
+   },
+   {
+    "es": "sopaipilla",
+    "en": "fried pumpkin dough round",
+    "cat": "food",
+    "example": {
+     "es": "Cuando llueve, comemos sopaipillas.",
+     "en": "When it rains, we eat sopaipillas."
+    }
+   },
+   {
+    "es": "terremoto",
+    "en": "sweet wine drink with pineapple ice cream",
+    "cat": "food",
+    "example": {
+     "es": "Probé un terremoto en la fonda.",
+     "en": "I tried a terremoto at the fair."
+    }
+   },
+   {
+    "es": "mote con huesillo",
+    "en": "cold peach and wheat drink",
+    "cat": "food",
+    "example": {
+     "es": "En verano tomo mote con huesillo.",
+     "en": "In summer I drink mote con huesillo."
+    }
+   },
+   {
+    "es": "palta",
+    "en": "avocado",
+    "cat": "food",
+    "example": {
+     "es": "El pan con palta es rico.",
+     "en": "Bread with avocado is delicious."
+    }
+   },
+   {
+    "es": "manjar",
+    "en": "dulce de leche, caramel spread",
+    "cat": "food",
+    "example": {
+     "es": "El pastel tiene manjar.",
+     "en": "The cake has caramel spread."
+    }
+   },
+   {
+    "es": "taco",
+    "en": "traffic jam",
+    "cat": "everyday",
+    "example": {
+     "es": "Hay mucho taco en la Alameda.",
+     "en": "There is a big traffic jam on the Alameda."
+    }
+   },
+   {
+    "es": "bencina",
+    "en": "gasoline",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo que echar bencina al auto.",
+     "en": "I have to put gas in the car."
+    }
+   },
+   {
+    "es": "¿la dura?",
+    "en": "really?, for real?",
+    "cat": "expressions",
+    "example": {
+     "es": "¿La dura que ganaste?",
+     "en": "Did you really win?"
+    }
+   },
+   {
+    "es": "qué lata",
+    "en": "what a drag, how boring",
+    "cat": "emotions",
+    "example": {
+     "es": "¡Qué lata, se canceló el paseo!",
+     "en": "What a drag, the trip was canceled!"
+    }
+   },
+   {
+    "es": "brígido",
+    "en": "intense, rough, wild",
+    "cat": "slang",
+    "example": {
+     "es": "El examen estuvo brígido.",
+     "en": "The exam was rough."
+    }
+   },
+   {
+    "es": "pituto",
+    "en": "connection, contact that gets you a job",
+    "cat": "money",
+    "example": {
+     "es": "Consiguió la pega por un pituto.",
+     "en": "He got the job through a connection."
+    }
+   }
+  ]
+ },
+ {
+  "id": "argentina",
+  "name": "Argentina",
+  "es": "Argentina",
+  "flag": "🇦🇷",
+  "entries": [
+   {
+    "es": "che",
+    "en": "hey, buddy (to get attention)",
+    "cat": "greetings",
+    "example": {
+     "es": "Che, ¿venís a comer?",
+     "en": "Hey, are you coming to eat?"
+    }
+   },
+   {
+    "es": "¿qué hacés?",
+    "en": "what's up?, how's it going?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Hola! ¿Qué hacés, todo bien?",
+     "en": "Hi! What's up, all good?"
+    }
+   },
+   {
+    "es": "boludo",
+    "en": "dude, buddy (very informal, among friends)",
+    "cat": "people",
+    "example": {
+     "es": "Che, boludo, ¿vamos al cine?",
+     "en": "Hey, dude, shall we go to the movies?"
+    }
+   },
+   {
+    "es": "pibe",
+    "en": "boy, young guy",
+    "cat": "people",
+    "example": {
+     "es": "Ese pibe juega muy bien.",
+     "en": "That kid plays really well."
+    }
+   },
+   {
+    "es": "piba",
+    "en": "girl, young woman",
+    "cat": "people",
+    "example": {
+     "es": "La piba es re simpática.",
+     "en": "The girl is super nice."
+    }
+   },
+   {
+    "es": "chabón",
+    "en": "guy, dude",
+    "cat": "people",
+    "example": {
+     "es": "El chabón vive acá cerca.",
+     "en": "The guy lives near here."
+    }
+   },
+   {
+    "es": "mina",
+    "en": "woman, girl (informal)",
+    "cat": "people",
+    "example": {
+     "es": "Esa mina canta muy bien.",
+     "en": "That woman sings really well."
+    }
+   },
+   {
+    "es": "flaco",
+    "en": "dude, man (friendly address)",
+    "cat": "people",
+    "example": {
+     "es": "Flaco, ¿me pasás la sal?",
+     "en": "Man, can you pass me the salt?"
+    }
+   },
+   {
+    "es": "cheto",
+    "en": "posh, fancy",
+    "cat": "people",
+    "example": {
+     "es": "Ese bar es muy cheto.",
+     "en": "That bar is very posh."
+    }
+   },
+   {
+    "es": "los viejos",
+    "en": "parents (affectionate)",
+    "cat": "people",
+    "example": {
+     "es": "El domingo como con mis viejos.",
+     "en": "On Sunday I eat with my parents."
+    }
+   },
+   {
+    "es": "laburo",
+    "en": "work, job",
+    "cat": "money",
+    "example": {
+     "es": "Mañana tengo mucho laburo.",
+     "en": "Tomorrow I have a lot of work."
+    }
+   },
+   {
+    "es": "laburar",
+    "en": "to work",
+    "cat": "money",
+    "example": {
+     "es": "Laburás mucho, tomate un descanso.",
+     "en": "You work a lot, take a break."
+    }
+   },
+   {
+    "es": "guita",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No me alcanza la guita este mes.",
+     "en": "My money doesn't stretch far enough this month."
+    }
+   },
+   {
+    "es": "mango",
+    "en": "peso, buck",
+    "cat": "money",
+    "example": {
+     "es": "No tengo un mango.",
+     "en": "I don't have a single buck."
+    }
+   },
+   {
+    "es": "changa",
+    "en": "odd job, gig",
+    "cat": "money",
+    "example": {
+     "es": "Hace changas los fines de semana.",
+     "en": "He does odd jobs on weekends."
+    }
+   },
+   {
+    "es": "bondi",
+    "en": "bus",
+    "cat": "everyday",
+    "example": {
+     "es": "Tomo el bondi hasta el centro.",
+     "en": "I take the bus downtown."
+    }
+   },
+   {
+    "es": "subte",
+    "en": "subway",
+    "cat": "everyday",
+    "example": {
+     "es": "El subte está lleno a la mañana.",
+     "en": "The subway is full in the morning."
+    }
+   },
+   {
+    "es": "nafta",
+    "en": "gasoline",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo que cargar nafta.",
+     "en": "I have to fill up with gas."
+    }
+   },
+   {
+    "es": "quilombo",
+    "en": "mess, chaos",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué quilombo hay en el centro hoy!",
+     "en": "What a mess downtown today!"
+    }
+   },
+   {
+    "es": "bardo",
+    "en": "trouble, ruckus",
+    "cat": "slang",
+    "example": {
+     "es": "Se armó un bardo en la calle.",
+     "en": "A ruckus broke out in the street."
+    }
+   },
+   {
+    "es": "posta",
+    "en": "for real, the real deal",
+    "cat": "expressions",
+    "example": {
+     "es": "Posta, el asado estaba buenísimo.",
+     "en": "For real, the barbecue was amazing."
+    }
+   },
+   {
+    "es": "dale",
+    "en": "okay, sure, come on",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Nos vemos a las ocho? ¡Dale!",
+     "en": "See you at eight? Sure!"
+    }
+   },
+   {
+    "es": "viste",
+    "en": "you know?, right?",
+    "cat": "expressions",
+    "example": {
+     "es": "Está caro todo, ¿viste?",
+     "en": "Everything is expensive, you know?"
+    }
+   },
+   {
+    "es": "re",
+    "en": "super, really (intensifier)",
+    "cat": "expressions",
+    "example": {
+     "es": "La fiesta estuvo re buena.",
+     "en": "The party was super good."
+    }
+   },
+   {
+    "es": "bárbaro",
+    "en": "great, fantastic",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Llegás a las dos? ¡Bárbaro!",
+     "en": "You arrive at two? Great!"
+    }
+   },
+   {
+    "es": "macanudo",
+    "en": "great, good-natured",
+    "cat": "slang",
+    "example": {
+     "es": "Tu papá es macanudo.",
+     "en": "Your dad is a great guy."
+    }
+   },
+   {
+    "es": "copado",
+    "en": "cool, nice",
+    "cat": "slang",
+    "example": {
+     "es": "Qué copado tu plan.",
+     "en": "Your plan is really cool."
+    }
+   },
+   {
+    "es": "zarpado",
+    "en": "amazing, over the top",
+    "cat": "slang",
+    "example": {
+     "es": "El recital estuvo zarpado.",
+     "en": "The concert was amazing."
+    }
+   },
+   {
+    "es": "trucho",
+    "en": "fake, counterfeit",
+    "cat": "slang",
+    "example": {
+     "es": "Ese reloj es trucho.",
+     "en": "That watch is fake."
+    }
+   },
+   {
+    "es": "chamuyar",
+    "en": "to sweet-talk, to spin a story",
+    "cat": "slang",
+    "example": {
+     "es": "No me chamuyes, decime la verdad.",
+     "en": "Don't sweet-talk me, tell me the truth."
+    }
+   },
+   {
+    "es": "canchero",
+    "en": "cocky, smooth, show-off",
+    "cat": "slang",
+    "example": {
+     "es": "Se hace el canchero con su moto.",
+     "en": "He acts all cool with his motorcycle."
+    }
+   },
+   {
+    "es": "fiaca",
+    "en": "laziness, low energy",
+    "cat": "emotions",
+    "example": {
+     "es": "Hoy tengo fiaca, me quedo en casa.",
+     "en": "I feel lazy today, I'm staying home."
+    }
+   },
+   {
+    "es": "mufa",
+    "en": "bad luck, jinx",
+    "cat": "emotions",
+    "example": {
+     "es": "No lo digas, que es mufa.",
+     "en": "Don't say it, it's bad luck."
+    }
+   },
+   {
+    "es": "buena onda",
+    "en": "good vibes, nice (person)",
+    "cat": "emotions",
+    "example": {
+     "es": "La profe es re buena onda.",
+     "en": "The teacher is really nice."
+    }
+   },
+   {
+    "es": "boliche",
+    "en": "nightclub",
+    "cat": "slang",
+    "example": {
+     "es": "El sábado vamos al boliche.",
+     "en": "On Saturday we are going to the club."
+    }
+   },
+   {
+    "es": "birra",
+    "en": "beer",
+    "cat": "food",
+    "example": {
+     "es": "¿Tomamos una birra después del laburo?",
+     "en": "Shall we have a beer after work?"
+    }
+   },
+   {
+    "es": "morfar",
+    "en": "to eat",
+    "cat": "food",
+    "example": {
+     "es": "¿Qué vamos a morfar hoy?",
+     "en": "What are we going to eat today?"
+    }
+   },
+   {
+    "es": "choripán",
+    "en": "grilled sausage sandwich",
+    "cat": "food",
+    "example": {
+     "es": "Comimos choripán en la cancha.",
+     "en": "We ate choripán at the stadium."
+    }
+   },
+   {
+    "es": "medialuna",
+    "en": "small sweet croissant",
+    "cat": "food",
+    "example": {
+     "es": "Un café con dos medialunas, por favor.",
+     "en": "A coffee with two croissants, please."
+    }
+   },
+   {
+    "es": "factura",
+    "en": "breakfast pastry",
+    "cat": "food",
+    "example": {
+     "es": "Compré facturas para el mate.",
+     "en": "I bought pastries to have with mate."
+    }
+   }
+  ]
+ },
+ {
+  "id": "uruguay",
+  "name": "Uruguay",
+  "es": "Uruguay",
+  "flag": "🇺🇾",
+  "entries": [
+   {
+    "es": "bo",
+    "en": "hey, dude (to address someone)",
+    "cat": "greetings",
+    "example": {
+     "es": "Bo, ¿venís a la rambla?",
+     "en": "Hey, are you coming to the waterfront?"
+    }
+   },
+   {
+    "es": "ta",
+    "en": "okay, fine, that's settled",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Nos vemos a las cinco? Ta.",
+     "en": "See you at five? Okay."
+    }
+   },
+   {
+    "es": "pah",
+    "en": "wow, oh man",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Pah, qué calor hace hoy!",
+     "en": "Wow, it's so hot today!"
+    }
+   },
+   {
+    "es": "fa",
+    "en": "whoa, no way",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Fa, no lo puedo creer!",
+     "en": "Whoa, I can't believe it!"
+    }
+   },
+   {
+    "es": "ni ahí",
+    "en": "no way, not at all",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Te gustó la película? Ni ahí.",
+     "en": "Did you like the movie? Not at all."
+    }
+   },
+   {
+    "es": "ni que hablar",
+    "en": "absolutely, of course",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Vamos a la playa? ¡Ni que hablar!",
+     "en": "Shall we go to the beach? Absolutely!"
+    }
+   },
+   {
+    "es": "de repente",
+    "en": "maybe, perhaps (Uruguayan usage)",
+    "cat": "expressions",
+    "example": {
+     "es": "De repente vamos mañana.",
+     "en": "Maybe we'll go tomorrow."
+    }
+   },
+   {
+    "es": "a las órdenes",
+    "en": "at your service, you're welcome",
+    "cat": "greetings",
+    "example": {
+     "es": "Muchas gracias. —A las órdenes.",
+     "en": "Thank you very much. —At your service."
+    }
+   },
+   {
+    "es": "¿cómo andás?",
+    "en": "how are you doing?",
+    "cat": "greetings",
+    "example": {
+     "es": "Hola, ¿cómo andás?",
+     "en": "Hi, how are you doing?"
+    }
+   },
+   {
+    "es": "gurí",
+    "en": "boy, kid",
+    "cat": "people",
+    "example": {
+     "es": "El gurí está jugando afuera.",
+     "en": "The kid is playing outside."
+    }
+   },
+   {
+    "es": "gurisa",
+    "en": "girl",
+    "cat": "people",
+    "example": {
+     "es": "La gurisa va a la escuela.",
+     "en": "The girl goes to school."
+    }
+   },
+   {
+    "es": "botija",
+    "en": "kid, youngster",
+    "cat": "people",
+    "example": {
+     "es": "Cuando era botija, vivía acá.",
+     "en": "When I was a kid, I lived here."
+    }
+   },
+   {
+    "es": "chiquilines",
+    "en": "kids, children",
+    "cat": "people",
+    "example": {
+     "es": "Los chiquilines juegan en la plaza.",
+     "en": "The kids are playing in the square."
+    }
+   },
+   {
+    "es": "veterano",
+    "en": "older person",
+    "cat": "people",
+    "example": {
+     "es": "Un veterano me ayudó con la dirección.",
+     "en": "An older man helped me with the address."
+    }
+   },
+   {
+    "es": "canario",
+    "en": "person from the interior of the country",
+    "cat": "people",
+    "example": {
+     "es": "Mi tío es canario, vive en Florida.",
+     "en": "My uncle is from the countryside, he lives in Florida."
+    }
+   },
+   {
+    "es": "yorugua",
+    "en": "Uruguayan (playful reversed slang)",
+    "cat": "people",
+    "example": {
+     "es": "Soy yorugua, de Montevideo.",
+     "en": "I'm Uruguayan, from Montevideo."
+    }
+   },
+   {
+    "es": "salame",
+    "en": "silly person, goofball (mild)",
+    "cat": "people",
+    "example": {
+     "es": "No seas salame, era un chiste.",
+     "en": "Don't be a goofball, it was a joke."
+    }
+   },
+   {
+    "es": "salado",
+    "en": "amazing, intense, really tough",
+    "cat": "slang",
+    "example": {
+     "es": "Estuvo salado el partido.",
+     "en": "The match was intense."
+    }
+   },
+   {
+    "es": "de más",
+    "en": "great, awesome",
+    "cat": "slang",
+    "example": {
+     "es": "La playa está de más hoy.",
+     "en": "The beach is awesome today."
+    }
+   },
+   {
+    "es": "pila",
+    "en": "a lot, loads",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo pila de cosas para hacer.",
+     "en": "I have loads of things to do."
+    }
+   },
+   {
+    "es": "estar podrido",
+    "en": "to be fed up",
+    "cat": "emotions",
+    "example": {
+     "es": "Estoy podrido del tráfico.",
+     "en": "I'm fed up with the traffic."
+    }
+   },
+   {
+    "es": "embole",
+    "en": "bore, drag",
+    "cat": "emotions",
+    "example": {
+     "es": "Qué embole este día de lluvia.",
+     "en": "What a drag this rainy day is."
+    }
+   },
+   {
+    "es": "joda",
+    "en": "party, fun",
+    "cat": "slang",
+    "example": {
+     "es": "El viernes hay joda en casa de Nico.",
+     "en": "On Friday there's a party at Nico's house."
+    }
+   },
+   {
+    "es": "dar bola",
+    "en": "to pay attention to someone",
+    "cat": "slang",
+    "example": {
+     "es": "No me da bola cuando hablo.",
+     "en": "He doesn't pay attention to me when I talk."
+    }
+   },
+   {
+    "es": "estar en la vuelta",
+    "en": "to be around, nearby",
+    "cat": "expressions",
+    "example": {
+     "es": "Cualquier cosa, ando en la vuelta.",
+     "en": "If you need anything, I'm around."
+    }
+   },
+   {
+    "es": "garra charrúa",
+    "en": "Uruguayan fighting spirit",
+    "cat": "expressions",
+    "example": {
+     "es": "Uruguay ganó con garra charrúa.",
+     "en": "Uruguay won with true fighting spirit."
+    }
+   },
+   {
+    "es": "championes",
+    "en": "sneakers",
+    "cat": "everyday",
+    "example": {
+     "es": "Me compré championes nuevos.",
+     "en": "I bought new sneakers."
+    }
+   },
+   {
+    "es": "caravana",
+    "en": "earring",
+    "cat": "everyday",
+    "example": {
+     "es": "Perdí una caravana en el baile.",
+     "en": "I lost an earring at the dance."
+    }
+   },
+   {
+    "es": "ómnibus",
+    "en": "bus",
+    "cat": "everyday",
+    "example": {
+     "es": "El ómnibus viene lleno.",
+     "en": "The bus is coming full."
+    }
+   },
+   {
+    "es": "rambla",
+    "en": "waterfront promenade",
+    "cat": "everyday",
+    "example": {
+     "es": "Fuimos a caminar por la rambla.",
+     "en": "We went for a walk along the waterfront."
+    }
+   },
+   {
+    "es": "matear",
+    "en": "to drink mate together",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Vamos a matear a la plaza?",
+     "en": "Shall we go drink mate in the square?"
+    }
+   },
+   {
+    "es": "mate",
+    "en": "traditional yerba mate drink",
+    "cat": "food",
+    "example": {
+     "es": "Ella lleva el mate a todos lados.",
+     "en": "She takes her mate everywhere."
+    }
+   },
+   {
+    "es": "termo",
+    "en": "thermos (carried with the mate)",
+    "cat": "everyday",
+    "example": {
+     "es": "No me olvido del termo y el mate.",
+     "en": "I never forget the thermos and the mate."
+    }
+   },
+   {
+    "es": "chivito",
+    "en": "steak sandwich, national dish",
+    "cat": "food",
+    "example": {
+     "es": "Pedí un chivito al pan.",
+     "en": "I ordered a chivito sandwich."
+    }
+   },
+   {
+    "es": "bizcochos",
+    "en": "small breakfast pastries",
+    "cat": "food",
+    "example": {
+     "es": "Compré bizcochos para el mate.",
+     "en": "I bought pastries to have with mate."
+    }
+   },
+   {
+    "es": "torta frita",
+    "en": "fried dough eaten on rainy days",
+    "cat": "food",
+    "example": {
+     "es": "Hicimos tortas fritas porque llueve.",
+     "en": "We made tortas fritas because it's raining."
+    }
+   },
+   {
+    "es": "refuerzo",
+    "en": "simple sandwich",
+    "cat": "food",
+    "example": {
+     "es": "Me comí un refuerzo de jamón y queso.",
+     "en": "I ate a ham and cheese sandwich."
+    }
+   },
+   {
+    "es": "grappamiel",
+    "en": "grappa with honey liqueur",
+    "cat": "food",
+    "example": {
+     "es": "En invierno tomamos grappamiel.",
+     "en": "In winter we drink grappamiel."
+    }
+   },
+   {
+    "es": "no tener un vintén",
+    "en": "to be totally broke",
+    "cat": "money",
+    "example": {
+     "es": "No tengo un vintén hasta el viernes.",
+     "en": "I don't have a cent until Friday."
+    }
+   },
+   {
+    "es": "vaquita",
+    "en": "money pool among friends",
+    "cat": "money",
+    "example": {
+     "es": "Hicimos una vaquita para el regalo.",
+     "en": "We pooled money for the gift."
+    }
+   }
+  ]
+ },
+ {
+  "id": "paraguay",
+  "name": "Paraguay",
+  "es": "Paraguay",
+  "flag": "🇵🇾",
+  "entries": [
+   {
+    "es": "¡Mba'éichapa!",
+    "en": "hello!, how's it going? (Guaraní greeting)",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Mba'éichapa! ¿Todo bien?",
+     "en": "Hello! Everything good?"
+    }
+   },
+   {
+    "es": "tranquilopa",
+    "en": "all good, all calm",
+    "cat": "greetings",
+    "example": {
+     "es": "¿Cómo estás? —Tranquilopa.",
+     "en": "How are you? —All good."
+    }
+   },
+   {
+    "es": "che ra'a",
+    "en": "my friend, buddy",
+    "cat": "people",
+    "example": {
+     "es": "¿Qué tal, che ra'a?",
+     "en": "What's up, my friend?"
+    }
+   },
+   {
+    "es": "kape",
+    "en": "dude, pal",
+    "cat": "people",
+    "example": {
+     "es": "Ese kape es mi vecino.",
+     "en": "That dude is my neighbor."
+    }
+   },
+   {
+    "es": "¡nde!",
+    "en": "hey!, wow! (interjection)",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Nde! ¡Qué sorpresa verte!",
+     "en": "Wow! What a surprise to see you!"
+    }
+   },
+   {
+    "es": "na",
+    "en": "please (softening particle after verbs)",
+    "cat": "expressions",
+    "example": {
+     "es": "Pasame na la sal.",
+     "en": "Pass me the salt, please."
+    }
+   },
+   {
+    "es": "pio",
+    "en": "question particle (adds emphasis)",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Qué pio querés comer?",
+     "en": "So what do you want to eat?"
+    }
+   },
+   {
+    "es": "luego",
+    "en": "emphatic particle (Paraguayan usage)",
+    "cat": "expressions",
+    "example": {
+     "es": "Es luego así, no te preocupes.",
+     "en": "That's just how it is, don't worry."
+    }
+   },
+   {
+    "es": "voi",
+    "en": "indeed, for sure (emphatic particle)",
+    "cat": "expressions",
+    "example": {
+     "es": "Vino voi temprano hoy.",
+     "en": "He did indeed come early today."
+    }
+   },
+   {
+    "es": "¡chake!",
+    "en": "watch out!, careful!",
+    "cat": "expressions",
+    "example": {
+     "es": "¡Chake, viene el perro!",
+     "en": "Watch out, the dog is coming!"
+    }
+   },
+   {
+    "es": "de gua'u",
+    "en": "jokingly, pretend, not for real",
+    "cat": "expressions",
+    "example": {
+     "es": "Te dije de gua'u, era una broma.",
+     "en": "I said it jokingly, it was a joke."
+    }
+   },
+   {
+    "es": "purete",
+    "en": "awesome, great",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué purete tu moto!",
+     "en": "Your motorcycle is awesome!"
+    }
+   },
+   {
+    "es": "porã",
+    "en": "nice, lovely, beautiful",
+    "cat": "slang",
+    "example": {
+     "es": "Está porã tu vestido.",
+     "en": "Your dress is lovely."
+    }
+   },
+   {
+    "es": "mbarete",
+    "en": "strong; by force",
+    "cat": "slang",
+    "example": {
+     "es": "Entró a lo mbarete, sin permiso.",
+     "en": "He barged in by force, without permission."
+    }
+   },
+   {
+    "es": "argel",
+    "en": "unfriendly, unpleasant person",
+    "cat": "people",
+    "example": {
+     "es": "No seas argel, saludá un poco.",
+     "en": "Don't be unfriendly, say hello."
+    }
+   },
+   {
+    "es": "chuchi",
+    "en": "fancy, posh",
+    "cat": "people",
+    "example": {
+     "es": "Esa tienda es muy chuchi.",
+     "en": "That store is very fancy."
+    }
+   },
+   {
+    "es": "guapo",
+    "en": "hardworking (Paraguayan meaning)",
+    "cat": "people",
+    "example": {
+     "es": "Mi abuela es guapa, trabaja todo el día.",
+     "en": "My grandmother is hardworking, she works all day."
+    }
+   },
+   {
+    "es": "mita'i",
+    "en": "little kid",
+    "cat": "people",
+    "example": {
+     "es": "El mita'i juega en el patio.",
+     "en": "The little kid plays in the yard."
+    }
+   },
+   {
+    "es": "Pombero",
+    "en": "mischievous mythical forest creature",
+    "cat": "people",
+    "example": {
+     "es": "Dicen que el Pombero sale de noche.",
+     "en": "They say the Pombero comes out at night."
+    }
+   },
+   {
+    "es": "vyro",
+    "en": "silly, fool (mild)",
+    "cat": "people",
+    "example": {
+     "es": "No seas vyro, estudiá para el examen.",
+     "en": "Don't be silly, study for the exam."
+    }
+   },
+   {
+    "es": "vyrorei",
+    "en": "nonsense, silly stuff",
+    "cat": "slang",
+    "example": {
+     "es": "Eso es vyrorei, no le hagas caso.",
+     "en": "That's nonsense, don't pay attention to him."
+    }
+   },
+   {
+    "es": "japu",
+    "en": "lie; liar",
+    "cat": "slang",
+    "example": {
+     "es": "No le creas, es japu.",
+     "en": "Don't believe him, it's a lie."
+    }
+   },
+   {
+    "es": "kaigue",
+    "en": "listless, low energy",
+    "cat": "emotions",
+    "example": {
+     "es": "Hoy estoy kaigue, no quiero salir.",
+     "en": "Today I feel listless, I don't want to go out."
+    }
+   },
+   {
+    "es": "ka'u",
+    "en": "drunk",
+    "cat": "slang",
+    "example": {
+     "es": "Estaba un poco ka'u anoche.",
+     "en": "He was a little drunk last night."
+    }
+   },
+   {
+    "es": "plaguearse",
+    "en": "to whine, to complain",
+    "cat": "emotions",
+    "example": {
+     "es": "No te plaguees tanto, está todo bien.",
+     "en": "Don't whine so much, everything is fine."
+    }
+   },
+   {
+    "es": "plagueón",
+    "en": "whiner, complainer",
+    "cat": "people",
+    "example": {
+     "es": "Mi tío es un plagueón.",
+     "en": "My uncle is a whiner."
+    }
+   },
+   {
+    "es": "hallarse",
+    "en": "to be happy, delighted (Guaraní calque)",
+    "cat": "emotions",
+    "example": {
+     "es": "Me hallo mucho con tu visita.",
+     "en": "I'm so happy about your visit."
+    }
+   },
+   {
+    "es": "tereré",
+    "en": "cold yerba mate drink",
+    "cat": "food",
+    "example": {
+     "es": "A la siesta tomamos tereré.",
+     "en": "At siesta time we drink tereré."
+    }
+   },
+   {
+    "es": "tereré rupa",
+    "en": "snack eaten before tereré",
+    "cat": "food",
+    "example": {
+     "es": "Primero el tereré rupa, después el tereré.",
+     "en": "First the snack, then the tereré."
+    }
+   },
+   {
+    "es": "chipa",
+    "en": "cheese and starch bread ring",
+    "cat": "food",
+    "example": {
+     "es": "Compré chipa calentita en la terminal.",
+     "en": "I bought warm chipa at the bus terminal."
+    }
+   },
+   {
+    "es": "chipa guasu",
+    "en": "fresh corn casserole",
+    "cat": "food",
+    "example": {
+     "es": "Mi tía hizo chipa guasu para el almuerzo.",
+     "en": "My aunt made chipa guasu for lunch."
+    }
+   },
+   {
+    "es": "sopa paraguaya",
+    "en": "savory corn and cheese cake",
+    "cat": "food",
+    "example": {
+     "es": "La sopa paraguaya no es una sopa.",
+     "en": "Sopa paraguaya is not actually a soup."
+    }
+   },
+   {
+    "es": "mbejú",
+    "en": "starch and cheese flatbread",
+    "cat": "food",
+    "example": {
+     "es": "Desayunamos mbejú con cocido.",
+     "en": "We had mbejú with cocido for breakfast."
+    }
+   },
+   {
+    "es": "vori vori",
+    "en": "soup with corn and cheese dumplings",
+    "cat": "food",
+    "example": {
+     "es": "En invierno como vori vori.",
+     "en": "In winter I eat vori vori."
+    }
+   },
+   {
+    "es": "mandioca",
+    "en": "cassava, everyday staple",
+    "cat": "food",
+    "example": {
+     "es": "Siempre hay mandioca en la mesa.",
+     "en": "There is always cassava on the table."
+    }
+   },
+   {
+    "es": "cocido",
+    "en": "hot drink of toasted yerba mate",
+    "cat": "food",
+    "example": {
+     "es": "Tomo cocido con leche a la mañana.",
+     "en": "I drink cocido with milk in the morning."
+    }
+   },
+   {
+    "es": "pirapire",
+    "en": "money (from Guaraní)",
+    "cat": "money",
+    "example": {
+     "es": "No tengo pirapire para salir.",
+     "en": "I don't have money to go out."
+    }
+   },
+   {
+    "es": "jopara",
+    "en": "everyday mix of Spanish and Guaraní",
+    "cat": "everyday",
+    "example": {
+     "es": "Acá hablamos en jopara.",
+     "en": "Here we speak in jopara."
+    }
+   },
+   {
+    "es": "ndaipóri problema",
+    "en": "no problem",
+    "cat": "expressions",
+    "example": {
+     "es": "Gracias por todo. —Ndaipóri problema.",
+     "en": "Thanks for everything. —No problem."
+    }
+   },
+   {
+    "es": "despensa",
+    "en": "small neighborhood shop",
+    "cat": "everyday",
+    "example": {
+     "es": "Voy a la despensa a comprar pan.",
+     "en": "I'm going to the corner shop to buy bread."
+    }
+   }
+  ]
+ },
+ {
+  "id": "spain",
+  "name": "Spain",
+  "es": "España",
+  "flag": "🇪🇸",
+  "entries": [
+   {
+    "es": "vale",
+    "en": "okay, alright",
+    "cat": "expressions",
+    "example": {
+     "es": "Vale, nos vemos a las ocho.",
+     "en": "Okay, see you at eight."
+    }
+   },
+   {
+    "es": "tío / tía",
+    "en": "dude, guy / girl (informal address)",
+    "cat": "people",
+    "example": {
+     "es": "¡Tía, cuánto tiempo sin verte!",
+     "en": "Girl, it's been so long since I saw you!"
+    }
+   },
+   {
+    "es": "guay",
+    "en": "cool, great",
+    "cat": "slang",
+    "example": {
+     "es": "La película fue muy guay.",
+     "en": "The movie was really cool."
+    }
+   },
+   {
+    "es": "currar",
+    "en": "to work",
+    "cat": "everyday",
+    "example": {
+     "es": "Mañana curro hasta las seis.",
+     "en": "Tomorrow I work until six."
+    }
+   },
+   {
+    "es": "curro",
+    "en": "job, work",
+    "cat": "everyday",
+    "example": {
+     "es": "Tengo un curro nuevo en Madrid.",
+     "en": "I have a new job in Madrid."
+    }
+   },
+   {
+    "es": "flipar",
+    "en": "to be amazed, to freak out",
+    "cat": "emotions",
+    "example": {
+     "es": "Vas a flipar con esta noticia.",
+     "en": "You're going to be amazed by this news."
+    }
+   },
+   {
+    "es": "majo",
+    "en": "nice, friendly, pleasant",
+    "cat": "people",
+    "example": {
+     "es": "Tu vecino es muy majo.",
+     "en": "Your neighbor is very nice."
+    }
+   },
+   {
+    "es": "molar",
+    "en": "to be cool, to be liked",
+    "cat": "slang",
+    "example": {
+     "es": "Me mola mucho tu chaqueta.",
+     "en": "I really like your jacket."
+    }
+   },
+   {
+    "es": "chaval",
+    "en": "kid, young person",
+    "cat": "people",
+    "example": {
+     "es": "Ese chaval juega muy bien al fútbol.",
+     "en": "That kid plays soccer really well."
+    }
+   },
+   {
+    "es": "colega",
+    "en": "buddy, mate",
+    "cat": "people",
+    "example": {
+     "es": "Voy al cine con unos colegas.",
+     "en": "I'm going to the movies with some buddies."
+    }
+   },
+   {
+    "es": "guiri",
+    "en": "foreign tourist",
+    "cat": "people",
+    "example": {
+     "es": "En agosto la playa está llena de guiris.",
+     "en": "In August the beach is full of foreign tourists."
+    }
+   },
+   {
+    "es": "pasta",
+    "en": "money",
+    "cat": "money",
+    "example": {
+     "es": "No tengo pasta para salir hoy.",
+     "en": "I don't have money to go out today."
+    }
+   },
+   {
+    "es": "pavo",
+    "en": "euro, buck",
+    "cat": "money",
+    "example": {
+     "es": "El menú cuesta diez pavos.",
+     "en": "The set menu costs ten bucks."
+    }
+   },
+   {
+    "es": "un pastón",
+    "en": "a fortune, a lot of money",
+    "cat": "money",
+    "example": {
+     "es": "Ese coche vale un pastón.",
+     "en": "That car costs a fortune."
+    }
+   },
+   {
+    "es": "estar sin blanca",
+    "en": "to be broke",
+    "cat": "money",
+    "example": {
+     "es": "No puedo ir, estoy sin blanca.",
+     "en": "I can't go, I'm broke."
+    }
+   },
+   {
+    "es": "bocata",
+    "en": "sandwich (on a baguette)",
+    "cat": "food",
+    "example": {
+     "es": "Me comí un bocata de jamón.",
+     "en": "I ate a ham sandwich."
+    }
+   },
+   {
+    "es": "tapa",
+    "en": "small plate of food served with a drink",
+    "cat": "food",
+    "example": {
+     "es": "Pedimos unas tapas en el bar.",
+     "en": "We ordered some tapas at the bar."
+    }
+   },
+   {
+    "es": "caña",
+    "en": "small glass of draft beer",
+    "cat": "food",
+    "example": {
+     "es": "¿Nos tomamos una caña después del curro?",
+     "en": "Shall we have a beer after work?"
+    }
+   },
+   {
+    "es": "menú del día",
+    "en": "fixed-price lunch menu",
+    "cat": "food",
+    "example": {
+     "es": "El menú del día incluye postre y café.",
+     "en": "The lunch menu includes dessert and coffee."
+    }
+   },
+   {
+    "es": "¿Qué tal?",
+    "en": "How's it going?",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Hola! ¿Qué tal el finde?",
+     "en": "Hi! How was your weekend?"
+    }
+   },
+   {
+    "es": "buenas",
+    "en": "hi, hello (casual greeting)",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Buenas! ¿Está abierta la tienda?",
+     "en": "Hi! Is the store open?"
+    }
+   },
+   {
+    "es": "hasta luego",
+    "en": "see you later",
+    "cat": "greetings",
+    "example": {
+     "es": "Me voy ya, ¡hasta luego!",
+     "en": "I'm leaving now, see you later!"
+    }
+   },
+   {
+    "es": "venga",
+    "en": "come on; okay then (also used to say bye)",
+    "cat": "expressions",
+    "example": {
+     "es": "Venga, nos llamamos mañana.",
+     "en": "Okay then, we'll call each other tomorrow."
+    }
+   },
+   {
+    "es": "¡qué fuerte!",
+    "en": "no way!, that's crazy!",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Se casan el mes que viene? ¡Qué fuerte!",
+     "en": "They're getting married next month? No way!"
+    }
+   },
+   {
+    "es": "no pasa nada",
+    "en": "no worries, it's fine",
+    "cat": "expressions",
+    "example": {
+     "es": "Tranquilo, no pasa nada si llegas tarde.",
+     "en": "Relax, it's fine if you arrive late."
+    }
+   },
+   {
+    "es": "qué va",
+    "en": "no way, not at all",
+    "cat": "expressions",
+    "example": {
+     "es": "¿Cansado yo? ¡Qué va!",
+     "en": "Me, tired? Not at all!"
+    }
+   },
+   {
+    "es": "ponerse las pilas",
+    "en": "to get one's act together",
+    "cat": "expressions",
+    "example": {
+     "es": "Tienes que ponerte las pilas con el examen.",
+     "en": "You have to get your act together for the exam."
+    }
+   },
+   {
+    "es": "mogollón",
+    "en": "a ton, loads",
+    "cat": "slang",
+    "example": {
+     "es": "Había mogollón de gente en el concierto.",
+     "en": "There were tons of people at the concert."
+    }
+   },
+   {
+    "es": "cutre",
+    "en": "shabby, cheap, low-quality",
+    "cat": "slang",
+    "example": {
+     "es": "Ese bar es un poco cutre.",
+     "en": "That bar is a bit shabby."
+    }
+   },
+   {
+    "es": "chulo",
+    "en": "cool, neat, nice-looking",
+    "cat": "slang",
+    "example": {
+     "es": "¡Qué chulo es tu móvil nuevo!",
+     "en": "Your new phone is so cool!"
+    }
+   },
+   {
+    "es": "friki",
+    "en": "geek, nerd",
+    "cat": "slang",
+    "example": {
+     "es": "Mi hermano es un friki de los videojuegos.",
+     "en": "My brother is a video game geek."
+    }
+   },
+   {
+    "es": "finde",
+    "en": "weekend",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Qué hacéis vosotros este finde?",
+     "en": "What are you all doing this weekend?"
+    }
+   },
+   {
+    "es": "móvil",
+    "en": "cell phone",
+    "cat": "everyday",
+    "example": {
+     "es": "Se me olvidó el móvil en casa.",
+     "en": "I forgot my cell phone at home."
+    }
+   },
+   {
+    "es": "ordenador",
+    "en": "computer",
+    "cat": "everyday",
+    "example": {
+     "es": "Trabajo todo el día con el ordenador.",
+     "en": "I work all day on the computer."
+    }
+   },
+   {
+    "es": "piso",
+    "en": "apartment, flat",
+    "cat": "everyday",
+    "example": {
+     "es": "Buscamos un piso cerca del centro.",
+     "en": "We're looking for an apartment near downtown."
+    }
+   },
+   {
+    "es": "quedar",
+    "en": "to meet up, to make plans",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Quedamos el sábado para comer?",
+     "en": "Shall we meet up on Saturday for lunch?"
+    }
+   },
+   {
+    "es": "apetecer",
+    "en": "to feel like (doing or having something)",
+    "cat": "everyday",
+    "example": {
+     "es": "¿Os apetece un helado?",
+     "en": "Do you all feel like having ice cream?"
+    }
+   },
+   {
+    "es": "mosqueado",
+    "en": "annoyed, miffed",
+    "cat": "emotions",
+    "example": {
+     "es": "Está mosqueado porque llegamos tarde.",
+     "en": "He's annoyed because we arrived late."
+    }
+   },
+   {
+    "es": "rayarse",
+    "en": "to overthink, to get worked up",
+    "cat": "emotions",
+    "example": {
+     "es": "No te rayes, todo va a salir bien.",
+     "en": "Don't overthink it, everything will be fine."
+    }
+   },
+   {
+    "es": "estar hecho polvo",
+    "en": "to be exhausted",
+    "cat": "emotions",
+    "example": {
+     "es": "Después del viaje estoy hecho polvo.",
+     "en": "After the trip I'm exhausted."
+    }
+   }
+  ]
+ },
+ {
+  "id": "equatorial-guinea",
+  "name": "Equatorial Guinea",
+  "es": "Guinea Ecuatorial",
+  "flag": "🇬🇶",
+  "entries": [
+   {
+    "es": "mbolo",
+    "en": "hello (greeting from Fang)",
+    "cat": "greetings",
+    "example": {
+     "es": "¡Mbolo! ¿Cómo está la familia?",
+     "en": "Hello! How is the family?"
+    }
+   },
+   {
+    "es": "hermano",
+    "en": "brother; friend or fellow countryman",
+    "cat": "people",
+    "example": {
+     "es": "Ese hermano vive en mi barrio.",
+     "en": "That brother lives in my neighborhood."
+    }
+   },
+   {
+    "es": "mamá",
+    "en": "respectful way to address an older woman",
+    "cat": "people",
+    "example": {
+     "es": "Mamá, ¿a cuánto está el pescado hoy?",
+     "en": "Ma'am, how much is the fish today?"
+    }
+   },
+   {
+    "es": "mininga",
+    "en": "girlfriend, young woman (colloquial)",
+    "cat": "people",
+    "example": {
+     "es": "Va al balele con su mininga.",
+     "en": "He's going to the dance with his girlfriend."
+    }
+   },
+   {
+    "es": "guachimán",
+    "en": "security guard, watchman",
+    "cat": "people",
+    "example": {
+     "es": "El guachimán abre la puerta por la noche.",
+     "en": "The watchman opens the gate at night."
+    }
+   },
+   {
+    "es": "malanga",
+    "en": "taro root, a staple food",
+    "cat": "food",
+    "example": {
+     "es": "Hoy comemos malanga con pescado.",
+     "en": "Today we're eating taro with fish."
+    }
+   },
+   {
+    "es": "pepesup",
+    "en": "spicy fish soup (from 'pepper soup')",
+    "cat": "food",
+    "example": {
+     "es": "El pepesup pica, pero está muy rico.",
+     "en": "The pepper soup is spicy, but it's delicious."
+    }
+   },
+   {
+    "es": "topé",
+    "en": "palm wine",
+    "cat": "food",
+    "example": {
+     "es": "En el pueblo bebimos topé fresco.",
+     "en": "In the village we drank fresh palm wine."
+    }
+   },
+   {
+    "es": "malamba",
+    "en": "sugarcane liquor",
+    "cat": "food",
+    "example": {
+     "es": "La malamba se hace con caña de azúcar.",
+     "en": "Malamba is made from sugarcane."
+    }
+   },
+   {
+    "es": "envuelto",
+    "en": "fish or meat wrapped in leaves and steamed",
+    "cat": "food",
+    "example": {
+     "es": "Mi abuela prepara envuelto de pescado.",
+     "en": "My grandmother makes fish wrapped in leaves."
+    }
+   },
+   {
+    "es": "grombif",
+    "en": "cane rat, a local bushmeat delicacy",
+    "cat": "food",
+    "example": {
+     "es": "En el mercado venden carne de grombif.",
+     "en": "They sell cane rat meat at the market."
+    }
+   },
+   {
+    "es": "franco",
+    "en": "CFA franc, the local currency",
+    "cat": "money",
+    "example": {
+     "es": "El taxi cuesta quinientos francos.",
+     "en": "The taxi costs five hundred francs."
+    }
+   },
+   {
+    "es": "cayuco",
+    "en": "dugout canoe",
+    "cat": "everyday",
+    "example": {
+     "es": "Los pescadores salen en cayuco por la mañana.",
+     "en": "The fishermen go out in a dugout canoe in the morning."
+    }
+   },
+   {
+    "es": "poto-poto",
+    "en": "mud, muddy ground",
+    "cat": "everyday",
+    "example": {
+     "es": "Con la lluvia, el camino es puro poto-poto.",
+     "en": "With the rain, the road is pure mud."
+    }
+   },
+   {
+    "es": "abaá",
+    "en": "traditional community meeting house",
+    "cat": "everyday",
+    "example": {
+     "es": "Los mayores hablan del problema en el abaá.",
+     "en": "The elders discuss the problem in the meeting house."
+    }
+   },
+   {
+    "es": "balele",
+    "en": "traditional dance celebration",
+    "cat": "everyday",
+    "example": {
+     "es": "El sábado hay balele en el pueblo.",
+     "en": "On Saturday there's a dance celebration in the village."
+    }
+   },
+   {
+    "es": "clote",
+    "en": "wraparound cloth worn as a skirt",
+    "cat": "everyday",
+    "example": {
+     "es": "Mi tía lleva un clote de colores.",
+     "en": "My aunt is wearing a colorful cloth wrap."
+    }
+   },
+   {
+    "es": "pichi",
+    "en": "Pichinglis, the English-based creole of Bioko",
+    "cat": "everyday",
+    "example": {
+     "es": "En Malabo mucha gente habla pichi.",
+     "en": "In Malabo many people speak Pichi."
+    }
+   },
+   {
+    "es": "chapear",
+    "en": "to clear weeds or brush with a machete",
+    "cat": "everyday",
+    "example": {
+     "es": "Hay que chapear el patio antes de las lluvias.",
+     "en": "We have to clear the yard before the rains."
+    }
+   },
+   {
+    "es": "ceiba",
+    "en": "ceiba tree, national symbol on the flag",
+    "cat": "everyday",
+    "example": {
+     "es": "La ceiba aparece en la bandera del país.",
+     "en": "The ceiba tree appears on the country's flag."
+    }
+   },
+   {
+    "es": "ocume",
+    "en": "okoume, a valuable timber tree",
+    "cat": "everyday",
+    "example": {
+     "es": "El ocume es una madera importante aquí.",
+     "en": "Okoume is an important wood here."
+    }
+   }
+  ]
+ }
+]

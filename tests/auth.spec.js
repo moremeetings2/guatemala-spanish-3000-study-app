@@ -93,6 +93,22 @@ test("shows the landing page with all entry options when signed out", async ({ p
   await expect(page.locator("#tab-bar")).toBeEmpty();
 });
 
+test("landing country grid expands to all 21 countries and collapses again", async ({ page }) => {
+  const content = page.locator("#content");
+  // Collapsed: the classic four.
+  await expect(content).toContainText("Guatemala");
+  await expect(content).toContainText("El Salvador");
+  await expect(content).not.toContainText("Equatorial Guinea");
+
+  await content.getByRole("button", { name: /See all 21 countries/ }).click();
+  await expect(content).toContainText("Argentina");
+  await expect(content).toContainText("Spain");
+  await expect(content).toContainText("Equatorial Guinea");
+
+  await content.getByRole("button", { name: /Show fewer countries/ }).click();
+  await expect(content).not.toContainText("Equatorial Guinea");
+});
+
 test("landing stays mounted when non-visible voice state loads", async ({ page }) => {
   const stayedMounted = await page.evaluate(() => {
     const root = document.querySelector("#content > div");

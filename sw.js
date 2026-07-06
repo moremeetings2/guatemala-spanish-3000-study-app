@@ -1,4 +1,4 @@
-const CACHE_NAME = "hablavos-v28";
+const CACHE_NAME = "hablavos-v29";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const APP_ASSETS = [
   "./data/reading-data.json",
   "./data/synonyms.json",
   "./data/sentences.json",
+  "./data/country_lexicons.json",
 ];
 const APP_ASSET_URLS = new Set(
   APP_ASSETS.map((assetPath) => new URL(assetPath, self.location.href).href)
