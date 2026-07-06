@@ -142,6 +142,46 @@ test("deleting a word removes it from the server, the list, and the catalog", as
   expect(await page.evaluate(() => appState.data.DECKS.some((d) => d.id === "myWords"))).toBe(false);
 });
 
+test("the AI button drafts the meaning and example without overwriting user input", async ({ page }) => {
+  await boot(page);
+  // Stub the on-device engine with a canned, correctly-formatted reply.
+  await page.evaluate(() => {
+    window.AI = {
+      MODELS: { "1.2B": { label: "1.2B", note: "Best", mb: 731 } },
+      getState: () => ({ status: "ready", progress: 1, size: "1.2B", error: "" }),
+      isSupported: () => true,
+      onChange: () => () => {},
+      ensureLoaded: () => Promise.resolve(),
+      setModelSize: () => Promise.resolve(),
+      currentSize: () => "1.2B",
+      lastMessages: null,
+      chat: async (messages) => {
+        window.AI.lastMessages = messages;
+        return 'MEANING: cool, great\nSENTENCE_ES: ¡Qué chilero está el día!\nSENTENCE_EN: What a cool day!';
+      },
+    };
+    setState({ ai: { status: "ready", progress: 1, size: "1.2B", error: "" } });
+  });
+
+  await page.evaluate(() => setState({ route: "mywords" }));
+  await typeField(page, "mw-es", "chilero");
+  await page.locator("#content").getByRole("button", { name: /Fill in the rest with AI/ }).click();
+
+  // The empty fields were drafted by the AI…
+  await expect.poll(() => page.evaluate(() => appState.mw.en)).toBe("cool, great");
+  expect(await page.evaluate(() => appState.mw.sentEs)).toContain("chilero");
+  expect(await page.evaluate(() => appState.mw.sentEn)).toBe("What a cool day!");
+  // …the prompt carried the word, and the form is now addable.
+  expect(await page.evaluate(() => window.AI.lastMessages.at(-1).content)).toContain("chilero");
+  await expect(page.locator("#content").getByRole("button", { name: "Add to My Words" })).toBeEnabled();
+
+  // A second suggest must NOT overwrite what the user has edited.
+  await typeField(page, "mw-en", "awesome (my own wording)");
+  await page.locator("#content").getByRole("button", { name: /Fill in the rest with AI/ }).click();
+  await expect.poll(() => page.evaluate(() => appState.mw.suggesting)).toBe(false);
+  expect(await page.evaluate(() => appState.mw.en)).toBe("awesome (my own wording)");
+});
+
 test("logging out drops the private deck from the catalog", async ({ page }) => {
   await boot(page, [
     { id: "mine-1", deck: "myWords", type: "word", es: "patojo", en: "kid", pos: null, synonyms: [], sentence: null },

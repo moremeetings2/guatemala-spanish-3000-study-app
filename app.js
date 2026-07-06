@@ -56,7 +56,7 @@ let appState = {
   ai: { status: 'idle', progress: 0, size: '1.2B', error: '' },
   // My Words: the user's private custom deck + the add-word form.
   myWords: [],
-  mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, error: '' },
+  mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, suggesting: false, error: '' },
 };
 
 // Base persona for the on-device AI tutor. Context-specific prompts extend this.
@@ -546,7 +546,7 @@ async function doLogout() {
   try { if (token) await API.logout(token); } catch (e) {}
   clearTimeout(progressSyncTimer); dirtyCards = new Set();
   applyMyWords([]); // custom words are account-scoped — drop them from the catalog
-  setState({ auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home', myWords: [], mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, error: '' } });
+  setState({ auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home', myWords: [], mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, suggesting: false, error: '' } });
   saveAuth();
   flash('Logged out');
 }
@@ -617,6 +617,51 @@ async function deleteMyWord(id) {
   }
 }
 
+// AI assist for the add-word form: the learner types just the Spanish word and
+// the on-device tutor drafts the English meaning + an example sentence. Only
+// fields the user left empty are filled — their own typing is never overwritten,
+// and everything stays editable before "Add".
+async function suggestMyWord() {
+  const f = appState.mw;
+  const es = (f.es || '').trim();
+  if (!es || f.suggesting || f.busy || !window.AI) return;
+  // One completion at a time: the tutor chat and the suggest share a single
+  // on-device engine, and concurrent generations can corrupt each other.
+  if (appState.chat.busy) { setState({ mw: { ...f, error: 'The AI tutor is busy answering — try again in a moment.' } }); return; }
+  setState({ mw: { ...f, suggesting: true, error: '' } });
+  try {
+    await AI.ensureLoaded();
+    // The on-device model is small, so demand a rigid, line-based reply format
+    // and anchor it with a one-shot example (small models follow examples far
+    // better than instructions alone). Parsing below is tolerant of drift.
+    const raw = await AI.chat([
+      { role: 'system', content: 'You are a Spanish-English dictionary assistant specializing in the Spanish spoken in Guatemala. For each word the user gives, reply in EXACTLY this format with nothing else:\nMEANING: <short English meaning>\nSENTENCE_ES: <one short simple Spanish example sentence using the word>\nSENTENCE_EN: <the English translation of that sentence>' },
+      { role: 'user', content: 'Word: "chilero"' },
+      { role: 'assistant', content: 'MEANING: cool, great\nSENTENCE_ES: ¡Qué chilero está el día!\nSENTENCE_EN: What a nice day!' },
+      { role: 'user', content: `Word: "${es}"` },
+    ], { maxTokens: 140 });
+    const grab = (re) => {
+      const m = (raw || '').match(re);
+      return m ? m[1].trim().replace(/^["']+|["']+$/g, '') : '';
+    };
+    // Tolerate label drift like "Meaning:", "Sentence_ES:", "English Translation:".
+    const en = grab(/MEANING\s*:\s*([^\n]+)/i);
+    const sentEs = grab(/SENTENCE[_\s-]?ES\s*:\s*([^\n]+)/i);
+    const sentEn = grab(/(?:SENTENCE[_\s-]?EN|ENGLISH[^:\n]*)\s*:\s*([^\n]+)/i);
+    if (!en) throw new Error("The AI couldn't draft this one — try again or fill it in by hand.");
+    const cur = appState.mw;
+    setState({ mw: {
+      ...cur,
+      en: (cur.en || '').trim() ? cur.en : en,
+      sentEs: (cur.sentEs || '').trim() ? cur.sentEs : sentEs,
+      sentEn: (cur.sentEn || '').trim() ? cur.sentEn : sentEn,
+      suggesting: false,
+    } });
+  } catch (e) {
+    setState({ mw: { ...appState.mw, suggesting: false, error: (e && e.message) || 'AI suggestion failed — try again.' } });
+  }
+}
+
 // ===== AI Tutor =====
 
 // Mirror the AI engine's state into appState so the UI re-renders on progress,
@@ -664,6 +709,7 @@ function closeChat() {
 async function sendChat() {
   const text = (appState.chat.input || '').trim();
   if (!text || appState.chat.busy || !window.AI) return;
+  if (appState.mw.suggesting) { flash('The AI is drafting a My Word — one moment.'); return; }
   const ctx = appState.chat.context;
   const system = ctx && ctx.system ? ctx.system : AI_SYSTEM;
   const history = [...appState.chat.messages, { role: 'user', content: text }];
@@ -1043,12 +1089,22 @@ function computeVals() {
     form: {
       es: S.mw.es, en: S.mw.en, sentEs: S.mw.sentEs, sentEn: S.mw.sentEn,
       busy: S.mw.busy, error: S.mw.error,
-      canAdd: !S.mw.busy && !!(S.mw.es || '').trim() && !!(S.mw.en || '').trim(),
+      canAdd: !S.mw.busy && !S.mw.suggesting && !!(S.mw.es || '').trim() && !!(S.mw.en || '').trim(),
       onEs: e => setState({ mw: { ...S.mw, es: e.target.value, error: '' } }),
       onEn: e => setState({ mw: { ...S.mw, en: e.target.value, error: '' } }),
       onSentEs: e => setState({ mw: { ...S.mw, sentEs: e.target.value } }),
       onSentEn: e => setState({ mw: { ...S.mw, sentEn: e.target.value } }),
       onAdd: () => addMyWord(),
+      // AI assist: draft the meaning + example from just the Spanish word.
+      suggesting: S.mw.suggesting,
+      aiAvailable: !!(window.AI && AI.isSupported()),
+      canSuggest: !S.mw.suggesting && !S.mw.busy && !!(S.mw.es || '').trim(),
+      suggestLabel: S.mw.suggesting
+        ? (S.ai.status === 'downloading' || S.ai.status === 'loading'
+            ? `Preparing AI… ${Math.round((S.ai.progress || 0) * 100)}%`
+            : 'Thinking…')
+        : 'Fill in the rest with AI',
+      onSuggest: () => suggestMyWord(),
     },
     items: S.myWords.map(w => ({
       id: w.id, es: w.es, en: w.en,
@@ -1939,6 +1995,9 @@ function renderMyWords(v) {
       <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:12px">Add a word</div>
       <div style="display:flex;flex-direction:column;gap:9px">
         ${fld('Spanish word or phrase *', f.es, f.onEs, 'mw-es', 'autocapitalize="none"')}
+        ${f.aiAvailable ? `
+        <button ${h(f.onSuggest)} ${f.canSuggest ? '' : 'disabled'} style="display:flex;align-items:center;justify-content:center;gap:7px;border:1.5px dashed ${f.canSuggest ? '#5560e0' : 'var(--line)'};background:${f.suggesting ? 'var(--p-soft)' : 'transparent'};color:${f.canSuggest ? '#5560e0' : 'var(--muted2)'};font-family:Nunito;font-size:13.5px;font-weight:800;padding:10px;border-radius:12px;cursor:${f.canSuggest ? 'pointer' : 'default'}">${ms('auto_awesome', 17, f.canSuggest ? '#5560e0' : 'var(--muted2)')}${esc(f.suggestLabel)}</button>
+        <div style="font-size:11px;font-weight:600;color:var(--muted2);text-align:center;margin-top:-3px">AI drafts can make mistakes — double-check before adding.</div>` : ''}
         ${fld('English meaning *', f.en, f.onEn, 'mw-en')}
         ${fld('Example sentence in Spanish (optional)', f.sentEs, f.onSentEs, 'mw-sent-es', 'autocapitalize="none"')}
         ${f.sentEs.trim() ? fld('Example sentence in English (optional)', f.sentEn, f.onSentEn, 'mw-sent-en') : ''}
