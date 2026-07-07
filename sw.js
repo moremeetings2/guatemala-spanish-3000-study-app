@@ -1,4 +1,4 @@
-const CACHE_NAME = "hablavos-v29";
+const CACHE_NAME = "hablavos-v30";
 const APP_ASSETS = [
   "./",
   "./index.html",
