@@ -54,7 +54,7 @@ let appState = {
   syncing: false,
   // On-device AI tutor.
   chat: { open: false, context: null, messages: [], input: '', busy: false, streaming: '' },
-  ai: { status: 'idle', progress: 0, size: '1.2B', error: '' },
+  ai: { status: 'idle', progress: 0, size: 'gemma-4-e2b', error: '' },
   // My Words: the user's private custom deck + the add-word form.
   myWords: [],
   mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, suggesting: false, error: '' },
@@ -534,7 +534,6 @@ async function doAuth(kind) {
     setState({ auth: { token, user }, authBusy: false, authPassword: '', authEmail: '' });
     saveAuth();
     flash(kind === 'signup' ? 'Account created!' : 'Welcome back!');
-    maybeStartAI();
     loadMyWords();
     await syncOnLogin();
   } catch (e) {
@@ -665,8 +664,7 @@ async function suggestMyWord() {
 
 // ===== AI Tutor =====
 
-// Mirror the AI engine's state into appState so the UI re-renders on progress,
-// and kick off the background model download once the user is in the app.
+// Mirror the AI engine's state into appState so the UI re-renders on progress.
 function initAI() {
   if (!window.AI) return;
   // Only re-render when something the UI shows actually changed — the engine
@@ -680,22 +678,6 @@ function initAI() {
   };
   AI.onChange(apply);
   apply(AI.getState());
-}
-
-function maybeStartAI() {
-  if (window.__NO_AI__) return;               // test/opt-out escape hatch
-  if (!window.AI || !appState.auth.user) return;
-  // The previous load crashed the page (e.g. Safari's out-of-memory kill) —
-  // don't auto-load again; wait for the user to explicitly open the chat,
-  // which will retry with the stepped-down model size.
-  if (AI.hadLoadCrash && AI.hadLoadCrash()) return;
-  // Mobile browsers, especially iOS Safari, have tight per-tab memory limits.
-  // Load the model only after an explicit tutor tap so normal app use stays stable.
-  if (AI.isMobileDevice && AI.isMobileDevice()) return;
-  // Respect data-saver: hold the big download until the user actually opens chat.
-  const saveData = navigator.connection && navigator.connection.saveData;
-  if (saveData) return;
-  AI.ensureLoaded().catch(() => {});
 }
 
 function openChat(context) {
@@ -1245,24 +1227,21 @@ function computeVals() {
       onLogout: () => doLogout(),
     },
     ai: (() => {
-      const size = S.ai.size;
       const pct = Math.round((S.ai.progress || 0) * 100);
       const supported = !!(window.AI && AI.isSupported());
+      const model = window.AI && AI.MODELS ? AI.MODELS['gemma-4-e2b'] : null;
       const statusLabel = !supported ? 'Not supported on this device'
         : S.ai.status === 'ready' ? 'Downloaded · ready to chat'
         : S.ai.status === 'downloading' ? `Downloading… ${pct}%`
         : S.ai.status === 'loading' ? 'Preparing the model…'
+        : S.ai.status === 'blocked' ? 'Active in another tab'
         : S.ai.status === 'error' ? 'Load failed — open the chat to retry'
-        : (window.AI && AI.isMobileDevice && AI.isMobileDevice()) ? 'Downloads when you open the tutor'
-        : 'Loads automatically in the background';
+        : 'Downloads when you open the tutor';
       return {
         supported, statusLabel,
         busy: S.ai.status === 'downloading' || S.ai.status === 'loading',
-        options: window.AI ? Object.keys(AI.MODELS).map(k => ({
-          key: k, label: AI.MODELS[k].label, note: AI.MODELS[k].note, mb: AI.MODELS[k].mb,
-          active: size === k,
-          onSelect: () => { if (window.AI && size !== k) AI.setModelSize(k).catch(() => {}); },
-        })) : [],
+        modelLabel: model ? model.label : 'Gemma 4 E2B',
+        modelNote: model ? model.note : 'WebGPU on-device model',
       };
     })(),
   };
@@ -1610,13 +1589,15 @@ function renderChat(c) {
   let strip = '';
   if (ai.status === 'unsupported') {
     strip = `<div style="padding:13px 16px;border-top:1px solid var(--line);background:var(--a-soft);color:var(--a-ink);font-size:13px;font-weight:700;line-height:1.4">This device can't run the on-device tutor. Try a recent Chrome, Edge, or Safari on a laptop or desktop.</div>`;
+  } else if (ai.status === 'blocked') {
+    strip = `<div style="padding:13px 16px;border-top:1px solid var(--line);background:var(--a-soft);color:var(--a-ink);font-size:13px;font-weight:700;line-height:1.4">Gemma 4 is active in another Hablavos tab. Close that tab or leave the tutor there before retrying.</div>`;
   } else if (ai.status === 'error') {
     strip = `<div style="padding:12px 16px;border-top:1px solid var(--line);background:var(--r-soft);color:var(--r-ink);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px">
       <span>Couldn't load the AI model.</span>
       <button ${h(c.onRetry)} style="flex:none;border:none;background:var(--r-ink);color:#fff;font-family:Nunito;font-weight:800;font-size:12.5px;padding:8px 13px;border-radius:10px;cursor:pointer">Try again</button>
     </div>`;
   } else if (!ready) {
-    const label = ai.status === 'loading' ? 'Preparing the model…' : `Downloading the tutor (${ai.sizeLabel}, ~${ai.sizeMb} MB)`;
+    const label = ai.status === 'loading' ? 'Preparing Gemma 4…' : `Downloading the tutor (${ai.sizeLabel}, ~2.4 GB)`;
     strip = `<div style="padding:12px 16px;border-top:1px solid var(--line);background:var(--surface)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div style="font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:7px">${ms('hourglass_top', 17, '#5560e0')}${esc(label)}</div>
@@ -2219,17 +2200,14 @@ function renderSettings(v) {
       <div style="width:38px;height:38px;border-radius:11px;background:var(--p-soft);display:flex;align-items:center;justify-content:center;flex:none">${ms('smart_toy', 22, '#5560e0')}</div>
       <div style="min-width:0"><div style="font-size:14.5px;font-weight:800;color:var(--ink)">On-device model</div><div style="font-size:12.5px;font-weight:600;color:var(--muted)">${esc(settings.ai.statusLabel)}</div></div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      ${settings.ai.options.map(o => `
-      <button ${h(o.onSelect)} style="display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid ${o.active ? '#5560e0' : 'var(--line)'};background:${o.active ? 'var(--p-soft)' : 'var(--surface)'};padding:12px 14px;border-radius:13px;cursor:pointer">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:14.5px;font-weight:800;color:var(--ink)">${esc(o.label)} <span style="font-weight:700;color:var(--muted2);font-size:12.5px">· ${o.mb} MB</span></div>
-          <div style="font-size:12px;font-weight:600;color:var(--muted)">${esc(o.note)}</div>
-        </div>
-        ${o.active ? msf('check_circle', 22, '#5560e0') : `<span style="width:22px;height:22px;border-radius:50%;border:2px solid var(--muted2);flex:none"></span>`}
-      </button>`).join('')}
+    <div style="display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);background:var(--surface);padding:12px 14px;border-radius:13px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14.5px;font-weight:800;color:var(--ink)">${esc(settings.ai.modelLabel)} <span style="font-weight:700;color:var(--muted2);font-size:12.5px">· ~2.4 GB first download</span></div>
+        <div style="font-size:12px;font-weight:600;color:var(--muted)">${esc(settings.ai.modelNote)}</div>
+      </div>
+      ${msf('check_circle', 22, '#5560e0')}
     </div>
-    <div style="font-size:11.5px;font-weight:600;color:var(--muted2);margin-top:10px;line-height:1.4">Bigger models answer better but take longer to download. Switching downloads the new model once, then it's cached on your device.</div>
+    <div style="font-size:11.5px;font-weight:600;color:var(--muted2);margin-top:10px;line-height:1.4">Loads only when you use the tutor, then stays cached by your browser for later sessions.</div>
   </div>` : ''}
   <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pronunciation</div>
   <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:8px;box-shadow:0 4px 14px rgba(0,0,0,.04)">
@@ -2451,7 +2429,6 @@ async function bootstrap() {
     initAI();                       // mirror AI engine state into the UI
     if (auth.token) syncOnLogin();  // pull cross-device progress in the background
     if (auth.token) loadMyWords();  // fetch the user's custom deck
-    maybeStartAI();                 // begin the background model download if signed in
   } catch (err) {
     $content.innerHTML = `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--muted)"><div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">Could not load cards</div><div style="font-size:14px;font-weight:600">${esc(err.message)}</div></div>`;
   }

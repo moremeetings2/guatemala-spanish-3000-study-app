@@ -147,20 +147,19 @@ test("the AI button drafts the meaning and example without overwriting user inpu
   // Stub the on-device engine with a canned, correctly-formatted reply.
   await page.evaluate(() => {
     window.AI = {
-      MODELS: { "1.2B": { label: "1.2B", note: "Best", mb: 731 } },
-      getState: () => ({ status: "ready", progress: 1, size: "1.2B", error: "" }),
+      MODELS: { "gemma-4-e2b": { label: "Gemma 4 E2B", note: "WebGPU on-device model", mb: 2400 } },
+      getState: () => ({ status: "ready", progress: 1, size: "gemma-4-e2b", error: "" }),
       isSupported: () => true,
       onChange: () => () => {},
       ensureLoaded: () => Promise.resolve(),
-      setModelSize: () => Promise.resolve(),
-      currentSize: () => "1.2B",
+      currentSize: () => "gemma-4-e2b",
       lastMessages: null,
       chat: async (messages) => {
         window.AI.lastMessages = messages;
         return 'MEANING: cool, great\nSENTENCE_ES: ¡Qué chilero está el día!\nSENTENCE_EN: What a cool day!';
       },
     };
-    setState({ ai: { status: "ready", progress: 1, size: "1.2B", error: "" } });
+    setState({ ai: { status: "ready", progress: 1, size: "gemma-4-e2b", error: "" } });
   });
 
   await page.evaluate(() => setState({ route: "mywords" }));

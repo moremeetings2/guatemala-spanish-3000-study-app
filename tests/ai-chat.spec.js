@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
-// AI tutor chat flow. The real on-device model (wllama + a multi-hundred-MB
-// GGUF from a CDN) is never loaded in tests — we boot with __NO_AI__ set so the
+// AI tutor chat flow. The real multi-gigabyte Gemma 4 WebGPU model is never
+// loaded in tests — we boot with __NO_AI__ set so the
 // background download never starts, then swap in a fake `window.AI` that streams
 // a canned reply. This exercises the chat overlay, context wiring, and streaming
 // render path without any network model.
@@ -29,17 +29,12 @@ async function boot(page) {
   // Replace the real engine with a fake that reports "ready" and streams a reply.
   await page.evaluate(() => {
     window.AI = {
-      MODELS: {
-        "350M": { label: "350M", note: "Fastest", mb: 229 },
-        "700M": { label: "700M", note: "Balanced", mb: 469 },
-        "1.2B": { label: "1.2B", note: "Best", mb: 731 },
-      },
-      getState: () => ({ status: "ready", progress: 1, size: "1.2B", error: "", model: { label: "1.2B", mb: 731 } }),
+      MODELS: { "gemma-4-e2b": { label: "Gemma 4 E2B", note: "WebGPU on-device model", mb: 2400 } },
+      getState: () => ({ status: "ready", progress: 1, size: "gemma-4-e2b", error: "", model: { label: "Gemma 4 E2B", mb: 2400 } }),
       isSupported: () => true,
       onChange: () => () => {},
       ensureLoaded: () => Promise.resolve(),
-      setModelSize: () => Promise.resolve(),
-      currentSize: () => "1.2B",
+      currentSize: () => "gemma-4-e2b",
       lastMessages: null,
       chat: async (messages, opts) => {
         window.AI.lastMessages = messages;
@@ -49,7 +44,7 @@ async function boot(page) {
         return reply;
       },
     };
-    setState({ ai: { status: "ready", progress: 1, size: "1.2B", error: "" } });
+    setState({ ai: { status: "ready", progress: 1, size: "gemma-4-e2b", error: "" } });
   });
 }
 

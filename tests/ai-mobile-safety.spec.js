@@ -8,20 +8,15 @@ async function routeFakeAI(page) {
       body: `
         window.__aiLoadCalls = 0;
         window.AI = {
-          MODELS: {
-            "350M": { label: "350M", note: "Fastest", mb: 229 },
-            "700M": { label: "700M", note: "Balanced", mb: 469 },
-            "1.2B": { label: "1.2B", note: "Best", mb: 731 },
-          },
-          getState: () => ({ status: "idle", progress: 0, size: "350M", error: "", model: { label: "350M", mb: 229 } }),
+          MODELS: { "gemma-4-e2b": { label: "Gemma 4 E2B", note: "WebGPU on-device model", mb: 2400 } },
+          getState: () => ({ status: "idle", progress: 0, size: "gemma-4-e2b", error: "", model: { label: "Gemma 4 E2B", mb: 2400 } }),
           isSupported: () => true,
           onChange: () => () => {},
           ensureLoaded: () => {
             window.__aiLoadCalls += 1;
             return Promise.resolve();
           },
-          setModelSize: () => Promise.resolve(),
-          currentSize: () => "350M",
+          currentSize: () => "gemma-4-e2b",
           hadLoadCrash: () => false,
           isMobileDevice: () => true,
           chat: async () => "ok",
