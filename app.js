@@ -123,8 +123,13 @@ function setState(patch) {
   const keys = Object.keys(patch);
   const signedOut = !(next.auth && next.auth.user);
   const invisibleSignedOut = keys.length > 0 && keys.every(k => k === 'voices' || k === 'ai' || k === 'syncing');
+  // iOS dictation remains attached to the original input node while it commits.
+  // Background voice/AI/sync updates must not replace that focused node.
+  const preserveChatInput = document.activeElement?.dataset?.fid === 'chat-input'
+    && next.chat?.open
+    && !keys.includes('chat');
   appState = next;
-  if (!signedOut || !invisibleSignedOut) render();
+  if ((!signedOut || !invisibleSignedOut) && !preserveChatInput) render();
   if (appState.loaded) schedSave();
 }
 

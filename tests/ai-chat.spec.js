@@ -83,7 +83,7 @@ test("general AI chat: open from home, send a message, receive a streamed reply"
   expect(await page.evaluate(() => appState.chat.context)).toBeNull();
 });
 
-test("iOS dictation keeps the active chat field mounted while text is committed", async ({ page }) => {
+test("iOS dictation keeps the active chat field mounted across background updates", async ({ page }) => {
   await boot(page);
   await page.locator("#content").getByText("Ask anything in Spanish").click();
 
@@ -96,6 +96,9 @@ test("iOS dictation keeps the active chat field mounted while text is committed"
       inputType: "insertFromDictation",
       data: "¿Cómo se dice trabajo?",
     }));
+    // Safari can still be composing when voiceschanged, AI progress, or sync
+    // publishes an unrelated state update. That must not replace the field.
+    setState({ voices: [...appState.voices] });
     return {
       sameNode: document.querySelector('[data-fid="chat-input"]') === input,
       focused: document.activeElement === input,
