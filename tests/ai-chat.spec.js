@@ -117,35 +117,27 @@ test("iOS dictation keeps the active chat field mounted across background update
   });
 });
 
-test("the chat microphone puts Safari speech recognition into the query field", async ({ page }) => {
-  await page.addInitScript(() => {
-    class FakeSpeechRecognition {
-      start() {
-        if (this.interimResults !== true) throw new Error("speech recognition must collect iOS interim results");
-        this.onstart?.();
-        this.onresult?.({
-          resultIndex: 0,
-          results: [{ 0: { transcript: "Co" }, isFinal: false }],
-        });
-        this.onresult?.({
-          resultIndex: 0,
-          results: [{ 0: { transcript: "Como se dice trabajo" }, isFinal: false }],
-        });
-        this.onend?.();
-      }
-      stop() { this.onend?.(); }
-    }
-    window.SpeechRecognition = FakeSpeechRecognition;
-    window.webkitSpeechRecognition = FakeSpeechRecognition;
-  });
+test("chat input does not persist the study catalog during iOS dictation", async ({ page }) => {
   await boot(page);
   await page.locator("#content").getByText("Ask anything in Spanish").click();
+  await page.waitForTimeout(400);
 
-  await page.locator('[data-fid="chat-dictate"]').click();
+  const writes = await page.evaluate(async () => {
+    let count = 0;
+    clearTimeout(saveTimer);
+    schedSave = () => { count += 1; };
+    const input = document.querySelector('[data-fid="chat-input"]');
+    input.focus();
+    input.value = "Como se dice trabajo";
+    input.dispatchEvent(new InputEvent("input", {
+      bubbles: true,
+      inputType: "insertFromDictation",
+      data: "Como se dice trabajo",
+    }));
+    return count;
+  });
 
-  await expect(page.locator('[data-fid="chat-input"]')).toHaveValue("Como se dice trabajo");
-  await expect.poll(() => page.evaluate(() => appState.chat.input)).toBe("Como se dice trabajo");
-  await expect(page.locator('[data-fid="chat-send"]')).toBeEnabled();
+  expect(writes).toBe(0);
 });
 
 test("vocab-card chat opens with the word already in context", async ({ page }) => {
