@@ -728,9 +728,10 @@ function startChatDictation() {
 
   const recognition = new Recognition();
   const base = (appState.chat.input || '').trim();
+  let pendingSpeech = '';
   recognition.lang = navigator.language || 'es-GT';
   recognition.continuous = false;
-  recognition.interimResults = false;
+  recognition.interimResults = true;
   recognition.onstart = () => {
     const button = document.querySelector('[data-fid="chat-dictate"]');
     if (button) {
@@ -741,19 +742,19 @@ function startChatDictation() {
   };
   recognition.onresult = event => {
     let spoken = '';
-    for (let i = 0; i < event.results.length; i++) {
-      if (event.results[i].isFinal) spoken += event.results[i][0]?.transcript || '';
-    }
-    if (!spoken.trim()) return;
-    setChatDraft([base, spoken.trim()].filter(Boolean).join(' '));
-    const input = document.querySelector('[data-fid="chat-input"]');
-    if (input) input.value = appState.chat.input;
+    for (let i = 0; i < event.results.length; i++) spoken += event.results[i][0]?.transcript || '';
+    if (spoken.trim().length >= pendingSpeech.length) pendingSpeech = spoken.trim();
   };
   recognition.onerror = event => {
     if (event.error !== 'aborted') flash('Voice input could not start. Check microphone access and try again.');
   };
   recognition.onend = () => {
     chatRecognition = null;
+    if (pendingSpeech) {
+      setChatDraft([base, pendingSpeech].filter(Boolean).join(' '));
+      const input = document.querySelector('[data-fid="chat-input"]');
+      if (input) input.value = appState.chat.input;
+    }
     const button = document.querySelector('[data-fid="chat-dictate"]');
     if (button) {
       button.dataset.listening = 'false';
