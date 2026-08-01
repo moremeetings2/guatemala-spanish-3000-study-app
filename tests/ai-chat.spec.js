@@ -121,6 +121,7 @@ test("the chat microphone puts Safari speech recognition into the query field", 
   await page.addInitScript(() => {
     class FakeSpeechRecognition {
       start() {
+        if (this.interimResults !== false) throw new Error("speech recognition must wait for a final result");
         this.onstart?.();
         this.onresult?.({
           resultIndex: 0,

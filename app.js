@@ -730,7 +730,7 @@ function startChatDictation() {
   const base = (appState.chat.input || '').trim();
   recognition.lang = navigator.language || 'es-GT';
   recognition.continuous = false;
-  recognition.interimResults = true;
+  recognition.interimResults = false;
   recognition.onstart = () => {
     const button = document.querySelector('[data-fid="chat-dictate"]');
     if (button) {
@@ -741,7 +741,10 @@ function startChatDictation() {
   };
   recognition.onresult = event => {
     let spoken = '';
-    for (let i = 0; i < event.results.length; i++) spoken += event.results[i][0]?.transcript || '';
+    for (let i = 0; i < event.results.length; i++) {
+      if (event.results[i].isFinal) spoken += event.results[i][0]?.transcript || '';
+    }
+    if (!spoken.trim()) return;
     setChatDraft([base, spoken.trim()].filter(Boolean).join(' '));
     const input = document.querySelector('[data-fid="chat-input"]');
     if (input) input.value = appState.chat.input;
