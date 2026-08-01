@@ -49,3 +49,31 @@ test("streams Gemma full-text snapshots through the Hablavos callback contract",
   ]);
 });
 
+test("rejects an overlapping completion while the first completion is loading", async () => {
+  let finishLoad;
+  const loadGate = new Promise((resolve) => { finishLoad = resolve; });
+  const model = {
+    async *generate() { yield { text: "listo" }; },
+  };
+  const ai = createHablavosAI({
+    lifecycle: {
+      async load() {
+        await loadGate;
+        return { status: "ready", model };
+      },
+      async dispose() {},
+    },
+    navigatorImpl: { gpu: {}, locks: { request() {} }, userAgent: "Desktop Test" },
+    windowImpl: { addEventListener() {}, removeEventListener() {} },
+    secureContext: true,
+    noAI: false,
+  });
+
+  const first = ai.chat([{ role: "user", content: "primero" }]);
+  await assert.rejects(
+    ai.chat([{ role: "user", content: "segundo" }]),
+    /already generating/
+  );
+  finishLoad();
+  assert.equal(await first, "listo");
+});

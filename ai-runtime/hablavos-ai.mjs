@@ -79,7 +79,10 @@ export function createHablavosAI(deps = {}) {
   const lifecycle = deps.lifecycle ?? new ModelLifecycle({
     session,
     importRuntime,
-    loaderProfile: deps.loaderProfile ?? getLoaderProfile(navigatorImpl?.userAgent),
+    loaderProfile: deps.loaderProfile ?? getLoaderProfile(
+      navigatorImpl?.userAgent,
+      navigatorImpl?.maxTouchPoints
+    ),
     onStateChange(lifecycleState) {
       emit({
         status: STATUS_MAP[lifecycleState] ?? state.status,
@@ -140,10 +143,10 @@ export function createHablavosAI(deps = {}) {
 
   async function chat(messages, opts = {}) {
     if (generating) throw new Error("The on-device tutor is already generating a response.");
-    await ensureLoaded();
     generating = true;
     let full = "";
     try {
+      await ensureLoaded();
       model.reset?.();
       const stream = model.generate(messages, {
         maxNewTokens: opts.maxTokens || 400,
@@ -189,7 +192,10 @@ export function createHablavosAI(deps = {}) {
     dispose,
     currentSize: () => MODEL_KEY,
     hadLoadCrash: () => false,
-    isMobileDevice: () => isIOSUserAgent(navigatorImpl?.userAgent ?? "")
+    isMobileDevice: () => isIOSUserAgent(
+      navigatorImpl?.userAgent ?? "",
+      navigatorImpl?.maxTouchPoints
+    )
       || /Android/i.test(navigatorImpl?.userAgent ?? ""),
   };
 }
