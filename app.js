@@ -145,6 +145,28 @@ function setAuthDraft(patch) {
   }
 }
 
+// Keep the active field mounted while iOS dictation/composition commits text.
+// Re-rendering here replaces the input node and causes Safari to discard the
+// spoken phrase before it reaches the visible query field.
+function setChatDraft(value) {
+  appState = { ...appState, chat: { ...appState.chat, input: value } };
+  const input = document.querySelector('[data-fid="chat-input"]');
+  if (input && input !== document.activeElement) input.value = value;
+
+  const canSend = appState.ai.status === 'ready'
+    && !appState.chat.busy
+    && value.trim().length > 0;
+  const send = document.querySelector('[data-fid="chat-send"]');
+  if (send) {
+    send.disabled = !canSend;
+    send.style.background = canSend ? '#5560e0' : 'var(--track)';
+    send.style.cursor = canSend ? 'pointer' : 'default';
+    const icon = send.querySelector('span');
+    if (icon) icon.style.color = canSend ? '#fff' : 'var(--muted2)';
+  }
+  if (appState.loaded) schedSave();
+}
+
 function schedSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(saveState, 300);
@@ -1305,7 +1327,7 @@ function computeVals() {
       sizeMb: (window.AI && AI.MODELS[ai.size]) ? AI.MODELS[ai.size].mb : 0,
     },
     onClose: () => closeChat(),
-    onInput: e => setState({ chat: { ...S.chat, input: e.target.value } }),
+    onInput: e => setChatDraft(e.target.value),
     onSend: () => sendChat(),
     onRetry: () => { if (window.AI) AI.ensureLoaded().catch(() => {}); },
   };
@@ -1633,7 +1655,7 @@ function renderChat(c) {
   <div style="padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;background:var(--surface)">
     <input class="fld" data-fid="chat-input" type="text" enterkeyhint="send" placeholder="${ready ? 'Ask a question…' : 'Preparing your tutor…'}" value="${esc(c.input)}" ${hi(c.onInput)} ${ready && !c.busy ? '' : 'disabled'}
       style="flex:1;min-width:0;border:1.5px solid var(--line);background:var(--bg);border-radius:22px;padding:12px 16px;font-family:Nunito;font-size:15px;font-weight:600;color:var(--ink);outline:none">
-    <button ${h(c.onSend)} ${canSend ? '' : 'disabled'} style="flex:none;border:none;width:46px;height:46px;border-radius:50%;background:${canSend ? '#5560e0' : 'var(--track)'};color:#fff;display:flex;align-items:center;justify-content:center;cursor:${canSend ? 'pointer' : 'default'}">${ms(c.busy ? 'more_horiz' : 'arrow_upward', 24, canSend ? '#fff' : 'var(--muted2)')}</button>
+    <button ${h(c.onSend)} data-fid="chat-send" ${canSend ? '' : 'disabled'} style="flex:none;border:none;width:46px;height:46px;border-radius:50%;background:${canSend ? '#5560e0' : 'var(--track)'};color:#fff;display:flex;align-items:center;justify-content:center;cursor:${canSend ? 'pointer' : 'default'}">${ms(c.busy ? 'more_horiz' : 'arrow_upward', 24, canSend ? '#fff' : 'var(--muted2)')}</button>
   </div>
 </div>`;
 }

@@ -83,6 +83,37 @@ test("general AI chat: open from home, send a message, receive a streamed reply"
   expect(await page.evaluate(() => appState.chat.context)).toBeNull();
 });
 
+test("iOS dictation keeps the active chat field mounted while text is committed", async ({ page }) => {
+  await boot(page);
+  await page.locator("#content").getByText("Ask anything in Spanish").click();
+
+  const result = await page.evaluate(() => {
+    const input = document.querySelector('[data-fid="chat-input"]');
+    input.focus();
+    input.value = "¿Cómo se dice trabajo?";
+    input.dispatchEvent(new InputEvent("input", {
+      bubbles: true,
+      inputType: "insertFromDictation",
+      data: "¿Cómo se dice trabajo?",
+    }));
+    return {
+      sameNode: document.querySelector('[data-fid="chat-input"]') === input,
+      focused: document.activeElement === input,
+      stateValue: appState.chat.input,
+      sendEnabled: document.querySelector('[data-fid="chat-send"]')
+        ? !document.querySelector('[data-fid="chat-send"]').disabled
+        : false,
+    };
+  });
+
+  expect(result).toEqual({
+    sameNode: true,
+    focused: true,
+    stateValue: "¿Cómo se dice trabajo?",
+    sendEnabled: true,
+  });
+});
+
 test("vocab-card chat opens with the word already in context", async ({ page }) => {
   await boot(page);
 
