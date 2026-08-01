@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createHablavosAI } from "../../ai-runtime/hablavos-ai.mjs";
+import { createHablavosAI } from "../../ai-runtime/hablavos-ai.js";
 
 test("streams Gemma full-text snapshots through the Hablavos callback contract", async () => {
   let resets = 0;

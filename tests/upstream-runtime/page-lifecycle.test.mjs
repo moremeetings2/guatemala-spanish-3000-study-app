@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { installPageLifecycle } from "../../ai-runtime/page-lifecycle.mjs";
+import { installPageLifecycle } from "../../ai-runtime/page-lifecycle.js";
 
 function fakeWindow() {
   const listeners = new Map();

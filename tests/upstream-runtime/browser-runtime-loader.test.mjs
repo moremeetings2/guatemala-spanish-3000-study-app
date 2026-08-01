@@ -5,18 +5,18 @@ import { existsSync } from "node:fs";
 import vm from "node:vm";
 import test from "node:test";
 
-import { createBrowserRuntimeLoader } from "../../ai-runtime/browser-runtime-loader.mjs";
+import { createBrowserRuntimeLoader } from "../../ai-runtime/browser-runtime-loader.js";
 import {
   applyUnifiedPatch,
   normalizeTrailingNewline,
-} from "../../ai-runtime/runtime-patch.mjs";
+} from "../../ai-runtime/runtime-patch.js";
 
 const root = new URL("../../ai-runtime/", import.meta.url);
-const loaderUrl = new URL("../../ai-runtime/browser-runtime-loader.mjs", import.meta.url).href;
+const loaderUrl = new URL("../../ai-runtime/browser-runtime-loader.js", import.meta.url).href;
 const localSourceUrl = new URL("gemma-4-e2b.js", root);
 const expectedImports = [
-  "./weight-range-plan.mjs",
-  "./disk-backed-embedding.mjs",
+  "./weight-range-plan.js",
+  "./disk-backed-embedding.js",
 ];
 
 function digest(value) {
@@ -46,8 +46,8 @@ function response(body, { status = 200 } = {}) {
 
 function runtimeSource(extraImport = "") {
   return [
-    'import { planTensorSpans } from "./weight-range-plan.mjs";',
-    'import { createDiskBackedEmbeddingWriter } from "./disk-backed-embedding.mjs";',
+    'import { planTensorSpans } from "./weight-range-plan.js";',
+    'import { createDiskBackedEmbeddingWriter } from "./disk-backed-embedding.js";',
     extraImport,
     "export const runtime = { planTensorSpans, createDiskBackedEmbeddingWriter };",
     "",
@@ -221,7 +221,7 @@ test("resolves the two patched adapter imports against the loader URL", async ()
 
 test("rejects a missing expected adapter import", async () => {
   const source = runtimeSource().replace(
-    'import { planTensorSpans } from "./weight-range-plan.mjs";\n',
+    'import { planTensorSpans } from "./weight-range-plan.js";\n',
     "",
   );
   const harness = buildHarness({
@@ -232,7 +232,7 @@ test("rejects a missing expected adapter import", async () => {
 
   await assert.rejects(
     harness.load(harness.dependencies),
-    /Expected runtime import is missing: \.\/weight-range-plan\.mjs/,
+    /Expected runtime import is missing: \.\/weight-range-plan\.js/,
   );
 });
 
@@ -248,7 +248,7 @@ test("rejects unexpected relative static imports", async () => {
 
 test("rejects duplicate occurrences of an expected relative import", async () => {
   const source = runtimeSource(
-    'import { runWithConcurrency } from "./weight-range-plan.mjs";',
+    'import { runWithConcurrency } from "./weight-range-plan.js";',
   );
   const harness = buildHarness({
     source,
@@ -258,7 +258,7 @@ test("rejects duplicate occurrences of an expected relative import", async () =>
 
   await assert.rejects(
     harness.load(harness.dependencies),
-    /Runtime import appears more than once: \.\/weight-range-plan\.mjs/,
+    /Runtime import appears more than once: \.\/weight-range-plan\.js/,
   );
 });
 
@@ -278,27 +278,27 @@ for (const [kind, dependency] of [
 
 test("rejects a re-export of an approved dependency", async () => {
   const source = runtimeSource().replace(
-    'import { planTensorSpans } from "./weight-range-plan.mjs";',
-    'export { planTensorSpans } from "./weight-range-plan.mjs";',
+    'import { planTensorSpans } from "./weight-range-plan.js";',
+    'export { planTensorSpans } from "./weight-range-plan.js";',
   );
   const harness = harnessForSource(source);
 
   await assert.rejects(
     harness.load(harness.dependencies),
-    /Unexpected runtime dependency: \.\/weight-range-plan\.mjs/,
+    /Unexpected runtime dependency: \.\/weight-range-plan\.js/,
   );
 });
 
 test("rejects a dynamic import of an approved dependency", async () => {
   const source = runtimeSource().replace(
-    'import { planTensorSpans } from "./weight-range-plan.mjs";',
-    'const { planTensorSpans } = await import("./weight-range-plan.mjs");',
+    'import { planTensorSpans } from "./weight-range-plan.js";',
+    'const { planTensorSpans } = await import("./weight-range-plan.js");',
   );
   const harness = harnessForSource(source);
 
   await assert.rejects(
     harness.load(harness.dependencies),
-    /Unexpected runtime dependency: \.\/weight-range-plan\.mjs/,
+    /Unexpected runtime dependency: \.\/weight-range-plan\.js/,
   );
 });
 

@@ -8,7 +8,7 @@ import {
   largestUnsplitSpan,
   planTensorSpans,
   runWithConcurrency,
-} from "../../ai-runtime/weight-range-plan.mjs";
+} from "../../ai-runtime/weight-range-plan.js";
 
 const MIB = 1024 * 1024;
 const fixtureUrl = new URL("./fixtures/model-safetensors-header.json", import.meta.url);

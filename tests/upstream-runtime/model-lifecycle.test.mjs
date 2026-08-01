@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { ModelLifecycle } from "../../ai-runtime/model-lifecycle.mjs";
+import { ModelLifecycle } from "../../ai-runtime/model-lifecycle.js";
 
 class FakeSession {
   constructor(results = [true]) {

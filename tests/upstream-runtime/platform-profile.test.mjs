@@ -5,7 +5,7 @@ import {
   getLoaderProfile,
   IOS_CHUNK_MAX_BYTES,
   isIOSUserAgent,
-} from "../../ai-runtime/platform-profile.mjs";
+} from "../../ai-runtime/platform-profile.js";
 
 const iphoneSafari = "Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 Version/19.0 Mobile/15E148 Safari/604.1";
 const desktopIPadSafari = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/19.0 Safari/605.1.15";

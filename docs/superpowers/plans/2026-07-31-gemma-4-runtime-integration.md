@@ -13,7 +13,7 @@
 ## File Map
 
 - `ai-runtime/`: direct upstream runtime infrastructure and required vendor, patch, manifest, and attribution files.
-- `ai-runtime/hablavos-ai.mjs`: Hablavos adapter, state translation, generation streaming, and lifecycle installation.
+- `ai-runtime/hablavos-ai.js`: Hablavos adapter, state translation, generation streaming, and lifecycle installation.
 - `ai.js`: classic-script bootstrap that imports the adapter and publishes `window.AI`.
 - `app.js`: remove model selection/background loading and map Gemma states into existing UI.
 - `sw.js`: cache local runtime infrastructure, never model weights or cross-origin runtime bytes.
@@ -24,14 +24,14 @@
 ### Task 1: Vendor The Tested Runtime Infrastructure
 
 **Files:**
-- Create: `ai-runtime/browser-runtime-loader.mjs`
-- Create: `ai-runtime/model-lifecycle.mjs`
-- Create: `ai-runtime/model-session.mjs`
-- Create: `ai-runtime/page-lifecycle.mjs`
-- Create: `ai-runtime/platform-profile.mjs`
-- Create: `ai-runtime/runtime-patch.mjs`
-- Create: `ai-runtime/weight-range-plan.mjs`
-- Create: `ai-runtime/disk-backed-embedding.mjs`
+- Create: `ai-runtime/browser-runtime-loader.js`
+- Create: `ai-runtime/model-lifecycle.js`
+- Create: `ai-runtime/model-session.js`
+- Create: `ai-runtime/page-lifecycle.js`
+- Create: `ai-runtime/platform-profile.js`
+- Create: `ai-runtime/runtime-patch.js`
+- Create: `ai-runtime/weight-range-plan.js`
+- Create: `ai-runtime/disk-backed-embedding.js`
 - Create: `ai-runtime/runtime-manifest.json`
 - Create: `ai-runtime/patches/gemma-ios-memory.patch`
 - Create: `ai-runtime/vendor/*`
@@ -71,7 +71,7 @@ git commit -m "feat: vendor Gemma 4 browser runtime infrastructure"
 ### Task 2: Build The Hablavos Compatibility Adapter
 
 **Files:**
-- Create: `ai-runtime/hablavos-ai.mjs`
+- Create: `ai-runtime/hablavos-ai.js`
 - Modify: `ai.js`
 - Test: `tests/gemma-runtime.spec.js`
 
@@ -102,7 +102,7 @@ Expected: FAIL because the existing facade exposes three models and `setModelSiz
 
 - [ ] **Step 3: Implement the adapter API**
 
-Create `ai-runtime/hablavos-ai.mjs` with injectable dependencies and these fixed values:
+Create `ai-runtime/hablavos-ai.js` with injectable dependencies and these fixed values:
 
 ```js
 export const MODEL_KEY = 'gemma-4-e2b';
@@ -118,7 +118,7 @@ export const MODEL = Object.freeze({
 
 - [ ] **Step 4: Replace the classic bootstrap**
 
-Make `ai.js` dynamically import `./ai-runtime/hablavos-ai.mjs`, publish a stable facade immediately, preserve early subscribers, and turn import failures into `status: 'error'` with rejected `ensureLoaded()`.
+Make `ai.js` dynamically import `./ai-runtime/hablavos-ai.js`, publish a stable facade immediately, preserve early subscribers, and turn import failures into `status: 'error'` with rejected `ensureLoaded()`.
 
 - [ ] **Step 5: Verify GREEN**
 
@@ -127,7 +127,7 @@ Run the focused Chromium test and require the contract and zero-boot-request ass
 ### Task 3: Map Lifecycle, Streaming, And Cleanup
 
 **Files:**
-- Modify: `ai-runtime/hablavos-ai.mjs`
+- Modify: `ai-runtime/hablavos-ai.js`
 - Modify: `tests/gemma-runtime.spec.js`
 - Modify: `tests/ai-chat.spec.js`
 - Modify: `tests/my-words.spec.js`

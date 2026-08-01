@@ -8,10 +8,10 @@ index 551472c..de62a66 100644
 +  coalesceTensorSpans as __coalesceTensorSpans,
 +  planTensorSpans as __planTensorSpans,
 +  runWithConcurrency as __runWithConcurrency
-+} from "./weight-range-plan.mjs";
++} from "./weight-range-plan.js";
 +import {
 +  createDiskBackedEmbeddingWriter as __createDiskBackedEmbeddingWriter
-+} from "./disk-backed-embedding.mjs";
++} from "./disk-backed-embedding.js";
  var ko = Object.defineProperty;
  var he = (e, n) => () => (e && (n = e(e = 0)), n);
  var Eo = (e, n) => {

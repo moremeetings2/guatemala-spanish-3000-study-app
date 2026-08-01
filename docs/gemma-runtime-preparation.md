@@ -7,7 +7,7 @@ here.
 
 ## Browser Loading
 
-After the app owns its exclusive Web Lock, `ai-runtime/browser-runtime-loader.mjs`:
+After the app owns its exclusive Web Lock, `ai-runtime/browser-runtime-loader.js`:
 
 1. Fetches the local manifest and patch.
 2. Downloads the exact upstream runtime from the manifest URL.

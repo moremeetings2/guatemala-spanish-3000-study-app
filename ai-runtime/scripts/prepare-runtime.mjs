@@ -8,7 +8,7 @@ import beautifyPackage from "js-beautify";
 import {
   applyUnifiedPatch,
   normalizeTrailingNewline,
-} from "../runtime-patch.mjs";
+} from "../runtime-patch.js";
 
 const { js: beautify } = beautifyPackage;
 

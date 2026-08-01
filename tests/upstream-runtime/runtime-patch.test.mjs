@@ -4,7 +4,7 @@ import test from "node:test";
 import {
   applyUnifiedPatch,
   normalizeTrailingNewline,
-} from "../../ai-runtime/runtime-patch.mjs";
+} from "../../ai-runtime/runtime-patch.js";
 
 test("applies unified patch hunks with context validation", () => {
   const source = "alpha\nbeta\ngamma\n";

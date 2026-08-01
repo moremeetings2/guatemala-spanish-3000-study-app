@@ -1,4 +1,5 @@
 const { test, expect } = require("@playwright/test");
+const { existsSync, readFileSync } = require("node:fs");
 
 async function boot(page, requests) {
   await page.route((url) => url.pathname.includes("/api/"), (route) =>
@@ -34,6 +35,26 @@ async function boot(page, requests) {
   await page.goto("/");
   await page.waitForFunction(() => typeof appState !== "undefined" && appState.loaded);
 }
+
+test("the public runtime graph uses Pages-compatible JavaScript extensions", () => {
+  const modules = [
+    "hablavos-ai",
+    "browser-runtime-loader",
+    "disk-backed-embedding",
+    "model-lifecycle",
+    "model-session",
+    "page-lifecycle",
+    "platform-profile",
+    "runtime-patch",
+    "weight-range-plan",
+    "vendor/es-module-lexer",
+  ];
+  for (const module of modules) {
+    expect(existsSync(`ai-runtime/${module}.js`)).toBe(true);
+  }
+  expect(readFileSync("ai.js", "utf8")).toContain("./ai-runtime/hablavos-ai.js");
+  expect(readFileSync("sw.js", "utf8")).not.toContain(".mjs");
+});
 
 test("publishes one fixed Gemma 4 model and does not fetch it at boot", async ({ page }) => {
   const requests = [];
@@ -148,19 +169,19 @@ test("service worker caches local Gemma runtime assets only", async ({ browser, 
     return (await cache.keys()).map((request) => new URL(request.url).pathname);
   });
   const required = [
-    "/ai-runtime/hablavos-ai.mjs",
-    "/ai-runtime/browser-runtime-loader.mjs",
-    "/ai-runtime/model-lifecycle.mjs",
-    "/ai-runtime/model-session.mjs",
-    "/ai-runtime/page-lifecycle.mjs",
-    "/ai-runtime/platform-profile.mjs",
-    "/ai-runtime/runtime-patch.mjs",
-    "/ai-runtime/weight-range-plan.mjs",
-    "/ai-runtime/disk-backed-embedding.mjs",
+    "/ai-runtime/hablavos-ai.js",
+    "/ai-runtime/browser-runtime-loader.js",
+    "/ai-runtime/model-lifecycle.js",
+    "/ai-runtime/model-session.js",
+    "/ai-runtime/page-lifecycle.js",
+    "/ai-runtime/platform-profile.js",
+    "/ai-runtime/runtime-patch.js",
+    "/ai-runtime/weight-range-plan.js",
+    "/ai-runtime/disk-backed-embedding.js",
     "/ai-runtime/runtime-manifest.json",
     "/ai-runtime/patches/gemma-ios-memory.patch",
     "/ai-runtime/vendor/beautifier.min.js",
-    "/ai-runtime/vendor/es-module-lexer.mjs",
+    "/ai-runtime/vendor/es-module-lexer.js",
   ];
   for (const path of required) expect(cachedPaths).toContain(path);
   expect(cachedPaths.every((path) => path.startsWith("/"))).toBe(true);

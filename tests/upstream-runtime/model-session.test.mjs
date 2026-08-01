@@ -4,7 +4,7 @@ import test from "node:test";
 import {
   ModelSession,
   UnsupportedModelSessionError,
-} from "../../ai-runtime/model-session.mjs";
+} from "../../ai-runtime/model-session.js";
 
 class FakeLockManager {
   #owner = null;

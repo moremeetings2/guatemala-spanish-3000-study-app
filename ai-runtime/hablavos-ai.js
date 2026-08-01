@@ -1,8 +1,8 @@
-import { loadBrowserRuntime } from "./browser-runtime-loader.mjs";
-import { ModelLifecycle } from "./model-lifecycle.mjs";
-import { ModelSession } from "./model-session.mjs";
-import { installPageLifecycle } from "./page-lifecycle.mjs";
-import { getLoaderProfile, isIOSUserAgent } from "./platform-profile.mjs";
+import { loadBrowserRuntime } from "./browser-runtime-loader.js";
+import { ModelLifecycle } from "./model-lifecycle.js";
+import { ModelSession } from "./model-session.js";
+import { installPageLifecycle } from "./page-lifecycle.js";
+import { getLoaderProfile, isIOSUserAgent } from "./platform-profile.js";
 
 export const MODEL_KEY = "gemma-4-e2b";
 export const MODEL = Object.freeze({

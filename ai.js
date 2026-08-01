@@ -33,7 +33,7 @@
     });
   }
 
-  const moduleReady = import("./ai-runtime/hablavos-ai.mjs")
+  const moduleReady = import("./ai-runtime/hablavos-ai.js")
     .then(({ createHablavosAI }) => {
       implementation = createHablavosAI({
         noAI: Boolean(window.__NO_AI__),

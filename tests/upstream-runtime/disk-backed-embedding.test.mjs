@@ -3,7 +3,7 @@ import test from "node:test";
 
 import {
   createDiskBackedEmbeddingWriter,
-} from "../../ai-runtime/disk-backed-embedding.mjs";
+} from "../../ai-runtime/disk-backed-embedding.js";
 
 function createFakeDirectory() {
   let bytes = new Uint8Array();

@@ -1,11 +1,11 @@
 import {
   applyUnifiedPatch,
   normalizeTrailingNewline,
-} from "./runtime-patch.mjs";
+} from "./runtime-patch.js";
 
 const EXPECTED_RELATIVE_IMPORTS = [
-  "./weight-range-plan.mjs",
-  "./disk-backed-embedding.mjs",
+  "./weight-range-plan.js",
+  "./disk-backed-embedding.js",
 ];
 
 async function requireOk(response, label) {
@@ -99,7 +99,7 @@ async function loadDefaultFormatter() {
 }
 
 function loadDefaultModuleLexer() {
-  return import(new URL("./vendor/es-module-lexer.mjs", import.meta.url));
+  return import(new URL("./vendor/es-module-lexer.js", import.meta.url));
 }
 
 /**
