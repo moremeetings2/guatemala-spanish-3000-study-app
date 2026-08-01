@@ -16,7 +16,7 @@
 - `styles.css`: app styling
 - `app.js`: main client app logic, persistence, quiz, review, speech, import/export, accounts + progress sync
 - `api.js`: backend API client (base URL overridable via `localStorage.spanishApiBase`); loaded before `app.js`
-- `ai.js`: on-device AI tutor engine — wraps wllama (llama.cpp WASM) running LiquidAI LFM2 GGUF models fully in the browser, cached in OPFS. Exposes `window.AI` (loaded before `app.js`). Default model 1.2B; 350M/700M/1.2B selectable in Settings. Downloads in the background after login (skipped on data-saver until chat is opened). Tests set `window.__NO_AI__ = true` to prevent the model download.
+- `ai.js`: synchronous facade for the vendored Gemma 4 WebGPU harness in `ai-runtime/`. It exposes `window.AI` before `app.js`, then defers the hash-pinned runtime and the single `google/gemma-4-E2B-it-qat-mobile-transformers` model until explicit tutor or My Words AI-assist use. The first model download is approximately 2.4 GB. Web Locks permit only one owning tab; Safari uses the copied memory-safe range/OPFS profile. There is no model selector. Tests set `window.__NO_AI__ = true` to prevent model loading.
 - AI chat: a full-screen overlay (`renderChat`, `#chat-sheet`) opened from the Home "AI tutor" card (general) or context buttons on study cards, the reader, and lexicon entries (each preloads a context-specific system prompt). Streams tokens; shows a one-time model-download progress bar when not yet ready.
 - Auth/landing: signed-out users see the marketing landing page (Log in / Sign up). An account is required to use the app; logged-in users sync progress to the backend. Session stored in `localStorage.spanishAuth.v1`.
 - `sw.js`: service worker for offline caching

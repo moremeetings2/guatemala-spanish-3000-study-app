@@ -1,10 +1,23 @@
-const CACHE_NAME = "hablavos-v30";
+const CACHE_NAME = "hablavos-v31";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./api.js",
   "./ai.js",
+  "./ai-runtime/hablavos-ai.mjs",
+  "./ai-runtime/browser-runtime-loader.mjs",
+  "./ai-runtime/model-lifecycle.mjs",
+  "./ai-runtime/model-session.mjs",
+  "./ai-runtime/page-lifecycle.mjs",
+  "./ai-runtime/platform-profile.mjs",
+  "./ai-runtime/runtime-patch.mjs",
+  "./ai-runtime/weight-range-plan.mjs",
+  "./ai-runtime/disk-backed-embedding.mjs",
+  "./ai-runtime/runtime-manifest.json",
+  "./ai-runtime/patches/gemma-ios-memory.patch",
+  "./ai-runtime/vendor/beautifier.min.js",
+  "./ai-runtime/vendor/es-module-lexer.mjs",
   "./app.js",
   "./manifest.webmanifest",
   "./data/guatemala_spanish_study_pack.json",
@@ -49,9 +62,9 @@ self.addEventListener("fetch", (event) => {
 
   const requestUrl = new URL(event.request.url);
 
-  // Never touch cross-origin requests — the on-device AI pulls its WASM from a
-  // CDN and multi-hundred-MB model files from Hugging Face (cached in OPFS by
-  // wllama itself). Let the browser handle those natively.
+  // Never intercept the hash-pinned WebML runtime or multi-gigabyte Gemma
+  // model requests. Their loader owns verification, range fetching, and cache
+  // behavior; duplicating those bodies in the PWA cache would exhaust storage.
   if (requestUrl.origin !== self.location.origin) {
     return;
   }

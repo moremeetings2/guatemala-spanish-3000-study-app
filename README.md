@@ -10,6 +10,25 @@
 - Supports offline use through a service worker
 - Adds pronunciation, quiz mode, due-today review, weak-card resurfacing, and progress import/export
 - Lets you slow pronunciation down and choose the clearest available Spanish voice on the device
+- Runs the Gemma 4 E2B tutor locally through WebGPU; prompts and replies stay in the browser
+
+## On-device AI tutor
+
+Hablavos embeds the browser model harness from
+`moorej2400/gemma-4-webml-webgpu` at source commit
+`b3226e158bb78da66e5932e47ecf0401a5d8920b`. There is one model:
+`google/gemma-4-E2B-it-qat-mobile-transformers`.
+
+The first use downloads approximately 2.4 GB. Loading begins only when you open
+the tutor or use AI assist in My Words. Later sessions may reuse the browser's
+cache. The tutor requires HTTPS (or localhost), WebGPU, Web Locks, OPFS, enough
+free storage, and enough available memory. Only one Hablavos tab can own the
+model at a time, which prevents duplicate GPU allocation in Safari and Chrome.
+
+The generated WebML runtime is not committed. The browser downloads an exact
+hash-pinned upstream bundle, applies the checked-in Safari memory patch, verifies
+the patched hash, and evaluates it locally. See
+`docs/gemma-runtime-preparation.md` and `THIRD_PARTY_NOTICES.md`.
 
 ## Regenerate the app data
 
@@ -61,7 +80,9 @@ Run the Playwright integration suite:
 npm run test:integration
 ```
 
-The suite validates deck rendering, phrasebank search, study/review actions, quiz flow, pronunciation controls, IndexedDB-backed persistence, full relaunch durability, storage reconciliation, and import/export.
+The suite validates deck rendering, phrasebank search, study/review actions,
+quiz flow, pronunciation controls, persistence, storage reconciliation,
+import/export, and the Gemma runtime contract on Chromium and WebKit.
 
 ## iPhone use
 

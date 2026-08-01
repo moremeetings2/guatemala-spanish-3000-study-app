@@ -3,6 +3,9 @@ Icon?
 node_modules/
 playwright-report/
 test-results/
+ai-runtime/gemma-4-e2b.js
+ai-runtime/*.pretty.js
+_site/
 # Local secrets — never commit
 .env
 .env.*

@@ -115,3 +115,53 @@ test("signed-in desktop boot waits for explicit AI use", async ({ page }) => {
   await page.waitForTimeout(500);
   expect(modelRequests).toEqual([]);
 });
+
+test("service worker caches local Gemma runtime assets only", async ({ browser, baseURL }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.route((url) => url.pathname.includes("/api/"), (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ cardState: {}, ok: true, saved: 0 }),
+    })
+  );
+  await page.addInitScript(() => {
+    window.__NO_AI__ = true;
+    localStorage.setItem("spanishApiBase", location.origin);
+    localStorage.setItem(
+      "spanishAuth.v1",
+      JSON.stringify({ token: "test-token", user: { id: "u", email: "tester@example.com", role: "user" } })
+    );
+  });
+
+  await page.goto(baseURL || "/");
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  if (!await page.evaluate(() => Boolean(navigator.serviceWorker.controller))) {
+    await page.reload();
+  }
+
+  const cachedPaths = await page.evaluate(async () => {
+    const keys = await caches.keys();
+    const cache = await caches.open(keys.find((key) => key.startsWith("hablavos-")));
+    return (await cache.keys()).map((request) => new URL(request.url).pathname);
+  });
+  const required = [
+    "/ai-runtime/hablavos-ai.mjs",
+    "/ai-runtime/browser-runtime-loader.mjs",
+    "/ai-runtime/model-lifecycle.mjs",
+    "/ai-runtime/model-session.mjs",
+    "/ai-runtime/page-lifecycle.mjs",
+    "/ai-runtime/platform-profile.mjs",
+    "/ai-runtime/runtime-patch.mjs",
+    "/ai-runtime/weight-range-plan.mjs",
+    "/ai-runtime/disk-backed-embedding.mjs",
+    "/ai-runtime/runtime-manifest.json",
+    "/ai-runtime/patches/gemma-ios-memory.patch",
+    "/ai-runtime/vendor/beautifier.min.js",
+    "/ai-runtime/vendor/es-module-lexer.mjs",
+  ];
+  for (const path of required) expect(cachedPaths).toContain(path);
+  expect(cachedPaths.every((path) => path.startsWith("/"))).toBe(true);
+  await context.close();
+});
