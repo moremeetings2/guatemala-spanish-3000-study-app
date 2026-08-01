@@ -24,28 +24,33 @@ async function boot(page) {
       }
     } catch (e) {}
   });
+  await page.route("**/ai.js", (route) => route.fulfill({
+    status: 200,
+    contentType: "application/javascript",
+    body: `
+      window.AI = {
+        MODELS: { "gemma-4-e2b": { label: "Gemma 4 E2B", note: "WebGPU on-device model", mb: 2400 } },
+        getState: () => ({ status: "ready", progress: 1, size: "gemma-4-e2b", error: "", model: { label: "Gemma 4 E2B", mb: 2400 } }),
+        isSupported: () => true,
+        onChange: () => () => {},
+        ensureLoaded: () => Promise.resolve(),
+        currentSize: () => "gemma-4-e2b",
+        lastMessages: null,
+        chat: async (messages, opts) => {
+          window.AI.lastMessages = messages;
+          const reply = 'Claro. "de" means "of" or "from".';
+          let acc = "";
+          for (const ch of reply.split("")) {
+            acc += ch;
+            if (opts && opts.onToken) opts.onToken(acc, ch);
+          }
+          return reply;
+        },
+      };
+    `,
+  }));
   await page.goto("/");
   await page.waitForFunction(() => typeof appState !== "undefined" && appState.loaded && appState.data);
-  // Replace the real engine with a fake that reports "ready" and streams a reply.
-  await page.evaluate(() => {
-    window.AI = {
-      MODELS: { "gemma-4-e2b": { label: "Gemma 4 E2B", note: "WebGPU on-device model", mb: 2400 } },
-      getState: () => ({ status: "ready", progress: 1, size: "gemma-4-e2b", error: "", model: { label: "Gemma 4 E2B", mb: 2400 } }),
-      isSupported: () => true,
-      onChange: () => () => {},
-      ensureLoaded: () => Promise.resolve(),
-      currentSize: () => "gemma-4-e2b",
-      lastMessages: null,
-      chat: async (messages, opts) => {
-        window.AI.lastMessages = messages;
-        const reply = 'Claro. "de" means "of" or "from".';
-        let acc = "";
-        for (const ch of reply.split("")) { acc += ch; if (opts && opts.onToken) opts.onToken(acc, ch); }
-        return reply;
-      },
-    };
-    setState({ ai: { status: "ready", progress: 1, size: "gemma-4-e2b", error: "" } });
-  });
 }
 
 async function typeChat(page, value) {

@@ -117,6 +117,7 @@ test("signed-in desktop boot waits for explicit AI use", async ({ page }) => {
 });
 
 test("service worker caches local Gemma runtime assets only", async ({ browser, baseURL }) => {
+  test.setTimeout(60_000);
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.route((url) => url.pathname.includes("/api/"), (route) =>

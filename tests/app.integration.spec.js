@@ -107,7 +107,7 @@ test("study cards flip, grade, and star — and the progress persists across rel
 
   // Mark as Known and star the card.
   await content.getByRole("button", { name: "Known" }).click();
-  await content.locator('[data-h][style*="border-radius:28px"] button').first().click(); // star (top-right)
+  await content.locator('[data-fid="study-star"]').click();
 
   await expect
     .poll(() => page.evaluate(() => appState.cardState["main-0001"]?.state))
@@ -135,7 +135,10 @@ test("study cards flip, grade, and star — and the progress persists across rel
 
 test("persists a snapshot to both localStorage and IndexedDB", async ({ page }) => {
   await page.evaluate(() => setProg("main-0002", "learning"));
-  await page.waitForTimeout(400);
+  await expect.poll(() => page.evaluate((key) => {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw).cardState?.["main-0002"]?.state : null;
+  }, STORAGE_KEY)).toBe("learning");
 
   const local = await page.evaluate((key) => {
     const raw = localStorage.getItem(key);

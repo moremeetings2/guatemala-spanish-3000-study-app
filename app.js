@@ -1739,7 +1739,7 @@ function renderStudy(v) {
     <div style="font-size:14px;font-weight:800;color:var(--muted)">${study.counter}</div>
   </div>
   <div ${h(study.onFlip)} style="flex:1;min-height:300px;background:var(--surface);border:1px solid var(--line);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.07);position:relative;padding:30px;text-align:center">
-    <button ${h(study.onStar)} style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer">${ms(study.starIcon, 28, study.starColor)}</button>
+    <button ${h(study.onStar)} data-fid="study-star" title="${study.starIcon === 'star' ? 'Remove from favorites' : 'Add to favorites'}" style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer">${ms(study.starIcon, 28, study.starColor)}</button>
     <div style="position:absolute;top:20px;left:20px;font-size:11px;font-weight:800;color:#fff;background:${study.deckAccent};padding:4px 10px;border-radius:9px">${esc(study.deckShort)}</div>
     ${study.showSentence ? `
     <div style="font-size:13px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px">Example</div>
