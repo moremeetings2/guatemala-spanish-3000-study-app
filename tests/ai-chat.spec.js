@@ -117,6 +117,32 @@ test("iOS dictation keeps the active chat field mounted across background update
   });
 });
 
+test("the chat microphone puts Safari speech recognition into the query field", async ({ page }) => {
+  await page.addInitScript(() => {
+    class FakeSpeechRecognition {
+      start() {
+        this.onstart?.();
+        this.onresult?.({
+          resultIndex: 0,
+          results: [{ 0: { transcript: "Como se dice trabajo" }, isFinal: true }],
+        });
+        this.onend?.();
+      }
+      stop() { this.onend?.(); }
+    }
+    window.SpeechRecognition = FakeSpeechRecognition;
+    window.webkitSpeechRecognition = FakeSpeechRecognition;
+  });
+  await boot(page);
+  await page.locator("#content").getByText("Ask anything in Spanish").click();
+
+  await page.locator('[data-fid="chat-dictate"]').click();
+
+  await expect(page.locator('[data-fid="chat-input"]')).toHaveValue("Como se dice trabajo");
+  await expect.poll(() => page.evaluate(() => appState.chat.input)).toBe("Como se dice trabajo");
+  await expect(page.locator('[data-fid="chat-send"]')).toBeEnabled();
+});
+
 test("vocab-card chat opens with the word already in context", async ({ page }) => {
   await boot(page);
 

@@ -67,6 +67,7 @@ let installPrompt = null;
 let saveTimer = null;
 let toastTimer = null;
 let resetTimer = null;
+let chatRecognition = null;
 
 // ===== Handler Registry =====
 let handlers = {};
@@ -713,7 +714,53 @@ function openChat(context) {
 }
 
 function closeChat() {
+  if (chatRecognition) chatRecognition.stop();
   setState({ chat: { ...appState.chat, open: false } });
+}
+
+function startChatDictation() {
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Recognition || appState.chat.busy || appState.ai.status !== 'ready') return;
+  if (chatRecognition) {
+    chatRecognition.stop();
+    return;
+  }
+
+  const recognition = new Recognition();
+  const base = (appState.chat.input || '').trim();
+  recognition.lang = navigator.language || 'es-GT';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.onstart = () => {
+    const button = document.querySelector('[data-fid="chat-dictate"]');
+    if (button) {
+      button.dataset.listening = 'true';
+      button.style.background = 'var(--r-soft)';
+      button.querySelector('span')?.style.setProperty('color', 'var(--r-ink)');
+    }
+  };
+  recognition.onresult = event => {
+    let spoken = '';
+    for (let i = 0; i < event.results.length; i++) spoken += event.results[i][0]?.transcript || '';
+    setChatDraft([base, spoken.trim()].filter(Boolean).join(' '));
+    const input = document.querySelector('[data-fid="chat-input"]');
+    if (input) input.value = appState.chat.input;
+  };
+  recognition.onerror = event => {
+    if (event.error !== 'aborted') flash('Voice input could not start. Check microphone access and try again.');
+  };
+  recognition.onend = () => {
+    chatRecognition = null;
+    const button = document.querySelector('[data-fid="chat-dictate"]');
+    if (button) {
+      button.dataset.listening = 'false';
+      button.style.background = 'var(--soft)';
+      button.querySelector('span')?.style.setProperty('color', 'var(--ink)');
+    }
+    document.querySelector('[data-fid="chat-input"]')?.focus();
+  };
+  chatRecognition = recognition;
+  recognition.start();
 }
 
 async function sendChat() {
@@ -1333,6 +1380,7 @@ function computeVals() {
     },
     onClose: () => closeChat(),
     onInput: e => setChatDraft(e.target.value),
+    onDictate: () => startChatDictation(),
     onSend: () => sendChat(),
     onRetry: () => { if (window.AI) AI.ensureLoaded().catch(() => {}); },
   };
@@ -1589,6 +1637,7 @@ function renderChat(c) {
   const ai = c.ai;
   const ready = ai.status === 'ready';
   const canSend = ready && !c.busy && c.input.trim().length > 0;
+  const canDictate = ready && !c.busy && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 
   const bubble = (role, text, streaming) => {
     const isUser = role === 'user';
@@ -1660,6 +1709,7 @@ function renderChat(c) {
   <div style="padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;background:var(--surface)">
     <input class="fld" data-fid="chat-input" type="text" enterkeyhint="send" placeholder="${ready ? 'Ask a question…' : 'Preparing your tutor…'}" value="${esc(c.input)}" ${hi(c.onInput)} ${ready && !c.busy ? '' : 'disabled'}
       style="flex:1;min-width:0;border:1.5px solid var(--line);background:var(--bg);border-radius:22px;padding:12px 16px;font-family:Nunito;font-size:15px;font-weight:600;color:var(--ink);outline:none">
+    ${canDictate ? `<button ${h(c.onDictate)} data-fid="chat-dictate" data-listening="false" aria-label="Dictate question" title="Dictate question" style="flex:none;border:none;width:46px;height:46px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('mic', 24, 'var(--ink)')}</button>` : ''}
     <button ${h(c.onSend)} data-fid="chat-send" ${canSend ? '' : 'disabled'} style="flex:none;border:none;width:46px;height:46px;border-radius:50%;background:${canSend ? '#5560e0' : 'var(--track)'};color:#fff;display:flex;align-items:center;justify-content:center;cursor:${canSend ? 'pointer' : 'default'}">${ms(c.busy ? 'more_horiz' : 'arrow_upward', 24, canSend ? '#fff' : 'var(--muted2)')}</button>
   </div>
 </div>`;
