@@ -34,10 +34,16 @@
 ## Next steps (agreed priorities)
 
 ### Now → next few weeks — Content depth & trust
-- [ ] **Native-speaker review passes** before promoting/launching any country's module (Upwork/Fiverr, ~1 hr/country, order: Mexico → Colombia → Argentina). This is the trust bar the brand needs.
+- [ ] **Native-speaker review passes** before promoting/launching any country's module (order: Mexico → Colombia → Argentina). This is the trust bar the brand needs. **Deferred:** do not hire reviewers or begin paid review work until John explicitly authorizes it.
 - [x] Turn the Guatemala lexicon→module flow into a repeatable checklist (word list → sentences → stories → lexicon → native review → launch). See [country-module-checklist.md](./country-module-checklist.md).
 
-**Next executable milestone:** build the country-lexicon validator and review-packet generator, then use them to prepare Mexico's native-speaker review packet. Do not promote Mexico as a launched course until that review is complete.
+#### Deferred native-review budget
+
+The firm planning ceiling is **$250 USD per country**: Mexico $250, Colombia $250, and Argentina $250, for a **$750 USD total ceiling**. The recommended authorization sequence is a $250 Mexico pilot followed by $500 for Colombia and Argentina after the pilot passes its quality check.
+
+Each country quote covers one native reviewer, up to 150 entries and six reviewer hours, row-by-row decisions and corrections, naturalness/register/regional-authenticity notes, one reconciliation check, platform-fee allowance, and a target turnaround of five business days. It excludes audio recording, new lessons, a second independent reviewer, and entries added after review starts. The selected freelancer must provide the final binding vendor quote.
+
+**Next executable milestone when resumed:** build the country-lexicon validator and review-packet generator, then use them to prepare Mexico's native-speaker review packet. Do not spend against the review budget or promote Mexico as a launched course until review work is explicitly authorized and completed.
 
 ### Next — Retention & habit
 - [ ] **Daily practice reminders** via PWA push notifications (iOS 16.4+ installed PWAs) — cheapest retention win available.
