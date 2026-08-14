@@ -1,6 +1,6 @@
 # Hablavos — Project Status
 
-*Snapshot: 2026-08-01 · living project plan and execution status*
+*Snapshot: 2026-08-13 · living project plan and execution status*
 
 **Hablavos** ("Learn the Spanish people actually speak") is live at **hablavos.com** — a free, account-gated PWA teaching the Spanish actually spoken in Guatemala, with the whole Spanish-speaking world on the roadmap.
 
@@ -10,13 +10,13 @@
 
 | Area | State |
 |---|---|
-| **Core learning** | 3,000-word Main deck with spaced repetition, synonyms, and example sentences; Coffee / Everyday / Conversation phrase decks; **75 graded reading stories** with comprehension checks; quizzes |
+| **Core learning** | 3,000-word Main deck with spaced repetition, synonyms, and example sentences; **230-card Everyday Conversation** deck; **369-card Guatemalan Lexicon** including the 13 Guatemala usage notes; **Most Common in Guate** dynamically built from each learner's starred lexicon cards; **75 graded reading stories** with comprehension checks; quizzes |
 | **Accounts** | Email + password accounts (**required — no guest mode**), cross-device progress sync, Cloudflare Workers + D1 backend (~$5/mo, serverless). Endpoints live: `/api/auth`, `/api/words`, `/api/progress`, `/api/my-words`, `/api/health` |
 | **AI tutor** | One fixed on-device **Gemma 4** WebML/WebGPU model, using the tested browser runtime imported from `gemma-4-webml-webgpu`. The model is cached locally after a one-time ~2.4 GB download and runs in Safari and Chromium without a server inference bill. General and context-aware chat are available throughout the app. |
 | **My Words** | Per-user private deck (cap 500), synced, wired into Study / Quiz / Browse / progress / AI-chat, with AI-drafted meanings + example sentences ("Fill in the rest with AI") |
-| **Country Lexicons** | **All 21 Spanish-speaking countries** browsable in-app with flags, categories, example sentences, audio, and country-aware AI chat — free for every member. **2,631 entries total**: Guatemala 356 (studyable deck) + **2,275** across the other 20 (tiered: 150 each for MX/CO/VE/CL/AR/ES, 149 PE, 100 each for the 12 standard-tier countries, 26 for Equatorial Guinea — small on purpose per the quality bar) |
+| **Country Lexicons** | **All 21 Spanish-speaking countries** browsable in-app with flags, categories, example sentences, audio, and country-aware AI chat — free for every member. **2,644 entries total**: Guatemala 369 (356 lexicon entries + 13 merged usage notes, all studyable) + **2,275** across the other 20 (tiered: 150 each for MX/CO/VE/CL/AR/ES, 149 PE, 100 each for the 12 standard-tier countries, 26 for Equatorial Guinea — small on purpose per the quality bar) |
 | **Marketing** | Responsive landing page (mobile + desktop) with the full 21-country roadmap grid |
-| **Quality** | **82 Playwright tests** across Chromium + WebKit plus **62 runtime tests**; production runtime MIME smoke tests; auto-updating service worker; deployments verified at `hablavos.com` |
+| **Quality** | **112 Playwright tests** across Chromium + WebKit plus **62 runtime tests**; production runtime MIME smoke tests; auto-updating service worker; deployments verified at `hablavos.com` |
 
 **Costs today:** ~$5/mo (Cloudflare) + domain. AI tutor is $0/user (on-device). No other recurring spend.
 
@@ -59,6 +59,7 @@ Each country quote covers one native reviewer, up to 150 entries and six reviewe
 - [x] Replace the previous selectable LiquidAI models with one fixed Gemma 4 model and browser harness.
 - [x] Add Safari-safe JavaScript module delivery, iOS memory/range-loading controls, OPFS-backed model caching, lifecycle ownership, and retry behavior.
 - [x] Repair installed-PWA cache updates and remove unnecessary persistence work from the iPhone chat-input path.
+- [x] Restore the active flashcard after an iPhone study session is closed and reopened.
 - [x] Verify the production runtime graph and automated Chromium/WebKit coverage.
 
 ### Ongoing — Admin & operations

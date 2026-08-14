@@ -4,9 +4,10 @@
 
 ## What it does
 
-- Loads the main 3,000-word list, coffee-shop phrases, conversation verbs, an everyday Guatemalan phrases deck, Guatemala notes, and a Guatemalan lexicon deck
+- Loads the Main 3000, a 230-card Everyday Conversation deck, and a 369-entry Guatemalan Lexicon that includes the Guatemala usage notes
+- Builds Most Common in Guate from the signed-in learner's starred Guatemalan Lexicon cards, sharing the same synced progress and star state
 - Works as a mobile-first study app
-- Stores progress, spaced repetition, favorites, and app preferences in an internal browser database using IndexedDB
+- Stores separate per-account progress snapshots, spaced repetition, favorites, app preferences, and the active study card in browser storage so logout and account switching cannot mix learners' work
 - Supports offline use through a service worker
 - Adds pronunciation, quiz mode, due-today review, weak-card resurfacing, and progress import/export
 - Lets you slow pronunciation down and choose the clearest available Spanish voice on the device
@@ -41,7 +42,7 @@ python3 ./tools/build_study_pack_from_csv_sources.py \
   ./data/guatemala_spanish_study_pack.json
 ```
 
-This rebuild keeps the existing `mainWords` and `guatemalaBonus` base content, replaces the coffee deck from the fluency CSV, adds the conversation-verbs deck, imports the everyday phrases deck from `data/everyday_guatemalan_phrases.json`, imports the Guatemalan lexicon deck from `data/guatemala_spanish_lexicon.json`, and enriches all 3,000 words with mini-phrase data.
+This rebuild keeps the existing `mainWords` and `guatemalaBonus` base content, replaces the coffee collection from the fluency CSV, adds the conversation-verbs collection, imports everyday phrases from `data/everyday_guatemalan_phrases.json`, imports the Guatemalan lexicon from `data/guatemala_spanish_lexicon.json`, and enriches all 3,000 words with mini-phrase data. The source collection IDs remain separate for repeatable data builds; `app.js` consolidates them into the product-facing decks at load time.
 
 Legacy bootstrapping:
 

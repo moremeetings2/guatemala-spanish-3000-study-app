@@ -4,7 +4,7 @@ const { test, expect } = require("@playwright/test");
 // an in-memory store per test, so these exercise the real frontend flow —
 // load on boot, add, delete, deck integration — without touching production.
 
-function mockMyWordsApi(page, initialWords = []) {
+function mockMyWordsApi(page, initialWords = [], { getDelayMs = 0, postDelayMs = 0, postFailure = false } = {}) {
   // In-memory store the mock mutates; tests read it to assert server effects.
   const store = { words: [...initialWords], nextId: 1 };
   page.route((url) => url.pathname.includes("/api/"), async (route) => {
@@ -14,9 +14,12 @@ function mockMyWordsApi(page, initialWords = []) {
       route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
 
     if (url.pathname.endsWith("/api/my-words") && req.method() === "GET") {
+      if (getDelayMs) await new Promise((resolve) => setTimeout(resolve, getDelayMs));
       return json(200, { words: store.words, max: 500 });
     }
     if (url.pathname.endsWith("/api/my-words") && req.method() === "POST") {
+      if (postDelayMs) await new Promise((resolve) => setTimeout(resolve, postDelayMs));
+      if (postFailure) return json(500, { error: "Account A add failed" });
       const body = JSON.parse(req.postData() || "{}");
       if (!body.es || !body.en) return json(400, { error: "Spanish text (es) is required." });
       if (store.words.some((w) => w.es.toLowerCase() === body.es.toLowerCase())) {
@@ -42,21 +45,23 @@ function mockMyWordsApi(page, initialWords = []) {
   return store;
 }
 
-async function boot(page, initialWords = []) {
-  const store = mockMyWordsApi(page, initialWords);
-  await page.addInitScript(() => {
+async function boot(page, initialWords = [], options = {}) {
+  const store = mockMyWordsApi(page, initialWords, options);
+  await page.addInitScript(({ persisted, randomValue }) => {
     try {
       window.__NO_AI__ = true;
+      if (typeof randomValue === "number") Math.random = () => randomValue;
       localStorage.setItem("spanishApiBase", location.origin);
       localStorage.setItem(
         "spanishAuth.v1",
         JSON.stringify({ token: "test-token", user: { id: "u", email: "tester@example.com", role: "user" } })
       );
+      if (persisted) localStorage.setItem("spanishStudyApp.v1", JSON.stringify(persisted));
       if (navigator.serviceWorker) {
         navigator.serviceWorker.register = () => Promise.resolve({ update() {}, addEventListener() {} });
       }
     } catch (e) {}
-  });
+  }, { persisted: options.persisted || null, randomValue: options.randomValue });
   await page.goto("/");
   await page.waitForFunction(() => typeof appState !== "undefined" && appState.loaded && appState.data);
   return store;
@@ -89,6 +94,56 @@ test("custom words load on boot and appear as a My Words deck everywhere", async
   await content.getByRole("button", { name: /My Words/ }).click();
   await expect(content).toContainText("patojo");
   await expect(content).toContainText("El patojo juega.");
+});
+
+test("a delayed My Words load restores its saved card in a filtered My Words session", async ({ page }) => {
+  await boot(page, [
+    { id: "mine-1", deck: "myWords", type: "word", es: "patojo", en: "kid", pos: null, synonyms: [], sentence: null },
+    { id: "mine-2", deck: "myWords", type: "word", es: "chilero", en: "cool", pos: null, synonyms: [], sentence: null },
+  ], {
+    getDelayMs: 700,
+    randomValue: 0,
+    persisted: {
+      browse: { q: "", deck: "myWords", type: "all", state: "all", band: "all", session: "any" },
+      study: { source: "filter", cardId: "mine-1" },
+    },
+  });
+
+  await expect.poll(() => page.evaluate(() => appState.data.CARDS.some((c) => c.id === "mine-1"))).toBe(true);
+  expect(await page.evaluate(() => appState.study.order[appState.study.idx])).toBe("mine-1");
+  await expect.poll(() => page.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem("spanishStudyApp.v1") || "null");
+    return saved?.study?.cardId;
+  })).toBe("mine-1");
+});
+
+test("a delayed My Words response cannot repopulate the deck after logout", async ({ page }) => {
+  await boot(page, [
+    { id: "mine-1", deck: "myWords", type: "word", es: "patojo", en: "kid", pos: null, synonyms: [], sentence: null },
+  ], { getDelayMs: 700 });
+
+  await page.evaluate(() => doLogout());
+  await expect.poll(() => page.evaluate(() => appState.auth.user)).toBe(null);
+  await page.waitForTimeout(900);
+
+  expect(await page.evaluate(() => appState.data.CARDS.some((c) => c.id === "mine-1"))).toBe(false);
+  expect(await page.evaluate(() => appState.myWords.length)).toBe(0);
+});
+
+test("a delayed My Words failure cannot write into the signed-out session", async ({ page }) => {
+  await boot(page, [], { postDelayMs: 700, postFailure: true });
+  await page.evaluate(() => {
+    setState({ route: "mywords", mw: { ...appState.mw, es: "patojo", en: "kid" } });
+    addMyWord();
+  });
+  await expect.poll(() => page.evaluate(() => appState.mw.busy)).toBe(true);
+
+  await page.evaluate(() => doLogout());
+  await expect.poll(() => page.evaluate(() => appState.auth.user)).toBe(null);
+  await page.waitForTimeout(900);
+
+  expect(await page.evaluate(() => appState.mw.error)).toBe("");
+  expect(await page.evaluate(() => Boolean(appState.toast?.includes("Account A")))).toBe(false);
 });
 
 test("adding a word posts to the API and puts it straight into the study rotation", async ({ page }) => {

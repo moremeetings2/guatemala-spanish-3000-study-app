@@ -122,20 +122,25 @@ test("opens the Guatemalan Lexicon from the You tab with example sentences", asy
   await entry.click();
 
   // Reference view header + a known entry with its own example sentence.
-  await expect(content).toContainText("356 words & phrases");
+  await expect(content).toContainText("369 words & phrases");
   await expect(content).toContainText("chapín / chapina");
   await expect(content).toContainText("Mi amiga es chapina y habla con mucho sabor local.");
+
+  // Guatemala Notes are merged into the lexicon without losing their guidance.
+  await page.evaluate(() => setState({ lexQ: "trusted people" }));
+  await expect(content).toContainText("vos");
+  await expect(content).toContainText("Used a lot with friends, relatives, and trusted people.");
 });
 
 test("search filters the Guatemalan Lexicon list", async ({ page }) => {
   await page.evaluate(() => setState({ route: "lexicon", lexQ: "" }));
   const content = page.locator("#content");
-  await expect(content).toContainText("356 words & phrases");
+  await expect(content).toContainText("369 words & phrases");
 
   await page.evaluate(() => setState({ lexQ: "chapin" }));
-  await expect(content).toContainText("of 356");
+  await expect(content).toContainText("of 369");
   await expect(content).toContainText("chapín / chapina");
-  await expect(content).not.toContainText("356 words & phrases");
+  await expect(content).not.toContainText("369 words & phrases");
 });
 
 test("lexicon country picker switches between countries and searches within one", async ({ page }) => {
@@ -144,7 +149,7 @@ test("lexicon country picker switches between countries and searches within one"
 
   // Guatemala is the default with the full studyable deck.
   await expect(content).toContainText("Guatemalan Lexicon");
-  await expect(content).toContainText("356 words & phrases");
+  await expect(content).toContainText("369 words & phrases");
   // All-country chips are present (spot-check far ends of the list).
   await expect(content.getByRole("button", { name: /Mexico/ })).toBeVisible();
   await expect(content.getByRole("button", { name: /Equatorial Guinea/ })).toBeVisible();
@@ -169,7 +174,9 @@ test("lexicon country picker switches between countries and searches within one"
 
 test("does not offer a Use button on cards without an example sentence", async ({ page }) => {
   await page.evaluate(() => {
-    const card = appState.data.CARDS.find((c) => c.deck === "coffeePhrases");
+    const card = appState.data.CARDS.find(
+      (c) => c.deck === "everydayConversation" && c.sourceDeck === "coffeePhrases"
+    );
     if (appState.study.order.indexOf(card.id) === -1) setStudySource("all");
     const pos = appState.study.order.indexOf(card.id);
     setState({ tab: "study", route: null, study: { ...appState.study, idx: pos, flipped: false, showSentence: false } });

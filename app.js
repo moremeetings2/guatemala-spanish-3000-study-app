@@ -2,20 +2,36 @@
 
 // ===== Constants =====
 const STORAGE_KEY = 'spanishStudyApp.v1';
+const ACCOUNT_STATE_PREFIX = STORAGE_KEY + '.account.';
 const AUTH_KEY = 'spanishAuth.v1';
 const OLD_PROGRESS_KEY = 'guatemala-spanish-3000-progress-v2';
 const DAY_MS = 86400000;
 const DATA_URL = './data/guatemala_spanish_study_pack.json';
 
 const DECK_DEFS = {
-  mainWords:                { name: 'Main 3000',          short: '3000',     accent: '#28b573', icon: 'dictionary' },
-  coffeePhrases:            { name: 'Coffee Phrases',     short: 'Coffee',   accent: '#f5a524', icon: 'local_cafe' },
-  conversationVerbs:        { name: 'Conversation',       short: 'Verbs',    accent: '#5560e0', icon: 'record_voice_over' },
-  everydayGuatemalaPhrases: { name: 'Everyday Phrases',   short: 'Everyday', accent: '#c23b9e', icon: 'chat' },
-  guatemalaBonus:           { name: 'Guatemala Notes',    short: 'Notes',    accent: '#e0843c', icon: 'flag' },
-  guatemalaLexicon:         { name: 'Guatemalan Lexicon', short: 'Lexicon',  accent: '#2c7a9e', icon: 'menu_book' },
+  mainWords:            { name: 'Main 3000',             short: '3000',    accent: '#28b573', icon: 'dictionary' },
+  everydayConversation: { name: 'Everyday Conversation', short: 'Everyday', accent: '#c23b9e', icon: 'chat' },
+  guatemalaLexicon:     { name: 'Guatemalan Lexicon',    short: 'Lexicon', accent: '#2c7a9e', icon: 'menu_book' },
+  mostCommonGuate:      { name: 'Most Common in Guate',  short: 'Common',  accent: '#f5a524', icon: 'star' },
   // Per-user custom vocabulary — private to each account, synced via the API.
-  myWords:                  { name: 'My Words',           short: 'Mine',     accent: '#7b64e8', icon: 'edit_note' },
+  myWords:              { name: 'My Words',              short: 'Mine',    accent: '#7b64e8', icon: 'edit_note' },
+};
+
+// Source collections stay unchanged so the data-build pipeline remains stable;
+// cards are assigned to the product-facing consolidated decks at load time.
+const SOURCE_DECK_MAP = {
+  coffeePhrases: 'everydayConversation',
+  conversationVerbs: 'everydayConversation',
+  everydayGuatemalaPhrases: 'everydayConversation',
+  guatemalaBonus: 'guatemalaLexicon',
+  guatemalaLexicon: 'guatemalaLexicon',
+};
+
+const RETIRED_DECK_MAP = {
+  coffeePhrases: 'everydayConversation',
+  conversationVerbs: 'everydayConversation',
+  everydayGuatemalaPhrases: 'everydayConversation',
+  guatemalaBonus: 'guatemalaLexicon',
 };
 
 // Product rule: personal-deck cap (mirrors the server's MAX_WORDS_PER_USER).
@@ -188,11 +204,27 @@ function cs(id) {
   return appState.cardState[id] || { state: 'new', due: Date.now(), seen: false, correct: 0, wrong: 0, weak: false, star: false };
 }
 
+function normalizeDeckId(deckId) {
+  return RETIRED_DECK_MAP[deckId] || deckId;
+}
+
+function normalizeSource(source) {
+  if (!source || !source.startsWith('deck:')) return source;
+  return 'deck:' + normalizeDeckId(source.slice(5));
+}
+
+function cardInDeck(card, deckId) {
+  if (deckId === 'mostCommonGuate') {
+    return card.deck === 'guatemalaLexicon' && cs(card.id).star;
+  }
+  return card.deck === deckId;
+}
+
 function filterCards(f) {
   const now = Date.now();
   return appState.data.CARDS.filter(c => {
     const s = cs(c.id);
-    if (f.deck && f.deck !== 'all' && c.deck !== f.deck) return false;
+    if (f.deck && f.deck !== 'all' && !cardInDeck(c, f.deck)) return false;
     if (f.type && f.type !== 'all' && c.type !== f.type) return false;
     if (f.band && f.band !== 'all' && c.band !== f.band) return false;
     if (f.state && f.state !== 'all' && s.state !== f.state) return false;
@@ -365,7 +397,12 @@ function tokenize(sentence) {
 // ===== Quiz =====
 function buildQuiz() {
   const { CARDS } = appState.data; const dir = appState.quiz.dir;
-  let src = sourceCards(appState.quiz.source); if (src.length < 4) src = CARDS;
+  const src = sourceCards(appState.quiz.source);
+  if (!src.length) {
+    setState({ quiz: { ...appState.quiz, phase: 'intro', idx: 0, qs: [] } });
+    flash('No cards match this quiz source.');
+    return;
+  }
   const order = shuffleArr(src.length).slice(0, Math.min(8, src.length));
   const qs = order.map(i => {
     const card = src[i];
@@ -411,11 +448,17 @@ function install() {
 // ===== Persistence =====
 function persistable() {
   const S = appState;
+  // An asynchronously loaded My Words card remains authoritative until that
+  // account-scoped deck arrives and can place the card back in the order.
+  const activeStudyId = S.study.resumeId || (S.study.order.length
+    ? S.study.order[S.study.idx % S.study.order.length]
+    : null);
   return {
+    accountId: S.auth.user?.id || null,
     cardState: S.cardState, saved: S.saved, completed: S.completed,
     lookedUp: S.lookedUp, storyId: S.storyId, settings: S.settings,
     reviewedToday: S.reviewedToday, streak: S.streak,
-    study: { source: S.study.source },
+    study: { source: S.study.source, cardId: activeStudyId },
     quiz: { dir: S.quiz.dir, source: S.quiz.source },
     browse: S.browse,
   };
@@ -423,8 +466,13 @@ function persistable() {
 
 function saveState() {
   const o = persistable();
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(o)); } catch (e) {}
+  try {
+    const serialized = JSON.stringify(o);
+    localStorage.setItem(STORAGE_KEY, serialized);
+    if (o.accountId) localStorage.setItem(ACCOUNT_STATE_PREFIX + o.accountId, serialized);
+  } catch (e) {}
   idbSet(o);
+  if (o.accountId) idbSet(o, 'account:' + o.accountId);
 }
 
 let _idbDb = null;
@@ -441,18 +489,26 @@ function idbOpen() {
   return _idbDb;
 }
 
-async function idbSet(o) {
-  try { const db = await idbOpen(); if (!db) return; db.transaction('kv', 'readwrite').objectStore('kv').put(o, 'state'); } catch (e) {}
+async function idbSet(o, key = 'state') {
+  try { const db = await idbOpen(); if (!db) return; db.transaction('kv', 'readwrite').objectStore('kv').put(o, key); } catch (e) {}
 }
 
-async function idbGet() {
+async function idbGet(key = 'state') {
   try {
     const db = await idbOpen(); if (!db) return null;
     return await new Promise(res => {
-      const rq = db.transaction('kv', 'readonly').objectStore('kv').get('state');
+      const rq = db.transaction('kv', 'readonly').objectStore('kv').get(key);
       rq.onsuccess = () => res(rq.result || null); rq.onerror = () => res(null);
     });
   } catch (e) { return null; }
+}
+
+async function loadAccountState(accountId) {
+  if (!accountId) return null;
+  let o = null;
+  try { o = JSON.parse(localStorage.getItem(ACCOUNT_STATE_PREFIX + accountId)); } catch (e) {}
+  if (!o) o = await idbGet('account:' + accountId);
+  return o && o.accountId === accountId ? o : null;
 }
 
 async function loadState() {
@@ -547,6 +603,34 @@ function saveAuth() {
   } catch (e) {}
 }
 
+function currentAuthMatches(token, accountId) {
+  return appState.auth.token === token && appState.auth.user?.id === accountId;
+}
+
+function applyAccountState(persisted) {
+  if (!persisted || !appState.data) return;
+  const browse = { ...appState.browse, ...(persisted.browse || {}) };
+  browse.deck = normalizeDeckId(browse.deck);
+  const cardState = seedStates(appState.data.CARDS, persisted.cardState || {});
+  const studySource = normalizeSource(persisted.study?.source || 'all');
+  const studyCardId = persisted.study?.cardId || null;
+  appState = { ...appState, cardState, browse };
+  const order = orderFor(studySource);
+  const restoredIdx = studyCardId ? order.indexOf(studyCardId) : -1;
+  setState({
+    cardState, browse,
+    saved: persisted.saved || [], completed: persisted.completed || {},
+    lookedUp: persisted.lookedUp || {}, storyId: persisted.storyId || null,
+    settings: { ...appState.settings, ...(persisted.settings || {}) },
+    reviewedToday: persisted.reviewedToday || 0, streak: persisted.streak || 0,
+    study: { idx: Math.max(0, restoredIdx), flipped: false, source: studySource, order, resumeId: restoredIdx < 0 ? studyCardId : null },
+    quiz: {
+      ...appState.quiz, phase: 'intro', idx: 0, qs: null,
+      dir: persisted.quiz?.dir || 'es-en', source: normalizeSource(persisted.quiz?.source || 'all'),
+    },
+  });
+}
+
 async function doAuth(kind) {
   const email = (appState.authEmail || '').trim();
   const password = appState.authPassword || '';
@@ -559,6 +643,8 @@ async function doAuth(kind) {
     const { token, user } = kind === 'signup' ? await API.signup(email, password) : await API.login(email, password);
     setState({ auth: { token, user }, authBusy: false, authPassword: '', authEmail: '' });
     saveAuth();
+    const accountState = await loadAccountState(user.id);
+    if (currentAuthMatches(token, user.id)) applyAccountState(accountState);
     flash(kind === 'signup' ? 'Account created!' : 'Welcome back!');
     loadMyWords();
     await syncOnLogin();
@@ -569,10 +655,21 @@ async function doAuth(kind) {
 
 async function doLogout() {
   const token = appState.auth.token;
+  clearTimeout(saveTimer);
+  saveState(); // retain this account's local-only reading and resume history
   try { if (token) await API.logout(token); } catch (e) {}
   clearTimeout(progressSyncTimer); dirtyCards = new Set();
   applyMyWords([]); // custom words are account-scoped — drop them from the catalog
-  setState({ auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home', myWords: [], mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, suggesting: false, error: '' } });
+  const cardState = seedStates(appState.data.CARDS, {});
+  setState({
+    auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home',
+    readView: 'lib', storyId: null, activeWord: null, lookedUp: {}, saved: [], completed: {},
+    cardState, reviewedToday: 0, streak: 0,
+    study: { idx: 0, flipped: false, source: 'all', order: orderFor('all'), resumeId: null },
+    quiz: { ...appState.quiz, phase: 'intro', idx: 0, sel: null, answered: false, score: 0, qs: null, source: 'all' },
+    browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any' },
+    syncing: false, myWords: [], mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, suggesting: false, error: '' },
+  });
   saveAuth();
   flash('Logged out');
 }
@@ -581,7 +678,7 @@ async function doLogout() {
 
 /** API word -> card shape used everywhere in the app. */
 function myWordToCard(w) {
-  return { id: w.id, es: w.es, en: w.en, deck: 'myWords', type: 'word', band: null, synonyms: [], sentence: w.sentence || null, cat: '' };
+  return { id: w.id, es: w.es, en: w.en, deck: 'myWords', sourceDeck: 'myWords', type: 'word', band: null, synonyms: [], sentence: w.sentence || null, cat: '', note: '' };
 }
 
 // Rebuild the catalog with the user's custom words as the "My Words" deck.
@@ -596,17 +693,22 @@ function applyMyWords(words) {
   const cardState = seedStates(mine, appState.cardState);
   // Rebuild the study order so new words join the rotation, but keep the card
   // the user is currently on so an add/delete doesn't yank the deck around.
-  const curId = appState.study.order.length ? appState.study.order[appState.study.idx % appState.study.order.length] : null;
+  const curId = appState.study.resumeId || (appState.study.order.length
+    ? appState.study.order[appState.study.idx % appState.study.order.length]
+    : null);
   appState = { ...appState, data: { ...appState.data, CARDS, DECKS }, cardState };
   const order = orderFor(appState.study.source);
   const idx = Math.max(0, order.indexOf(curId));
-  setState({ myWords: words || [], study: { ...appState.study, order, idx } });
+  setState({ myWords: words || [], study: { ...appState.study, order, idx, resumeId: null } });
 }
 
 async function loadMyWords() {
-  if (!appState.auth.token || !window.API || !API.getMyWords) return;
+  const token = appState.auth.token;
+  const accountId = appState.auth.user?.id;
+  if (!token || !accountId || !window.API || !API.getMyWords) return;
   try {
-    const { words } = await API.getMyWords(appState.auth.token);
+    const { words } = await API.getMyWords(token);
+    if (!currentAuthMatches(token, accountId)) return;
     applyMyWords(words || []);
   } catch (e) {
     // Non-fatal: the deck just stays absent for this session.
@@ -620,25 +722,33 @@ async function addMyWord() {
   if (!es || !en) { setState({ mw: { ...f, error: 'Both the Spanish word and its English meaning are required.' } }); return; }
   if (appState.myWords.length >= MY_WORDS_MAX) { setState({ mw: { ...f, error: `You've reached the ${MY_WORDS_MAX}-word limit for My Words.` } }); return; }
   setState({ mw: { ...f, busy: true, error: '' } });
+  const token = appState.auth.token;
+  const accountId = appState.auth.user?.id;
   try {
     const body = { es, en };
     const sEs = (f.sentEs || '').trim(); const sEn = (f.sentEn || '').trim();
     if (sEs) body.sentence = { es: sEs, en: sEn };
-    const { word } = await API.addMyWord(appState.auth.token, body);
+    const { word } = await API.addMyWord(token, body);
+    if (!currentAuthMatches(token, accountId)) return;
     applyMyWords([word, ...appState.myWords]);
     setState({ mw: { es: '', en: '', sentEs: '', sentEn: '', busy: false, error: '' } });
     flash('Added to My Words');
   } catch (e) {
+    if (!currentAuthMatches(token, accountId)) return;
     setState({ mw: { ...appState.mw, busy: false, error: (e && e.message) || 'Could not add the word.' } });
   }
 }
 
 async function deleteMyWord(id) {
+  const token = appState.auth.token;
+  const accountId = appState.auth.user?.id;
   try {
-    await API.deleteMyWord(appState.auth.token, id);
+    await API.deleteMyWord(token, id);
+    if (!currentAuthMatches(token, accountId)) return;
     applyMyWords(appState.myWords.filter(w => w.id !== id));
     flash('Word removed');
   } catch (e) {
+    if (!currentAuthMatches(token, accountId)) return;
     flash((e && e.message) || 'Could not remove the word.');
   }
 }
@@ -751,18 +861,37 @@ function isMeaningfulProgress(s) {
 // After login: merge server progress with local, then push only real progress up.
 async function syncOnLogin() {
   const token = appState.auth.token;
-  if (!token) return;
+  const accountId = appState.auth.user?.id;
+  if (!token || !accountId) return;
   setState({ syncing: true });
   try {
     const { cardState: server } = await API.getProgress(token);
+    if (!currentAuthMatches(token, accountId)) return;
     const merged = { ...appState.cardState, ...(server || {}) };
-    setState({ cardState: merged, syncing: false });
+    const currentStudyId = appState.study.order.length
+      ? appState.study.order[appState.study.idx % appState.study.order.length]
+      : null;
+    // Most Common in Guate and the filtered sources derive membership from
+    // card state, so a cross-device sync must refresh their active rotation.
+    const stateDrivenStudy = ['due', 'weak', 'starred', 'filter', 'deck:mostCommonGuate'].includes(appState.study.source);
+    appState = { ...appState, cardState: merged };
+    let study = appState.study;
+    if (stateDrivenStudy) {
+      const order = orderFor(study.source);
+      const pendingResumeId = study.resumeId || null;
+      const resumeIdx = pendingResumeId ? order.indexOf(pendingResumeId) : -1;
+      const currentIdx = currentStudyId ? order.indexOf(currentStudyId) : -1;
+      const restoredIdx = resumeIdx >= 0 ? resumeIdx : currentIdx;
+      study = { ...study, order, idx: Math.max(0, restoredIdx), resumeId: pendingResumeId && resumeIdx < 0 ? pendingResumeId : null };
+    }
+    setState({ cardState: merged, study, syncing: false });
     const meaningful = {};
     for (const [id, s] of Object.entries(merged)) {
       if (isMeaningfulProgress(s)) meaningful[id] = s;
     }
-    if (Object.keys(meaningful).length) await API.putProgress(token, meaningful);
+    if (Object.keys(meaningful).length && currentAuthMatches(token, accountId)) await API.putProgress(token, meaningful);
   } catch (e) {
+    if (!currentAuthMatches(token, accountId)) return;
     setState({ syncing: false });
     if (e && e.status === 401) doLogout();
   }
@@ -778,7 +907,8 @@ function queueProgressSync(id) {
 
 async function pushProgress() {
   const token = appState.auth.token;
-  if (!token || !dirtyCards.size) return;
+  const accountId = appState.auth.user?.id;
+  if (!token || !accountId || !dirtyCards.size) return;
   const ids = [...dirtyCards];
   const subset = {};
   ids.forEach(cardId => { if (appState.cardState[cardId]) subset[cardId] = appState.cardState[cardId]; });
@@ -786,6 +916,7 @@ async function pushProgress() {
   try {
     await API.putProgress(token, subset);
   } catch (e) {
+    if (!currentAuthMatches(token, accountId)) return;
     if (e && e.status === 401) { doLogout(); return; }
     ids.forEach(cardId => dirtyCards.add(cardId)); // retry on next change
   }
@@ -865,18 +996,25 @@ function transformData(raw, reading, synonymsMap, sentencesMap) {
   const sents = sentencesMap || {};
   const colls = raw.collections || {};
   const CARDS = [];
-  Object.entries(colls).forEach(([deckId, entries]) => {
+  Object.entries(colls).forEach(([sourceDeck, entries]) => {
     entries.forEach(entry => {
       const es = entry.spanish || '';
-      const synonyms = deckId === 'mainWords' ? (syns[es] || []) : [];
-      const sentence = sentenceFor(deckId, es, entry, sents);
-      const cat = deckId === 'guatemalaLexicon' ? (entry.lexiconCategory || '') : '';
-      CARDS.push({ id: entry.id, es, en: entry.english || '', deck: deckId, type: entry.type || 'word', band: entry.band || null, synonyms, sentence, cat });
+      const deck = SOURCE_DECK_MAP[sourceDeck] || sourceDeck;
+      const synonyms = sourceDeck === 'mainWords' ? (syns[es] || []) : [];
+      const sentence = sentenceFor(sourceDeck, es, entry, sents);
+      const cat = sourceDeck === 'guatemalaLexicon'
+        ? (entry.lexiconCategory || '')
+        : (sourceDeck === 'guatemalaBonus' ? 'usage note' : '');
+      CARDS.push({
+        id: entry.id, es, en: entry.english || '', deck, sourceDeck,
+        type: entry.type || 'word', band: entry.band || null, synonyms,
+        sentence, cat, note: entry.note || '',
+      });
     });
   });
   const DECKS = Object.entries(DECK_DEFS)
-    .map(([id, def]) => ({ id, ...def, count: (colls[id] || []).length }))
-    .filter(d => d.count > 0);
+    .map(([id, def]) => ({ id, ...def, count: CARDS.filter(c => c.deck === id).length }))
+    .filter(d => d.count > 0 || d.id === 'mostCommonGuate');
   const DICT = {};
   CARDS.forEach(c => {
     const words = c.es.match(/[A-Za-záéíóúüñÁÉÍÓÚÜÑ]+/g) || [];
@@ -1043,7 +1181,7 @@ function computeVals() {
 
   // Quiz
   const q = S.quiz;
-  const qSrcCount = (() => { const c = sourceCards(q.source).length; return Math.min(8, c < 4 ? CARDS.length : c); })();
+  const qSrcCount = Math.min(8, sourceCards(q.source).length);
   const quiz = {
     intro: q.phase === 'intro', playing: q.phase === 'play', done: q.phase === 'done', startCount: qSrcCount,
     dirs: [{ v: 'es-en', l: 'Español → English' }, { v: 'en-es', l: 'English → Español' }].map(x => ({ label: x.l, onClick: () => setState({ quiz: { ...q, dir: x.v } }), style: seg(q.dir === x.v) })),
@@ -1067,7 +1205,7 @@ function computeVals() {
   };
 
   // Progress
-  const lexCards = CARDS.filter(c => c.deck === 'guatemalaLexicon');
+  const lexCards = filterCards({ deck: 'guatemalaLexicon' });
   const lexDeckDef = DECK_DEFS.guatemalaLexicon;
   const prog = {
     total: CARDS.length.toLocaleString(), known, learning, fresh,
@@ -1080,8 +1218,10 @@ function computeVals() {
       { label: 'Quiz accuracy', value: acc + '%', icon: 'target', color: '#28b573', onClick: () => goTab('quiz') },
     ],
     decks: DECKS.map(d => {
-      const kn = CARDS.filter(c => c.deck === d.id && cs(c.id).state === 'known').length;
-      return { name: d.name, icon: d.icon, accent: d.accent, tint: deckTint(d.accent), sub: d.count.toLocaleString() + ' cards · ' + kn + ' known', onClick: () => openBrowse({ deck: d.id }) };
+      const cards = filterCards({ deck: d.id });
+      const kn = cards.filter(c => cs(c.id).state === 'known').length;
+      const cardLabel = cards.length === 1 ? ' card' : ' cards';
+      return { name: d.name, icon: d.icon, accent: d.accent, tint: deckTint(d.accent), sub: cards.length.toLocaleString() + cardLabel + ' · ' + kn + ' known', onClick: () => openBrowse({ deck: d.id }) };
     }),
     lexCount: lexCards.length,
     lexCountryCount: 1 + (S.data.COUNTRY_LEX || []).length,
@@ -1145,8 +1285,8 @@ function computeVals() {
   const lexCountryName = (lexCountries.find(c => c.id === lexSel) || {}).name || 'Guatemala';
   // Normalize both sources (deck cards vs. reference entries) to one shape.
   const lexEntries = lexSel === 'guatemala'
-    ? lexCards.map(c => ({ es: c.es, en: c.en, cat: c.cat || '', sentEs: c.sentence ? c.sentence.es : '', sentEn: c.sentence ? c.sentence.en : '' }))
-    : ((COUNTRY_LEX.find(c => c.id === lexSel) || {}).entries || []).map(e => ({ es: e.es, en: e.en, cat: e.cat || '', sentEs: e.example ? e.example.es : '', sentEn: e.example ? (e.example.en || '') : '' }));
+    ? lexCards.map(c => ({ es: c.es, en: c.en, cat: c.cat || '', note: c.note || '', sentEs: c.sentence ? c.sentence.es : '', sentEn: c.sentence ? c.sentence.en : '' }))
+    : ((COUNTRY_LEX.find(c => c.id === lexSel) || {}).entries || []).map(e => ({ es: e.es, en: e.en, cat: e.cat || '', note: '', sentEs: e.example ? e.example.es : '', sentEn: e.example ? (e.example.en || '') : '' }));
   const lq = (S.lexQ || '').trim().toLowerCase();
   const lexItems = lexEntries
     .filter(e => {
@@ -1154,10 +1294,13 @@ function computeVals() {
       return e.es.toLowerCase().includes(lq)
         || e.en.toLowerCase().includes(lq)
         || (e.cat && e.cat.toLowerCase().includes(lq))
-        || (e.sentEs && e.sentEs.toLowerCase().includes(lq));
+        || (e.note && e.note.toLowerCase().includes(lq))
+        || (e.sentEs && e.sentEs.toLowerCase().includes(lq))
+        || (e.sentEn && e.sentEn.toLowerCase().includes(lq));
     })
     .map(e => ({
       term: e.es, meaning: e.en, cat: e.cat,
+      hasNote: !!e.note, note: e.note,
       hasSentence: !!e.sentEs,
       sentEs: e.sentEs, sentEn: e.sentEn,
       onSpeakTerm: () => speak(e.es),
@@ -1365,8 +1508,7 @@ function renderAuth(v) {
 function renderLanding(a) {
   const features = [
     { title: 'Main 3000',                  desc: 'The 3,000 words that carry real conversations, learned in smart order.', icon: 'translate',    tint: '#e7f6ee', ink: '#1c6e48' },
-    { title: 'Coffee Phrases',             desc: 'Warm, everyday openers for cafés, markets and small talk.',              icon: 'local_cafe',   tint: '#fdf1dd', ink: '#a86c11' },
-    { title: 'Everyday Phrases',           desc: "The sentences you'll actually reach for, ready when you need them.",      icon: 'chat_bubble',  tint: '#f8e5f2', ink: '#a12b83' },
+    { title: 'Everyday Conversation',      desc: '230 useful phrases for cafés, markets, introductions, and daily life.',   icon: 'chat_bubble',  tint: '#f8e5f2', ink: '#a12b83' },
     { title: 'Quiz',                       desc: 'Quick, gentle checks that turn recognition into recall.',                icon: 'quiz',         tint: '#ecedfb', ink: '#3b45c4' },
     { title: 'Little Things Locals Know',  desc: 'Culture, context and the small things locals just know.',                icon: 'explore',      tint: '#fbeade', ink: '#b45e1f' },
     { title: 'Country Lexicons',           desc: "Regional slang from every Spanish-speaking country, with examples.",     icon: 'menu_book',    tint: '#e3eff4', ink: '#1f5e7c' },
@@ -2115,6 +2257,8 @@ function renderLexicon(v) {
         </div>
       </div>
       ${it.cat ? `<div style="display:inline-block;margin-top:10px;font-size:11px;font-weight:800;color:${lx.accent};background:${lx.tint};padding:3px 9px;border-radius:8px;text-transform:capitalize">${esc(it.cat)}</div>` : ''}
+      ${it.hasNote ? `
+      <div style="margin-top:12px;padding:12px;border-radius:12px;background:var(--soft2);font-size:14px;font-weight:650;color:var(--ink);line-height:1.4">${esc(it.note)}</div>` : ''}
       ${it.hasSentence ? `
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
         <div style="display:flex;align-items:flex-start;gap:10px">
@@ -2380,7 +2524,7 @@ async function bootstrap() {
   render(); // show loading state
 
   try {
-    const [persisted, response, readingResp, synResp, sentResp, countryLexResp] = await Promise.all([
+    const [loadedPersisted, response, readingResp, synResp, sentResp, countryLexResp] = await Promise.all([
       loadState(),
       fetch(DATA_URL),
       fetch('./data/reading-data.json'),
@@ -2404,27 +2548,41 @@ async function bootstrap() {
     // Guatemala, whose lexicon is the studyable in-catalog deck).
     data.COUNTRY_LEX = countryLex;
 
+    // Progress snapshots are account-scoped. Settings can still be restored
+    // across accounts, but one user's stars and study history must never seed
+    // another account after logout or a stale mobile browser shutdown.
+    const savedAuth = loadAuth();
+    const auth = savedAuth && savedAuth.token
+      ? { token: savedAuth.token, user: savedAuth.user || null }
+      : { token: null, user: null };
+    const accountPersisted = auth.user?.id ? await loadAccountState(auth.user.id) : null;
+    const persisted = accountPersisted || loadedPersisted;
+    const persistedAccountMatches = !persisted?.accountId
+      || persisted.accountId === (auth.user?.id || null);
+
     let cardState = {};
     let settings = appState.settings;
     let saved = [], completed = {}, lookedUp = {}, storyId = null;
-    let studySource = 'all', quizDir = 'es-en', quizSource = 'all';
+    let studySource = 'all', studyCardId = null, quizDir = 'es-en', quizSource = 'all';
     let browse = appState.browse;
     let reviewedToday = 0, streak = 0;
 
     if (persisted) {
-      if (persisted._migrateFrom) {
+      settings = { ...appState.settings, ...(persisted.settings || {}) };
+      if (persisted._migrateFrom && persistedAccountMatches) {
         cardState = migrateOldProgress(persisted._migrateFrom, data.CARDS);
-      } else {
+      } else if (persistedAccountMatches) {
         cardState = persisted.cardState || {};
         saved = persisted.saved || [];
         completed = persisted.completed || {};
         lookedUp = persisted.lookedUp || {};
         storyId = persisted.storyId || null;
-        settings = { ...appState.settings, ...(persisted.settings || {}) };
-        studySource = persisted.study?.source || 'all';
+        studySource = normalizeSource(persisted.study?.source || 'all');
+        studyCardId = persisted.study?.cardId || null;
         quizDir = persisted.quiz?.dir || 'es-en';
-        quizSource = persisted.quiz?.source || 'all';
+        quizSource = normalizeSource(persisted.quiz?.source || 'all');
         browse = { ...appState.browse, ...(persisted.browse || {}) };
+        browse.deck = normalizeDeckId(browse.deck);
         reviewedToday = persisted.reviewedToday || 0;
         streak = persisted.streak || 0;
       }
@@ -2432,19 +2590,16 @@ async function bootstrap() {
 
     cardState = seedStates(data.CARDS, cardState);
 
-    // Restore any saved session.
-    const savedAuth = loadAuth();
-    const auth = savedAuth && savedAuth.token
-      ? { token: savedAuth.token, user: savedAuth.user || null }
-      : { token: null, user: null };
-
     // Rebuild study order with persisted source
     appState = { ...appState, data, cardState };
     const studyOrder = orderFor(studySource);
+    const restoredStudyIdx = studyCardId ? studyOrder.indexOf(studyCardId) : -1;
 
     setState({
       data, cardState, saved, completed, lookedUp, storyId, settings,
-      study: { idx: 0, flipped: false, source: studySource, order: studyOrder },
+      // My Words arrives after bootstrap, so retain an unresolved card ID until
+      // applyMyWords can rebuild that account-scoped deck.
+      study: { idx: Math.max(0, restoredStudyIdx), flipped: false, source: studySource, order: studyOrder, resumeId: restoredStudyIdx < 0 ? studyCardId : null },
       quiz: { ...appState.quiz, dir: quizDir, source: quizSource },
       browse, reviewedToday, streak, loaded: true,
       auth,

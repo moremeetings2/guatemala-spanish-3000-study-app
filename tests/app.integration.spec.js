@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { test, expect } = require("@playwright/test");
+const { devices, test, expect } = require("@playwright/test");
 
 // Integration coverage for the current mobile phone-style app (post-refactor).
 //
@@ -20,14 +20,19 @@ const SW_CACHE_NAME = extractServiceWorkerCacheName();
 // Boot straight into the app (past the required login gate) as a signed-in user.
 // Accounts are mandatory now, so we seed a session and mock the backend so the
 // fake token doesn't 401 and bounce back to the landing page.
-const bootAsUser = async (page) => {
-  await page.route((url) => url.pathname.includes("/api/"), (route) =>
-    route.fulfill({
+const bootAsUser = async (page, { serverCardState = {}, progressDelayMs = 0 } = {}) => {
+  await page.route((url) => url.pathname.includes("/api/"), async (route) => {
+    const request = route.request();
+    const pathname = new URL(request.url()).pathname;
+    if (progressDelayMs && request.method() === "GET" && pathname.endsWith("/api/progress")) {
+      await new Promise((resolve) => setTimeout(resolve, progressDelayMs));
+    }
+    return route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ cardState: {}, ok: true, saved: 0 }),
-    })
-  );
+      body: JSON.stringify({ cardState: serverCardState, ok: true, saved: 0 }),
+    });
+  });
   await page.addInitScript(() => {
     try {
       window.__NO_AI__ = true; // don't download the on-device model in tests
@@ -60,40 +65,194 @@ test("home dashboard shows the catalog totals and study entry points", async ({ 
   await expect(content).toContainText("3599 cards");
 });
 
-test("the You tab lists every deck with its card count", async ({ page }) => {
+test("the You tab lists the consolidated decks with their card counts", async ({ page }) => {
   await page.evaluate(() => setState({ tab: "progress", route: null }));
   const content = page.locator("#content");
   await expect(content).toContainText("3,599");            // catalog total
   await expect(content).toContainText("Main 3000");
   await expect(content).toContainText("3,000 cards");
-  await expect(content).toContainText("Coffee Phrases");
-  await expect(content).toContainText("57 cards");
-  await expect(content).toContainText("Conversation");
-  await expect(content).toContainText("73 cards");
-  await expect(content).toContainText("Everyday Phrases");
-  await expect(content).toContainText("100 cards");
-  await expect(content).toContainText("Guatemala Notes");
-  await expect(content).toContainText("13 cards");
+  await expect(content).toContainText("Everyday Conversation");
+  await expect(content).toContainText("230 cards");
   await expect(content).toContainText("Guatemalan Lexicon");
-  await expect(content).toContainText("356 cards");
+  await expect(content).toContainText("369 cards");
+  await expect(content).toContainText("Most Common in Guate");
+  await expect(content).toContainText("0 cards");
+  await expect(content).not.toContainText("Coffee Phrases");
+  await expect(content).not.toContainText("Guatemala Notes");
+});
+
+test("consolidated decks preserve source cards and derive common Guate cards from stars", async ({ page }) => {
+  const result = await page.evaluate(() => {
+    const coffee = appState.data.CARDS.find((c) => c.id.startsWith("phrase-"));
+    const conversation = appState.data.CARDS.find((c) => c.id.startsWith("conversation-"));
+    const everyday = appState.data.CARDS.find((c) => c.id.startsWith("everyday-"));
+    const note = appState.data.CARDS.find((c) => c.id.startsWith("bonus-"));
+    const lexicon = appState.data.CARDS.find((c) => c.id.startsWith("lexicon-"));
+    toggleStar(lexicon.id);
+    return {
+      everydayCount: filterCards({ deck: "everydayConversation" }).length,
+      lexiconCount: filterCards({ deck: "guatemalaLexicon" }).length,
+      phraseDecks: [coffee.deck, conversation.deck, everyday.deck],
+      noteDeck: note.deck,
+      commonIds: filterCards({ deck: "mostCommonGuate" }).map((c) => c.id),
+      lexiconId: lexicon.id,
+      sharedState: appState.cardState[lexicon.id],
+    };
+  });
+
+  expect(result.everydayCount).toBe(230);
+  expect(result.lexiconCount).toBe(369);
+  expect(result.phraseDecks).toEqual([
+    "everydayConversation",
+    "everydayConversation",
+    "everydayConversation",
+  ]);
+  expect(result.noteDeck).toBe("guatemalaLexicon");
+  expect(result.commonIds).toEqual([result.lexiconId]);
+  expect(result.sharedState.star).toBe(true);
+
+  await page.evaluate(() => setState({ tab: "progress", route: null }));
+  await expect(page.locator("#content")).toContainText("1 card · 0 known");
+
+  await page.evaluate(() => openBrowse({ deck: "mostCommonGuate" }));
+  await expect(page.locator("#content")).toContainText("chapín / chapina");
+  await page.evaluate((id) => toggleStar(id), result.lexiconId);
+  await expect(page.locator("#content")).toContainText("0 cards");
+  await expect(page.locator("#content")).toContainText("No cards match these filters.");
+});
+
+test("a small Most Common in Guate deck quizzes only its starred cards", async ({ page }) => {
+  const lexiconId = await page.evaluate(() => {
+    const card = appState.data.CARDS.find((c) => c.deck === "guatemalaLexicon");
+    toggleStar(card.id);
+    setState({ quiz: { ...appState.quiz, source: "deck:mostCommonGuate" } });
+    buildQuiz();
+    return card.id;
+  });
+
+  expect(await page.evaluate(() => appState.quiz.qs.map((q) => q.id))).toEqual([lexiconId]);
+});
+
+test("an empty Most Common in Guate deck does not fall back to an all-card quiz", async ({ page }) => {
+  const result = await page.evaluate(() => {
+    setState({ quiz: { ...appState.quiz, phase: "intro", source: "deck:mostCommonGuate" } });
+    buildQuiz();
+    return { phase: appState.quiz.phase, ids: (appState.quiz.qs || []).map((q) => q.id) };
+  });
+
+  expect(result).toEqual({ phase: "intro", ids: [] });
+  await expect(page.locator("#toast-el")).toContainText("No cards match this quiz source.");
+});
+
+test("server-synced stars rebuild an active Most Common in Guate study order", async ({ browser }) => {
+  const context = await browser.newContext();
+  const synced = await context.newPage();
+  await synced.addInitScript(() => {
+    localStorage.setItem("spanishStudyApp.v1", JSON.stringify({
+      study: { source: "deck:mostCommonGuate", cardId: null },
+    }));
+  });
+  await bootAsUser(synced, {
+    progressDelayMs: 500,
+    serverCardState: {
+      "lexicon-gt_0001": {
+        state: "new", due: null, seen: false, correct: 0, wrong: 0, weak: false, star: true,
+      },
+    },
+  });
+  await synced.goto("/");
+  await waitForAppReady(synced);
+
+  await expect.poll(() => synced.evaluate(() => appState.syncing)).toBe(false);
+  await expect.poll(() => synced.evaluate(() => appState.study.order)).toEqual(["lexicon-gt_0001"]);
+  await context.close();
+});
+
+test("does not restore progress persisted by a different account", async ({ browser }) => {
+  const context = await browser.newContext();
+  const switched = await context.newPage();
+  await switched.addInitScript(() => {
+    localStorage.setItem("spanishStudyApp.v1", JSON.stringify({
+      accountId: "previous-user",
+      cardState: {
+        "lexicon-gt_0001": {
+          state: "known", due: null, seen: true, correct: 3, wrong: 0, weak: false, star: true,
+        },
+      },
+    }));
+  });
+  await bootAsUser(switched);
+  await switched.goto("/");
+  await waitForAppReady(switched);
+
+  expect(await switched.evaluate(() => appState.auth.user.id)).toBe("test-user");
+  expect(await switched.evaluate(() => appState.cardState["lexicon-gt_0001"].star)).toBe(false);
+  expect(await switched.evaluate(() => filterCards({ deck: "mostCommonGuate" }).length)).toBe(0);
+  await context.close();
+});
+
+test("restores the signed-in account snapshot when the generic snapshot is stale", async ({ browser }) => {
+  const context = await browser.newContext();
+  const restored = await context.newPage();
+  await restored.addInitScript(() => {
+    localStorage.setItem("spanishStudyApp.v1", JSON.stringify({ accountId: null }));
+    localStorage.setItem("spanishStudyApp.v1.account.test-user", JSON.stringify({
+      accountId: "test-user",
+      saved: [{ es: "mercado", en: "market" }],
+      study: { source: "all", cardId: "main-0616" },
+    }));
+  });
+  await bootAsUser(restored);
+  await restored.goto("/");
+  await waitForAppReady(restored);
+
+  expect(await restored.evaluate(() => appState.study.order[appState.study.idx])).toBe("main-0616");
+  expect(await restored.evaluate(() => appState.saved)).toEqual([{ es: "mercado", en: "market" }]);
+  await context.close();
 });
 
 test("browse filters by deck and searches Spanish and English fields", async ({ page }) => {
   // Filter to the lexicon deck.
   await page.evaluate(() => openBrowse({ deck: "guatemalaLexicon" }));
   const content = page.locator("#content");
-  await expect(content).toContainText("356 cards");
+  await expect(content).toContainText("369 cards");
   await expect(content).toContainText("chapín / chapina");
 
   // Search narrows results (matches Spanish term + metadata).
   await page.evaluate(() => setBrowse({ q: "chapín" }));
   await expect(content).toContainText("chapín / chapina");
-  await expect(content).not.toContainText("356 cards");
+  await expect(content).not.toContainText("369 cards");
 
   // Search across the English side, across all decks.
   await page.evaluate(() => openBrowse({}));
   await page.evaluate(() => setBrowse({ q: "black coffee" }));
   await expect(content).toContainText("café negro");
+});
+
+test("retired persisted deck filters reopen in their consolidated deck", async ({ page }) => {
+  await page.evaluate(() => {
+    appState.browse = { ...appState.browse, deck: "coffeePhrases" };
+    appState.study = { ...appState.study, source: "deck:conversationVerbs" };
+    appState.quiz = { ...appState.quiz, source: "deck:guatemalaBonus" };
+    saveState();
+  });
+  await expect.poll(async () => {
+    const saved = await readIdbState(page);
+    return [saved?.browse?.deck, saved?.study?.source, saved?.quiz?.source];
+  }).toEqual(["coffeePhrases", "deck:conversationVerbs", "deck:guatemalaBonus"]);
+
+  await page.reload();
+  await waitForAppReady(page);
+
+  expect(await page.evaluate(() => ({
+    browse: appState.browse.deck,
+    study: appState.study.source,
+    quiz: appState.quiz.source,
+  }))).toEqual({
+    browse: "everydayConversation",
+    study: "deck:everydayConversation",
+    quiz: "deck:guatemalaLexicon",
+  });
 });
 
 test("study cards flip, grade, and star — and the progress persists across reload", async ({ page }) => {
@@ -131,6 +290,36 @@ test("study cards flip, grade, and star — and the progress persists across rel
   await waitForAppReady(page);
   expect(await page.evaluate(() => appState.cardState["main-0001"]?.state)).toBe("known");
   expect(await page.evaluate(() => appState.cardState["main-0001"]?.star)).toBe(true);
+});
+
+test("reopens the last active card after an iPhone study session is closed", async ({ browser }) => {
+  const context = await browser.newContext({ ...devices["iPhone 13"] });
+  const phone = await context.newPage();
+  await bootAsUser(phone);
+  await phone.goto("/");
+  await waitForAppReady(phone);
+
+  const targetId = await phone.evaluate(() => {
+    const card = appState.data.CARDS.find((c) => c.es === "abandonar");
+    const idx = appState.study.order.indexOf(card.id);
+    setState({ tab: "study", route: null, study: { ...appState.study, idx, flipped: false } });
+    return card.id;
+  });
+
+  await expect.poll(() => phone.evaluate((key) => {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw).study?.cardId : null;
+  }, STORAGE_KEY)).toBe(targetId);
+  await expect.poll(async () => (await readIdbState(phone))?.study?.cardId).toBe(targetId);
+
+  await phone.close();
+  const reopened = await context.newPage();
+  await bootAsUser(reopened);
+  await reopened.goto("/");
+  await waitForAppReady(reopened);
+
+  expect(await reopened.evaluate(() => appState.study.order[appState.study.idx])).toBe(targetId);
+  await context.close();
 });
 
 test("persists a snapshot to both localStorage and IndexedDB", async ({ page }) => {
@@ -258,8 +447,10 @@ test("exports a JSON backup and imports it into a clean profile", async ({ brows
 
 test("migrates progress saved under the legacy storage key", async ({ page }) => {
   // Clear the current stores, seed the old-format progress, then reload.
-  await page.evaluate(async ({ storageKey, oldKey, dbName, store, dbKey }) => {
+  await page.evaluate(async ({ storageKey, accountKey, oldKey, dbName, store, dbKeys }) => {
+    clearTimeout(saveTimer);
     localStorage.removeItem(storageKey);
+    localStorage.removeItem(accountKey);
     localStorage.setItem(
       oldKey,
       JSON.stringify({
@@ -273,13 +464,20 @@ test("migrates progress saved under the legacy storage key", async ({ page }) =>
       req.onsuccess = () => {
         const db = req.result;
         const tx = db.transaction(store, "readwrite");
-        tx.objectStore(store).delete(dbKey);
+        dbKeys.forEach((key) => tx.objectStore(store).delete(key));
         tx.oncomplete = () => resolve();
         tx.onerror = () => resolve();
       };
       req.onerror = () => resolve();
     });
-  }, { storageKey: STORAGE_KEY, oldKey: OLD_PROGRESS_KEY, dbName: IDB_NAME, store: IDB_STORE, dbKey: IDB_KEY });
+  }, {
+    storageKey: STORAGE_KEY,
+    accountKey: `${STORAGE_KEY}.account.test-user`,
+    oldKey: OLD_PROGRESS_KEY,
+    dbName: IDB_NAME,
+    store: IDB_STORE,
+    dbKeys: [IDB_KEY, "account:test-user"],
+  });
 
   await page.reload();
   await waitForAppReady(page);

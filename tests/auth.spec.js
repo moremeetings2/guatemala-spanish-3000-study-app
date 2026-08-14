@@ -56,13 +56,12 @@ async function waitForLoaded(page) {
 // the current node and dispatching a bubbling input event (what a real keypress
 // does), then confirm it landed in state before moving on.
 async function typeField(page, fid, value) {
-  await page.evaluate(
-    ({ fid, value }) => {
-      const el = document.querySelector(`[data-fid="${fid}"]`);
+  await page.locator(`[data-fid="${fid}"]`).evaluate(
+    (el, value) => {
       el.value = value;
       el.dispatchEvent(new Event("input", { bubbles: true }));
     },
-    { fid, value }
+    value
   );
 }
 
@@ -193,6 +192,157 @@ test("logout returns to the landing page", async ({ page }) => {
   await expect(content).toContainText("Learn the Spanish people");
   await expect(content.getByRole("button", { name: "Sign up" })).toBeVisible();
   expect(await page.evaluate(() => appState.auth.user)).toBeNull();
+});
+
+test("logout clears one account's progress before another account logs in", async ({ page }) => {
+  const content = page.locator("#content");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "jane@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user?.id)).toBe("u1");
+
+  const lexiconId = await page.evaluate(() => {
+    const card = appState.data.CARDS.find((c) => c.deck === "guatemalaLexicon");
+    toggleStar(card.id);
+    return card.id;
+  });
+  await expect.poll(() => page.evaluate((id) => appState.cardState[id].star, lexiconId)).toBe(true);
+
+  await page.evaluate(() => setState({ route: "settings" }));
+  await content.getByRole("button", { name: "Log out" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user)).toBe(null);
+
+  const uploaded = [];
+  await mockApi(page, {
+    "POST /api/auth/login": (route, json) => json(200, {
+      token: "tok-second",
+      user: { id: "u2", email: "sam@example.com", role: "user" },
+    }),
+    "PUT /api/progress": (route, json) => {
+      uploaded.push(JSON.parse(route.request().postData() || "{}").cardState || {});
+      return json(200, { ok: true, saved: 0 });
+    },
+  });
+
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "sam@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user?.id)).toBe("u2");
+  await expect.poll(() => page.evaluate(() => appState.syncing)).toBe(false);
+
+  expect(await page.evaluate((id) => appState.cardState[id].star, lexiconId)).toBe(false);
+  expect(await page.evaluate(() => filterCards({ deck: "mostCommonGuate" }).length)).toBe(0);
+  expect(uploaded.some((cards) => cards[lexiconId]?.star)).toBe(false);
+});
+
+test("a delayed progress response cannot restore data after logout", async ({ page }) => {
+  await mockApi(page, {
+    "GET /api/progress": async (route, json) => {
+      await new Promise((resolve) => setTimeout(resolve, 700));
+      return json(200, {
+        cardState: {
+          "lexicon-gt_0001": {
+            state: "known", due: null, seen: true, correct: 3, wrong: 0, weak: false, star: true,
+          },
+        },
+      });
+    },
+  });
+
+  const content = page.locator("#content");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "jane@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user?.id)).toBe("u1");
+
+  await page.evaluate(() => doLogout());
+  await expect.poll(() => page.evaluate(() => appState.auth.user)).toBe(null);
+  await page.waitForTimeout(900);
+
+  expect(await page.evaluate(() => appState.cardState["lexicon-gt_0001"].star)).toBe(false);
+  expect(await page.evaluate(() => filterCards({ deck: "mostCommonGuate" }).length)).toBe(0);
+});
+
+test("a delayed progress upload cannot log out the next account", async ({ page }) => {
+  let uploadStarted;
+  const started = new Promise((resolve) => { uploadStarted = resolve; });
+  await mockApi(page, {
+    "PUT /api/progress": async (route, json) => {
+      uploadStarted();
+      await new Promise((resolve) => setTimeout(resolve, 700));
+      return json(401, { error: "Expired account A token" });
+    },
+  });
+
+  const content = page.locator("#content");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "jane@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user?.id)).toBe("u1");
+
+  await page.evaluate(() => {
+    setProg("main-0001", "known");
+    clearTimeout(progressSyncTimer);
+    pushProgress();
+  });
+  await started;
+  await page.evaluate(() => doLogout());
+  await expect.poll(() => page.evaluate(() => appState.auth.user)).toBe(null);
+
+  await mockApi(page, {
+    "POST /api/auth/login": (route, json) => json(200, {
+      token: "tok-second",
+      user: { id: "u2", email: "sam@example.com", role: "user" },
+    }),
+  });
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "sam@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user?.id)).toBe("u2");
+  await page.waitForTimeout(900);
+
+  expect(await page.evaluate(() => appState.auth.user?.id)).toBe("u2");
+  expect(await page.evaluate(() => dirtyCards.size)).toBe(0);
+});
+
+test("logging back into the same account restores its local study snapshot", async ({ page }) => {
+  const content = page.locator("#content");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "jane@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user?.id)).toBe("u1");
+
+  const targetId = await page.evaluate(() => {
+    const card = appState.data.CARDS.find((c) => c.es === "abandonar");
+    const idx = appState.study.order.indexOf(card.id);
+    setState({
+      saved: [{ es: "mercado", en: "market" }],
+      completed: { "story-a": true }, storyId: "story-a", reviewedToday: 4, streak: 2,
+      study: { ...appState.study, idx },
+    });
+    return card.id;
+  });
+  await expect.poll(() => page.evaluate(() => {
+    const raw = localStorage.getItem("spanishStudyApp.v1");
+    return raw ? JSON.parse(raw).study?.cardId : null;
+  })).toBe(targetId);
+
+  await page.evaluate(() => setState({ route: "settings" }));
+  await content.getByRole("button", { name: "Log out" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user)).toBe(null);
+
+  await content.getByRole("button", { name: "Log in" }).click();
+  await fillCredentials(page, "jane@example.com", "password123");
+  await content.getByRole("button", { name: "Log in" }).click();
+  await expect.poll(() => page.evaluate(() => appState.auth.user?.id)).toBe("u1");
+  await expect.poll(() => page.evaluate(() => appState.study.order[appState.study.idx])).toBe(targetId);
+  await expect.poll(() => page.evaluate(() => appState.saved[0]?.es)).toBe("mercado");
+  await page.waitForTimeout(400);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("spanishStudyApp.v1.account.u1")).study.cardId)).toBe(targetId);
+
+  expect(await page.evaluate(() => appState.saved)).toEqual([{ es: "mercado", en: "market" }]);
+  expect(await page.evaluate(() => appState.completed["story-a"])).toBe(true);
+  expect(await page.evaluate(() => [appState.reviewedToday, appState.streak])).toEqual([4, 2]);
 });
 
 test("Reset progress clears the server for a logged-in user", async ({ page }) => {
