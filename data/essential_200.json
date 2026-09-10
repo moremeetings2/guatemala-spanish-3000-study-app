@@ -1,0 +1,2010 @@
+{
+  "meta": {
+    "title": "Essential 200",
+    "description": "A practical starting vocabulary for everyday speaking in Guatemala. Includes vos, tú and usted. Verbs may appear conjugated in their example sentences.",
+    "selection": "200 distinct words in 10 everyday categories; 190 reuse Main 3000 IDs and 10 fill missing basics. Shared IDs retain shared study progress.",
+    "contentSource": "Reviewed existing app examples plus authored beginner-focused meanings and sentences."
+  },
+  "words": [
+    {
+      "id": "main-0108",
+      "es": "hola",
+      "en": "hello; hi",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Hola, ¿cómo estás?",
+        "en": "Hello, how are you?"
+      }
+    },
+    {
+      "id": "main-0330",
+      "es": "adiós",
+      "en": "goodbye",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Adiós, nos vemos mañana.",
+        "en": "Goodbye, see you tomorrow."
+      }
+    },
+    {
+      "id": "main-0075",
+      "es": "gracias",
+      "en": "thanks",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Muchas gracias por todo.",
+        "en": "Thank you very much for everything."
+      }
+    },
+    {
+      "id": "main-0118",
+      "es": "favor",
+      "en": "favor; please (por favor)",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Por favor, habla más despacio.",
+        "en": "Please speak more slowly."
+      }
+    },
+    {
+      "id": "main-0642",
+      "es": "perdón",
+      "en": "sorry; pardon",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Perdón, no entiendo.",
+        "en": "Sorry, I do not understand."
+      }
+    },
+    {
+      "id": "main-0034",
+      "es": "sí",
+      "en": "yes",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Sí, quiero un café.",
+        "en": "Yes, I want a coffee."
+      }
+    },
+    {
+      "id": "essential-no",
+      "es": "no",
+      "en": "no; not",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "No hablo mucho español.",
+        "en": "I do not speak much Spanish."
+      }
+    },
+    {
+      "id": "main-0037",
+      "es": "bien",
+      "en": "well",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Todo va muy bien.",
+        "en": "Everything is going very well."
+      }
+    },
+    {
+      "id": "main-0199",
+      "es": "mal",
+      "en": "badly; poorly",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Hoy me siento un poco mal.",
+        "en": "Today I feel a little bad."
+      }
+    },
+    {
+      "id": "main-1327",
+      "es": "vos",
+      "en": "you (informal, voseo)",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "¿Vos querés un café?",
+        "en": "Do you want a coffee?"
+      }
+    },
+    {
+      "id": "main-0013",
+      "es": "yo",
+      "en": "I",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Yo hablo español.",
+        "en": "I speak Spanish."
+      }
+    },
+    {
+      "id": "main-0018",
+      "es": "tú",
+      "en": "you",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "¿Tú hablas inglés?",
+        "en": "Do you speak English?"
+      }
+    },
+    {
+      "id": "main-0069",
+      "es": "usted",
+      "en": "you (formal)",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "¿Usted habla español?",
+        "en": "Do you (formal) speak Spanish?"
+      }
+    },
+    {
+      "id": "main-0155",
+      "es": "ustedes",
+      "en": "you all; you (plural)",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "¿Ustedes vienen a la fiesta?",
+        "en": "Are you all coming to the party?"
+      }
+    },
+    {
+      "id": "main-0046",
+      "es": "nosotros",
+      "en": "we",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Nosotros vivimos en Guatemala.",
+        "en": "We live in Guatemala."
+      }
+    },
+    {
+      "id": "main-0009",
+      "es": "él",
+      "en": "he; him",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Él trabaja en la ciudad.",
+        "en": "He works in the city."
+      }
+    },
+    {
+      "id": "main-0002",
+      "es": "ella",
+      "en": "she, her",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Ella vive cerca de aquí.",
+        "en": "She lives near here."
+      }
+    },
+    {
+      "id": "main-0137",
+      "es": "mi",
+      "en": "my",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "Mi casa es tu casa.",
+        "en": "My house is your house."
+      }
+    },
+    {
+      "id": "essential-tu",
+      "es": "tu",
+      "en": "your (informal singular)",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "¿Cuál es tu nombre?",
+        "en": "What is your name?"
+      }
+    },
+    {
+      "id": "main-0181",
+      "es": "nombre",
+      "en": "name",
+      "category": "Conversation basics",
+      "sentence": {
+        "es": "¿Cuál es tu nombre?",
+        "en": "What is your name?"
+      }
+    },
+    {
+      "id": "main-0020",
+      "es": "qué",
+      "en": "what",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Qué quieres comer?",
+        "en": "What do you want to eat?"
+      }
+    },
+    {
+      "id": "main-0101",
+      "es": "quién",
+      "en": "who",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Quién es esa mujer?",
+        "en": "Who is that woman?"
+      }
+    },
+    {
+      "id": "main-0115",
+      "es": "dónde",
+      "en": "where",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Dónde está el baño?",
+        "en": "Where is the bathroom?"
+      }
+    },
+    {
+      "id": "main-0422",
+      "es": "cuándo",
+      "en": "when",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Cuándo empiezan las clases?",
+        "en": "When do classes start?"
+      }
+    },
+    {
+      "id": "main-0063",
+      "es": "cómo",
+      "en": "how",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Cómo estás hoy?",
+        "en": "How are you today?"
+      }
+    },
+    {
+      "id": "main-0284",
+      "es": "cuál",
+      "en": "which; which one; what",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Cuál es tu nombre?",
+        "en": "What is your name?"
+      }
+    },
+    {
+      "id": "main-0249",
+      "es": "cuánto",
+      "en": "how much; how many",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Cuánto cuesta el pan?",
+        "en": "How much does the bread cost?"
+      }
+    },
+    {
+      "id": "main-0007",
+      "es": "y",
+      "en": "and",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Tú y yo somos amigos.",
+        "en": "You and I are friends."
+      }
+    },
+    {
+      "id": "main-0049",
+      "es": "o",
+      "en": "or",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "¿Quieres té o café?",
+        "en": "Do you want tea or coffee?"
+      }
+    },
+    {
+      "id": "main-0030",
+      "es": "pero",
+      "en": "but",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Quiero ir, pero no puedo.",
+        "en": "I want to go, but I can't."
+      }
+    },
+    {
+      "id": "main-0067",
+      "es": "porque",
+      "en": "because",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "No voy porque estoy cansado.",
+        "en": "I'm not going because I'm tired."
+      }
+    },
+    {
+      "id": "main-0003",
+      "es": "que",
+      "en": "that; which; what",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Creo que tienes razón.",
+        "en": "I think that you are right."
+      }
+    },
+    {
+      "id": "main-0031",
+      "es": "si",
+      "en": "if, whether",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Si llueve, no salimos.",
+        "en": "If it rains, we don't go out."
+      }
+    },
+    {
+      "id": "main-0001",
+      "es": "de",
+      "en": "of; from",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Yo soy de Guatemala.",
+        "en": "I am from Guatemala."
+      }
+    },
+    {
+      "id": "main-0006",
+      "es": "a",
+      "en": "to; at",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Vamos a la tienda.",
+        "en": "We are going to the store."
+      }
+    },
+    {
+      "id": "main-0008",
+      "es": "en",
+      "en": "in; at; on",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "El libro está en la mesa.",
+        "en": "The book is on the table."
+      }
+    },
+    {
+      "id": "main-0019",
+      "es": "con",
+      "en": "with",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Voy con mis amigos.",
+        "en": "I am going with my friends."
+      }
+    },
+    {
+      "id": "main-0078",
+      "es": "sin",
+      "en": "without",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Tomo el café sin azúcar.",
+        "en": "I drink coffee without sugar."
+      }
+    },
+    {
+      "id": "main-0024",
+      "es": "para",
+      "en": "for, to",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Este regalo es para ti.",
+        "en": "This gift is for you."
+      }
+    },
+    {
+      "id": "main-0014",
+      "es": "por",
+      "en": "by; for",
+      "category": "Questions and connectors",
+      "sentence": {
+        "es": "Gracias por tu ayuda.",
+        "en": "Thanks for your help."
+      }
+    },
+    {
+      "id": "main-0005",
+      "es": "ser",
+      "en": "to be",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Quiero ser maestro.",
+        "en": "I want to be a teacher."
+      }
+    },
+    {
+      "id": "main-0010",
+      "es": "estar",
+      "en": "to be; to be located",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Quiero estar en casa.",
+        "en": "I want to be at home."
+      }
+    },
+    {
+      "id": "main-0015",
+      "es": "tener",
+      "en": "to have",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Quiero tener un perro.",
+        "en": "I want to have a dog."
+      }
+    },
+    {
+      "id": "main-0012",
+      "es": "haber",
+      "en": "there is/are; to have (auxiliary)",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "¿Hay un baño aquí?",
+        "en": "Is there a bathroom here?"
+      }
+    },
+    {
+      "id": "main-0022",
+      "es": "hacer",
+      "en": "to do; to make",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Voy a hacer la tarea.",
+        "en": "I am going to do the homework."
+      }
+    },
+    {
+      "id": "main-0023",
+      "es": "poder",
+      "en": "can; to be able to",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "¿Puedo pagar con tarjeta?",
+        "en": "Can I pay by card?"
+      }
+    },
+    {
+      "id": "main-0032",
+      "es": "querer",
+      "en": "to want; to love",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Quiero un vaso de agua, por favor.",
+        "en": "I want a glass of water, please."
+      }
+    },
+    {
+      "id": "main-0087",
+      "es": "necesitar",
+      "en": "to need",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Voy a necesitar tu ayuda.",
+        "en": "I am going to need your help."
+      }
+    },
+    {
+      "id": "main-0017",
+      "es": "ir",
+      "en": "to go",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Tengo que ir al trabajo.",
+        "en": "I have to go to work."
+      }
+    },
+    {
+      "id": "main-0073",
+      "es": "venir",
+      "en": "to come",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "¿Quieres venir a mi casa?",
+        "en": "Do you want to come to my house?"
+      }
+    },
+    {
+      "id": "main-0060",
+      "es": "hablar",
+      "en": "to talk; to speak",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Me gusta hablar con mis amigos.",
+        "en": "I like to talk with my friends."
+      }
+    },
+    {
+      "id": "main-0026",
+      "es": "decir",
+      "en": "to say, to tell",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Quiero decir la verdad.",
+        "en": "I want to tell the truth."
+      }
+    },
+    {
+      "id": "main-0041",
+      "es": "saber",
+      "en": "to know",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Quiero saber la verdad.",
+        "en": "I want to know the truth."
+      }
+    },
+    {
+      "id": "main-0159",
+      "es": "entender",
+      "en": "to understand",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "No entiendo la pregunta.",
+        "en": "I don't understand the question."
+      }
+    },
+    {
+      "id": "main-0128",
+      "es": "conocer",
+      "en": "to know; to meet",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Quiero conocer Guatemala.",
+        "en": "I want to get to know Guatemala."
+      }
+    },
+    {
+      "id": "main-0119",
+      "es": "gustar",
+      "en": "to like; to please",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Me gusta mucho este lugar.",
+        "en": "I really like this place."
+      }
+    },
+    {
+      "id": "main-0153",
+      "es": "ayudar",
+      "en": "to help",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "¿Me puedes ayudar, por favor?",
+        "en": "Can you help me, please?"
+      }
+    },
+    {
+      "id": "main-0186",
+      "es": "pedir",
+      "en": "to ask for",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Voy a pedir un café con leche.",
+        "en": "I'm going to ask for a coffee with milk."
+      }
+    },
+    {
+      "id": "main-0050",
+      "es": "dar",
+      "en": "to give",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Te quiero dar un regalo.",
+        "en": "I want to give you a gift."
+      }
+    },
+    {
+      "id": "main-0094",
+      "es": "llamar",
+      "en": "to call",
+      "category": "Core verbs",
+      "sentence": {
+        "es": "Te voy a llamar más tarde.",
+        "en": "I am going to call you later."
+      }
+    },
+    {
+      "id": "main-0214",
+      "es": "comer",
+      "en": "to eat",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Vamos a comer tamales hoy.",
+        "en": "We're going to eat tamales today."
+      }
+    },
+    {
+      "id": "main-0398",
+      "es": "beber",
+      "en": "to drink",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Es bueno beber mucha agua.",
+        "en": "It's good to drink a lot of water."
+      }
+    },
+    {
+      "id": "main-0104",
+      "es": "tomar",
+      "en": "to take; to drink; to have",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Voy a tomar un café.",
+        "en": "I am going to have a coffee."
+      }
+    },
+    {
+      "id": "main-0290",
+      "es": "comprar",
+      "en": "to buy",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Quiero comprar frutas en el mercado.",
+        "en": "I want to buy fruit at the market."
+      }
+    },
+    {
+      "id": "main-0265",
+      "es": "pagar",
+      "en": "to pay",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Voy a pagar la cuenta.",
+        "en": "I'm going to pay the bill."
+      }
+    },
+    {
+      "id": "main-0772",
+      "es": "costar",
+      "en": "to cost",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "¿Cuánto va a costar esto?",
+        "en": "How much is this going to cost?"
+      }
+    },
+    {
+      "id": "main-0148",
+      "es": "buscar",
+      "en": "to look for",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Voy a buscar trabajo.",
+        "en": "I am going to look for a job."
+      }
+    },
+    {
+      "id": "main-0092",
+      "es": "encontrar",
+      "en": "to find; to meet",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "No puedo encontrar mis llaves.",
+        "en": "I can't find my keys."
+      }
+    },
+    {
+      "id": "main-0089",
+      "es": "llevar",
+      "en": "to carry; to take",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Voy a llevar un paraguas.",
+        "en": "I am going to take an umbrella."
+      }
+    },
+    {
+      "id": "main-0189",
+      "es": "traer",
+      "en": "to bring, to fetch",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "¿Me puedes traer un vaso de agua?",
+        "en": "Can you bring me a glass of water?"
+      }
+    },
+    {
+      "id": "main-0068",
+      "es": "esperar",
+      "en": "to wait; to hope",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Voy a esperar el bus aquí.",
+        "en": "I am going to wait for the bus here."
+      }
+    },
+    {
+      "id": "main-0107",
+      "es": "llegar",
+      "en": "to arrive",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Voy a llegar tarde al trabajo.",
+        "en": "I am going to arrive late to work."
+      }
+    },
+    {
+      "id": "main-0117",
+      "es": "salir",
+      "en": "to go out; to leave",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Vamos a salir esta noche.",
+        "en": "We are going to go out tonight."
+      }
+    },
+    {
+      "id": "main-0093",
+      "es": "volver",
+      "en": "to return; to come back",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Quiero volver a Guatemala.",
+        "en": "I want to return to Guatemala."
+      }
+    },
+    {
+      "id": "main-0173",
+      "es": "vivir",
+      "en": "to live",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Yo vivo cerca del parque.",
+        "en": "I live near the park."
+      }
+    },
+    {
+      "id": "main-0166",
+      "es": "trabajar",
+      "en": "to work",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Mi papá trabaja en un banco.",
+        "en": "My dad works at a bank."
+      }
+    },
+    {
+      "id": "main-0450",
+      "es": "aprender",
+      "en": "to learn",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Quiero aprender a cocinar.",
+        "en": "I want to learn to cook."
+      }
+    },
+    {
+      "id": "main-0882",
+      "es": "repetir",
+      "en": "to repeat",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "¿Puedes repetir la pregunta?",
+        "en": "Can you repeat the question?"
+      }
+    },
+    {
+      "id": "main-0212",
+      "es": "usar",
+      "en": "to use",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "Puedes usar mi teléfono.",
+        "en": "You can use my phone."
+      }
+    },
+    {
+      "id": "main-0257",
+      "es": "abrir",
+      "en": "to open",
+      "category": "Everyday actions",
+      "sentence": {
+        "es": "¿Puedes abrir la ventana?",
+        "en": "Can you open the window?"
+      }
+    },
+    {
+      "id": "main-0121",
+      "es": "amigo",
+      "en": "friend",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Mi amigo vive en Antigua.",
+        "en": "My friend lives in Antigua."
+      }
+    },
+    {
+      "id": "main-0211",
+      "es": "familia",
+      "en": "family",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Mi familia es muy grande.",
+        "en": "My family is very big."
+      }
+    },
+    {
+      "id": "essential-madre",
+      "es": "madre",
+      "en": "mother",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Mi madre vive en Guatemala.",
+        "en": "My mother lives in Guatemala."
+      }
+    },
+    {
+      "id": "main-0072",
+      "es": "padre",
+      "en": "father",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Mi padre trabaja mucho.",
+        "en": "My father works a lot."
+      }
+    },
+    {
+      "id": "main-0114",
+      "es": "hijo",
+      "en": "son",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Mi hijo tiene cinco años.",
+        "en": "My son is five years old."
+      }
+    },
+    {
+      "id": "main-0146",
+      "es": "niño",
+      "en": "child, boy",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "El niño juega en el parque.",
+        "en": "The child plays in the park."
+      }
+    },
+    {
+      "id": "main-0156",
+      "es": "persona",
+      "en": "person",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Ella es una persona muy amable.",
+        "en": "She is a very kind person."
+      }
+    },
+    {
+      "id": "main-0145",
+      "es": "gente",
+      "en": "people",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Hay mucha gente en el mercado.",
+        "en": "There are a lot of people in the market."
+      }
+    },
+    {
+      "id": "main-0088",
+      "es": "casa",
+      "en": "house",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Mi casa está cerca del parque.",
+        "en": "My house is near the park."
+      }
+    },
+    {
+      "id": "main-0132",
+      "es": "trabajo",
+      "en": "work, job",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Me gusta mi trabajo.",
+        "en": "I like my job."
+      }
+    },
+    {
+      "id": "main-0070",
+      "es": "día",
+      "en": "day",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Hoy es un día bonito.",
+        "en": "Today is a nice day."
+      }
+    },
+    {
+      "id": "main-0112",
+      "es": "noche",
+      "en": "night",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Buenas noches, hasta mañana.",
+        "en": "Good night, see you tomorrow."
+      }
+    },
+    {
+      "id": "main-0170",
+      "es": "mañana",
+      "en": "morning; tomorrow",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Mañana vamos al mercado.",
+        "en": "Tomorrow we go to the market."
+      }
+    },
+    {
+      "id": "main-0208",
+      "es": "tarde",
+      "en": "late; afternoon",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Llegué tarde a la reunión.",
+        "en": "I arrived late to the meeting."
+      }
+    },
+    {
+      "id": "main-0176",
+      "es": "hoy",
+      "en": "today",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Hoy hace mucho calor.",
+        "en": "Today it is very hot."
+      }
+    },
+    {
+      "id": "main-0335",
+      "es": "ayer",
+      "en": "yesterday",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Ayer fui al mercado.",
+        "en": "Yesterday I went to the market."
+      }
+    },
+    {
+      "id": "main-0055",
+      "es": "ahora",
+      "en": "now",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Ahora no puedo hablar.",
+        "en": "I can't talk right now."
+      }
+    },
+    {
+      "id": "main-0135",
+      "es": "después",
+      "en": "after; later",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Después del trabajo, voy a casa.",
+        "en": "After work, I go home."
+      }
+    },
+    {
+      "id": "main-0126",
+      "es": "antes",
+      "en": "earlier; before",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "Llego antes de las ocho.",
+        "en": "I arrive before eight."
+      }
+    },
+    {
+      "id": "main-0147",
+      "es": "hora",
+      "en": "hour; time of day",
+      "category": "People and daily life",
+      "sentence": {
+        "es": "¿Qué hora es?",
+        "en": "What time is it?"
+      }
+    },
+    {
+      "id": "main-0084",
+      "es": "tiempo",
+      "en": "time",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "No tengo tiempo hoy.",
+        "en": "I don't have time today."
+      }
+    },
+    {
+      "id": "main-0205",
+      "es": "semana",
+      "en": "week",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "La próxima semana tengo examen.",
+        "en": "Next week I have an exam."
+      }
+    },
+    {
+      "id": "main-0243",
+      "es": "mes",
+      "en": "month",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "El próximo mes cumplo años.",
+        "en": "Next month is my birthday."
+      }
+    },
+    {
+      "id": "main-0071",
+      "es": "año",
+      "en": "year",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "El próximo año voy a viajar.",
+        "en": "Next year I am going to travel."
+      }
+    },
+    {
+      "id": "main-0223",
+      "es": "minuto",
+      "en": "minute",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Espérame un minuto, por favor.",
+        "en": "Wait for me a minute, please."
+      }
+    },
+    {
+      "id": "main-0011",
+      "es": "uno",
+      "en": "one",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Solo necesito uno.",
+        "en": "I only need one."
+      }
+    },
+    {
+      "id": "main-0077",
+      "es": "dos",
+      "en": "two",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Quiero dos cafés, por favor.",
+        "en": "I want two coffees, please."
+      }
+    },
+    {
+      "id": "main-0164",
+      "es": "tres",
+      "en": "three",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Tengo tres hermanos.",
+        "en": "I have three brothers."
+      }
+    },
+    {
+      "id": "main-0300",
+      "es": "cuatro",
+      "en": "four",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Tengo cuatro gatos en casa.",
+        "en": "I have four cats at home."
+      }
+    },
+    {
+      "id": "main-0313",
+      "es": "cinco",
+      "en": "five",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Son las cinco de la tarde.",
+        "en": "It is five in the afternoon."
+      }
+    },
+    {
+      "id": "main-0453",
+      "es": "seis",
+      "en": "six",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Tengo seis hermanos en total.",
+        "en": "I have six siblings in total."
+      }
+    },
+    {
+      "id": "main-0712",
+      "es": "siete",
+      "en": "seven",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Me levanto a las siete.",
+        "en": "I get up at seven."
+      }
+    },
+    {
+      "id": "main-0767",
+      "es": "ocho",
+      "en": "eight",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "El bus sale a las ocho.",
+        "en": "The bus leaves at eight."
+      }
+    },
+    {
+      "id": "main-1138",
+      "es": "nueve",
+      "en": "nine",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "La tienda abre a las nueve.",
+        "en": "The store opens at nine."
+      }
+    },
+    {
+      "id": "main-0531",
+      "es": "diez",
+      "en": "ten",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Tengo diez quetzales.",
+        "en": "I have ten quetzales."
+      }
+    },
+    {
+      "id": "main-0038",
+      "es": "más",
+      "en": "more",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Quiero más café, por favor.",
+        "en": "I want more coffee, please."
+      }
+    },
+    {
+      "id": "main-0160",
+      "es": "menos",
+      "en": "less",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Hoy tengo menos trabajo.",
+        "en": "Today I have less work."
+      }
+    },
+    {
+      "id": "main-0052",
+      "es": "mucho",
+      "en": "much; a lot",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Te quiero mucho.",
+        "en": "I love you a lot."
+      }
+    },
+    {
+      "id": "main-0129",
+      "es": "poco",
+      "en": "little; few",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Hablo un poco de inglés.",
+        "en": "I speak a little English."
+      }
+    },
+    {
+      "id": "main-0028",
+      "es": "todo",
+      "en": "all; every",
+      "category": "Time and quantities",
+      "sentence": {
+        "es": "Todo está bien.",
+        "en": "Everything is fine."
+      }
+    },
+    {
+      "id": "main-0254",
+      "es": "agua",
+      "en": "water",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Quiero un vaso de agua fría.",
+        "en": "I want a glass of cold water."
+      }
+    },
+    {
+      "id": "main-0591",
+      "es": "café",
+      "en": "coffee",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "El café de Guatemala es rico.",
+        "en": "Guatemalan coffee is delicious."
+      }
+    },
+    {
+      "id": "main-1249",
+      "es": "leche",
+      "en": "milk",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Tomo leche con el desayuno.",
+        "en": "I drink milk with breakfast."
+      }
+    },
+    {
+      "id": "main-1872",
+      "es": "azúcar",
+      "en": "sugar",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "¿Quieres azúcar en el café?",
+        "en": "Do you want sugar in your coffee?"
+      }
+    },
+    {
+      "id": "main-1256",
+      "es": "pan",
+      "en": "bread",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Compré pan fresco.",
+        "en": "I bought fresh bread."
+      }
+    },
+    {
+      "id": "essential-tortilla",
+      "es": "tortilla",
+      "en": "tortilla",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Quiero una tortilla con queso.",
+        "en": "I want a tortilla with cheese."
+      }
+    },
+    {
+      "id": "main-2530",
+      "es": "arroz",
+      "en": "rice",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Comemos arroz con frijoles.",
+        "en": "We eat rice with beans."
+      }
+    },
+    {
+      "id": "essential-frijol",
+      "es": "frijol",
+      "en": "bean",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "El frijol es un alimento básico en Guatemala.",
+        "en": "The bean is a staple food in Guatemala."
+      }
+    },
+    {
+      "id": "main-1643",
+      "es": "pollo",
+      "en": "chicken",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Vamos a comer pollo con arroz.",
+        "en": "We are going to eat chicken with rice."
+      }
+    },
+    {
+      "id": "main-0833",
+      "es": "carne",
+      "en": "meat; flesh",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Quiero arroz con carne.",
+        "en": "I want rice with meat."
+      }
+    },
+    {
+      "id": "main-1917",
+      "es": "pescado",
+      "en": "fish",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Comimos pescado fresco.",
+        "en": "We ate fresh fish."
+      }
+    },
+    {
+      "id": "main-1125",
+      "es": "huevo",
+      "en": "egg",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Como un huevo en el desayuno.",
+        "en": "I eat an egg for breakfast."
+      }
+    },
+    {
+      "id": "main-2271",
+      "es": "fruta",
+      "en": "fruit",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Me gusta comer fruta fresca.",
+        "en": "I like to eat fresh fruit."
+      }
+    },
+    {
+      "id": "essential-verdura",
+      "es": "verdura",
+      "en": "vegetable",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "Quiero una sopa de verdura.",
+        "en": "I want a vegetable soup."
+      }
+    },
+    {
+      "id": "main-0460",
+      "es": "comida",
+      "en": "food",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "La comida está deliciosa.",
+        "en": "The food is delicious."
+      }
+    },
+    {
+      "id": "main-1882",
+      "es": "desayuno",
+      "en": "breakfast",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "El desayuno está listo.",
+        "en": "Breakfast is ready."
+      }
+    },
+    {
+      "id": "main-1797",
+      "es": "almuerzo",
+      "en": "lunch",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "El almuerzo está listo a la una.",
+        "en": "Lunch is ready at one."
+      }
+    },
+    {
+      "id": "main-0804",
+      "es": "cena",
+      "en": "supper, dinner",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "La cena está lista.",
+        "en": "Dinner is ready."
+      }
+    },
+    {
+      "id": "main-0705",
+      "es": "sal",
+      "en": "salt; table salt",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "La sopa necesita un poco de sal.",
+        "en": "The soup needs a little salt."
+      }
+    },
+    {
+      "id": "main-0193",
+      "es": "cuenta",
+      "en": "bill; account; count",
+      "category": "Food and meals",
+      "sentence": {
+        "es": "La cuenta, por favor.",
+        "en": "The bill, please."
+      }
+    },
+    {
+      "id": "main-0698",
+      "es": "baño",
+      "en": "bathroom; bath",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "¿Dónde está el baño?",
+        "en": "Where is the bathroom?"
+      }
+    },
+    {
+      "id": "main-0686",
+      "es": "hotel",
+      "en": "hotel",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Nos quedamos en un hotel bonito.",
+        "en": "We stayed in a nice hotel."
+      }
+    },
+    {
+      "id": "main-1300",
+      "es": "restaurante",
+      "en": "restaurant",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Cenamos en un restaurante nuevo.",
+        "en": "We had dinner at a new restaurant."
+      }
+    },
+    {
+      "id": "main-0752",
+      "es": "tienda",
+      "en": "store; shop",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Voy a la tienda a comprar pan.",
+        "en": "I am going to the store to buy bread."
+      }
+    },
+    {
+      "id": "main-0722",
+      "es": "mercado",
+      "en": "market",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Voy al mercado a comprar frutas.",
+        "en": "I'm going to the market to buy fruit."
+      }
+    },
+    {
+      "id": "main-0647",
+      "es": "banco",
+      "en": "bank",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Voy al banco a sacar dinero.",
+        "en": "I am going to the bank to take out money."
+      }
+    },
+    {
+      "id": "main-0547",
+      "es": "hospital",
+      "en": "hospital",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "El hospital está cerca de aquí.",
+        "en": "The hospital is near here."
+      }
+    },
+    {
+      "id": "essential-farmacia",
+      "es": "farmacia",
+      "en": "pharmacy",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "¿Dónde está la farmacia?",
+        "en": "Where is the pharmacy?"
+      }
+    },
+    {
+      "id": "main-0384",
+      "es": "calle",
+      "en": "street",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Mi casa está en esta calle.",
+        "en": "My house is on this street."
+      }
+    },
+    {
+      "id": "main-0575",
+      "es": "dirección",
+      "en": "address; direction",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "¿Cuál es la dirección del hotel?",
+        "en": "What is the address of the hotel?"
+      }
+    },
+    {
+      "id": "main-0775",
+      "es": "derecha",
+      "en": "right",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "La tienda está a la derecha.",
+        "en": "The store is on the right."
+      }
+    },
+    {
+      "id": "main-0762",
+      "es": "izquierda",
+      "en": "left",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Da vuelta a la izquierda.",
+        "en": "Turn to the left."
+      }
+    },
+    {
+      "id": "main-0351",
+      "es": "cerca",
+      "en": "close; near",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "La escuela está cerca de mi casa.",
+        "en": "The school is near my house."
+      }
+    },
+    {
+      "id": "main-0502",
+      "es": "lejos",
+      "en": "far",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "La escuela está muy lejos.",
+        "en": "The school is very far."
+      }
+    },
+    {
+      "id": "main-0044",
+      "es": "aquí",
+      "en": "here",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Vivo aquí desde niño.",
+        "en": "I have lived here since I was a child."
+      }
+    },
+    {
+      "id": "main-0130",
+      "es": "ahí",
+      "en": "there",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Tu libro está ahí.",
+        "en": "Your book is there."
+      }
+    },
+    {
+      "id": "main-0782",
+      "es": "entrada",
+      "en": "entrance; admission",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "¿Dónde está la entrada?",
+        "en": "Where is the entrance?"
+      }
+    },
+    {
+      "id": "main-0889",
+      "es": "salida",
+      "en": "exit, way out",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "La salida está a la derecha.",
+        "en": "The exit is on the right."
+      }
+    },
+    {
+      "id": "main-1907",
+      "es": "carro",
+      "en": "car (Guatemala); cart",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "Mi carro está cerca del hotel.",
+        "en": "My car is near the hotel."
+      }
+    },
+    {
+      "id": "essential-bus",
+      "es": "bus",
+      "en": "bus",
+      "category": "Places and directions",
+      "sentence": {
+        "es": "¿Este bus va a Antigua?",
+        "en": "Does this bus go to Antigua?"
+      }
+    },
+    {
+      "id": "main-0042",
+      "es": "bueno",
+      "en": "good",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Este pan está muy bueno.",
+        "en": "This bread is very good."
+      }
+    },
+    {
+      "id": "main-0410",
+      "es": "malo",
+      "en": "bad",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "El café está malo.",
+        "en": "The coffee tastes bad."
+      }
+    },
+    {
+      "id": "main-0106",
+      "es": "grande",
+      "en": "big, large",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Guatemala tiene un lago muy grande.",
+        "en": "Guatemala has a very big lake."
+      }
+    },
+    {
+      "id": "main-0190",
+      "es": "pequeño",
+      "en": "small; little",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Tengo un perro muy pequeño.",
+        "en": "I have a very small dog."
+      }
+    },
+    {
+      "id": "main-0096",
+      "es": "nuevo",
+      "en": "new",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Tengo un teléfono nuevo.",
+        "en": "I have a new phone."
+      }
+    },
+    {
+      "id": "main-0968",
+      "es": "caliente",
+      "en": "hot, warm",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "El café está muy caliente.",
+        "en": "The coffee is very hot."
+      }
+    },
+    {
+      "id": "main-0926",
+      "es": "frío",
+      "en": "cold",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Tengo frío.",
+        "en": "I am cold."
+      }
+    },
+    {
+      "id": "main-0434",
+      "es": "fácil",
+      "en": "easy",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Esta pregunta es fácil.",
+        "en": "This question is easy."
+      }
+    },
+    {
+      "id": "main-0316",
+      "es": "difícil",
+      "en": "difficult; hard",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "El examen fue muy difícil.",
+        "en": "The exam was very difficult."
+      }
+    },
+    {
+      "id": "main-0280",
+      "es": "rápido",
+      "en": "fast; quick",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Este bus es rápido.",
+        "en": "This bus is fast."
+      }
+    },
+    {
+      "id": "main-1631",
+      "es": "lento",
+      "en": "slow",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Este bus es lento.",
+        "en": "This bus is slow."
+      }
+    },
+    {
+      "id": "main-2252",
+      "es": "caro",
+      "en": "expensive",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Este restaurante es muy caro.",
+        "en": "This restaurant is very expensive."
+      }
+    },
+    {
+      "id": "main-1955",
+      "es": "barato",
+      "en": "cheap; inexpensive",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Este hotel es barato.",
+        "en": "This hotel is inexpensive."
+      }
+    },
+    {
+      "id": "main-0606",
+      "es": "abierto",
+      "en": "open",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "El restaurante está abierto.",
+        "en": "The restaurant is open."
+      }
+    },
+    {
+      "id": "main-0861",
+      "es": "cerrado",
+      "en": "shut, closed",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "El banco está cerrado hoy.",
+        "en": "The bank is closed today."
+      }
+    },
+    {
+      "id": "main-0362",
+      "es": "listo",
+      "en": "ready; clever",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Estoy listo para salir.",
+        "en": "I am ready to leave."
+      }
+    },
+    {
+      "id": "main-0931",
+      "es": "cansado",
+      "en": "tired; weary",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Estoy muy cansado hoy.",
+        "en": "I'm very tired today."
+      }
+    },
+    {
+      "id": "main-0946",
+      "es": "enfermo",
+      "en": "sick; ill",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Estoy enfermo y necesito un médico.",
+        "en": "I am sick and need a doctor."
+      }
+    },
+    {
+      "id": "main-0301",
+      "es": "feliz",
+      "en": "happy, merry",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Hoy me siento muy feliz.",
+        "en": "Today I feel very happy."
+      }
+    },
+    {
+      "id": "main-0245",
+      "es": "importante",
+      "en": "important",
+      "category": "Useful descriptions",
+      "sentence": {
+        "es": "Es importante llegar a tiempo.",
+        "en": "It is important to arrive on time."
+      }
+    },
+    {
+      "id": "main-0285",
+      "es": "ayuda",
+      "en": "help, aid",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Necesito tu ayuda con esto.",
+        "en": "I need your help with this."
+      }
+    },
+    {
+      "id": "main-0149",
+      "es": "problema",
+      "en": "problem; issue",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "No hay ningún problema.",
+        "en": "There is no problem."
+      }
+    },
+    {
+      "id": "main-0169",
+      "es": "dinero",
+      "en": "money",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "No tengo dinero para el café.",
+        "en": "I don't have money for the coffee."
+      }
+    },
+    {
+      "id": "main-0715",
+      "es": "precio",
+      "en": "price",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "¿Cuál es el precio de este pan?",
+        "en": "What is the price of this bread?"
+      }
+    },
+    {
+      "id": "main-1080",
+      "es": "tarjeta",
+      "en": "card",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Pagué con tarjeta.",
+        "en": "I paid with a card."
+      }
+    },
+    {
+      "id": "main-1473",
+      "es": "efectivo",
+      "en": "cash; effective",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "¿Puedo pagar en efectivo?",
+        "en": "Can I pay in cash?"
+      }
+    },
+    {
+      "id": "main-0409",
+      "es": "teléfono",
+      "en": "telephone",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Mi teléfono se quedó sin batería.",
+        "en": "My phone ran out of battery."
+      }
+    },
+    {
+      "id": "essential-internet",
+      "es": "internet",
+      "en": "internet",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "¿Hay internet en el hotel?",
+        "en": "Is there internet at the hotel?"
+      }
+    },
+    {
+      "id": "main-0439",
+      "es": "español",
+      "en": "Spanish",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Estoy aprendiendo español.",
+        "en": "I am learning Spanish."
+      }
+    },
+    {
+      "id": "main-1069",
+      "es": "inglés",
+      "en": "English",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "¿Usted habla inglés?",
+        "en": "Do you speak English?"
+      }
+    },
+    {
+      "id": "main-0481",
+      "es": "médico",
+      "en": "doctor",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "El médico me dio una receta.",
+        "en": "The doctor gave me a prescription."
+      }
+    },
+    {
+      "id": "main-0692",
+      "es": "dolor",
+      "en": "pain; ache",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Tengo dolor de cabeza.",
+        "en": "I have a headache."
+      }
+    },
+    {
+      "id": "main-0852",
+      "es": "hambre",
+      "en": "hunger",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Tengo mucha hambre.",
+        "en": "I'm very hungry."
+      }
+    },
+    {
+      "id": "essential-sed",
+      "es": "sed",
+      "en": "thirst",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Tengo sed y quiero agua.",
+        "en": "I am thirsty and want water."
+      }
+    },
+    {
+      "id": "main-1012",
+      "es": "permiso",
+      "en": "permission; excuse me (con permiso)",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Con permiso, necesito pasar.",
+        "en": "Excuse me, I need to get through."
+      }
+    },
+    {
+      "id": "main-1389",
+      "es": "emergencia",
+      "en": "emergency",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Llama al número de emergencia.",
+        "en": "Call the emergency number."
+      }
+    },
+    {
+      "id": "main-0251",
+      "es": "puerta",
+      "en": "door",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Por favor, cierra la puerta.",
+        "en": "Please, close the door."
+      }
+    },
+    {
+      "id": "main-0627",
+      "es": "mesa",
+      "en": "table",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Pon los platos en la mesa.",
+        "en": "Put the plates on the table."
+      }
+    },
+    {
+      "id": "main-1281",
+      "es": "silla",
+      "en": "chair",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Siéntate en esta silla.",
+        "en": "Sit in this chair."
+      }
+    },
+    {
+      "id": "main-2960",
+      "es": "boleto",
+      "en": "ticket",
+      "category": "Practical needs",
+      "sentence": {
+        "es": "Quiero un boleto para Antigua.",
+        "en": "I want a ticket to Antigua."
+      }
+    }
+  ]
+}

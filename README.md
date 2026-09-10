@@ -4,6 +4,7 @@
 
 ## What it does
 
+- Includes Essential 200: a focused starter deck for everyday speaking, with Spanish example sentences and English translations
 - Loads the Main 3000, a 230-card Everyday Conversation deck, and a 369-entry Guatemalan Lexicon that includes the Guatemala usage notes
 - Builds Most Common in Guate from the signed-in learner's starred Guatemalan Lexicon cards, sharing the same synced progress and star state
 - Works as a mobile-first study app
@@ -12,6 +13,16 @@
 - Adds pronunciation, quiz mode, due-today review, weak-card resurfacing, and progress import/export
 - Lets you slow pronunciation down and choose the clearest available Spanish voice on the device
 - Runs the Gemma 4 E2B tutor locally through WebGPU; prompts and replies stay in the browser
+
+## Essential 200
+
+Open **You → Essential 200**, then **Study these** or **Quiz these**. On a flashcard, tap **Use** to read and hear the example sentence. Quiz questions and answer choices stay within the essential vocabulary, including when search narrows the questions. Study sessions resume the active card after reopening the app.
+
+`data/essential_200.json` is the canonical content for this deck and its companion spreadsheet: 200 unique words in ten practical categories, each with an English meaning and a Spanish/English example sentence. It reuses 190 Main 3000 IDs so those cards share progress, and adds ten missing basics with stable `essential-*` IDs. The app therefore has 3,609 unique built-in cards; Main 3000 still contains exactly 3,000. Selected words use the manifest's reviewed meanings and examples throughout the app, including everyday senses such as *tienda* (store), *carro* (car), and *efectivo* (cash).
+
+The selection favors everyday speaking needs over frequency alone. It includes Guatemala's **vos** alongside **tú**, formal **usted**, and plural **ustedes**. Examples sometimes conjugate the dictionary-form verb or inflect an adjective. This is a starting vocabulary, not a claim that 200 words cover every conversation.
+
+Keep exactly 200 distinct words and IDs when editing the manifest. Retain existing IDs to preserve learner progress. The study-pack CSV rebuild does not overwrite this file. Export the `words` rows directly for the spreadsheet so its meanings and examples match the app. The service worker caches the manifest for offline sessions.
 
 ## On-device AI tutor
 

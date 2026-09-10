@@ -62,13 +62,13 @@ test("home dashboard shows the catalog totals and study entry points", async ({ 
   await expect(content).toContainText("Flashcards");
   await expect(content).toContainText("Quiz");
   await expect(content).toContainText("75 stories");
-  await expect(content).toContainText("3599 cards");
+  await expect(content).toContainText("3609 cards");
 });
 
 test("the You tab lists the consolidated decks with their card counts", async ({ page }) => {
   await page.evaluate(() => setState({ tab: "progress", route: null }));
   const content = page.locator("#content");
-  await expect(content).toContainText("3,599");            // catalog total
+  await expect(content).toContainText("3,609");            // unique catalog total, including ten missing basics
   await expect(content).toContainText("Main 3000");
   await expect(content).toContainText("3,000 cards");
   await expect(content).toContainText("Everyday Conversation");
@@ -614,3 +614,121 @@ function extractServiceWorkerCacheName() {
   if (!match) throw new Error("Unable to determine the service worker cache name.");
   return match[1];
 }
+
+test("Essential 200 opens from You and studies exactly 200 words with matching sentences", async ({ page }) => {
+  await page.locator('#tab-bar').getByText('You', { exact: true }).click();
+  await page.locator('#content').getByText('Essential 200', { exact: true }).click();
+  await expect(page.locator('#content')).toContainText('200 cards');
+  const manifest = await (await page.request.get('/data/essential_200.json')).json();
+  expect(manifest.words).toHaveLength(200);
+  expect(new Set(manifest.words.map(w => w.es)).size).toBe(200);
+  const cards = await page.evaluate(() => filterCards({ deck: 'essential200' }));
+  expect(cards.map(c => c.id).sort()).toEqual(manifest.words.map(w => w.id).sort());
+  for (const word of manifest.words) {
+    expect(word.category).toBeTruthy();
+    expect(word.en).toBeTruthy();
+    expect(word.sentence.es).toBeTruthy();
+    expect(word.sentence.en).toBeTruthy();
+    expect(cards.find(c => c.id === word.id)).toMatchObject({ es: word.es, en: word.en, sentence: word.sentence });
+  }
+  await page.getByRole('button', { name: 'Study these', exact: true }).click();
+  await expect(page.locator('#content')).toContainText('Essential 200');
+  await expect(page.locator('#content')).toContainText('1 / 200');
+  const active = await page.evaluate(() => appState.data.CARDS.find(c => c.id === appState.study.order[0]));
+  await page.getByRole('button', { name: /Use/ }).click();
+  await expect(page.locator('#content')).toContainText(active.sentence.es);
+  await expect(page.locator('#content')).toContainText(active.sentence.en);
+  await page.waitForTimeout(450);
+  await page.reload();
+  await waitForAppReady(page);
+  expect(await page.evaluate(() => appState.study.order[appState.study.idx])).toBe(active.id);
+  expect(await page.evaluate(() => appState.study.order.length)).toBe(200);
+});
+
+test("Essential 200 search and quiz stay within the selected deck", async ({ page }) => {
+  await page.evaluate(() => setState({ tab: 'progress', route: null }));
+  await page.getByText('Essential 200', { exact: true }).click();
+  await page.locator('[data-fid="browse-search"]').fill('farmacia');
+  await expect(page.locator('#content')).toContainText('1 cards');
+  await expect(page.locator('#content')).toContainText('pharmacy');
+  await page.locator('[data-fid="browse-search"]').fill('');
+  await page.getByRole('button', { name: 'Quiz these', exact: true }).click();
+  await page.getByRole('button', { name: /Start quiz/i }).click();
+  const quiz = await page.evaluate(() => ({ ids: appState.quiz.qs.map(q => q.id), allowed: filterCards({ deck: 'essential200' }).map(c => c.id) }));
+  expect(quiz.ids).toHaveLength(8);
+  expect(quiz.ids.every(id => quiz.allowed.includes(id))).toBe(true);
+});
+
+test("Essential 200 preserves Main 3000 cards and shares their progress without duplicates", async ({ page }) => {
+  const result = await page.evaluate(() => {
+    const cards = filterCards({ deck: 'essential200' });
+    const shared = cards.find(c => c.es === 'hablar');
+    if (!shared) return { count: cards.length };
+    setProg(shared.id, 'known');
+    return {
+      count: cards.length,
+      total: appState.data.CARDS.length,
+      unique: new Set(appState.data.CARDS.map(c => c.id)).size,
+      mainCount: filterCards({ deck: 'mainWords' }).length,
+      sharedId: filterCards({ deck: 'mainWords', q: 'hablar', state: 'known' }).map(c => c.id),
+      id: shared.id,
+    };
+  });
+  expect(result.count).toBe(200);
+  expect(result.total).toBe(3609);
+  expect(result.unique).toBe(3609);
+  expect(result.mainCount).toBe(3000);
+  expect(result.sharedId).toContain(result.id);
+});
+
+for (const dir of ['es-en', 'en-es']) {
+  test(`Essential 200 quiz answer choices use only essential vocabulary (${dir})`, async ({ page }) => {
+    const result = await page.evaluate((dir) => {
+      openBrowse({ deck: 'essential200', q: 'farmacia' });
+      setState({ quiz: { ...appState.quiz, source: 'filter', dir } });
+      buildQuiz();
+      return { choices: appState.quiz.qs.flatMap(q => q.options),
+        allowed: filterCards({ deck: 'essential200' }).map(c => dir === 'es-en' ? c.en : c.es) };
+    }, dir);
+    expect(result.choices).toHaveLength(4);
+    expect(result.choices.every(choice => result.allowed.includes(choice))).toBe(true);
+  });
+}
+
+test('Essential 200 and all its sentences load offline from the service worker', async ({ browser }) => {
+  // WebKit's setOffline blocks even service-worker responses. Disconnect a
+  // dedicated origin instead, testing actual failed fetches and cache fallback.
+  const http = require('node:http');
+  const path = require('node:path');
+  let connected = true;
+  const server = http.createServer((req, res) => {
+    if (!connected) { req.socket.destroy(); return; }
+    const relative = new URL(req.url, 'http://localhost').pathname;
+    const file = path.join(process.cwd(), relative === '/' ? 'index.html' : relative);
+    const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json' };
+    res.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
+    const stream = fs.createReadStream(file);
+    stream.on('error', () => { res.statusCode = 404; res.end(); });
+    stream.pipe(res);
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const context = await browser.newContext();
+  try {
+    await context.addInitScript(() => { window.__NO_AI__ = true; });
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${server.address().port}/`);
+    await waitForAppReady(page);
+    await ensureServiceWorkerControlsPage(page);
+    connected = false;
+    await page.reload();
+    await waitForAppReady(page);
+    const cards = await page.evaluate(() => filterCards({ deck: 'essential200' }));
+    expect(cards).toHaveLength(200);
+    expect(cards.every(c => c.sentence?.es && c.sentence?.en)).toBe(true);
+    expect(cards.some(c => c.es === 'farmacia')).toBe(true);
+  } finally {
+    await context.close();
+    server.closeAllConnections();
+    await new Promise(resolve => server.close(resolve));
+  }
+});

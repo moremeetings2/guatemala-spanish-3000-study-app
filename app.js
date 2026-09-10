@@ -9,6 +9,7 @@ const DAY_MS = 86400000;
 const DATA_URL = './data/guatemala_spanish_study_pack.json';
 
 const DECK_DEFS = {
+  essential200:         { name: 'Essential 200',         short: 'Essential', accent: '#28b573', icon: 'forum' },
   mainWords:            { name: 'Main 3000',             short: '3000',    accent: '#28b573', icon: 'dictionary' },
   everydayConversation: { name: 'Everyday Conversation', short: 'Everyday', accent: '#c23b9e', icon: 'chat' },
   guatemalaLexicon:     { name: 'Guatemalan Lexicon',    short: 'Lexicon', accent: '#2c7a9e', icon: 'menu_book' },
@@ -214,6 +215,7 @@ function normalizeSource(source) {
 }
 
 function cardInDeck(card, deckId) {
+  if (deckId === 'essential200') return !!card.essential;
   if (deckId === 'mostCommonGuate') {
     return card.deck === 'guatemalaLexicon' && cs(card.id).star;
   }
@@ -404,11 +406,17 @@ function buildQuiz() {
     return;
   }
   const order = shuffleArr(src.length).slice(0, Math.min(8, src.length));
+  // A beginner Essential quiz must not introduce unrelated advanced words in
+  // its distractors, even when search narrows the questions to a single card.
+  const essentialQuiz = appState.quiz.source === 'deck:essential200'
+    || (appState.quiz.source === 'filter' && appState.browse.deck === 'essential200');
+  const choices = essentialQuiz ? filterCards({ deck: 'essential200' }) : CARDS;
   const qs = order.map(i => {
     const card = src[i];
     const prompt = dir === 'es-en' ? card.es : card.en;
     const correct = dir === 'es-en' ? card.en : card.es;
-    const pool = CARDS.filter(c => c.id !== card.id).map(c => dir === 'es-en' ? c.en : c.es);
+    const pool = [...new Set(choices.filter(c => c.id !== card.id)
+      .map(c => dir === 'es-en' ? c.en : c.es))].filter(value => value !== correct);
     const opts = [correct];
     while (opts.length < 4 && pool.length) { const j = (Math.random() * pool.length) | 0; opts.push(pool.splice(j, 1)[0]); }
     for (let x = opts.length - 1; x > 0; x--) { const j = (Math.random() * (x + 1)) | 0; [opts[x], opts[j]] = [opts[j], opts[x]]; }
@@ -991,7 +999,7 @@ function sentenceFor(deckId, es, entry, sents) {
 }
 
 // ===== Data Transformation =====
-function transformData(raw, reading, synonymsMap, sentencesMap) {
+function transformData(raw, reading, synonymsMap, sentencesMap, essentialWords = []) {
   const syns = synonymsMap || {};
   const sents = sentencesMap || {};
   const colls = raw.collections || {};
@@ -1012,8 +1020,20 @@ function transformData(raw, reading, synonymsMap, sentencesMap) {
       });
     });
   });
+  // Essential 200 reuses existing IDs so studying either deck updates the same
+  // progress. Only missing basics get new IDs; this file also owns the Sheet's
+  // exact meanings and examples, including corrections to less useful senses.
+  essentialWords.forEach(word => {
+    const existing = CARDS.find(c => c.id === word.id);
+    if (existing) {
+      Object.assign(existing, { en: word.en, sentence: word.sentence, essential: true });
+    } else {
+      CARDS.push({ ...word, deck: 'essential200', sourceDeck: 'essential200',
+        type: 'word', band: null, synonyms: [], cat: '', note: '', essential: true });
+    }
+  });
   const DECKS = Object.entries(DECK_DEFS)
-    .map(([id, def]) => ({ id, ...def, count: CARDS.filter(c => c.deck === id).length }))
+    .map(([id, def]) => ({ id, ...def, count: CARDS.filter(c => id === 'essential200' ? c.essential : c.deck === id).length }))
     .filter(d => d.count > 0 || d.id === 'mostCommonGuate');
   const DICT = {};
   CARDS.forEach(c => {
@@ -1107,7 +1127,10 @@ function computeVals() {
     onBrowse: () => openBrowse({}),
     ...(sLen > 0 ? (() => {
       const id = order[S.study.idx % sLen]; const card = CARDS.find(c => c.id === id);
-      const cst = cs(id); const dk = deckOf(card.deck);
+      const cst = cs(id);
+      const essentialStudy = S.study.source === 'deck:essential200'
+        || (S.study.source === 'filter' && S.browse.deck === 'essential200');
+      const dk = deckOf(essentialStudy ? 'essential200' : card.deck);
       const showSentence = !!S.study.showSentence && !!card.sentence;
       return {
         deckLabel: dk ? dk.name : card.deck, deckShort: dk ? dk.short : card.deck, deckAccent: dk ? dk.accent : '#28b573',
@@ -2524,13 +2547,14 @@ async function bootstrap() {
   render(); // show loading state
 
   try {
-    const [loadedPersisted, response, readingResp, synResp, sentResp, countryLexResp] = await Promise.all([
+    const [loadedPersisted, response, readingResp, synResp, sentResp, countryLexResp, essentialResp] = await Promise.all([
       loadState(),
       fetch(DATA_URL),
       fetch('./data/reading-data.json'),
       fetch('./data/synonyms.json'),
       fetch('./data/sentences.json'),
       fetch('./data/country_lexicons.json'),
+      fetch('./data/essential_200.json'),
     ]);
 
     if (!response.ok) throw new Error(`Failed to load data (${response.status})`);
@@ -2543,7 +2567,9 @@ async function bootstrap() {
     try { synonymsMap = await synResp.json(); } catch(e) {}
     try { sentencesMap = await sentResp.json(); } catch(e) {}
     try { const cl = await countryLexResp.json(); countryLex = Array.isArray(cl) ? cl : (cl.countries || []); } catch(e) {}
-    const data = transformData(raw, reading, synonymsMap, sentencesMap);
+    if (!essentialResp.ok) throw new Error(`Failed to load Essential 200 (${essentialResp.status})`);
+    const essential = await essentialResp.json();
+    const data = transformData(raw, reading, synonymsMap, sentencesMap, essential.words);
     // Per-country lexicon references (all Spanish-speaking countries except
     // Guatemala, whose lexicon is the studyable in-catalog deck).
     data.COUNTRY_LEX = countryLex;
