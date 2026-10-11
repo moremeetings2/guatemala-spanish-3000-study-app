@@ -139,6 +139,13 @@ document.addEventListener('keydown', e => {
 function setState(patch) {
   const next = { ...appState, ...patch };
   const keys = Object.keys(patch);
+  // Closing the whole browser need not fire pagehide. Save resume-critical
+  // changes during the action itself, without making flips/chat typing do I/O.
+  const resumeChanged = next.settings !== appState.settings
+    || next.study.source !== appState.study.source
+    || next.study.idx !== appState.study.idx
+    || next.study.order !== appState.study.order
+    || next.study.resumeId !== appState.study.resumeId;
   const signedOut = !(next.auth && next.auth.user);
   const invisibleSignedOut = keys.length > 0 && keys.every(k => k === 'voices' || k === 'ai' || k === 'syncing');
   // iOS dictation remains attached to the original input node while it commits.
@@ -148,7 +155,10 @@ function setState(patch) {
     && !keys.includes('chat');
   appState = next;
   if ((!signedOut || !invisibleSignedOut) && !preserveChatInput) render();
-  if (appState.loaded) schedSave();
+  if (appState.loaded) {
+    if (resumeChanged) flushState();
+    else schedSave();
+  }
 }
 
 function setAuthDraft(patch) {

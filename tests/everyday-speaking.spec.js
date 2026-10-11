@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test.beforeEach(async ({ page }) => {
+async function bootAsSpeaker(page) {
   await page.route(url => url.pathname.startsWith('/api/'), route => route.fulfill({
     status: 200, contentType: 'application/json',
     body: JSON.stringify({ cardState: {}, words: [], ok: true }),
@@ -16,7 +16,9 @@ test.beforeEach(async ({ page }) => {
   });
   await page.goto('/');
   await expect(page.getByText('Flashcards', { exact: true })).toBeVisible();
-});
+}
+
+test.beforeEach(async ({ page }) => bootAsSpeaker(page));
 
 async function openDeck(page, query) {
   await page.locator('#tab-bar').getByRole('button', { name: /You/ }).click();
@@ -81,6 +83,42 @@ test('sends the Spanish answer to the real browser speech API on either face', a
     expect(utterance.text).toBe('Déjame ver.');
     expect(utterance.lang).toMatch(/^es/);
     expect(utterance.rate).toBe(0.75);
+  }
+});
+
+test('saves study choices immediately and restores them after closing the entire browser', async ({ browser, headless, baseURL }, testInfo) => {
+  const profile = testInfo.outputPath('reopen-profile');
+  let context;
+  try {
+    context = await browser.browserType().launchPersistentContext(profile, { headless, baseURL });
+    let page = context.pages()[0];
+    await bootAsSpeaker(page);
+    await openDeck(page);
+    await page.getByRole('button', { name: 'Study these', exact: true }).click();
+    // Read real storage in the same browser task as the clicks, before a
+    // debounce or pagehide can hide a lost last-second change.
+    const changed = await page.evaluate(() => {
+      const clickButton = name => [...document.querySelectorAll('button')]
+        .find(button => button.textContent.trim() === name).click();
+      clickButton('Spanish first');
+      clickButton('Next card');
+      return {
+        spanish: document.querySelector('[data-fid="study-face"]').textContent,
+        id: appState.study.order[appState.study.idx],
+        saved: JSON.parse(localStorage.getItem('spanishStudyApp.v1.account.speaking-learner')),
+      };
+    });
+    await context.close();
+    expect(changed.saved?.settings.studyDirections?.['deck:everydaySpeaking']).toBe('es-en');
+    expect(changed.saved.study.cardId).toBe(changed.id);
+    context = await browser.browserType().launchPersistentContext(profile, { headless, baseURL });
+    page = context.pages()[0];
+    await bootAsSpeaker(page);
+    await page.locator('#tab-bar').getByRole('button', { name: /Study/ }).click();
+    await expect(page.locator('[data-fid="study-face"]')).toHaveText(changed.spanish);
+    await expect(page.getByRole('button', { name: 'Spanish first', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  } finally {
+    await context?.close();
   }
 });
 
