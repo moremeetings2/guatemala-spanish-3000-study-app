@@ -1,0 +1,3224 @@
+{
+  "schemaVersion": 1,
+  "name": "Everyday Speaking",
+  "description": "Read the English, say it in Spanish, then reveal and listen. Adapted from the supplied video transcript.",
+  "source": {
+    "title": "650 SPANISH PHRASES YOU CAN USE FOREVER — Listen repeatedly and learn easily",
+    "documentSha256": "d08ca304d9872da8c1c34895d1f57598ab99bc34a3a45c55d4f9420519998e2e",
+    "advertisedPhraseCount": 650,
+    "distinctEnglishPrompts": 645,
+    "uniqueCards": 636,
+    "supplementedTranslations": 18,
+    "note": "All 645 distinct English prompts in the complete supplied DOCX are represented. Nine equivalent prompts share Spanish answers. Repetitions and the introductory line are omitted. Original regional wording is generally retained; this is not a Guatemala-only deck."
+  },
+  "phrases": [
+    {
+      "es": "Déjame ver.",
+      "en": "Let me check.",
+      "id": "speaking-0001"
+    },
+    {
+      "es": "Tengo muchas ganas.",
+      "en": "I'm looking forward to it.",
+      "id": "speaking-0002"
+    },
+    {
+      "es": "Depende.",
+      "en": "It depends.",
+      "id": "speaking-0003"
+    },
+    {
+      "es": "Tómatelo con calma.",
+      "en": "Take it easy.",
+      "id": "speaking-0004"
+    },
+    {
+      "es": "¡Qué coincidencia!",
+      "en": "What a coincidence.",
+      "id": "speaking-0005"
+    },
+    {
+      "es": "¿Puedo hablar contigo?",
+      "en": "May I speak with you?",
+      "id": "speaking-0006"
+    },
+    {
+      "es": "Suena interesante.",
+      "en": "It sounds interesting.",
+      "id": "speaking-0007"
+    },
+    {
+      "es": "Suena emocionante.",
+      "en": "It sounds exciting.",
+      "alternateEnglish": [
+        "That sounds exciting."
+      ],
+      "id": "speaking-0008"
+    },
+    {
+      "es": "¿Cómo te va?",
+      "en": "How's it going?",
+      "id": "speaking-0009"
+    },
+    {
+      "es": "Como siempre.",
+      "en": "Same as always.",
+      "id": "speaking-0010"
+    },
+    {
+      "es": "¿Como qué?",
+      "en": "Like what?",
+      "id": "speaking-0011"
+    },
+    {
+      "es": "¡Estupendo!",
+      "en": "How wonderful.",
+      "id": "speaking-0012"
+    },
+    {
+      "es": "Es muy picante.",
+      "en": "It's so spicy.",
+      "id": "speaking-0013"
+    },
+    {
+      "es": "Eso es imposible.",
+      "en": "That's impossible.",
+      "id": "speaking-0014"
+    },
+    {
+      "es": "Estoy muy feliz.",
+      "en": "I'm pretty happy.",
+      "id": "speaking-0015"
+    },
+    {
+      "es": "Pareces feliz.",
+      "en": "You seem to be happy.",
+      "id": "speaking-0016"
+    },
+    {
+      "es": "Tomémonos un descanso.",
+      "en": "Let's take a break.",
+      "id": "speaking-0017"
+    },
+    {
+      "es": "No hay prisa.",
+      "en": "There's no rush.",
+      "alternateEnglish": [
+        "There's no hurry."
+      ],
+      "id": "speaking-0018"
+    },
+    {
+      "es": "Lo intentaré.",
+      "en": "I'll give it a try.",
+      "id": "speaking-0019"
+    },
+    {
+      "es": "Cualquiera me vale.",
+      "en": "Either is fine.",
+      "id": "speaking-0020"
+    },
+    {
+      "es": "Pobrecito.",
+      "en": "You poor thing.",
+      "id": "speaking-0021"
+    },
+    {
+      "es": "Debemos darnos prisa.",
+      "en": "We'd better hurry.",
+      "id": "speaking-0022"
+    },
+    {
+      "es": "¿Puedo acompañarte?",
+      "en": "May I join you?",
+      "id": "speaking-0023"
+    },
+    {
+      "es": "Eso suena genial.",
+      "en": "That sounds great.",
+      "id": "speaking-0024"
+    },
+    {
+      "es": "Hay algo raro.",
+      "en": "Something's weird.",
+      "id": "speaking-0025"
+    },
+    {
+      "es": "Tengo buenas noticias.",
+      "en": "I've got good news.",
+      "id": "speaking-0026"
+    },
+    {
+      "es": "Huele bien.",
+      "en": "It smells good.",
+      "id": "speaking-0027"
+    },
+    {
+      "es": "Déjalo.",
+      "en": "Leave it alone.",
+      "id": "speaking-0028"
+    },
+    {
+      "es": "Necesito pañuelos.",
+      "en": "I need tissues.",
+      "id": "speaking-0029"
+    },
+    {
+      "es": "Estoy conmovido.",
+      "en": "I'm moved.",
+      "alternateEnglish": [
+        "I'm touched."
+      ],
+      "id": "speaking-0030"
+    },
+    {
+      "es": "Pidamos pizza.",
+      "en": "Let's order pizza.",
+      "id": "speaking-0031"
+    },
+    {
+      "es": "Me he bronceado.",
+      "en": "I got suntanned.",
+      "id": "speaking-0032"
+    },
+    {
+      "es": "¡Qué sorpresa!",
+      "en": "What a surprise!",
+      "id": "speaking-0033"
+    },
+    {
+      "es": "Tenía miedo.",
+      "en": "I was frightened.",
+      "id": "speaking-0034"
+    },
+    {
+      "es": "Eso es romántico.",
+      "en": "That's romantic.",
+      "id": "speaking-0035"
+    },
+    {
+      "es": "Es tu turno.",
+      "en": "It's your turn.",
+      "id": "speaking-0036"
+    },
+    {
+      "es": "Trato hecho.",
+      "en": "It's a deal.",
+      "id": "speaking-0037"
+    },
+    {
+      "es": "Está nervioso.",
+      "en": "He's nervous.",
+      "id": "speaking-0038"
+    },
+    {
+      "es": "¿Cuál es correcto?",
+      "en": "Which is correct?",
+      "id": "speaking-0039"
+    },
+    {
+      "es": "Estamos abiertos 24-7.",
+      "en": "We're open 24-7.",
+      "id": "speaking-0040"
+    },
+    {
+      "es": "Me encantaría ir.",
+      "en": "I'd love to go.",
+      "id": "speaking-0041"
+    },
+    {
+      "es": "¿Estás despierto?",
+      "en": "Are you up?",
+      "id": "speaking-0042"
+    },
+    {
+      "es": "¡Qué tierno!",
+      "en": "How sweet.",
+      "id": "speaking-0043"
+    },
+    {
+      "es": "Creo en ti.",
+      "en": "I believe in you.",
+      "id": "speaking-0044"
+    },
+    {
+      "es": "Es aburrido.",
+      "en": "It's boring.",
+      "id": "speaking-0045"
+    },
+    {
+      "es": "Eso es impresionante.",
+      "en": "That's really something.",
+      "id": "speaking-0046"
+    },
+    {
+      "es": "Me inspiras.",
+      "en": "You inspire me.",
+      "id": "speaking-0047"
+    },
+    {
+      "es": "¿Cómo has estado?",
+      "en": "How have you been?",
+      "id": "speaking-0048"
+    },
+    {
+      "es": "Sigue recto.",
+      "en": "Go straight.",
+      "id": "speaking-0049"
+    },
+    {
+      "es": "¿Puedo probármelos?",
+      "en": "Can I try these on?",
+      "id": "speaking-0050"
+    },
+    {
+      "es": "¿Puedes aconsejarme?",
+      "en": "Can you give me some advice?",
+      "id": "speaking-0051"
+    },
+    {
+      "es": "Estoy contigo.",
+      "en": "I'm with you on that.",
+      "id": "speaking-0052"
+    },
+    {
+      "es": "Te veo pronto.",
+      "en": "See you soon.",
+      "id": "speaking-0053"
+    },
+    {
+      "es": "Cuenta conmigo.",
+      "en": "Count me in.",
+      "id": "speaking-0054"
+    },
+    {
+      "es": "¿Cómo es?",
+      "en": "What's he like?",
+      "id": "speaking-0055"
+    },
+    {
+      "es": "¡Qué agradable!",
+      "en": "How nice.",
+      "id": "speaking-0056"
+    },
+    {
+      "es": "Tienes razón.",
+      "en": "You're right.",
+      "id": "speaking-0057"
+    },
+    {
+      "es": "Muchísimas gracias.",
+      "en": "Thanks a million.",
+      "id": "speaking-0058"
+    },
+    {
+      "es": "¡Qué alivio!",
+      "en": "What a relief.",
+      "id": "speaking-0059"
+    },
+    {
+      "es": "Me siento aliviado.",
+      "en": "I feel relieved.",
+      "id": "speaking-0060"
+    },
+    {
+      "es": "Toma algo.",
+      "en": "Have a drink.",
+      "id": "speaking-0061"
+    },
+    {
+      "es": "Es estupenda.",
+      "en": "She's amazing.",
+      "id": "speaking-0062"
+    },
+    {
+      "es": "Estás genial.",
+      "en": "You look great.",
+      "id": "speaking-0063"
+    },
+    {
+      "es": "Me han transferido.",
+      "en": "I got transferred.",
+      "id": "speaking-0064"
+    },
+    {
+      "es": "Vamos.",
+      "en": "Let's go.",
+      "id": "speaking-0065"
+    },
+    {
+      "es": "Empecemos.",
+      "en": "Let's get started.",
+      "id": "speaking-0066"
+    },
+    {
+      "es": "Contaré contigo.",
+      "en": "I'll count on you.",
+      "id": "speaking-0067"
+    },
+    {
+      "es": "¿Cómo fue?",
+      "en": "How was it?",
+      "id": "speaking-0068"
+    },
+    {
+      "es": "¿No es adorable?",
+      "en": "Doesn't it look lovely?",
+      "id": "speaking-0069"
+    },
+    {
+      "es": "¿Algunas sugerencias?",
+      "en": "Any suggestions?",
+      "id": "speaking-0070"
+    },
+    {
+      "es": "Juguemos al fútbol.",
+      "en": "Let's play soccer.",
+      "id": "speaking-0071"
+    },
+    {
+      "es": "Todo va bien.",
+      "en": "Everything is fine.",
+      "alternateEnglish": [
+        "Everything's good."
+      ],
+      "id": "speaking-0072"
+    },
+    {
+      "es": "Para.",
+      "en": "Stop it.",
+      "id": "speaking-0073"
+    },
+    {
+      "es": "Adelante.",
+      "en": "Go ahead.",
+      "id": "speaking-0074"
+    },
+    {
+      "es": "¿Qué estás leyendo?",
+      "en": "What are you reading?",
+      "id": "speaking-0075"
+    },
+    {
+      "es": "Hazlo como quieras.",
+      "en": "Do it any way you like.",
+      "id": "speaking-0076"
+    },
+    {
+      "es": "Suena genial.",
+      "en": "Sounds great.",
+      "id": "speaking-0077"
+    },
+    {
+      "es": "Cuanto antes mejor.",
+      "en": "The sooner the better.",
+      "id": "speaking-0078"
+    },
+    {
+      "es": "¿Pescas?",
+      "en": "Do you fish?",
+      "id": "speaking-0079"
+    },
+    {
+      "es": "Te olvidaste algo.",
+      "en": "You forgot something.",
+      "id": "speaking-0080"
+    },
+    {
+      "es": "Hace frío.",
+      "en": "It's chilly.",
+      "id": "speaking-0081"
+    },
+    {
+      "es": "¿Qué pasó?",
+      "en": "What happened?",
+      "id": "speaking-0082"
+    },
+    {
+      "es": "¿Qué quieres decir?",
+      "en": "What do you mean?",
+      "id": "speaking-0083"
+    },
+    {
+      "es": "¿Puedo entrar?",
+      "en": "May I come in?",
+      "id": "speaking-0084"
+    },
+    {
+      "es": "Siéntate.",
+      "en": "Have a seat.",
+      "id": "speaking-0085"
+    },
+    {
+      "es": "¿Había mucho tráfico?",
+      "en": "Was there a lot of traffic?",
+      "id": "speaking-0086"
+    },
+    {
+      "es": "Me siento genial.",
+      "en": "I feel great.",
+      "id": "speaking-0087"
+    },
+    {
+      "es": "¿Cómo te sientes?",
+      "en": "How do you feel?",
+      "id": "speaking-0088"
+    },
+    {
+      "es": "¿Quién es?",
+      "en": "Who is this?",
+      "id": "speaking-0089"
+    },
+    {
+      "es": "¡Qué interesante!",
+      "en": "How interesting.",
+      "id": "speaking-0090"
+    },
+    {
+      "es": "Llámame Chris.",
+      "en": "Call me Chris.",
+      "id": "speaking-0091"
+    },
+    {
+      "es": "Soy feliz.",
+      "en": "I am happy.",
+      "id": "speaking-0092"
+    },
+    {
+      "es": "Eso fue extraño.",
+      "en": "That was weird.",
+      "id": "speaking-0093"
+    },
+    {
+      "es": "Encantado de conocerte.",
+      "en": "Nice meeting you.",
+      "id": "speaking-0094"
+    },
+    {
+      "es": "Huele mal.",
+      "en": "It smells.",
+      "id": "speaking-0095"
+    },
+    {
+      "es": "Saludos, Lily.",
+      "en": "Best wishes Lily.",
+      "id": "speaking-0096"
+    },
+    {
+      "es": "¡Qué romántico!",
+      "en": "How romantic.",
+      "id": "speaking-0097"
+    },
+    {
+      "es": "Estás estupendo.",
+      "en": "You look fantastic.",
+      "id": "speaking-0098"
+    },
+    {
+      "es": "Está podrido.",
+      "en": "It's rotten.",
+      "id": "speaking-0099"
+    },
+    {
+      "es": "¿Tienes sueño?",
+      "en": "Are you sleepy?",
+      "id": "speaking-0100"
+    },
+    {
+      "es": "¿Qué recomiendas?",
+      "en": "What do you recommend?",
+      "id": "speaking-0101"
+    },
+    {
+      "es": "Celebremos.",
+      "en": "Let's celebrate.",
+      "id": "speaking-0102"
+    },
+    {
+      "es": "Mantengámonos en contacto.",
+      "en": "Let's stay in touch.",
+      "id": "speaking-0103"
+    },
+    {
+      "es": "¿Lo pasaste bien?",
+      "en": "Did you have a good time?",
+      "id": "speaking-0104"
+    },
+    {
+      "es": "Espera un minuto.",
+      "en": "Wait a minute.",
+      "id": "speaking-0105"
+    },
+    {
+      "es": "¿Te has decidido?",
+      "en": "Did you make up your mind?",
+      "id": "speaking-0106"
+    },
+    {
+      "es": "¿Cuál es mejor?",
+      "en": "Which is better?",
+      "id": "speaking-0107"
+    },
+    {
+      "es": "¡Qué mono!",
+      "en": "How cute!",
+      "id": "speaking-0108",
+      "note": "Source wording: ¡Qué mono! You can also say ¡Qué lindo! or ¡Qué bonito!"
+    },
+    {
+      "es": "Tengo hambre.",
+      "en": "I'm hungry.",
+      "id": "speaking-0109"
+    },
+    {
+      "es": "Está anocheciendo.",
+      "en": "It is getting dark outside.",
+      "id": "speaking-0110"
+    },
+    {
+      "es": "Te queda genial.",
+      "en": "It looks great on you.",
+      "id": "speaking-0111"
+    },
+    {
+      "es": "¿Podrías repetirlo?",
+      "en": "Could you say it again?",
+      "id": "speaking-0112"
+    },
+    {
+      "es": "Cuéntame más.",
+      "en": "Tell me more.",
+      "id": "speaking-0113"
+    },
+    {
+      "es": "Únete a nosotros.",
+      "en": "Join us.",
+      "id": "speaking-0114"
+    },
+    {
+      "es": "Te llamaré luego.",
+      "en": "I'll give you a call later.",
+      "id": "speaking-0115"
+    },
+    {
+      "es": "¿Cómo va todo?",
+      "en": "How's everything?",
+      "id": "speaking-0116"
+    },
+    {
+      "es": "No estoy seguro.",
+      "en": "I'm not sure.",
+      "id": "speaking-0117"
+    },
+    {
+      "es": "Ven conmigo.",
+      "en": "Come with me.",
+      "id": "speaking-0118"
+    },
+    {
+      "es": "¿Duele?",
+      "en": "Does that hurt?",
+      "id": "speaking-0119"
+    },
+    {
+      "es": "¿Dormiste bien?",
+      "en": "Did you sleep well?",
+      "id": "speaking-0120"
+    },
+    {
+      "es": "No te disculpes.",
+      "en": "Don't be sorry.",
+      "id": "speaking-0121"
+    },
+    {
+      "es": "¿Eso es todo?",
+      "en": "Is that all?",
+      "id": "speaking-0122"
+    },
+    {
+      "es": "Hará calor pronto.",
+      "en": "It will get warmer soon.",
+      "id": "speaking-0123"
+    },
+    {
+      "es": "¿Qué pasa?",
+      "en": "What's the matter?",
+      "id": "speaking-0124"
+    },
+    {
+      "es": "¿Ayuda eso?",
+      "en": "Does it help?",
+      "id": "speaking-0125"
+    },
+    {
+      "es": "Confía en mí.",
+      "en": "Trust me.",
+      "id": "speaking-0126"
+    },
+    {
+      "es": "Está al revés.",
+      "en": "It's upside down.",
+      "id": "speaking-0127"
+    },
+    {
+      "es": "Me va bien.",
+      "en": "Suits me fine.",
+      "id": "speaking-0128"
+    },
+    {
+      "es": "Tú decides.",
+      "en": "It's up to you.",
+      "id": "speaking-0129"
+    },
+    {
+      "es": "Déjame pensar.",
+      "en": "Let me think.",
+      "id": "speaking-0130"
+    },
+    {
+      "es": "Está bien.",
+      "en": "That's fine.",
+      "id": "speaking-0131"
+    },
+    {
+      "es": "Yo también.",
+      "en": "So do I.",
+      "id": "speaking-0132"
+    },
+    {
+      "es": "Sigue así.",
+      "en": "Keep it up.",
+      "id": "speaking-0133"
+    },
+    {
+      "es": "Está ahí.",
+      "en": "It's right there.",
+      "id": "speaking-0134"
+    },
+    {
+      "es": "Silencio.",
+      "en": "Be quiet.",
+      "id": "speaking-0135"
+    },
+    {
+      "es": "Así es.",
+      "en": "That's right.",
+      "id": "speaking-0136"
+    },
+    {
+      "es": "Me da mucha vergüenza.",
+      "en": "I'm so embarrassed.",
+      "id": "speaking-0137"
+    },
+    {
+      "es": "Llega el otoño.",
+      "en": "Autumn comes.",
+      "id": "speaking-0138"
+    },
+    {
+      "es": "Deletréalo.",
+      "en": "Give me the spelling.",
+      "id": "speaking-0139"
+    },
+    {
+      "es": "¿Dónde quedamos?",
+      "en": "Where shall we meet?",
+      "id": "speaking-0140"
+    },
+    {
+      "es": "Te ayudaré.",
+      "en": "I'll help you.",
+      "id": "speaking-0141"
+    },
+    {
+      "es": "No funciona.",
+      "en": "It doesn't work.",
+      "id": "speaking-0142"
+    },
+    {
+      "es": "Sonríe.",
+      "en": "Say cheese.",
+      "id": "speaking-0143"
+    },
+    {
+      "es": "¿Qué es eso?",
+      "en": "What's that?",
+      "id": "speaking-0144"
+    },
+    {
+      "es": "¡Qué ganas!",
+      "en": "I can't wait.",
+      "id": "speaking-0145"
+    },
+    {
+      "es": "Me siento mejor.",
+      "en": "I'm feeling better.",
+      "id": "speaking-0146"
+    },
+    {
+      "es": "¿Qué quiere decir?",
+      "en": "What does it mean?",
+      "id": "speaking-0147"
+    },
+    {
+      "es": "¿Cómo os conocisteis?",
+      "en": "How did you two meet?",
+      "id": "speaking-0148"
+    },
+    {
+      "es": "Estoy completamente lleno.",
+      "en": "I'm completely full.",
+      "id": "speaking-0149"
+    },
+    {
+      "es": "Gracias por venir.",
+      "en": "Thanks for coming.",
+      "id": "speaking-0150"
+    },
+    {
+      "es": "Estoy muy emocionado.",
+      "en": "I'm so excited.",
+      "id": "speaking-0151"
+    },
+    {
+      "es": "Pruébalo.",
+      "en": "Have a taste.",
+      "id": "speaking-0152"
+    },
+    {
+      "es": "¿Te gusta?",
+      "en": "How do you like it?",
+      "id": "speaking-0153"
+    },
+    {
+      "es": "¿Quieres probar?",
+      "en": "Would you like to try it?",
+      "id": "speaking-0154"
+    },
+    {
+      "es": "No puedo decidirme.",
+      "en": "I can't decide which to choose.",
+      "id": "speaking-0155"
+    },
+    {
+      "es": "Estoy muy cansado.",
+      "en": "I'm really tired.",
+      "id": "speaking-0156"
+    },
+    {
+      "es": "Buena idea.",
+      "en": "Good thinking.",
+      "id": "speaking-0157"
+    },
+    {
+      "es": "Estoy realmente agradecido.",
+      "en": "I'm truly grateful.",
+      "id": "speaking-0158"
+    },
+    {
+      "es": "Es mi favorito.",
+      "en": "It's my favorite.",
+      "id": "speaking-0159"
+    },
+    {
+      "es": "Acabemos esto.",
+      "en": "Let's wrap it up.",
+      "id": "speaking-0160"
+    },
+    {
+      "es": "Soy muy olvidadizo.",
+      "en": "I'm always forgetful.",
+      "id": "speaking-0161"
+    },
+    {
+      "es": "Es increíble.",
+      "en": "It's unbelievable.",
+      "id": "speaking-0162"
+    },
+    {
+      "es": "Entendido.",
+      "en": "Got it.",
+      "id": "speaking-0163"
+    },
+    {
+      "es": "Pareces animado.",
+      "en": "You look cheerful.",
+      "id": "speaking-0164"
+    },
+    {
+      "es": "¿Puedo probarlo?",
+      "en": "Can I taste it?",
+      "id": "speaking-0165"
+    },
+    {
+      "es": "Buen trabajo.",
+      "en": "Good job.",
+      "id": "speaking-0166"
+    },
+    {
+      "es": "Sí, tienes razón.",
+      "en": "Yes, you're right.",
+      "id": "speaking-0167"
+    },
+    {
+      "es": "¿Os conocéis?",
+      "en": "Do you know each other?",
+      "id": "speaking-0168"
+    },
+    {
+      "es": "Sólo bromeaba.",
+      "en": "I'm just kidding.",
+      "id": "speaking-0169"
+    },
+    {
+      "es": "Estoy sorprendido.",
+      "en": "I'm surprised.",
+      "id": "speaking-0170"
+    },
+    {
+      "es": "Tengo que irme.",
+      "en": "I've got to go.",
+      "id": "speaking-0171"
+    },
+    {
+      "es": "¿Es eso posible?",
+      "en": "Is that possible?",
+      "id": "speaking-0172"
+    },
+    {
+      "es": "Lo atesoraré.",
+      "en": "I'll treasure it.",
+      "id": "speaking-0173"
+    },
+    {
+      "es": "¿Bailamos?",
+      "en": "Shall we dance?",
+      "id": "speaking-0174"
+    },
+    {
+      "es": "Cópiame.",
+      "en": "Copy me.",
+      "id": "speaking-0175"
+    },
+    {
+      "es": "¿Es el desayuno gratuito?",
+      "en": "Is breakfast complimentary?",
+      "id": "speaking-0176"
+    },
+    {
+      "es": "No te esfuerces demasiado.",
+      "en": "Don't push yourself too hard.",
+      "id": "speaking-0177"
+    },
+    {
+      "es": "Me lo estoy pasando genial.",
+      "en": "I'm having a great time.",
+      "id": "speaking-0178"
+    },
+    {
+      "es": "Yo lo pago.",
+      "en": "It's on me.",
+      "id": "speaking-0179"
+    },
+    {
+      "es": "Me alegra que te guste.",
+      "en": "I'm glad you like it.",
+      "id": "speaking-0180"
+    },
+    {
+      "es": "¿Cómo vas al colegio?",
+      "en": "How do you get to school?",
+      "id": "speaking-0181"
+    },
+    {
+      "es": "Aquí está tu cambio.",
+      "en": "Here's your change.",
+      "id": "speaking-0182"
+    },
+    {
+      "es": "¿Qué debería ponerme?",
+      "en": "What should I wear?",
+      "id": "speaking-0183"
+    },
+    {
+      "es": "Es temporada de fresas.",
+      "en": "Strawberries are in season now.",
+      "id": "speaking-0184"
+    },
+    {
+      "es": "¿Podrías hacerme un favor?",
+      "en": "Could you do me a favor?",
+      "id": "speaking-0185"
+    },
+    {
+      "es": "Esta máquina expendedora está rota.",
+      "en": "This vending machine is out of order.",
+      "id": "speaking-0186"
+    },
+    {
+      "es": "¿Dónde quieres ir?",
+      "en": "Where do you want to go?",
+      "id": "speaking-0187"
+    },
+    {
+      "es": "Estoy seguro de que vendrá pronto.",
+      "en": "I'm sure she'll come soon.",
+      "id": "speaking-0188"
+    },
+    {
+      "es": "¿Qué me aconsejas?",
+      "en": "What's your advice?",
+      "id": "speaking-0189"
+    },
+    {
+      "es": "¿Quieres un poco de tarta?",
+      "en": "Would you like some cake?",
+      "id": "speaking-0190"
+    },
+    {
+      "es": "¿Puedes responder al teléfono?",
+      "en": "Can you answer the phone?",
+      "id": "speaking-0191"
+    },
+    {
+      "es": "No tengo ni idea.",
+      "en": "I have no idea.",
+      "id": "speaking-0192"
+    },
+    {
+      "es": "Siempre quise probarlo.",
+      "en": "I've always wanted to try it.",
+      "id": "speaking-0193"
+    },
+    {
+      "es": "Esas son buenísimas noticias.",
+      "en": "That's great news.",
+      "id": "speaking-0194"
+    },
+    {
+      "es": "Por favor, para aquí.",
+      "en": "Please stop here.",
+      "id": "speaking-0195"
+    },
+    {
+      "es": "Te llevaré allí.",
+      "en": "I'll take you there.",
+      "id": "speaking-0196"
+    },
+    {
+      "es": "Siento escuchar eso.",
+      "en": "I'm sorry to hear it.",
+      "id": "speaking-0197"
+    },
+    {
+      "es": "No te preocupes.",
+      "en": "No worries.",
+      "id": "speaking-0198"
+    },
+    {
+      "es": "Eso suena divertido.",
+      "en": "That sounds fun.",
+      "id": "speaking-0199"
+    },
+    {
+      "es": "¿Puedo comer dos más?",
+      "en": "Can I have two more?",
+      "id": "speaking-0200"
+    },
+    {
+      "es": "No sé qué hacer.",
+      "en": "I don't know what to do.",
+      "id": "speaking-0201"
+    },
+    {
+      "es": "¿Podrías darme un ejemplo?",
+      "en": "Could you give me an example?",
+      "id": "speaking-0202"
+    },
+    {
+      "es": "¿Puedes hablar más despacio?",
+      "en": "Could you speak more slowly?",
+      "id": "speaking-0203"
+    },
+    {
+      "es": "Hablemos más tarde.",
+      "en": "Let's talk later.",
+      "id": "speaking-0204"
+    },
+    {
+      "es": "¿Qué puedo hacer por ti?",
+      "en": "What can I do for you?",
+      "id": "speaking-0205"
+    },
+    {
+      "es": "¿Podrías echarme una mano?",
+      "en": "Would you lend me a hand?",
+      "id": "speaking-0206"
+    },
+    {
+      "es": "¡Te va a encantar!",
+      "en": "You'll love it.",
+      "id": "speaking-0207"
+    },
+    {
+      "es": "Estuvo bien hablar contigo.",
+      "en": "It was nice talking to you.",
+      "id": "speaking-0208"
+    },
+    {
+      "es": "Eso sucede todo el tiempo.",
+      "en": "That happens all the time.",
+      "id": "speaking-0209"
+    },
+    {
+      "es": "¿Sabes dónde está?",
+      "en": "Do you know where she is?",
+      "alternateEnglish": [
+        "Do you know where it is?"
+      ],
+      "id": "speaking-0210"
+    },
+    {
+      "es": "¿Te estoy molestando?",
+      "en": "Am I bothering you?",
+      "id": "speaking-0211"
+    },
+    {
+      "es": "¿Me das un tercio?",
+      "en": "Could I have one third of it?",
+      "id": "speaking-0212"
+    },
+    {
+      "es": "Ella llora con facilidad.",
+      "en": "She's easily moved to tears.",
+      "id": "speaking-0213"
+    },
+    {
+      "es": "Le queda bien todo.",
+      "en": "She looks good in anything.",
+      "id": "speaking-0214"
+    },
+    {
+      "es": "Merece la pena verlo.",
+      "en": "That's a must see.",
+      "id": "speaking-0215"
+    },
+    {
+      "es": "Llegué muy temprano.",
+      "en": "I arrived there too early.",
+      "id": "speaking-0216"
+    },
+    {
+      "es": "Llámame en cualquier momento.",
+      "en": "Feel free to call me anytime.",
+      "id": "speaking-0217"
+    },
+    {
+      "es": "De acuerdo, allá vamos.",
+      "en": "Okay, here we go.",
+      "id": "speaking-0218"
+    },
+    {
+      "es": "Fuiste de gran ayuda.",
+      "en": "You were a big help.",
+      "id": "speaking-0219"
+    },
+    {
+      "es": "¿Puedes ponerlos en bolsas separadas?",
+      "en": "Could you put them in separate bags?",
+      "id": "speaking-0220"
+    },
+    {
+      "es": "No me puedo concentrar.",
+      "en": "I can't concentrate.",
+      "id": "speaking-0221"
+    },
+    {
+      "es": "Está muy sabroso.",
+      "en": "It's very tasty.",
+      "id": "speaking-0222"
+    },
+    {
+      "es": "Tengo una pregunta.",
+      "en": "I have a question.",
+      "id": "speaking-0223"
+    },
+    {
+      "es": "Aquí no hay cobertura.",
+      "en": "There is no signal here.",
+      "id": "speaking-0224"
+    },
+    {
+      "es": "Lo dejo a tu imaginación.",
+      "en": "I'll leave it to your imagination.",
+      "id": "speaking-0225"
+    },
+    {
+      "es": "Hace mucho calor, ¿no?",
+      "en": "It's really hot, isn't it?",
+      "id": "speaking-0226"
+    },
+    {
+      "es": "¿Puedes subir la calefacción?",
+      "en": "Could you turn the heating up?",
+      "id": "speaking-0227"
+    },
+    {
+      "es": "Aquí está el menú.",
+      "en": "Here's the menu.",
+      "id": "speaking-0228"
+    },
+    {
+      "es": "¿Quieres unirte a nosotros?",
+      "en": "Do you want to join us?",
+      "id": "speaking-0229"
+    },
+    {
+      "es": "Tan solo bromeaba.",
+      "en": "Just joking.",
+      "id": "speaking-0230"
+    },
+    {
+      "es": "¿Qué debería pedir de postre?",
+      "en": "What should I get for dessert?",
+      "id": "speaking-0231"
+    },
+    {
+      "es": "Tom cruzó la calle.",
+      "en": "Tom walked across the street.",
+      "id": "speaking-0232"
+    },
+    {
+      "es": "La cena está lista.",
+      "en": "Dinner's ready.",
+      "id": "speaking-0233"
+    },
+    {
+      "es": "Yo me encargo.",
+      "en": "I'll take care of it.",
+      "id": "speaking-0234"
+    },
+    {
+      "es": "¿Cuál es tu presupuesto?",
+      "en": "What's your budget?",
+      "id": "speaking-0235"
+    },
+    {
+      "es": "Dime que no es cierto.",
+      "en": "Tell me that's not true.",
+      "id": "speaking-0236"
+    },
+    {
+      "es": "Me alegra oír eso.",
+      "en": "I'm glad to hear that.",
+      "id": "speaking-0237"
+    },
+    {
+      "es": "Me siento enfermo.",
+      "en": "I feel sick.",
+      "id": "speaking-0238"
+    },
+    {
+      "es": "¿Cuándo llegaste a Londres?",
+      "en": "When did you get to London?",
+      "id": "speaking-0239"
+    },
+    {
+      "es": "¿Puedo pedirte un favor?",
+      "en": "Can I ask you a favor?",
+      "alternateEnglish": [
+        "May I ask you a favor?"
+      ],
+      "id": "speaking-0240"
+    },
+    {
+      "es": "He preparado el desayuno.",
+      "en": "I made breakfast.",
+      "id": "speaking-0241"
+    },
+    {
+      "es": "¿Vienes aquí a menudo?",
+      "en": "Do you come here often?",
+      "id": "speaking-0242"
+    },
+    {
+      "es": "No podría estar mejor.",
+      "en": "Couldn't be better.",
+      "id": "speaking-0243"
+    },
+    {
+      "es": "¿Cuál es la diferencia?",
+      "en": "What's the difference?",
+      "id": "speaking-0244"
+    },
+    {
+      "es": "Me encantan las naranjas.",
+      "en": "I love oranges.",
+      "id": "speaking-0245"
+    },
+    {
+      "es": "Voy de camino.",
+      "en": "I'm on my way.",
+      "id": "speaking-0246"
+    },
+    {
+      "es": "Gracias por todo.",
+      "en": "Thanks for everything.",
+      "id": "speaking-0247"
+    },
+    {
+      "es": "Enséñame cómo hacerlo.",
+      "en": "Show me how to do it.",
+      "id": "speaking-0248"
+    },
+    {
+      "es": "Algo huele muy bien.",
+      "en": "Something smells really good.",
+      "id": "speaking-0249"
+    },
+    {
+      "es": "Casi se me olvida.",
+      "en": "I almost forgot.",
+      "id": "speaking-0250"
+    },
+    {
+      "es": "Me estoy poniendo nervioso.",
+      "en": "I'm getting nervous.",
+      "id": "speaking-0251"
+    },
+    {
+      "es": "Estoy de vacaciones.",
+      "en": "I'm on vacation.",
+      "id": "speaking-0252"
+    },
+    {
+      "es": "Déjamelo a mí.",
+      "en": "Leave it to me.",
+      "id": "speaking-0253"
+    },
+    {
+      "es": "Tómate tu tiempo.",
+      "en": "Take your time.",
+      "id": "speaking-0254"
+    },
+    {
+      "es": "Cualquier cosa me vale.",
+      "en": "Anything's fine.",
+      "id": "speaking-0255"
+    },
+    {
+      "es": "¿Qué te apetece beber?",
+      "en": "What would you like to drink?",
+      "id": "speaking-0256"
+    },
+    {
+      "es": "Me gusta cómo piensas.",
+      "en": "I like the way that you think.",
+      "id": "speaking-0257"
+    },
+    {
+      "es": "Mira por dónde pisas.",
+      "en": "Watch your step.",
+      "id": "speaking-0258"
+    },
+    {
+      "es": "Yo pasaré la aspiradora.",
+      "en": "I'll vacuum.",
+      "id": "speaking-0259"
+    },
+    {
+      "es": "¿Puedo tirar esto aquí?",
+      "en": "Can I throw this here?",
+      "id": "speaking-0260"
+    },
+    {
+      "es": "¿Puedo hacerte una pregunta?",
+      "en": "May I ask a question?",
+      "alternateEnglish": [
+        "May I ask you a question?"
+      ],
+      "id": "speaking-0261"
+    },
+    {
+      "es": "¿Te gustaría unirte?",
+      "en": "Would you like to join me?",
+      "id": "speaking-0262"
+    },
+    {
+      "es": "No pretendía hacer eso.",
+      "en": "I didn't mean to do that.",
+      "id": "speaking-0263"
+    },
+    {
+      "es": "¿Qué hay de nuevo?",
+      "en": "What's new?",
+      "id": "speaking-0264"
+    },
+    {
+      "es": "Siento haberte hecho esperar.",
+      "en": "I'm sorry to have kept you waiting.",
+      "alternateEnglish": [
+        "I'm sorry to make you wait."
+      ],
+      "id": "speaking-0265"
+    },
+    {
+      "es": "¿Podrías hacerme un descuento?",
+      "en": "Could you give me a discount?",
+      "id": "speaking-0266"
+    },
+    {
+      "es": "Querría pilas para este dispositivo.",
+      "en": "I would like batteries for this device.",
+      "id": "speaking-0267"
+    },
+    {
+      "es": "¿Has dormido bien?",
+      "en": "Did you have a good sleep?",
+      "id": "speaking-0268"
+    },
+    {
+      "es": "¿Dónde puedo conseguir entradas?",
+      "en": "Where can I get tickets?",
+      "id": "speaking-0269"
+    },
+    {
+      "es": "Ben estaba buscándote.",
+      "en": "Ben has been looking for you.",
+      "id": "speaking-0270"
+    },
+    {
+      "es": "¿Puedo sentarme aquí?",
+      "en": "May I sit here?",
+      "id": "speaking-0271"
+    },
+    {
+      "es": "Lo espero con ganas.",
+      "en": "I look forward to it.",
+      "id": "speaking-0272"
+    },
+    {
+      "es": "Hoy es lunes, ¿no?",
+      "en": "Today's Monday, right?",
+      "id": "speaking-0273"
+    },
+    {
+      "es": "Estoy tan preocupado.",
+      "en": "I'm so worried.",
+      "id": "speaking-0274"
+    },
+    {
+      "es": "¿A cuánto está de aquí?",
+      "en": "How far is it from here?",
+      "id": "speaking-0275"
+    },
+    {
+      "es": "Me está dando hambre.",
+      "en": "I'm getting hungry.",
+      "id": "speaking-0276"
+    },
+    {
+      "es": "Me emborraché demasiado anoche.",
+      "en": "I got too drunk last night.",
+      "id": "speaking-0277"
+    },
+    {
+      "es": "¿Cómo es eso?",
+      "en": "What's that like?",
+      "id": "speaking-0278"
+    },
+    {
+      "es": "Este es mi favorito.",
+      "en": "This is my favorite.",
+      "id": "speaking-0279"
+    },
+    {
+      "es": "Vamos de compras.",
+      "en": "Let's go shopping.",
+      "id": "speaking-0280"
+    },
+    {
+      "es": "¿Te consigo algo de beber?",
+      "en": "Shall I get you something to drink?",
+      "id": "speaking-0281"
+    },
+    {
+      "es": "Me gusta el yoga.",
+      "en": "I'm into yoga.",
+      "id": "speaking-0282"
+    },
+    {
+      "es": "No es mío.",
+      "en": "It's not mine.",
+      "id": "speaking-0283"
+    },
+    {
+      "es": "¿Cuánto cuesta este vestido?",
+      "en": "How much is this dress?",
+      "id": "speaking-0284"
+    },
+    {
+      "es": "¿Te ejercitas a menudo?",
+      "en": "Do you work out often?",
+      "id": "speaking-0285"
+    },
+    {
+      "es": "Me picó un mosquito.",
+      "en": "I was bitten by a mosquito.",
+      "id": "speaking-0286"
+    },
+    {
+      "es": "Estoy totalmente mojado.",
+      "en": "I'm all wet.",
+      "id": "speaking-0287"
+    },
+    {
+      "es": "Quiero una habitación doble.",
+      "en": "I'd like a double room.",
+      "id": "speaking-0288"
+    },
+    {
+      "es": "¿Estás en la fila?",
+      "en": "Are you in line?",
+      "id": "speaking-0289"
+    },
+    {
+      "es": "Es una pena.",
+      "en": "That's too bad.",
+      "id": "speaking-0290"
+    },
+    {
+      "es": "Me gusta el jazz.",
+      "en": "I'm into jazz.",
+      "id": "speaking-0291"
+    },
+    {
+      "es": "¿Está muy lejos a pie?",
+      "en": "Is it far if I walk?",
+      "id": "speaking-0292"
+    },
+    {
+      "es": "Vamos en taxi, ¿vale?",
+      "en": "Let's go by taxi, shall we?",
+      "id": "speaking-0293"
+    },
+    {
+      "es": "¿Te gustaría beber algo?",
+      "en": "Would you like something to drink?",
+      "id": "speaking-0294"
+    },
+    {
+      "es": "¿Está disponible este asiento?",
+      "en": "Is this seat available?",
+      "id": "speaking-0295"
+    },
+    {
+      "es": "¿Qué comida te gusta?",
+      "en": "What food do you like?",
+      "id": "speaking-0296"
+    },
+    {
+      "es": "Nunca lo olvidaré.",
+      "en": "I'll never forget.",
+      "id": "speaking-0297"
+    },
+    {
+      "es": "Me gustaría poder nadar.",
+      "en": "I wish I could swim.",
+      "id": "speaking-0298"
+    },
+    {
+      "es": "Ayuda, por favor.",
+      "en": "Help, please.",
+      "id": "speaking-0299"
+    },
+    {
+      "es": "Siéntete como en casa.",
+      "en": "Make yourself at home.",
+      "id": "speaking-0300"
+    },
+    {
+      "es": "Eso me trae recuerdos.",
+      "en": "This brings back memories.",
+      "id": "speaking-0301"
+    },
+    {
+      "es": "Es muy simple.",
+      "en": "It's too plain.",
+      "id": "speaking-0302"
+    },
+    {
+      "es": "¿Qué hay dentro?",
+      "en": "What's inside?",
+      "id": "speaking-0303"
+    },
+    {
+      "es": "Gracias por venir hoy.",
+      "en": "Thank you for coming today.",
+      "id": "speaking-0304"
+    },
+    {
+      "es": "Disculpa la interrupción.",
+      "en": "Sorry to interrupt.",
+      "id": "speaking-0305"
+    },
+    {
+      "es": "No es a propósito.",
+      "en": "It's not on purpose.",
+      "id": "speaking-0306"
+    },
+    {
+      "es": "Te llevaré a casa.",
+      "en": "I'll take you home.",
+      "id": "speaking-0307"
+    },
+    {
+      "es": "Toma un poco más.",
+      "en": "Have some more.",
+      "id": "speaking-0308"
+    },
+    {
+      "es": "¡Qué flor tan bonita!",
+      "en": "What a beautiful flower this is.",
+      "id": "speaking-0309"
+    },
+    {
+      "es": "Déjame mostrarte el lugar.",
+      "en": "Let me show you around.",
+      "id": "speaking-0310"
+    },
+    {
+      "es": "¿A quién se parece ella?",
+      "en": "Who does she look like?",
+      "id": "speaking-0311"
+    },
+    {
+      "es": "Te has levantado temprano.",
+      "en": "You're up early.",
+      "id": "speaking-0312"
+    },
+    {
+      "es": "¿Qué tal va el negocio?",
+      "en": "How's business?",
+      "id": "speaking-0313"
+    },
+    {
+      "es": "Debemos seguir con el plan.",
+      "en": "We should stick to our plan.",
+      "id": "speaking-0314"
+    },
+    {
+      "es": "Está roto por aquí.",
+      "en": "It's broken here.",
+      "id": "speaking-0315"
+    },
+    {
+      "es": "Estoy totalmente ocupado esta semana.",
+      "en": "I'm all booked up this week.",
+      "id": "speaking-0316"
+    },
+    {
+      "es": "¿Para qué es eso?",
+      "en": "What's that for?",
+      "id": "speaking-0317"
+    },
+    {
+      "es": "¿Podría ver una carta?",
+      "en": "Could I see a menu?",
+      "id": "speaking-0318"
+    },
+    {
+      "es": "Me está dando sueño.",
+      "en": "I'm getting sleepy.",
+      "id": "speaking-0319"
+    },
+    {
+      "es": "¿Puedo esperar aquí?",
+      "en": "May I wait here?",
+      "id": "speaking-0320"
+    },
+    {
+      "es": "No me importa esperar.",
+      "en": "I don't mind waiting.",
+      "id": "speaking-0321"
+    },
+    {
+      "es": "Estoy totalmente de acuerdo.",
+      "en": "I definitely agree.",
+      "alternateEnglish": [
+        "I totally agree."
+      ],
+      "id": "speaking-0322"
+    },
+    {
+      "es": "Todo el mundo comete errores.",
+      "en": "Everyone makes mistakes.",
+      "id": "speaking-0323"
+    },
+    {
+      "es": "¿Cuándo juegas al tenis?",
+      "en": "When do you play tennis?",
+      "id": "speaking-0324"
+    },
+    {
+      "es": "¿Tomamos un taxi?",
+      "en": "Shall we take a taxi?",
+      "id": "speaking-0325"
+    },
+    {
+      "es": "Por favor, ven cuando quieras.",
+      "en": "Please come whenever you like.",
+      "id": "speaking-0326"
+    },
+    {
+      "es": "Mi cumpleaños es pronto.",
+      "en": "My birthday is coming soon.",
+      "id": "speaking-0327"
+    },
+    {
+      "es": "No te lo pierdas.",
+      "en": "Don't miss it.",
+      "id": "speaking-0328"
+    },
+    {
+      "es": "¿Debería quitarme mis zapatos?",
+      "en": "Should I take off my shoes?",
+      "id": "speaking-0329"
+    },
+    {
+      "es": "Esta noche invito yo.",
+      "en": "It's on me tonight.",
+      "id": "speaking-0330"
+    },
+    {
+      "es": "Soy de Japón.",
+      "en": "I'm from Japan.",
+      "id": "speaking-0331"
+    },
+    {
+      "es": "¿Cuánto se tarda en llegar?",
+      "en": "How long will it take to get there?",
+      "id": "speaking-0332"
+    },
+    {
+      "es": "Déjame apuntar tu número.",
+      "en": "Let me take down your number.",
+      "id": "speaking-0333"
+    },
+    {
+      "es": "¿Cómo descubriste este restaurante?",
+      "en": "How did you know about this restaurant?",
+      "id": "speaking-0334"
+    },
+    {
+      "es": "Supongo que deberíamos irnos ya.",
+      "en": "I guess we should leave now.",
+      "id": "speaking-0335"
+    },
+    {
+      "es": "Mejor tarde que nunca.",
+      "en": "Better late than never.",
+      "id": "speaking-0336"
+    },
+    {
+      "es": "Nos hemos quedado sin nata.",
+      "en": "We have run out of cream.",
+      "id": "speaking-0337"
+    },
+    {
+      "es": "Seguro que te gustará.",
+      "en": "I'm sure you'll like it.",
+      "id": "speaking-0338"
+    },
+    {
+      "es": "Ya casi estamos.",
+      "en": "We're almost there.",
+      "id": "speaking-0339"
+    },
+    {
+      "es": "No los distingo.",
+      "en": "I can't tell which is which.",
+      "id": "speaking-0340"
+    },
+    {
+      "es": "Espero que te guste.",
+      "en": "I hope you like it.",
+      "id": "speaking-0341"
+    },
+    {
+      "es": "Agradezco de verdad tu preocupación.",
+      "en": "I really appreciate your concern.",
+      "id": "speaking-0342"
+    },
+    {
+      "es": "Por fin alcanzó su objetivo.",
+      "en": "He reached his goal at last.",
+      "id": "speaking-0343"
+    },
+    {
+      "es": "¿Dónde te quedas en Madrid?",
+      "en": "Where in Madrid are you staying?",
+      "id": "speaking-0344"
+    },
+    {
+      "es": "¿Te viene bien hablar?",
+      "en": "Is this a good time to talk?",
+      "id": "speaking-0345"
+    },
+    {
+      "es": "Es un honor conocerte.",
+      "en": "It's an honor to meet you.",
+      "id": "speaking-0346"
+    },
+    {
+      "es": "Muchas gracias por todo.",
+      "en": "Thank you very much for everything.",
+      "id": "speaking-0347"
+    },
+    {
+      "es": "¿Dónde recomendarías ir?",
+      "en": "Where would you recommend?",
+      "id": "speaking-0348"
+    },
+    {
+      "es": "¿Cuál es el problema?",
+      "en": "What's the problem?",
+      "id": "speaking-0349"
+    },
+    {
+      "es": "¿Cómo usas esto?",
+      "en": "How do you use this?",
+      "id": "speaking-0350"
+    },
+    {
+      "es": "Eso es muy triste.",
+      "en": "That's so sad.",
+      "id": "speaking-0351"
+    },
+    {
+      "es": "Me duele el hombro.",
+      "en": "My shoulder hurts.",
+      "id": "speaking-0352"
+    },
+    {
+      "es": "Se me olvidó decírtelo.",
+      "en": "I forgot to tell you.",
+      "id": "speaking-0353"
+    },
+    {
+      "es": "¿Podrías enseñarme cómo hacerlo?",
+      "en": "Could you show me how to do it?",
+      "id": "speaking-0354"
+    },
+    {
+      "es": "Volveré en dos minutos.",
+      "en": "I'll be back in two minutes.",
+      "id": "speaking-0355"
+    },
+    {
+      "es": "No quiero esperar tanto.",
+      "en": "I don't want to wait that long.",
+      "id": "speaking-0356"
+    },
+    {
+      "es": "Me gustaría ser más joven.",
+      "en": "I wish I were a little younger.",
+      "id": "speaking-0357"
+    },
+    {
+      "es": "Sírvete, por favor.",
+      "en": "Please help yourself.",
+      "id": "speaking-0358"
+    },
+    {
+      "es": "Le ayudaré encantado.",
+      "en": "I'll be glad to help him.",
+      "id": "speaking-0359"
+    },
+    {
+      "es": "Disfruta de tu visita.",
+      "en": "Enjoy your visit.",
+      "id": "speaking-0360"
+    },
+    {
+      "es": "Me lo puedo imaginar.",
+      "en": "I can imagine.",
+      "id": "speaking-0361"
+    },
+    {
+      "es": "¿De qué están hechos?",
+      "en": "What are they made of?",
+      "id": "speaking-0362"
+    },
+    {
+      "es": "¿Podrías bajar la calefacción?",
+      "en": "Could you turn down the heat?",
+      "id": "speaking-0363"
+    },
+    {
+      "es": "¿Con quién quieres hablar?",
+      "en": "With whom would you like to speak?",
+      "id": "speaking-0364"
+    },
+    {
+      "es": "Estás de suerte.",
+      "en": "You're in luck.",
+      "id": "speaking-0365"
+    },
+    {
+      "es": "Eso era difícil de creer.",
+      "en": "That was hard to believe.",
+      "id": "speaking-0366"
+    },
+    {
+      "es": "¿Quizás la próxima vez?",
+      "en": "Maybe next time?",
+      "id": "speaking-0367"
+    },
+    {
+      "es": "¿Has perdido algo aquí?",
+      "en": "Did you lose anything here?",
+      "id": "speaking-0368"
+    },
+    {
+      "es": "Hogar dulce hogar.",
+      "en": "Home sweet home.",
+      "id": "speaking-0369"
+    },
+    {
+      "es": "¿Hay alguien ahí?",
+      "en": "Is someone there?",
+      "id": "speaking-0370"
+    },
+    {
+      "es": "¿Puedo coger uno?",
+      "en": "Can I have one?",
+      "id": "speaking-0371"
+    },
+    {
+      "es": "Se nos está yendo el día.",
+      "en": "The day's a wasting.",
+      "id": "speaking-0372"
+    },
+    {
+      "es": "¿Puedo dejarlo aquí?",
+      "en": "May I put it down here?",
+      "id": "speaking-0373"
+    },
+    {
+      "es": "¿Por qué no lo pruebas?",
+      "en": "Why don't you try it?",
+      "id": "speaking-0374"
+    },
+    {
+      "es": "¿Podrías hacernos una foto?",
+      "en": "Could you take our picture?",
+      "id": "speaking-0375"
+    },
+    {
+      "es": "Intentaré cumplir tus deseos.",
+      "en": "I'll try to meet your wishes.",
+      "id": "speaking-0376"
+    },
+    {
+      "es": "¿Está ocupado este asiento?",
+      "en": "Is the seat taken?",
+      "id": "speaking-0377"
+    },
+    {
+      "es": "No dudes en pedirme ayuda.",
+      "en": "Don't hesitate to ask for help.",
+      "id": "speaking-0378"
+    },
+    {
+      "es": "¿Podrías encender la televisión?",
+      "en": "Will you turn on the TV?",
+      "id": "speaking-0379"
+    },
+    {
+      "es": "Estaba preguntándome lo mismo.",
+      "en": "I was wondering the same thing.",
+      "id": "speaking-0380"
+    },
+    {
+      "es": "Tan solo ven.",
+      "en": "Just bring yourself.",
+      "id": "speaking-0381"
+    },
+    {
+      "es": "¿Puedes dejarme aquí?",
+      "en": "Can you let me off here?",
+      "id": "speaking-0382"
+    },
+    {
+      "es": "Me duele la garganta.",
+      "en": "My throat hurts.",
+      "id": "speaking-0383"
+    },
+    {
+      "es": "Me gusta el misterio.",
+      "en": "I like mystery.",
+      "id": "speaking-0384"
+    },
+    {
+      "es": "Me duele la barriga.",
+      "en": "I have a stomachache.",
+      "id": "speaking-0385"
+    },
+    {
+      "es": "He oído mucho sobre ti.",
+      "en": "I've heard a lot about you.",
+      "id": "speaking-0386"
+    },
+    {
+      "es": "¿Tienes algunos más baratos?",
+      "en": "Do you have less expensive ones?",
+      "id": "speaking-0387"
+    },
+    {
+      "es": "No lo soporto más.",
+      "en": "I can't stand it anymore.",
+      "id": "speaking-0388"
+    },
+    {
+      "es": "Puedo ayudarte con eso.",
+      "en": "I can help you with that.",
+      "id": "speaking-0389"
+    },
+    {
+      "es": "¿Quieres beber algo caliente?",
+      "en": "Would you like something hot to drink?",
+      "id": "speaking-0390"
+    },
+    {
+      "es": "Tres entradas, por favor.",
+      "en": "Three tickets, please.",
+      "id": "speaking-0391"
+    },
+    {
+      "es": "¿Deberíamos comer algo allí?",
+      "en": "Shall we get a bite in there?",
+      "id": "speaking-0392"
+    },
+    {
+      "es": "¿Podemos pedir solo bebidas?",
+      "en": "Is it okay to just order drinks?",
+      "id": "speaking-0393"
+    },
+    {
+      "es": "Tengo un poco de frío.",
+      "en": "I'm feeling a bit chilly.",
+      "id": "speaking-0394"
+    },
+    {
+      "es": "Por favor, llámame cuando quieras.",
+      "en": "Please feel free to call me up.",
+      "id": "speaking-0395"
+    },
+    {
+      "es": "¿Está incluido el desayuno?",
+      "en": "Is breakfast included?",
+      "id": "speaking-0396"
+    },
+    {
+      "es": "No conozco esta zona.",
+      "en": "This area isn't familiar to me.",
+      "id": "speaking-0397"
+    },
+    {
+      "es": "El desayuno está listo.",
+      "en": "Breakfast is ready.",
+      "id": "speaking-0398"
+    },
+    {
+      "es": "Por favor, tomaré eso.",
+      "en": "I'll have that, please.",
+      "id": "speaking-0399"
+    },
+    {
+      "es": "Hoy hay humedad.",
+      "en": "It's humid today.",
+      "id": "speaking-0400"
+    },
+    {
+      "es": "Estamos entusiasmados con las noticias.",
+      "en": "We are excited at the news.",
+      "id": "speaking-0401"
+    },
+    {
+      "es": "No juzgues a la gente por su aspecto.",
+      "en": "Don't judge people by their looks.",
+      "id": "speaking-0402"
+    },
+    {
+      "es": "Lleva lloviendo desde el martes.",
+      "en": "It has been raining since Tuesday.",
+      "id": "speaking-0403"
+    },
+    {
+      "es": "Estos zapatos son lo suficientemente grandes para mí.",
+      "en": "These shoes are big enough for me.",
+      "id": "speaking-0404"
+    },
+    {
+      "es": "Creo que he aprendido bastante.",
+      "en": "I think I've learned a lot.",
+      "id": "speaking-0405"
+    },
+    {
+      "es": "¿Puedo pagar con tarjeta de crédito?",
+      "en": "Can I pay by credit card?",
+      "id": "speaking-0406"
+    },
+    {
+      "es": "Discúlpame, ¿dónde está la biblioteca?",
+      "en": "Excuse me, but where is the library?",
+      "id": "speaking-0407"
+    },
+    {
+      "es": "Cuando bebo, me da sueño.",
+      "en": "Whenever I drink, I get sleepy.",
+      "id": "speaking-0408"
+    },
+    {
+      "es": "¿Cuánto tardaremos en llegar a la estación?",
+      "en": "How long will it take to the station?",
+      "id": "speaking-0409"
+    },
+    {
+      "es": "Espero que nos mejoremos pronto.",
+      "en": "I hope we'll get better soon.",
+      "id": "speaking-0410"
+    },
+    {
+      "es": "Se tarda diez minutos a pie desde aquí.",
+      "en": "It's a ten-minute walk from here.",
+      "id": "speaking-0411"
+    },
+    {
+      "es": "¿Tienes todo lo que necesitas?",
+      "en": "Have you got everything you need?",
+      "id": "speaking-0412"
+    },
+    {
+      "es": "Me temo que me tengo que marchar.",
+      "en": "I'm afraid I must go now.",
+      "id": "speaking-0413"
+    },
+    {
+      "es": "¿Cuál es el plato más popular aquí?",
+      "en": "What's the most popular dish here?",
+      "id": "speaking-0414"
+    },
+    {
+      "es": "Esto es sólo entre tú y yo.",
+      "en": "This is just between you and me.",
+      "id": "speaking-0415"
+    },
+    {
+      "es": "¿Qué está de moda en Nueva York?",
+      "en": "What's in fashion in New York?",
+      "id": "speaking-0416"
+    },
+    {
+      "es": "Se supone que va a llover hoy.",
+      "en": "It's supposed to be rainy today.",
+      "id": "speaking-0417"
+    },
+    {
+      "es": "Estoy deseando irme de vacaciones.",
+      "en": "I'm really looking forward to my vacation.",
+      "id": "speaking-0418"
+    },
+    {
+      "es": "Por favor, no dudes en hacer sugerencias.",
+      "en": "Please feel free to make a suggestion.",
+      "id": "speaking-0419"
+    },
+    {
+      "es": "¿Cómo dices esto en inglés?",
+      "en": "How do you say this in English?",
+      "id": "speaking-0420"
+    },
+    {
+      "es": "California es famosa por su vino.",
+      "en": "California is famous for its wine.",
+      "id": "speaking-0421"
+    },
+    {
+      "es": "Me gustaría poder hablar más inglés.",
+      "en": "I wish I could speak more English.",
+      "id": "speaking-0422"
+    },
+    {
+      "es": "¿Te dejaste la ventana abierta?",
+      "en": "Did you leave the window open?",
+      "id": "speaking-0423"
+    },
+    {
+      "es": "Tu chaqueta está del revés.",
+      "en": "Your jacket is on inside out.",
+      "id": "speaking-0424"
+    },
+    {
+      "es": "Creo que hacer footing es un buen ejercicio.",
+      "en": "I think jogging is good exercise.",
+      "id": "speaking-0425"
+    },
+    {
+      "es": "Nací y crecí en Hong Kong.",
+      "en": "I was born and brought up in Hong Kong.",
+      "id": "speaking-0426"
+    },
+    {
+      "es": "¿Qué te parece cenar juntos esta noche?",
+      "en": "How about having dinner together tonight?",
+      "id": "speaking-0427"
+    },
+    {
+      "es": "Bueno, ¿qué deportes te gustan?",
+      "en": "Well, what sports do you like?",
+      "id": "speaking-0428"
+    },
+    {
+      "es": "Este abrigo pega con casi todo.",
+      "en": "This coat goes with almost anything.",
+      "id": "speaking-0429"
+    },
+    {
+      "es": "Esa película se emitió en televisión.",
+      "en": "That movie was shown on TV.",
+      "id": "speaking-0430"
+    },
+    {
+      "es": "Hacemos negocios con esa compañía.",
+      "en": "We do business with that company.",
+      "id": "speaking-0431"
+    },
+    {
+      "es": "Cuando quieras me parece bien.",
+      "en": "Whenever you want is okay.",
+      "id": "speaking-0432"
+    },
+    {
+      "es": "Lisa vino a verme el último otoño.",
+      "en": "Lisa came to see me last autumn.",
+      "id": "speaking-0433"
+    },
+    {
+      "es": "Me gustaría tener uno como este.",
+      "en": "I wish I had one like this.",
+      "id": "speaking-0434"
+    },
+    {
+      "es": "El doctor es amable con sus pacientes.",
+      "en": "The doctor is gentle with his patients.",
+      "id": "speaking-0435"
+    },
+    {
+      "es": "Preferiría vivir en una casa de madera.",
+      "en": "I'd rather live in a wooden house.",
+      "id": "speaking-0436"
+    },
+    {
+      "es": "¿Te quedas en este hotel?",
+      "en": "Are you staying at this hotel?",
+      "id": "speaking-0437"
+    },
+    {
+      "es": "Ese vestido te sienta bien.",
+      "en": "You look nice in that dress.",
+      "id": "speaking-0438"
+    },
+    {
+      "es": "¿Va a venir alguien a recogerte?",
+      "en": "Is someone coming to get you?",
+      "id": "speaking-0439"
+    },
+    {
+      "es": "¿Hay un baño cerca de aquí?",
+      "en": "Is there a restroom near here?",
+      "id": "speaking-0440"
+    },
+    {
+      "es": "Dame una taza de café.",
+      "en": "Give me a cup of coffee.",
+      "id": "speaking-0441"
+    },
+    {
+      "es": "No llegarás a tiempo para ir al colegio.",
+      "en": "You won't be in time for school.",
+      "id": "speaking-0442"
+    },
+    {
+      "es": "Era mucho más barato de lo que creía.",
+      "en": "It was much cheaper than I thought.",
+      "id": "speaking-0443"
+    },
+    {
+      "es": "Me llevó más tiempo del que creía.",
+      "en": "It took more time than I'd expected.",
+      "id": "speaking-0444"
+    },
+    {
+      "es": "¿Pega este sombrero con mi chaqueta?",
+      "en": "Does this hat go with my jacket?",
+      "id": "speaking-0445"
+    },
+    {
+      "es": "Dime cómo llegaste a conocerla.",
+      "en": "Tell me how you got to know her.",
+      "id": "speaking-0446"
+    },
+    {
+      "es": "Llámame o mándame un email cuando quieras.",
+      "en": "Call or email me anytime.",
+      "id": "speaking-0447"
+    },
+    {
+      "es": "No me decido sobre qué pedir.",
+      "en": "I can't decide what to order.",
+      "id": "speaking-0448"
+    },
+    {
+      "es": "¿Qué hora te viene bien?",
+      "en": "What time will be convenient for you?",
+      "id": "speaking-0449"
+    },
+    {
+      "es": "Cogí un resfriado estas vacaciones.",
+      "en": "I caught a cold over the holidays.",
+      "id": "speaking-0450"
+    },
+    {
+      "es": "¿Para tomar aquí o para llevar?",
+      "en": "For here or to go.",
+      "id": "speaking-0451"
+    },
+    {
+      "es": "¿A qué hora abre la tienda?",
+      "en": "What time does the store open?",
+      "id": "speaking-0452"
+    },
+    {
+      "es": "¿Está libre el sábado que viene?",
+      "en": "Are you free next Saturday?",
+      "id": "speaking-0453"
+    },
+    {
+      "es": "El tren no ha llegado aún.",
+      "en": "The train hasn't arrived yet.",
+      "id": "speaking-0454"
+    },
+    {
+      "es": "A Emily también le gusta jugar al tenis.",
+      "en": "Emily likes to play tennis too.",
+      "id": "speaking-0455"
+    },
+    {
+      "es": "Es difícil de explicar para mí.",
+      "en": "It is difficult for me to explain it.",
+      "id": "speaking-0456"
+    },
+    {
+      "es": "¿Cuál de los dos te gusta más?",
+      "en": "Which one do you like better?",
+      "id": "speaking-0457"
+    },
+    {
+      "es": "Llegarás allí tras un paseo de cinco minutos.",
+      "en": "A five minute walk will take you there.",
+      "id": "speaking-0458"
+    },
+    {
+      "es": "La experiencia impera en estos casos.",
+      "en": "Experience talks in these cases.",
+      "id": "speaking-0459"
+    },
+    {
+      "es": "¿Podrías conseguirme algo de agua?",
+      "en": "Can you get me some water?",
+      "id": "speaking-0460"
+    },
+    {
+      "es": "¿Qué planes tienes para esta noche?",
+      "en": "What are your plans for this evening?",
+      "id": "speaking-0461"
+    },
+    {
+      "es": "Es un atajo hacia la escuela.",
+      "en": "It's a shortcut to the school.",
+      "id": "speaking-0462"
+    },
+    {
+      "es": "Ese vestido no es de mi gusto.",
+      "en": "That dress is not to my taste.",
+      "id": "speaking-0463"
+    },
+    {
+      "es": "Siempre estás oyendo pero no escuchando.",
+      "en": "You're always hearing but not listening.",
+      "id": "speaking-0464"
+    },
+    {
+      "es": "El cantante era famoso entre la gente joven.",
+      "en": "The singer was known to young people.",
+      "id": "speaking-0465"
+    },
+    {
+      "es": "Ven a la hora que quieras.",
+      "en": "Come at any time you like.",
+      "id": "speaking-0466"
+    },
+    {
+      "es": "¿Qué clase de trabajo tienes?",
+      "en": "What kind of work do you do?",
+      "id": "speaking-0467"
+    },
+    {
+      "es": "Estamos muy lejos de Pekín.",
+      "en": "It is far from here to Beijing.",
+      "id": "speaking-0468"
+    },
+    {
+      "es": "¿Puedo sentarme en un asiento al lado del pasillo?",
+      "en": "Could I have an aisle seat, please?",
+      "id": "speaking-0469"
+    },
+    {
+      "es": "El hombre se sorprendió con las noticias.",
+      "en": "The man was surprised at the news.",
+      "id": "speaking-0470"
+    },
+    {
+      "es": "Me dejé el reloj en casa.",
+      "en": "I left my watch at home.",
+      "id": "speaking-0471"
+    },
+    {
+      "es": "Esta casa no es muy grande.",
+      "en": "This house is not very large.",
+      "id": "speaking-0472"
+    },
+    {
+      "es": "No puedo agradecértelo lo suficiente.",
+      "en": "I can never thank you enough.",
+      "id": "speaking-0473"
+    },
+    {
+      "es": "No se me dan bien los ordenadores.",
+      "en": "I'm not good with computers.",
+      "id": "speaking-0474"
+    },
+    {
+      "es": "Mi memoria no es tan buena como antes.",
+      "en": "My memory isn't as good as before.",
+      "id": "speaking-0475"
+    },
+    {
+      "es": "Las cosas no van tan mal como crees.",
+      "en": "Things aren't as bad as you think.",
+      "id": "speaking-0476"
+    },
+    {
+      "es": "¿Me puedes dar la carta de vinos?",
+      "en": "Can I have a wine list?",
+      "id": "speaking-0477"
+    },
+    {
+      "es": "Te lo compensaré algún día.",
+      "en": "I'll make it up to you someday.",
+      "id": "speaking-0478"
+    },
+    {
+      "es": "No puedo expresarlo en palabras.",
+      "en": "I can't put it into words well.",
+      "id": "speaking-0479"
+    },
+    {
+      "es": "No me gusta ninguno de los dos.",
+      "en": "I don't like either of them.",
+      "id": "speaking-0480"
+    },
+    {
+      "es": "¿Puedo dejar aquí mi equipaje?",
+      "en": "Can I have my luggage here?",
+      "id": "speaking-0481"
+    },
+    {
+      "es": "Este medicamento te aliviará el dolor.",
+      "en": "This medicine will relieve the pain.",
+      "id": "speaking-0482"
+    },
+    {
+      "es": "¿Podrías hacerme un pequeño descuento?",
+      "en": "Can you give me a little discount?",
+      "id": "speaking-0483"
+    },
+    {
+      "es": "¿Cuánto va a tardar aproximadamente?",
+      "en": "About how long will it take?",
+      "id": "speaking-0484"
+    },
+    {
+      "es": "Mi tía tiene tres hijos.",
+      "en": "My aunt has three children.",
+      "id": "speaking-0485"
+    },
+    {
+      "es": "Está algo por encima de mi presupuesto.",
+      "en": "It's a little over my budget.",
+      "id": "speaking-0486"
+    },
+    {
+      "es": "Gira a la izquierda y lo encontrarás a tu derecha.",
+      "en": "Turn left and then it's on your right.",
+      "id": "speaking-0487"
+    },
+    {
+      "es": "Estoy ocupado hasta las dos.",
+      "en": "I'm tied up until two.",
+      "id": "speaking-0488"
+    },
+    {
+      "es": "No hay nada que podamos hacer.",
+      "en": "There is nothing we can do.",
+      "id": "speaking-0489"
+    },
+    {
+      "es": "El tren llegó a tiempo.",
+      "en": "The train arrived on time.",
+      "id": "speaking-0490"
+    },
+    {
+      "es": "El tour ya tiene lista de espera.",
+      "en": "The tour already has a waiting list.",
+      "id": "speaking-0491"
+    },
+    {
+      "es": "Disculpa, ese es mi sitio.",
+      "en": "Excuse me, this is my seat.",
+      "id": "speaking-0492"
+    },
+    {
+      "es": "No puedes coger tantos como quieras.",
+      "en": "You can't take as many as you want.",
+      "id": "speaking-0493"
+    },
+    {
+      "es": "Estoy tan feliz de escuchar tu voz.",
+      "en": "I'm so happy to hear your voice.",
+      "id": "speaking-0494"
+    },
+    {
+      "es": "Por favor, ¿puedo preguntar quién llama?",
+      "en": "May I ask who's calling, please?",
+      "id": "speaking-0495"
+    },
+    {
+      "es": "Ese vestido te sienta muy bien.",
+      "en": "The dress suits you very well.",
+      "id": "speaking-0496"
+    },
+    {
+      "es": "¿Cómo fueron tus vacaciones de verano?",
+      "en": "How was your summer break?",
+      "id": "speaking-0497"
+    },
+    {
+      "es": "Ve ya, te alcanzaré más tarde.",
+      "en": "Go ahead, I'll catch up later.",
+      "id": "speaking-0498"
+    },
+    {
+      "es": "Por favor, pídele que me llame.",
+      "en": "Please ask him to call me.",
+      "id": "speaking-0499"
+    },
+    {
+      "es": "Me gustaría poder quedarme más tiempo.",
+      "en": "I wish I could stay longer.",
+      "id": "speaking-0500"
+    },
+    {
+      "es": "Eres muy considerado por decir eso.",
+      "en": "It's very thoughtful of you to say so.",
+      "id": "speaking-0501"
+    },
+    {
+      "es": "El cielo estuvo nublado todo el día.",
+      "en": "The sky stayed cloudy all day.",
+      "id": "speaking-0502"
+    },
+    {
+      "es": "Es casi tan alto como yo.",
+      "en": "He's almost as tall as me.",
+      "id": "speaking-0503"
+    },
+    {
+      "es": "Cojamos el bus que sale a las cinco.",
+      "en": "Let's take the bus that leaves at five.",
+      "id": "speaking-0504"
+    },
+    {
+      "es": "¿A qué hora cierra la tienda?",
+      "en": "What time does the store close?",
+      "id": "speaking-0505"
+    },
+    {
+      "es": "¿Cuándo empezaste a aprender chino?",
+      "en": "When did you start learning Chinese?",
+      "id": "speaking-0506"
+    },
+    {
+      "es": "No me importa esperar un rato.",
+      "en": "I don't mind waiting for a while.",
+      "id": "speaking-0507"
+    },
+    {
+      "es": "Puede que ya hayas leído este libro.",
+      "en": "You may have read this book already.",
+      "id": "speaking-0508"
+    },
+    {
+      "es": "¿Lo pasaste bien en la fiesta?",
+      "en": "Did you enjoy yourself at the party?",
+      "id": "speaking-0509"
+    },
+    {
+      "es": "Esto es entre tú y yo.",
+      "en": "This is between you and me.",
+      "id": "speaking-0510"
+    },
+    {
+      "es": "¿Cómo puedo llegar hasta allí?",
+      "en": "How can I get there?",
+      "id": "speaking-0511"
+    },
+    {
+      "es": "¿Lo tienes en un color distinto?",
+      "en": "Do you have this in a different color?",
+      "id": "speaking-0512"
+    },
+    {
+      "es": "No le des muchas vueltas.",
+      "en": "Don't overthink it.",
+      "id": "speaking-0513"
+    },
+    {
+      "es": "¿Está por aquí la pista de tenis?",
+      "en": "Is there a tennis court around here?",
+      "id": "speaking-0514"
+    },
+    {
+      "es": "¿En qué parada de bus tengo que bajarme?",
+      "en": "At which bus stop should I get off?",
+      "id": "speaking-0515"
+    },
+    {
+      "es": "Buena suerte en tu partido.",
+      "en": "Good luck on your match.",
+      "id": "speaking-0516"
+    },
+    {
+      "es": "No estoy satisfecho con el servicio de la compañía.",
+      "en": "I'm not satisfied with that company's service.",
+      "id": "speaking-0517"
+    },
+    {
+      "es": "Me gusta el café intenso.",
+      "en": "I like my coffee strong.",
+      "id": "speaking-0518"
+    },
+    {
+      "es": "No me lo puedo creer.",
+      "en": "I can't believe it.",
+      "id": "speaking-0519"
+    },
+    {
+      "es": "Mi casa está en Toronto.",
+      "en": "My house is located in Toronto.",
+      "id": "speaking-0520"
+    },
+    {
+      "es": "No soy muy bueno con mis manos.",
+      "en": "I'm not very good with my hands.",
+      "id": "speaking-0521"
+    },
+    {
+      "es": "¿Por qué no te tomas un día libre?",
+      "en": "Why don't you take a day off?",
+      "id": "speaking-0522"
+    },
+    {
+      "es": "¿Qué tiempo hará el sábado?",
+      "en": "What's the weather for Saturday?",
+      "id": "speaking-0523"
+    },
+    {
+      "es": "Se me hace la boca agua.",
+      "en": "My mouth's watering.",
+      "id": "speaking-0524"
+    },
+    {
+      "es": "¿Por qué no echas un vistazo?",
+      "en": "Why don't you take a look?",
+      "id": "speaking-0525"
+    },
+    {
+      "es": "Puedo hablar un poco de inglés.",
+      "en": "I can speak a little English.",
+      "id": "speaking-0526"
+    },
+    {
+      "es": "¿Cuándo tenemos que dejar la habitación?",
+      "en": "When should we check out?",
+      "id": "speaking-0527"
+    },
+    {
+      "es": "Lo recuerdo como si fuese ayer.",
+      "en": "I remember it like it was yesterday.",
+      "id": "speaking-0528"
+    },
+    {
+      "es": "Voy a darme un baño.",
+      "en": "I'm going to take a bath.",
+      "id": "speaking-0529"
+    },
+    {
+      "es": "John estaba cansado de trabajar horas extra.",
+      "en": "John was tired from working overtime.",
+      "id": "speaking-0530"
+    },
+    {
+      "es": "Necesito algo más pequeño que esto.",
+      "en": "I need something smaller than this.",
+      "id": "speaking-0531"
+    },
+    {
+      "es": "Yo iré también, a no ser que llueva.",
+      "en": "Unless it rains, I will go too.",
+      "id": "speaking-0532"
+    },
+    {
+      "es": "Disculpa que te moleste cuando estás ocupado.",
+      "en": "Sorry to bother you when you're busy.",
+      "id": "speaking-0533"
+    },
+    {
+      "es": "¿Dónde puedo coger un taxi?",
+      "en": "Where can I catch a taxi?",
+      "id": "speaking-0534"
+    },
+    {
+      "es": "Te llevaré a cualquier sitio que te apetezca.",
+      "en": "I'll take you anywhere you want.",
+      "id": "speaking-0535"
+    },
+    {
+      "es": "Me he quedado sin gasolina.",
+      "en": "I've run out of gasoline.",
+      "id": "speaking-0536"
+    },
+    {
+      "es": "¿Quién te enseñó a bailar?",
+      "en": "Who taught you how to dance?",
+      "id": "speaking-0537"
+    },
+    {
+      "es": "Parece que el perro está enfermo.",
+      "en": "The dog seems to be sick.",
+      "id": "speaking-0538"
+    },
+    {
+      "es": "Hablamos sobre el plan ayer.",
+      "en": "We discussed the plan yesterday.",
+      "id": "speaking-0539"
+    },
+    {
+      "es": "Hay trenes cada 20 minutos.",
+      "en": "There are trains every 20 minutes.",
+      "id": "speaking-0540"
+    },
+    {
+      "es": "Quiero ser bueno en inglés.",
+      "en": "I want to be good at English.",
+      "id": "speaking-0541"
+    },
+    {
+      "es": "Lo dejo a tu elección.",
+      "en": "I'll leave it up to you.",
+      "id": "speaking-0542"
+    },
+    {
+      "es": "Es algo que hay que ver.",
+      "en": "It's a must-see.",
+      "id": "speaking-0543"
+    },
+    {
+      "es": "Ah, probablemente me quede en casa.",
+      "en": "Oh, I'll probably just stay home.",
+      "id": "speaking-0544"
+    },
+    {
+      "es": "Te prepararé algo de té.",
+      "en": "I'll make you some tea.",
+      "id": "speaking-0545"
+    },
+    {
+      "es": "¿Hay alguien que pueda hablar francés?",
+      "en": "Is there anyone who can speak French?",
+      "id": "speaking-0546"
+    },
+    {
+      "es": "Esta novela es difícil de entender.",
+      "en": "This novel is difficult to understand.",
+      "id": "speaking-0547"
+    },
+    {
+      "es": "¿Durante cuánto tiempo te quedarás en París?",
+      "en": "How long are you staying in Paris?",
+      "id": "speaking-0548"
+    },
+    {
+      "es": "Por favor, ¿puedo preguntarte tu nombre?",
+      "en": "May I ask your name, please?",
+      "id": "speaking-0549"
+    },
+    {
+      "es": "La reunión está programada a las 11 de la mañana.",
+      "en": "The meeting is scheduled for 11 a.m.",
+      "id": "speaking-0550"
+    },
+    {
+      "es": "Primero tenemos que acabar nuestros deberes.",
+      "en": "We must finish our homework first.",
+      "id": "speaking-0551"
+    },
+    {
+      "es": "¿Cuál es tu horario del mes que viene?",
+      "en": "How's your schedule for next month?",
+      "id": "speaking-0552"
+    },
+    {
+      "es": "Por favor, gira a la izquierda en la siguiente intersección.",
+      "en": "Please turn left at the next intersection.",
+      "id": "speaking-0553"
+    },
+    {
+      "es": "Este sofá ocupa mucho espacio.",
+      "en": "This sofa takes too much room.",
+      "id": "speaking-0554"
+    },
+    {
+      "es": "Seguro que todo va a ir bien.",
+      "en": "I'm sure everything will be okay.",
+      "id": "speaking-0555"
+    },
+    {
+      "es": "Me gustaría un color más luminoso.",
+      "en": "I'd like it in a brighter color.",
+      "id": "speaking-0556"
+    },
+    {
+      "es": "¿Podría hablar contigo un minuto?",
+      "en": "Could I talk to you for a minute?",
+      "id": "speaking-0557"
+    },
+    {
+      "es": "¿Le pasa algo malo a esa televisión?",
+      "en": "Is there anything wrong with that television?",
+      "id": "speaking-0558"
+    },
+    {
+      "es": "Muévelo más hacia la izquierda.",
+      "en": "Move it more to the left.",
+      "id": "speaking-0559"
+    },
+    {
+      "es": "Te confundí con otra persona.",
+      "en": "I mistook you for someone else.",
+      "id": "speaking-0560"
+    },
+    {
+      "es": "Estoy tan contento de haber llegado a tiempo.",
+      "en": "I'm so glad I made it in time.",
+      "id": "speaking-0561"
+    },
+    {
+      "es": "Por favor, dime qué hacer.",
+      "en": "Please tell me what to do.",
+      "id": "speaking-0562"
+    },
+    {
+      "es": "¿Me pones tres donuts de chocolate?",
+      "en": "Can I have three chocolate donuts?",
+      "id": "speaking-0563"
+    },
+    {
+      "es": "No puedo quitar la tapa.",
+      "en": "I can't get the lid off.",
+      "id": "speaking-0564"
+    },
+    {
+      "es": "A la chica le asustan los perros.",
+      "en": "The girl is afraid of dogs.",
+      "id": "speaking-0565"
+    },
+    {
+      "es": "Acabas de alegrarme el día.",
+      "en": "You just made my day.",
+      "id": "speaking-0566"
+    },
+    {
+      "es": "Mary apenas puede hablar francés.",
+      "en": "Mary can hardly speak French.",
+      "id": "speaking-0567"
+    },
+    {
+      "es": "Me pasé el domingo pasado leyendo novelas.",
+      "en": "I spent last Sunday reading novels.",
+      "id": "speaking-0568"
+    },
+    {
+      "es": "La película fue algo decepcionante.",
+      "en": "The movie was a little disappointing.",
+      "id": "speaking-0569"
+    },
+    {
+      "es": "Has sido de mucha ayuda.",
+      "en": "You've been very helpful.",
+      "id": "speaking-0570"
+    },
+    {
+      "es": "Me siento mucho mejor ahora.",
+      "en": "I feel much better now.",
+      "id": "speaking-0571"
+    },
+    {
+      "es": "Esta es una foto de mi hermana.",
+      "en": "This is a picture of my sister.",
+      "id": "speaking-0572"
+    },
+    {
+      "es": "Tendré que consultarlo con mi jefe.",
+      "en": "I'll have to consult with my boss.",
+      "id": "speaking-0573"
+    },
+    {
+      "es": "Ella también tiene una buena memoria.",
+      "en": "She has a good memory too.",
+      "id": "speaking-0574"
+    },
+    {
+      "es": "Ven a verme alguna vez.",
+      "en": "Come see me again sometime.",
+      "id": "speaking-0575"
+    },
+    {
+      "es": "Esta es la tarea que menos me gusta.",
+      "en": "This is my least favorite chore.",
+      "id": "speaking-0576"
+    },
+    {
+      "es": "Es un gatito adorable, ¿a que sí?",
+      "en": "That's a cute kitten, isn't it?",
+      "id": "speaking-0577"
+    },
+    {
+      "es": "¿Podrías girar a la izquierda en el siguiente cruce?",
+      "en": "Would you turn left at the next intersection?",
+      "id": "speaking-0578"
+    },
+    {
+      "es": "¿A qué hora acabas de trabajar?",
+      "en": "What time do you finish work?",
+      "id": "speaking-0579"
+    },
+    {
+      "es": "¿Dónde puedo conseguir algo para comer?",
+      "en": "Where can I get something to eat?",
+      "id": "speaking-0580"
+    },
+    {
+      "es": "Voy a echar un vistazo.",
+      "en": "I'll check it out.",
+      "id": "speaking-0581"
+    },
+    {
+      "es": "¿Podrías guardarme algo de tiempo?",
+      "en": "Could you make time for me?",
+      "id": "speaking-0582"
+    },
+    {
+      "es": "¿Tienes algún amigo en Filipinas?",
+      "en": "Do you have any friends in the Philippines?",
+      "id": "speaking-0583"
+    },
+    {
+      "es": "Mi agenda está muy apretada la semana que viene.",
+      "en": "My schedule is tight next week.",
+      "id": "speaking-0584"
+    },
+    {
+      "es": "Estoy en el equipo de baloncesto.",
+      "en": "I'm on the basketball team.",
+      "id": "speaking-0585"
+    },
+    {
+      "es": "¿Se nos permite echar fotos aquí?",
+      "en": "Are we allowed to take pictures here?",
+      "id": "speaking-0586"
+    },
+    {
+      "es": "De postre, me gustaría pedir la tarta de queso.",
+      "en": "I'd like to have cheesecake for dessert.",
+      "id": "speaking-0587"
+    },
+    {
+      "es": "John es justo el tipo de persona que imaginaba.",
+      "en": "John is just the kind of person I imagined.",
+      "id": "speaking-0588"
+    },
+    {
+      "es": "Disculpa por ocupar tu tiempo.",
+      "en": "Sorry to take up your time.",
+      "id": "speaking-0589"
+    },
+    {
+      "es": "Háblame sobre tu rutina diaria.",
+      "en": "Tell me about your daily life.",
+      "id": "speaking-0590"
+    },
+    {
+      "es": "Los artistas son muy respetados en Francia.",
+      "en": "Artists are highly respected in France.",
+      "id": "speaking-0591"
+    },
+    {
+      "es": "Son las 7 en Madrid ahora mismo.",
+      "en": "It is 7 in Madrid now.",
+      "id": "speaking-0592"
+    },
+    {
+      "es": "Es mucho más fácil de lo que pensaba.",
+      "en": "It's much easier than I thought.",
+      "id": "speaking-0593"
+    },
+    {
+      "es": "Por favor, dime el número de teléfono.",
+      "en": "Please tell me the phone number.",
+      "id": "speaking-0594"
+    },
+    {
+      "es": "Sigue trabajando así de bien.",
+      "en": "Keep up the good work.",
+      "id": "speaking-0595"
+    },
+    {
+      "es": "Los gatos pueden ver en la oscuridad.",
+      "en": "Cats can see in the dark.",
+      "id": "speaking-0596"
+    },
+    {
+      "es": "Estoy muy satisfecho con los resultados.",
+      "en": "I'm very pleased with the results.",
+      "id": "speaking-0597"
+    },
+    {
+      "es": "Acabo de terminar mi trabajo.",
+      "en": "I've just finished my work.",
+      "id": "speaking-0598"
+    },
+    {
+      "es": "¿Puedo probar un trozo ahora?",
+      "en": "May I try a piece now?",
+      "id": "speaking-0599"
+    },
+    {
+      "es": "¿Qué se supone que debo hacer?",
+      "en": "What am I supposed to do?",
+      "id": "speaking-0600"
+    },
+    {
+      "es": "Esta música va con mi estado de ánimo actual.",
+      "en": "This music suits my present mood.",
+      "id": "speaking-0601"
+    },
+    {
+      "es": "¿Es la primera vez que vienes a San Francisco?",
+      "en": "Is this your first time in San Francisco?",
+      "id": "speaking-0602"
+    },
+    {
+      "es": "El plan se adoptó en la reunión.",
+      "en": "The plan was adopted at the meeting.",
+      "id": "speaking-0603"
+    },
+    {
+      "es": "¿Quién es el autor de esta historia?",
+      "en": "Who is the author of this story?",
+      "id": "speaking-0604"
+    },
+    {
+      "es": "Me gustaría hacer una reserva.",
+      "en": "I'd like to make a reservation.",
+      "id": "speaking-0605"
+    },
+    {
+      "es": "¿Dónde puedo conseguir conexión a Internet?",
+      "en": "Where can I get Internet access?",
+      "id": "speaking-0606"
+    },
+    {
+      "es": "Es fácil llevarse bien con ella.",
+      "en": "She's so easy to be with.",
+      "id": "speaking-0607"
+    },
+    {
+      "es": "Tengo un pequeño favor que pedirte.",
+      "en": "I have a small favor to ask.",
+      "id": "speaking-0608"
+    },
+    {
+      "es": "Ve por esta calle durante unos 5 minutos.",
+      "en": "Go along the street about 5 minutes.",
+      "id": "speaking-0609"
+    },
+    {
+      "es": "Eso es muy amable por tu parte.",
+      "en": "That's very nice of you.",
+      "id": "speaking-0610"
+    },
+    {
+      "es": "¿Qué tal si tomamos un descanso?",
+      "en": "How about a break?",
+      "id": "speaking-0611"
+    },
+    {
+      "es": "He terminado con mi trabajo.",
+      "en": "I'm all done with my work.",
+      "id": "speaking-0612"
+    },
+    {
+      "es": "¿Puedo tomar prestado eso un segundo?",
+      "en": "Can I borrow that for a second?",
+      "id": "speaking-0613"
+    },
+    {
+      "es": "¿Por qué no vamos juntos de compras?",
+      "en": "Why don't we go shopping together?",
+      "id": "speaking-0614"
+    },
+    {
+      "es": "¿Dónde está la sección de objetos perdidos?",
+      "en": "Where is the lost and found?",
+      "id": "speaking-0615"
+    },
+    {
+      "es": "¿Por favor, podrías hablar más despacio?",
+      "en": "Could you speak more slowly, please?",
+      "id": "speaking-0616"
+    },
+    {
+      "es": "Tan solo relájate y pásatelo bien.",
+      "en": "Just relax and have some fun.",
+      "id": "speaking-0617"
+    },
+    {
+      "es": "¿Cada cuánto pasan los autobuses?",
+      "en": "How often do the buses come?",
+      "id": "speaking-0618"
+    },
+    {
+      "es": "Hay pros y contras para todo.",
+      "en": "There are pros and cons to anything.",
+      "id": "speaking-0619"
+    },
+    {
+      "es": "El viernes es cuando mejor me viene.",
+      "en": "Friday would suit me best.",
+      "id": "speaking-0620"
+    },
+    {
+      "es": "Completa tu nombre y dirección aquí.",
+      "en": "Fill in your name and address here.",
+      "id": "speaking-0621"
+    },
+    {
+      "es": "Estoy tan contento de haberte conocido.",
+      "en": "I'm so glad that I met you.",
+      "id": "speaking-0622"
+    },
+    {
+      "es": "¿Nos podrías llamar a un taxi?",
+      "en": "Would you call us a taxi?",
+      "id": "speaking-0623"
+    },
+    {
+      "es": "El agua aún no está hirviendo.",
+      "en": "The water is not boiling yet.",
+      "id": "speaking-0624"
+    },
+    {
+      "es": "Fijemos una hora para quedar.",
+      "en": "Let's fix a time to meet.",
+      "id": "speaking-0625"
+    },
+    {
+      "es": "¿Está el hotel cerca del aeropuerto?",
+      "en": "Is the hotel close to the airport?",
+      "id": "speaking-0626"
+    },
+    {
+      "es": "Prefiero el café al té.",
+      "en": "I prefer coffee to tea.",
+      "id": "speaking-0627"
+    },
+    {
+      "es": "¿A qué universidad quieres ir?",
+      "en": "Which college are you aiming for?",
+      "id": "speaking-0628"
+    },
+    {
+      "es": "Estoy deseando volver a verte.",
+      "en": "I look forward to seeing you again.",
+      "id": "speaking-0629"
+    },
+    {
+      "es": "¿Está tu escuela lejos de tu casa?",
+      "en": "Is your school far from your home?",
+      "id": "speaking-0630"
+    },
+    {
+      "es": "¿Te apetece comer fuera esta noche?",
+      "en": "Do you feel like eating out tonight?",
+      "id": "speaking-0631"
+    },
+    {
+      "es": "¿Cómo se llama esta fruta en inglés?",
+      "en": "What is this fruit called in English?",
+      "id": "speaking-0632"
+    },
+    {
+      "es": "¿Qué haces en tu tiempo libre?",
+      "en": "What do you do in your free time?",
+      "id": "speaking-0633"
+    },
+    {
+      "es": "El cielo se está nublando.",
+      "en": "The sky is becoming cloudy.",
+      "id": "speaking-0634"
+    },
+    {
+      "es": "Nunca eres demasiado viejo para aprender.",
+      "en": "You're never too old to learn.",
+      "id": "speaking-0635"
+    },
+    {
+      "es": "¿Podría por favor sentarme junto a la ventana?",
+      "en": "Could I have a window seat, please?",
+      "id": "speaking-0636"
+    }
+  ]
+}

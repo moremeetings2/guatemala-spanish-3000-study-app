@@ -5,6 +5,7 @@
 ## What it does
 
 - Includes Essential 200: a focused starter deck for everyday speaking, with Spanish example sentences and English translations
+- Includes Everyday Speaking: 636 phrase cards from the complete supplied video transcript, with English-first recall, reversible cards, and Spanish pronunciation
 - Loads the Main 3000, a 230-card Everyday Conversation deck, and a 369-entry Guatemalan Lexicon that includes the Guatemala usage notes
 - Builds Most Common in Guate from the signed-in learner's starred Guatemalan Lexicon cards, sharing the same synced progress and star state
 - Works as a mobile-first study app
@@ -18,11 +19,19 @@
 
 Open **You → Essential 200**, then **Study these** or **Quiz these**. On a flashcard, tap **Use** to read and hear the example sentence. Quiz questions and answer choices stay within the essential vocabulary, including when search narrows the questions. Study sessions resume the active card after reopening the app.
 
-`data/essential_200.json` is the canonical content for this deck and its companion spreadsheet: 200 unique words in ten practical categories, each with an English meaning and a Spanish/English example sentence. It reuses 190 Main 3000 IDs so those cards share progress, and adds ten missing basics with stable `essential-*` IDs. The app therefore has 3,609 unique built-in cards; Main 3000 still contains exactly 3,000. Selected words use the manifest's reviewed meanings and examples throughout the app, including everyday senses such as *tienda* (store), *carro* (car), and *efectivo* (cash).
+`data/essential_200.json` is the canonical content for this deck and its companion spreadsheet: 200 unique words in ten practical categories, each with an English meaning and a Spanish/English example sentence. It reuses 190 Main 3000 IDs so those cards share progress, and adds ten missing basics with stable `essential-*` IDs. With Everyday Speaking, the app has 4,245 unique built-in cards; Main 3000 still contains exactly 3,000. Selected words use the manifest's reviewed meanings and examples throughout the app, including everyday senses such as *tienda* (store), *carro* (car), and *efectivo* (cash).
 
 The selection favors everyday speaking needs over frequency alone. It includes Guatemala's **vos** alongside **tú**, formal **usted**, and plural **ustedes**. Examples sometimes conjugate the dictionary-form verb or inflect an adjective. This is a starting vocabulary, not a claim that 200 words cover every conversation.
 
 Keep exactly 200 distinct words and IDs when editing the manifest. Retain existing IDs to preserve learner progress. The study-pack CSV rebuild does not overwrite this file. Export the `words` rows directly for the spreadsheet so its meanings and examples match the app. The service worker caches the manifest for offline sessions.
+
+## Everyday Speaking
+
+Open **You → Everyday Speaking → Study these**. Read the English, say the Spanish aloud, and tap **Show Spanish** (or the card) to check yourself. **Listen** pronounces the Spanish on either face, using the voice and speed selected in Settings. **Spanish first** reverses the exercise. This is spoken practice with self-checking; the app does not record or grade your voice.
+
+The first-language choice is remembered separately for each deck; existing decks still start in Spanish. The active card and preferences are saved when the page closes or goes into the background, including immediately after a card change. **Quiz these** follows the speaking deck's chosen direction and draws answer choices from the same deck.
+
+`data/everyday_speaking.json` contains 636 cards representing all 645 distinct English prompts in the supplied full transcript. The video title advertises 650; repetitions and equivalent prompts are combined rather than padding the deck. Eighteen missing Spanish answers were supplied, and transcription/translation corrections are recorded in [the source review](docs/everyday-speaking-source.md). Regional wording is generally retained. The manifest is cached for offline use and uses stable IDs so future corrections and additions preserve progress.
 
 ## On-device AI tutor
 
@@ -91,6 +100,8 @@ Run the Playwright integration suite:
 ```bash
 npm run test:integration
 ```
+
+Use `npm run test:integration:headed` for visible browser verification on Chromium and WebKit.
 
 The suite validates deck rendering, phrasebank search, study/review actions,
 quiz flow, pronunciation controls, persistence, storage reconciliation,

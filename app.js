@@ -12,6 +12,7 @@ const DECK_DEFS = {
   essential200:         { name: 'Essential 200',         short: 'Essential', accent: '#28b573', icon: 'forum' },
   mainWords:            { name: 'Main 3000',             short: '3000',    accent: '#28b573', icon: 'dictionary' },
   everydayConversation: { name: 'Everyday Conversation', short: 'Everyday', accent: '#c23b9e', icon: 'chat' },
+  everydaySpeaking:     { name: 'Everyday Speaking', short: 'Speaking', accent: '#b66b28', icon: 'record_voice_over' },
   guatemalaLexicon:     { name: 'Guatemalan Lexicon',    short: 'Lexicon', accent: '#2c7a9e', icon: 'menu_book' },
   mostCommonGuate:      { name: 'Most Common in Guate',  short: 'Common',  accent: '#f5a524', icon: 'star' },
   // Per-user custom vocabulary — private to each account, synced via the API.
@@ -193,6 +194,18 @@ function schedSave() {
   saveTimer = setTimeout(saveState, 300);
 }
 
+function flushState() {
+  // A mobile close/reload can happen before the debounced write. Commit the
+  // account's local snapshot synchronously while the page is still alive.
+  if (!appState.loaded) return;
+  clearTimeout(saveTimer);
+  saveState();
+}
+window.addEventListener('pagehide', flushState);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') flushState();
+});
+
 // ===== Navigation =====
 function goTab(t) { setState({ tab: t, route: null, activeWord: null }); }
 function openBrowse(patch) {
@@ -237,7 +250,7 @@ function filterCards(f) {
     if (f.due && !(s.seen && s.due <= now)) return false;
     if (f.q) {
       const q = f.q.toLowerCase();
-      if (!(c.es.toLowerCase().includes(q) || c.en.toLowerCase().includes(q))) return false;
+      if (![c.es, c.en, ...(c.alternateEnglish || [])].some(text => text.toLowerCase().includes(q))) return false;
     }
     return true;
   });
@@ -260,6 +273,28 @@ function orderFor(src) {
 
 function setStudySource(src) {
   setState({ study: { idx: 0, flipped: false, source: src, order: orderFor(src) } });
+}
+
+function studyDirectionKey(source = appState.study.source) {
+  // Browse and direct-deck entry points share a preference; filters must not
+  // make an English-first speaking session reverse an unrelated word deck.
+  return source === 'filter' ? 'deck:' + appState.browse.deck : source;
+}
+
+function studyDirection(source = appState.study.source) {
+  const key = studyDirectionKey(source);
+  const saved = appState.settings.studyDirections?.[key];
+  if (saved === 'en-es' || saved === 'es-en') return saved;
+  return key === 'deck:everydaySpeaking' ? 'en-es' : 'es-en';
+}
+
+function setStudyDirection(direction) {
+  setState({
+    settings: { ...appState.settings, studyDirections: {
+      ...appState.settings.studyDirections, [studyDirectionKey()]: direction,
+    } },
+    study: { ...appState.study, flipped: false, showSentence: false },
+  });
 }
 
 // ===== Spaced Repetition =====
@@ -406,11 +441,12 @@ function buildQuiz() {
     return;
   }
   const order = shuffleArr(src.length).slice(0, Math.min(8, src.length));
-  // A beginner Essential quiz must not introduce unrelated advanced words in
-  // its distractors, even when search narrows the questions to a single card.
-  const essentialQuiz = appState.quiz.source === 'deck:essential200'
-    || (appState.quiz.source === 'filter' && appState.browse.deck === 'essential200');
-  const choices = essentialQuiz ? filterCards({ deck: 'essential200' }) : CARDS;
+  // Focused vocabulary/phrase quizzes keep choices in the selected deck even
+  // when search narrows the questions to one card.
+  const quizDeck = appState.quiz.source === 'filter' ? appState.browse.deck
+    : appState.quiz.source?.startsWith('deck:') ? appState.quiz.source.slice(5) : null;
+  const scopedChoices = ['essential200', 'everydaySpeaking'].includes(quizDeck);
+  const choices = scopedChoices ? filterCards({ deck: quizDeck }) : CARDS;
   const qs = order.map(i => {
     const card = src[i];
     const prompt = dir === 'es-en' ? card.es : card.en;
@@ -999,7 +1035,7 @@ function sentenceFor(deckId, es, entry, sents) {
 }
 
 // ===== Data Transformation =====
-function transformData(raw, reading, synonymsMap, sentencesMap, essentialWords = []) {
+function transformData(raw, reading, synonymsMap, sentencesMap, essentialWords = [], speakingPhrases = []) {
   const syns = synonymsMap || {};
   const sents = sentencesMap || {};
   const colls = raw.collections || {};
@@ -1031,6 +1067,10 @@ function transformData(raw, reading, synonymsMap, sentencesMap, essentialWords =
       CARDS.push({ ...word, deck: 'essential200', sourceDeck: 'essential200',
         type: 'word', band: null, synonyms: [], cat: '', note: '', essential: true });
     }
+  });
+  speakingPhrases.forEach(phrase => {
+    CARDS.push({ ...phrase, deck: 'everydaySpeaking', sourceDeck: 'everydaySpeaking',
+      type: 'phrase', band: null, synonyms: [], sentence: null, cat: '', note: phrase.note || '' });
   });
   const DECKS = Object.entries(DECK_DEFS)
     .map(([id, def]) => ({ id, ...def, count: CARDS.filter(c => id === 'essential200' ? c.essential : c.deck === id).length }))
@@ -1121,6 +1161,9 @@ function computeVals() {
   const stStates = [{ v: 'new', l: 'New' }, { v: 'learning', l: 'Learning' }, { v: 'known', l: 'Known' }];
   const studyMsg = ({ due: 'No cards are due right now — great work!', weak: 'No weak cards. Keep it up!', starred: 'Star cards to build a custom set.' })[S.study.source] || 'This set is empty.';
   const study = {
+    directions: [{ v: 'en-es', l: 'English first' }, { v: 'es-en', l: 'Spanish first' }]
+      .map(x => ({ label: x.l, selected: studyDirection() === x.v,
+        onClick: () => setStudyDirection(x.v), style: seg(studyDirection() === x.v) })),
     sources: [{ v: 'all', l: 'All' }, { v: 'due', l: 'Due' }, { v: 'weak', l: 'Weak' }, { v: 'starred', l: '★ Starred' }]
       .map(x => ({ label: x.l, onClick: () => setStudySource(x.v), style: chip(S.study.source === x.v) })),
     empty: sLen === 0, has: sLen > 0, emptyMsg: studyMsg,
@@ -1132,15 +1175,19 @@ function computeVals() {
         || (S.study.source === 'filter' && S.browse.deck === 'essential200');
       const dk = deckOf(essentialStudy ? 'essential200' : card.deck);
       const showSentence = !!S.study.showSentence && !!card.sentence;
+      const spanishFace = (studyDirection() === 'es-en') !== S.study.flipped;
       return {
         deckLabel: dk ? dk.name : card.deck, deckShort: dk ? dk.short : card.deck, deckAccent: dk ? dk.accent : '#28b573',
         counter: (S.study.idx % sLen + 1) + ' / ' + sLen,
-        faceLabel: S.study.flipped ? 'English' : 'Español', faceText: S.study.flipped ? card.en : card.es,
+        faceLabel: spanishFace ? 'Español' : 'English', faceText: spanishFace ? card.es : card.en,
+        revealLabel: spanishFace ? 'Show English' : 'Show Spanish',
+        recallHint: spanishFace ? 'Say what it means, then check.' : 'Say it in Spanish, then check.',
+        note: spanishFace ? card.note : '',
         starIcon: cst.star ? 'star' : 'star_outline', starColor: cst.star ? '#f5a524' : 'var(--muted2)',
         showSentence,
         sentenceEs: card.sentence ? card.sentence.es : '',
         sentenceEn: card.sentence ? card.sentence.en : '',
-        hasSentence: !!card.sentence && !S.study.flipped,
+        hasSentence: !!card.sentence && spanishFace,
         onUse: () => setState({ study: { ...S.study, showSentence: true } }),
         onSpeakSentence: () => card.sentence && speak(card.sentence.es),
         onFlip: () => S.study.showSentence
@@ -1158,7 +1205,7 @@ function computeVals() {
             `Any Guatemalan tips for using "${card.es}"?`,
           ],
         }),
-        synonyms: (S.study.flipped || showSentence) ? [] : (card.synonyms || []),
+        synonyms: (!spanishFace || showSentence) ? [] : (card.synonyms || []),
         states: stStates.map(x => ({ label: x.l, onClick: () => setProg(id, x.v), style: seg(cst.state === x.v) })),
       };
     })() : {}),
@@ -1367,7 +1414,8 @@ function computeVals() {
     sessionChips: mkChips([{ label: 'Any session', val: 'any' }, { label: 'Seen', val: 'seen' }, { label: 'Not seen', val: 'unseen' }], 'session'),
     onBack: () => setState({ route: null }),
     onStudy: () => setState({ study: { idx: 0, flipped: false, source: 'filter', order: orderFor('filter') }, tab: 'study', route: null }),
-    onQuiz: () => setState({ quiz: { ...q, source: 'filter', phase: 'intro' }, tab: 'quiz', route: null }),
+    onQuiz: () => setState({ quiz: { ...q, source: 'filter', phase: 'intro',
+      dir: bf.deck === 'everydaySpeaking' ? studyDirection('filter') : q.dir }, tab: 'quiz', route: null }),
     results: results.slice(0, 200).map(c => {
       const s = cs(c.id);
       return { es: c.es, en: c.en, stateColor: stateColor(s.state), starIcon: s.star ? 'star' : 'star_outline', starColor: s.star ? '#f5a524' : 'var(--muted2)', onOpen: () => setState({ route: 'card', detailId: c.id }), onStar: () => toggleStar(c.id) };
@@ -1925,11 +1973,14 @@ function renderStudy(v) {
     <div style="font-size:16px;font-weight:800;color:var(--ink);margin-top:10px">Nothing here right now</div>
     <div style="font-size:14px;font-weight:600;max-width:230px;margin-top:4px">${study.emptyMsg}</div>
   </div>` : `
+  <div role="group" aria-label="First language on flashcards" style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px;margin-bottom:12px">
+    ${study.directions.map(d => `<button ${h(d.onClick)} aria-pressed="${d.selected}" style="${d.style}">${d.label}</button>`).join('')}
+  </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
     <div style="font-size:13px;font-weight:700;color:var(--muted)">${esc(study.deckLabel)}</div>
     <div style="font-size:14px;font-weight:800;color:var(--muted)">${study.counter}</div>
   </div>
-  <div ${h(study.onFlip)} style="flex:1;min-height:300px;background:var(--surface);border:1px solid var(--line);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.07);position:relative;padding:30px;text-align:center">
+  <div ${h(study.onFlip)} data-fid="study-card" style="flex:1;min-height:300px;background:var(--surface);border:1px solid var(--line);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.07);position:relative;padding:58px 24px 24px;text-align:center">
     <button ${h(study.onStar)} data-fid="study-star" title="${study.starIcon === 'star' ? 'Remove from favorites' : 'Add to favorites'}" style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer">${ms(study.starIcon, 28, study.starColor)}</button>
     <div style="position:absolute;top:20px;left:20px;font-size:11px;font-weight:800;color:#fff;background:${study.deckAccent};padding:4px 10px;border-radius:9px">${esc(study.deckShort)}</div>
     ${study.showSentence ? `
@@ -1940,9 +1991,12 @@ function renderStudy(v) {
     <div style="margin-top:16px;font-size:12px;font-weight:700;color:var(--muted2)">Tap card to go back</div>
     ` : `
     <div style="font-size:13px;font-weight:800;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px">${study.faceLabel}</div>
-    <div style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">${esc(study.faceText)}</div>
-    <div style="display:flex;align-items:center;gap:10px;margin-top:22px">
-      <button ${h(study.onSpeak)} style="border:none;background:var(--g-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('volume_up', 25, 'var(--g-ink)')}</button>
+    <div data-fid="study-face" style="font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.5px;line-height:1.2">${esc(study.faceText)}</div>
+    <div style="font-size:12px;font-weight:700;color:var(--muted);margin-top:12px">${study.recallHint}</div>
+    <button ${h(study.onFlip)} style="margin-top:14px;border:none;border-radius:12px;background:var(--ink);color:var(--surface);padding:10px 20px;font-family:Nunito;font-size:14px;font-weight:800;cursor:pointer">${study.revealLabel}</button>
+    ${study.note ? `<div style="font-size:12px;line-height:1.4;color:var(--muted);margin-top:12px">${esc(study.note)}</div>` : ''}
+    <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:18px">
+      <button ${h(study.onSpeak)} aria-label="Listen in Spanish" title="Listen in Spanish" style="border:none;background:var(--g-soft);color:var(--g-ink);padding:0 14px;height:50px;border-radius:25px;display:flex;align-items:center;gap:7px;justify-content:center;cursor:pointer;font-family:Nunito;font-size:14px;font-weight:800">${ms('volume_up', 23, 'var(--g-ink)')}Listen</button>
       ${study.hasSentence ? `<button ${h(study.onUse)} style="display:flex;align-items:center;justify-content:center;border:none;background:var(--p-soft);color:#5560e0;font-family:Nunito;font-weight:800;font-size:15px;padding:0 26px;height:50px;border-radius:25px;cursor:pointer">Use</button>` : ''}
       <button ${h(study.onChat)} title="Ask the AI tutor" style="border:none;background:var(--p-soft);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">${ms('smart_toy', 24, '#5560e0')}</button>
     </div>
@@ -2547,7 +2601,7 @@ async function bootstrap() {
   render(); // show loading state
 
   try {
-    const [loadedPersisted, response, readingResp, synResp, sentResp, countryLexResp, essentialResp] = await Promise.all([
+    const [loadedPersisted, response, readingResp, synResp, sentResp, countryLexResp, essentialResp, speakingResp] = await Promise.all([
       loadState(),
       fetch(DATA_URL),
       fetch('./data/reading-data.json'),
@@ -2555,6 +2609,7 @@ async function bootstrap() {
       fetch('./data/sentences.json'),
       fetch('./data/country_lexicons.json'),
       fetch('./data/essential_200.json'),
+      fetch('./data/everyday_speaking.json'),
     ]);
 
     if (!response.ok) throw new Error(`Failed to load data (${response.status})`);
@@ -2569,7 +2624,9 @@ async function bootstrap() {
     try { const cl = await countryLexResp.json(); countryLex = Array.isArray(cl) ? cl : (cl.countries || []); } catch(e) {}
     if (!essentialResp.ok) throw new Error(`Failed to load Essential 200 (${essentialResp.status})`);
     const essential = await essentialResp.json();
-    const data = transformData(raw, reading, synonymsMap, sentencesMap, essential.words);
+    if (!speakingResp.ok) throw new Error(`Failed to load Everyday Speaking (${speakingResp.status})`);
+    const speaking = await speakingResp.json();
+    const data = transformData(raw, reading, synonymsMap, sentencesMap, essential.words, speaking.phrases);
     // Per-country lexicon references (all Spanish-speaking countries except
     // Guatemala, whose lexicon is the studyable in-catalog deck).
     data.COUNTRY_LEX = countryLex;

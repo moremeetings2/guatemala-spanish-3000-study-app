@@ -62,13 +62,13 @@ test("home dashboard shows the catalog totals and study entry points", async ({ 
   await expect(content).toContainText("Flashcards");
   await expect(content).toContainText("Quiz");
   await expect(content).toContainText("75 stories");
-  await expect(content).toContainText("3609 cards");
+  await expect(content).toContainText("4245 cards");
 });
 
 test("the You tab lists the consolidated decks with their card counts", async ({ page }) => {
   await page.evaluate(() => setState({ tab: "progress", route: null }));
   const content = page.locator("#content");
-  await expect(content).toContainText("3,609");            // unique catalog total, including ten missing basics
+  await expect(content).toContainText("4,245");            // includes the cleaned 636-card speaking deck
   await expect(content).toContainText("Main 3000");
   await expect(content).toContainText("3,000 cards");
   await expect(content).toContainText("Everyday Conversation");
@@ -445,12 +445,13 @@ test("exports a JSON backup and imports it into a clean profile", async ({ brows
   await cleanContext.close();
 });
 
-test("migrates progress saved under the legacy storage key", async ({ page }) => {
-  // Clear the current stores, seed the old-format progress, then reload.
-  await page.evaluate(async ({ storageKey, accountKey, oldKey, dbName, store, dbKeys }) => {
-    clearTimeout(saveTimer);
-    localStorage.removeItem(storageKey);
-    localStorage.removeItem(accountKey);
+test("migrates progress saved under the legacy storage key", async ({ browser }) => {
+  // Seed a real legacy-only profile before boot. Clearing an active app's
+  // storage is no longer a valid fixture: pagehide now flushes its current state.
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await bootAsUser(page);
+  await page.addInitScript(({ oldKey }) => {
     localStorage.setItem(
       oldKey,
       JSON.stringify({
@@ -459,33 +460,16 @@ test("migrates progress saved under the legacy storage key", async ({ page }) =>
         },
       })
     );
-    await new Promise((resolve) => {
-      const req = indexedDB.open(dbName);
-      req.onsuccess = () => {
-        const db = req.result;
-        const tx = db.transaction(store, "readwrite");
-        dbKeys.forEach((key) => tx.objectStore(store).delete(key));
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => resolve();
-      };
-      req.onerror = () => resolve();
-    });
-  }, {
-    storageKey: STORAGE_KEY,
-    accountKey: `${STORAGE_KEY}.account.test-user`,
-    oldKey: OLD_PROGRESS_KEY,
-    dbName: IDB_NAME,
-    store: IDB_STORE,
-    dbKeys: [IDB_KEY, "account:test-user"],
-  });
+  }, { oldKey: OLD_PROGRESS_KEY });
 
-  await page.reload();
+  await page.goto('/');
   await waitForAppReady(page);
 
   const migrated = await page.evaluate(() => appState.cardState["main-0001"]);
   expect(migrated.state).toBe("known");
   expect(migrated.star).toBe(true);
   expect(migrated.correct).toBe(2);
+  await context.close();
 });
 
 test("service worker serves a fresh app.js over a stale cached copy", async ({ browser }) => {
@@ -675,8 +659,8 @@ test("Essential 200 preserves Main 3000 cards and shares their progress without 
     };
   });
   expect(result.count).toBe(200);
-  expect(result.total).toBe(3609);
-  expect(result.unique).toBe(3609);
+  expect(result.total).toBe(4245);
+  expect(result.unique).toBe(4245);
   expect(result.mainCount).toBe(3000);
   expect(result.sharedId).toContain(result.id);
 });
@@ -695,7 +679,7 @@ for (const dir of ['es-en', 'en-es']) {
   });
 }
 
-test('Essential 200 and all its sentences load offline from the service worker', async ({ browser }) => {
+test('Essential 200 and Everyday Speaking load offline from the service worker', async ({ browser }) => {
   // WebKit's setOffline blocks even service-worker responses. Disconnect a
   // dedicated origin instead, testing actual failed fetches and cache fallback.
   const http = require('node:http');
@@ -726,6 +710,10 @@ test('Essential 200 and all its sentences load offline from the service worker',
     expect(cards).toHaveLength(200);
     expect(cards.every(c => c.sentence?.es && c.sentence?.en)).toBe(true);
     expect(cards.some(c => c.es === 'farmacia')).toBe(true);
+    const speakingCards = await page.evaluate(() => filterCards({ deck: 'everydaySpeaking' }));
+    expect(speakingCards).toHaveLength(636);
+    expect(speakingCards.find(c => c.id === 'speaking-0001').es).toBe('Déjame ver.');
+    expect(speakingCards.find(c => c.id === 'speaking-0636').en).toBe('Could I have a window seat, please?');
   } finally {
     await context.close();
     server.closeAllConnections();
