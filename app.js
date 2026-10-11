@@ -295,7 +295,8 @@ function studyDirection(source = appState.study.source) {
   const key = studyDirectionKey(source);
   const saved = appState.settings.studyDirections?.[key];
   if (saved === 'en-es' || saved === 'es-en') return saved;
-  return key === 'deck:everydaySpeaking' ? 'en-es' : 'es-en';
+  // Spanish-only prompts are the default; English-first is an explicit choice.
+  return 'es-en';
 }
 
 function setStudyDirection(direction) {
@@ -1171,7 +1172,7 @@ function computeVals() {
   const stStates = [{ v: 'new', l: 'New' }, { v: 'learning', l: 'Learning' }, { v: 'known', l: 'Known' }];
   const studyMsg = ({ due: 'No cards are due right now — great work!', weak: 'No weak cards. Keep it up!', starred: 'Star cards to build a custom set.' })[S.study.source] || 'This set is empty.';
   const study = {
-    directions: [{ v: 'en-es', l: 'English first' }, { v: 'es-en', l: 'Spanish first' }]
+    directions: [{ v: 'es-en', l: 'Spanish first' }, { v: 'en-es', l: 'English first' }]
       .map(x => ({ label: x.l, selected: studyDirection() === x.v,
         onClick: () => setStudyDirection(x.v), style: seg(studyDirection() === x.v) })),
     sources: [{ v: 'all', l: 'All' }, { v: 'due', l: 'Due' }, { v: 'weak', l: 'Weak' }, { v: 'starred', l: '★ Starred' }]
@@ -1191,7 +1192,7 @@ function computeVals() {
         counter: (S.study.idx % sLen + 1) + ' / ' + sLen,
         faceLabel: spanishFace ? 'Español' : 'English', faceText: spanishFace ? card.es : card.en,
         revealLabel: spanishFace ? 'Show English' : 'Show Spanish',
-        recallHint: spanishFace ? 'Say what it means, then check.' : 'Say it in Spanish, then check.',
+        recallHint: spanishFace ? 'Flip for English if you need it.' : 'Say it in Spanish, then check.',
         note: spanishFace ? card.note : '',
         starIcon: cst.star ? 'star' : 'star_outline', starColor: cst.star ? '#f5a524' : 'var(--muted2)',
         showSentence,

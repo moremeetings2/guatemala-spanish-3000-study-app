@@ -5,7 +5,7 @@
 ## What it does
 
 - Includes Essential 200: a focused starter deck for everyday speaking, with Spanish example sentences and English translations
-- Includes Everyday Speaking: 636 phrase cards from the complete supplied video transcript, with English-first recall, reversible cards, and Spanish pronunciation
+- Includes Everyday Speaking: 636 phrase cards from the complete supplied video transcript, with Spanish-first study, English revealed on flip, and Spanish pronunciation
 - Loads the Main 3000, a 230-card Everyday Conversation deck, and a 369-entry Guatemalan Lexicon that includes the Guatemala usage notes
 - Builds Most Common in Guate from the signed-in learner's starred Guatemalan Lexicon cards, sharing the same synced progress and star state
 - Works as a mobile-first study app
@@ -27,9 +27,9 @@ Keep exactly 200 distinct words and IDs when editing the manifest. Retain existi
 
 ## Everyday Speaking
 
-Open **You → Everyday Speaking → Study these**. Read the English, say the Spanish aloud, and tap **Show Spanish** (or the card) to check yourself. **Listen** pronounces the Spanish on either face, using the voice and speed selected in Settings. **Spanish first** reverses the exercise. This is spoken practice with self-checking; the app does not record or grade your voice.
+Open **You → Everyday Speaking → Study these**. The card starts with only the Spanish phrase. Read it or tap **Listen**, and try to understand it. If you get stuck, tap **Show English** (or the card) to reveal the meaning. **Listen** pronounces the Spanish on either face, using the voice and speed selected in Settings. **English first** remains optional for practicing recall in the other direction. The app does not record or grade your voice.
 
-The first-language choice is remembered separately for each deck; existing decks still start in Spanish. The active card and study preferences are saved immediately when changed, so closing the whole browser right after a tap does not lose the change. Backgrounding or closing the page also flushes pending updates. **Quiz these** follows the speaking deck's chosen direction and draws answer choices from the same deck.
+The first-language choice is remembered separately for each deck. All decks default to Spanish; an explicitly saved English-first choice is preserved until you select **Spanish first**. The active card and study preferences are saved immediately when changed, so closing the whole browser right after a tap does not lose the change. Backgrounding or closing the page also flushes pending updates. **Quiz these** follows the speaking deck's chosen direction and draws answer choices from the same deck. Bilingual reference lists and the welcome-page sample are unchanged.
 
 `data/everyday_speaking.json` contains 636 cards representing all 645 distinct English prompts in the supplied full transcript. The video title advertises 650; repetitions and equivalent prompts are combined rather than padding the deck. Eighteen missing Spanish answers were supplied, and transcription/translation corrections are recorded in [the source review](docs/everyday-speaking-source.md). Regional wording is generally retained. The manifest is cached for offline use and uses stable IDs so future corrections and additions preserve progress.
 
