@@ -29,7 +29,7 @@ entry points and all content IDs.
   Inspect desktop/mobile screenshots and test the live backend login flow.
 - [x] Create docs/hablavos-product-and-business-brief.docx and its editable
   source. Render and inspect every page. Update README/AGENTS and bump sw.js.
-- [ ] Review diff and git status, commit only task files with detailed evidence,
+- [x] Review diff and git status, commit only task files with detailed evidence,
   push main, verify deployed assets and real browser flow, and report results.
 
 VM command convention: run the guest's Node with PATH containing its bundled
@@ -51,4 +51,23 @@ edits the one shared working copy; compare hashes before testing.
   were removed and touched card progress restored.
 - Read-only review findings were fixed and covered by browser regression tests.
   Both pages of the Word brief were rendered and visually inspected.
-- Production publication and post-deployment checks are still pending.
+
+## Publication verified
+
+- Release commit `1c10c41815fe3bd142ca2426f918b634364195a1` was fast-forwarded
+  to `main` and pushed. GitHub Pages reported `built` at
+  `2026-10-12T02:27:12Z` (October 11 in Guatemala).
+- Production `index.html`, `app.js`, `learning.js`, `learning.css`, and `sw.js`
+  hashes all matched the tested files; the service worker is `hablavos-v43`.
+- `tools/verify_learning_live.cjs https://hablavos.com chromium` and the same
+  command for `webkit` both passed headed inside VM AI Projects. They exercised
+  real login, independent card resume, pronunciation controls, grading/sync,
+  quiz, lessons, country choice, My Words, admin CRUD, saved-word removal,
+  keyboard focus, reading, and phone layouts. Both runs confirmed temporary
+  records were deleted and touched progress restored.
+- Production desktop and phone screenshots were inspected. Logs and images
+  remain ignored under `test-results/production-*.log` and
+  `test-results/live-learning/hablavos.com-*/`.
+- Ads remain off. No ad-provider integration or optional AI model-quality test
+  is claimed. The existing unrelated document deletion and Google Docs
+  shortcuts remain outside the release.
