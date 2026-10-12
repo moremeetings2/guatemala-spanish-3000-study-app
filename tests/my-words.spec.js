@@ -197,7 +197,7 @@ test("deleting a word removes it from the server, the list, and the catalog", as
   expect(await page.evaluate(() => appState.data.DECKS.some((d) => d.id === "myWords"))).toBe(false);
 });
 
-test("the AI button drafts the meaning and example without overwriting user input", async ({ page }) => {
+test("the AI button uses country focus and drafts without overwriting user input", async ({ page }) => {
   await boot(page);
   // Stub the on-device engine with a canned, correctly-formatted reply.
   await page.evaluate(() => {
@@ -217,7 +217,11 @@ test("the AI button drafts the meaning and example without overwriting user inpu
     setState({ ai: { status: "ready", progress: 1, size: "gemma-4-e2b", error: "" } });
   });
 
-  await page.evaluate(() => setState({ route: "mywords" }));
+  await page.getByRole('button', { name: 'Country focus: Shared Spanish' }).click();
+  await page.getByRole('button', { name: 'Mexico', exact: true }).click();
+  await page.getByRole('button', { name: 'Use this country' }).click();
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: 'Library' }).click();
+  await page.getByRole('button', { name: /My Words Your private/ }).click();
   await typeField(page, "mw-es", "chilero");
   await page.locator("#content").getByRole("button", { name: /Fill in the rest with AI/ }).click();
 
@@ -227,6 +231,8 @@ test("the AI button drafts the meaning and example without overwriting user inpu
   expect(await page.evaluate(() => appState.mw.sentEn)).toBe("What a cool day!");
   // …the prompt carried the word, and the form is now addable.
   expect(await page.evaluate(() => window.AI.lastMessages.at(-1).content)).toContain("chilero");
+  expect(await page.evaluate(() => window.AI.lastMessages[0].content)).toContain('Mexico');
+  expect(await page.evaluate(() => window.AI.lastMessages[0].content)).not.toContain('specializing in the Spanish spoken in Guatemala');
   await expect(page.locator("#content").getByRole("button", { name: "Add to My Words" })).toBeEnabled();
 
   // A second suggest must NOT overwrite what the user has edited.

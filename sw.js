@@ -1,8 +1,10 @@
-const CACHE_NAME = "hablavos-v42";
+const CACHE_NAME = "hablavos-v43";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./learning.css",
+  "./learning.js",
   "./api.js",
   "./ai.js",
   "./ai-runtime/hablavos-ai.js",

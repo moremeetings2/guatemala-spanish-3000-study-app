@@ -83,6 +83,18 @@ test("general AI chat: open from home, send a message, receive a streamed reply"
   expect(await page.evaluate(() => appState.chat.context)).toBeNull();
 });
 
+test("general tutor respects country focus without presenting Guatemala as the default", async ({ page }) => {
+  await boot(page);
+  await page.getByRole('button', { name: 'Country focus: Shared Spanish' }).click();
+  await page.getByRole('button', { name: 'Mexico', exact: true }).click();
+  await page.getByRole('button', { name: 'Use this country' }).click();
+  await page.getByRole('button', { name: 'Ask anything in Spanish' }).click();
+  await expect(page.locator('#chat-sheet')).not.toContainText('Guatemalan');
+  await typeChat(page, 'How do I ask for directions?');
+  await page.locator('[data-fid="chat-input"]').press('Enter');
+  await expect.poll(() => page.evaluate(() => window.AI.lastMessages?.[0]?.content)).toContain('Mexico');
+});
+
 test("iOS dictation keeps the active chat field mounted across background updates", async ({ page }) => {
   await boot(page);
   await page.locator("#content").getByText("Ask anything in Spanish").click();

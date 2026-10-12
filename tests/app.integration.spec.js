@@ -58,11 +58,11 @@ test.beforeEach(async ({ page }) => {
 
 test("home dashboard shows the catalog totals and study entry points", async ({ page }) => {
   const content = page.locator("#content");
-  await expect(content).toContainText("¡Hola! 🇬🇹");
-  await expect(content).toContainText("Flashcards");
-  await expect(content).toContainText("Quiz");
+  await expect(content).toContainText("Practice, your way.");
+  await expect(content).toContainText("Practice words");
+  await expect(content).toContainText("Practice phrases");
   await expect(content).toContainText("75 stories");
-  await expect(content).toContainText("4245 cards");
+  await expect(content).toContainText("4,245 cards");
 });
 
 test("the You tab lists the consolidated decks with their card counts", async ({ page }) => {
@@ -599,8 +599,8 @@ function extractServiceWorkerCacheName() {
   return match[1];
 }
 
-test("Essential 200 opens from You and studies exactly 200 words with matching sentences", async ({ page }) => {
-  await page.locator('#tab-bar').getByText('You', { exact: true }).click();
+test("Essential 200 opens from Library and studies exactly 200 words with matching sentences", async ({ page }) => {
+  await page.locator('#tab-bar').getByText('Library', { exact: true }).click();
   await page.locator('#content').getByText('Essential 200', { exact: true }).click();
   await expect(page.locator('#content')).toContainText('200 cards');
   const manifest = await (await page.request.get('/data/essential_200.json')).json();

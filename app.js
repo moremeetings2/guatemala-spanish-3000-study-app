@@ -58,6 +58,8 @@ let appState = {
   activeWord: null, lookedUp: {}, saved: [], completed: {},
   compSel: null, compAnswered: false,
   study: { idx: 0, flipped: false, order: [], source: 'all' },
+  practice: {}, practiceMode: 'study', practiceQ: '', practiceLimit: 100,
+  countryDraft: null, verbLesson: null,
   quiz: { phase: 'intro', idx: 0, sel: null, answered: false, score: 0, qs: null, dir: 'es-en', source: 'all' },
   cardState: {},
   browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any' },
@@ -79,7 +81,7 @@ let appState = {
 };
 
 // Base persona for the on-device AI tutor. Context-specific prompts extend this.
-const AI_SYSTEM = "You are Hablavos, a warm, patient, and concise Spanish tutor for an English speaker learning the everyday Spanish spoken in Guatemala. Give clear, practical answers with short example sentences (Spanish followed by the English meaning). Note Guatemalan usage when it matters. Keep replies brief unless the user asks for more detail. If asked something unrelated to Spanish or Guatemala, gently steer back.";
+const AI_SYSTEM = "You are Hablavos, a warm, patient, and concise Spanish tutor for an English speaker learning everyday Spanish. Give clear, practical answers with short example sentences (Spanish followed by the English meaning). Clearly label regional usage. Keep replies brief unless the user asks for more detail. If asked something unrelated to learning Spanish, gently steer back.";
 
 let installPrompt = null;
 let saveTimer = null;
@@ -108,6 +110,7 @@ function hc(fn) {
 
 // ===== DOM refs =====
 const $screen = document.getElementById('screen');
+const $learningHeader = document.getElementById('learning-header');
 const $content = document.getElementById('content');
 const $tabBar = document.getElementById('tab-bar');
 const $wordSheet = document.getElementById('word-sheet');
@@ -137,11 +140,13 @@ document.addEventListener('keydown', e => {
 
 // ===== State Management =====
 function setState(patch) {
-  const next = { ...appState, ...patch };
+  // Snapshot the lane being left before a navigation or source change replaces it.
+  const next = { ...appState, practice: practiceSnapshot(appState), ...patch };
   const keys = Object.keys(patch);
   // Closing the whole browser need not fire pagehide. Save resume-critical
   // changes during the action itself, without making flips/chat typing do I/O.
   const resumeChanged = next.settings !== appState.settings
+    || next.practice !== appState.practice
     || next.study.source !== appState.study.source
     || next.study.idx !== appState.study.idx
     || next.study.order !== appState.study.order
@@ -217,7 +222,10 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ===== Navigation =====
-function goTab(t) { setState({ tab: t, route: null, activeWord: null }); }
+function goTab(t) {
+  if (PRACTICE_DECKS[t]) return openPractice(t);
+  setState({ tab: t, route: null, activeWord: null, ...(t === 'read' ? { readView: 'lib' } : {}) });
+}
 function openBrowse(patch) {
   setState({ route: 'browse', browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any', ...patch } });
 }
@@ -514,6 +522,7 @@ function persistable() {
     lookedUp: S.lookedUp, storyId: S.storyId, settings: S.settings,
     reviewedToday: S.reviewedToday, streak: S.streak,
     study: { source: S.study.source, cardId: activeStudyId },
+    practice: practiceSnapshot(S),
     quiz: { dir: S.quiz.dir, source: S.quiz.source },
     browse: S.browse,
   };
@@ -674,9 +683,10 @@ function applyAccountState(persisted) {
   const restoredIdx = studyCardId ? order.indexOf(studyCardId) : -1;
   setState({
     cardState, browse,
+    practice: persisted.practice || {},
     saved: persisted.saved || [], completed: persisted.completed || {},
     lookedUp: persisted.lookedUp || {}, storyId: persisted.storyId || null,
-    settings: { ...appState.settings, ...(persisted.settings || {}) },
+    settings: { ...appState.settings, country: 'shared', ...(persisted.settings || {}) },
     reviewedToday: persisted.reviewedToday || 0, streak: persisted.streak || 0,
     study: { idx: Math.max(0, restoredIdx), flipped: false, source: studySource, order, resumeId: restoredIdx < 0 ? studyCardId : null },
     quiz: {
@@ -720,6 +730,8 @@ async function doLogout() {
     auth: { token: null, user: null }, authView: 'landing', route: null, tab: 'home',
     readView: 'lib', storyId: null, activeWord: null, lookedUp: {}, saved: [], completed: {},
     cardState, reviewedToday: 0, streak: 0,
+    practice: {}, practiceMode: 'study', practiceQ: '', verbLesson: null, countryDraft: null,
+    settings: { ...appState.settings, country: 'shared' },
     study: { idx: 0, flipped: false, source: 'all', order: orderFor('all'), resumeId: null },
     quiz: { ...appState.quiz, phase: 'intro', idx: 0, sel: null, answered: false, score: 0, qs: null, source: 'all' },
     browse: { q: '', deck: 'all', type: 'all', state: 'all', band: 'all', session: 'any' },
@@ -825,10 +837,12 @@ async function suggestMyWord() {
     // The on-device model is small, so demand a rigid, line-based reply format
     // and anchor it with a one-shot example (small models follow examples far
     // better than instructions alone). Parsing below is tolerant of drift.
+    const focus = countryFocus();
+    const region = focus.id === 'shared' ? 'Prefer widely understood meanings and label regional senses.' : `The learner's country focus is ${focus.name}. Label regional meanings accurately; do not invent a local meaning for a word from elsewhere.`;
     const raw = await AI.chat([
-      { role: 'system', content: 'You are a Spanish-English dictionary assistant specializing in the Spanish spoken in Guatemala. For each word the user gives, reply in EXACTLY this format with nothing else:\nMEANING: <short English meaning>\nSENTENCE_ES: <one short simple Spanish example sentence using the word>\nSENTENCE_EN: <the English translation of that sentence>' },
-      { role: 'user', content: 'Word: "chilero"' },
-      { role: 'assistant', content: 'MEANING: cool, great\nSENTENCE_ES: ¡Qué chilero está el día!\nSENTENCE_EN: What a nice day!' },
+      { role: 'system', content: `You are a Spanish-English dictionary assistant. ${region} For each word the user gives, reply in EXACTLY this format with nothing else:\nMEANING: <short English meaning>\nSENTENCE_ES: <one short simple Spanish example sentence using the word>\nSENTENCE_EN: <the English translation of that sentence>` },
+      { role: 'user', content: 'Word: "hablar"' },
+      { role: 'assistant', content: 'MEANING: to speak\nSENTENCE_ES: Hablo español.\nSENTENCE_EN: I speak Spanish.' },
       { role: 'user', content: `Word: "${es}"` },
     ], { maxTokens: 140 });
     const grab = (re) => {
@@ -885,7 +899,7 @@ async function sendChat() {
   if (!text || appState.chat.busy || !window.AI) return;
   if (appState.mw.suggesting) { flash('The AI is drafting a My Word — one moment.'); return; }
   const ctx = appState.chat.context;
-  const system = ctx && ctx.system ? ctx.system : AI_SYSTEM;
+  const system = ctx && ctx.system ? ctx.system : tutorSystem();
   const history = [...appState.chat.messages, { role: 'user', content: text }];
   setState({ chat: { ...appState.chat, messages: history, input: '', busy: true, streaming: '' } });
   // Stream tokens straight into the live DOM node — calling setState per token
@@ -1209,11 +1223,11 @@ function computeVals() {
         onSpeak: () => speak(card.es), onStar: () => toggleStar(id),
         onChat: () => openChat({
           type: 'word', title: card.es, subtitle: 'Vocabulary · ' + card.en,
-          system: AI_SYSTEM + ` The learner is studying the Spanish word or phrase "${card.es}" (English: "${card.en}"${card.pos ? ', ' + card.pos : ''}). Center your help on this word: its meaning, natural example sentences, conjugation if it's a verb, and common related expressions.`,
+          system: tutorSystem() + ` The learner is studying the Spanish word or phrase "${card.es}" (English: "${card.en}"${card.pos ? ', ' + card.pos : ''}). Center your help on this word: its meaning, natural example sentences, conjugation if it's a verb, and common related expressions.`,
           suggestions: [
             `What does "${card.es}" mean and when do I use it?`,
             `Give me 2 example sentences with "${card.es}".`,
-            `Any Guatemalan tips for using "${card.es}"?`,
+            `Any regional differences when using "${card.es}"?`,
           ],
         }),
         synonyms: (!spanishFace || showSentence) ? [] : (card.synonyms || []),
@@ -1234,7 +1248,7 @@ function computeVals() {
     onSpeak: () => speak((st.body || []).join(' ')),
     onChat: () => openChat({
       type: 'story', title: st.title, subtitle: 'Story · ' + (st.titleEn || (stLv ? stLv.name : '')),
-      system: AI_SYSTEM + ` The learner is reading a short Spanish story titled "${st.title}"${st.titleEn ? ' ("' + st.titleEn + '")' : ''}. The story text is: """${(st.body || []).join(' ').slice(0, 1500)}""". Help them understand the vocabulary, grammar, and meaning of this story.`,
+      system: tutorSystem() + ` The learner is reading a short Spanish story titled "${st.title}"${st.titleEn ? ' ("' + st.titleEn + '")' : ''}. The story text is: """${(st.body || []).join(' ').slice(0, 1500)}""". Help them understand the vocabulary, grammar, and meaning of this story.`,
       suggestions: [
         'Summarize this story in simple English.',
         'What are the key vocabulary words here?',
@@ -1344,11 +1358,11 @@ function computeVals() {
       onDelete: () => deleteMyWord(w.id),
       onChat: () => openChat({
         type: 'word', title: w.es, subtitle: 'My Words · ' + w.en,
-        system: AI_SYSTEM + ` The learner added the Spanish word or phrase "${w.es}" (English: "${w.en}") to their personal deck. Center your help on this word: its meaning, natural example sentences, conjugation if it's a verb, and common related expressions.`,
+        system: tutorSystem() + ` The learner added the Spanish word or phrase "${w.es}" (English: "${w.en}") to their personal deck. Center your help on this word: its meaning, natural example sentences, conjugation if it's a verb, and common related expressions.`,
         suggestions: [
           `What does "${w.es}" mean and when do I use it?`,
           `Give me 2 example sentences with "${w.es}".`,
-          `Any Guatemalan tips for using "${w.es}"?`,
+          `Any regional differences when using "${w.es}"?`,
         ],
       }),
     })),
@@ -1533,15 +1547,15 @@ function computeVals() {
   const ai = S.ai;
   const aiSupported = !!(window.AI && window.AI.isSupported());
   const DEFAULT_SUGGESTIONS = [
-    'How do people say "good morning" in Guatemala?',
-    'Teach me a common Guatemalan slang word.',
+    'How do I greet someone politely in Spanish?',
+    countryFocus().id === 'shared' ? 'Explain a regional difference in everyday Spanish.' : `Teach me a common expression used in ${countryFocus().name}.`,
     'Help me practice ordering a coffee.',
   ];
   const chat = {
     open: S.chat.open,
     hasContext: !!S.chat.context,
     title: S.chat.context ? S.chat.context.title : 'AI tutor',
-    subtitle: S.chat.context ? S.chat.context.subtitle : 'Ask anything about Guatemalan Spanish',
+    subtitle: S.chat.context ? S.chat.context.subtitle : 'Everyday Spanish · ' + countryFocus().name,
     suggestions: (S.chat.context && S.chat.context.suggestions) ? S.chat.context.suggestions : DEFAULT_SUGGESTIONS,
     messages: S.chat.messages,
     input: S.chat.input,
@@ -1971,13 +1985,13 @@ function renderStudy(v) {
   const { study } = v;
   return `
 <div style="padding:8px 22px 120px;animation:fadeIn .3s both;height:100%;display:flex;flex-direction:column">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+  ${study.focusedPractice ? '' : `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
     <div style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-.6px">Study</div>
     <button ${h(study.onBrowse)} style="display:flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);border-radius:13px;padding:8px 12px;cursor:pointer;font-family:Nunito;font-weight:800;font-size:13px;color:var(--ink)">${ms('tune', 18)}Filters</button>
   </div>
   <div class="hrow" style="display:flex;gap:8px;margin-bottom:18px;padding-bottom:2px">
     ${study.sources.map(s => `<button ${h(s.onClick)} style="${s.style}">${s.label}</button>`).join('')}
-  </div>
+  </div>`}
   ${study.empty ? `
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted)">
     ${ms('check_circle', 48, 'var(--muted2)')}
@@ -2018,14 +2032,14 @@ function renderStudy(v) {
     </div>` : ''}
     `}
   </div>
-  <div style="margin-top:14px">
+  ${study.focusedPractice ? `<div class="learn-grade">${learnButton('Review again', () => ratePractice(false))}${learnButton('I knew it', () => ratePractice(true), true)}</div>` : `<div style="margin-top:14px">
     <div style="font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Mark as</div>
     <div style="display:flex;gap:8px;background:var(--soft2);padding:5px;border-radius:13px">
       ${study.states.map(st => `<button ${h(st.onClick)} style="${st.style}">${st.label}</button>`).join('')}
     </div>
-  </div>
+  </div>`}
   <div style="display:flex;gap:12px;margin-top:14px">
-    <button ${h(study.onShuffle)} style="flex:none;width:56px;border:1px solid var(--line);background:var(--surface);border-radius:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:15px 0">${ms('shuffle', 24, 'var(--ink)')}</button>
+    <button ${h(study.onShuffle)} aria-label="Shuffle cards" style="flex:none;width:56px;border:1px solid var(--line);background:var(--surface);border-radius:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:15px 0">${ms('shuffle', 24, 'var(--ink)')}</button>
     <button ${h(study.onNext)} style="flex:1;border:none;background:var(--ink);color:var(--surface);font-family:Nunito;font-size:17px;font-weight:800;padding:15px;border-radius:18px;cursor:pointer">Next card</button>
   </div>`}
 </div>`;
@@ -2565,15 +2579,18 @@ function render() {
   const v = computeVals();
 
   $screen.dataset.theme = v.themeAttr;
+  $screen.dataset.learning = !v.loading && !v.vAuth ? 'true' : 'false';
 
   if (v.loading) {
     $content.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;font-size:16px">Cargando…</div>';
-    $tabBar.innerHTML = ''; $wordSheet.innerHTML = ''; $toastEl.innerHTML = '';
+    $learningHeader.innerHTML = ''; $tabBar.innerHTML = ''; $wordSheet.innerHTML = ''; $toastEl.innerHTML = '';
     return;
   }
 
   let html = '';
+  const learningView = v.vAuth ? null : renderLearningView(v);
   if (v.vAuth)     html = renderAuth(v);
+  else if (learningView !== null) html = learningView;
   else if (v.vHome)     html = renderHome(v);
   else if (v.vStudy)    html = renderStudy(v);
   else if (v.vReadLib)  html = renderReadLib(v);
@@ -2589,7 +2606,8 @@ function render() {
   else if (v.vMyWords)  html = renderMyWords(v);
 
   $content.innerHTML = html;
-  $tabBar.innerHTML = v.showTabs ? renderTabBar(v.tabs) : '';
+  $learningHeader.innerHTML = v.vAuth ? '' : renderLearningHeader();
+  $tabBar.innerHTML = v.vAuth ? '' : renderLearningNav();
   $wordSheet.innerHTML = v.word.show ? renderWordSheet(v.word) : '';
   $chatSheet.innerHTML = v.chat.open ? renderChat(v.chat) : '';
   $toastEl.innerHTML = v.toast.show ? renderToast(v.toast) : '';
@@ -2657,12 +2675,14 @@ async function bootstrap() {
     let cardState = {};
     let settings = appState.settings;
     let saved = [], completed = {}, lookedUp = {}, storyId = null;
+    let practice = {};
     let studySource = 'all', studyCardId = null, quizDir = 'es-en', quizSource = 'all';
     let browse = appState.browse;
     let reviewedToday = 0, streak = 0;
 
     if (persisted) {
       settings = { ...appState.settings, ...(persisted.settings || {}) };
+      if (!persistedAccountMatches) settings.country = 'shared';
       if (persisted._migrateFrom && persistedAccountMatches) {
         cardState = migrateOldProgress(persisted._migrateFrom, data.CARDS);
       } else if (persistedAccountMatches) {
@@ -2671,6 +2691,7 @@ async function bootstrap() {
         completed = persisted.completed || {};
         lookedUp = persisted.lookedUp || {};
         storyId = persisted.storyId || null;
+        practice = persisted.practice || {};
         studySource = normalizeSource(persisted.study?.source || 'all');
         studyCardId = persisted.study?.cardId || null;
         quizDir = persisted.quiz?.dir || 'es-en';
@@ -2690,7 +2711,7 @@ async function bootstrap() {
     const restoredStudyIdx = studyCardId ? studyOrder.indexOf(studyCardId) : -1;
 
     setState({
-      data, cardState, saved, completed, lookedUp, storyId, settings,
+      data, cardState, saved, completed, lookedUp, storyId, settings, practice,
       // My Words arrives after bootstrap, so retain an unresolved card ID until
       // applyMyWords can rebuild that account-scoped deck.
       study: { idx: Math.max(0, restoredStudyIdx), flipped: false, source: studySource, order: studyOrder, resumeId: restoredStudyIdx < 0 ? studyCardId : null },

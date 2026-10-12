@@ -157,7 +157,7 @@ test("signup logs the user in and enters the app", async ({ page }) => {
   await content.getByRole("button", { name: "Create account" }).click();
 
   await expect.poll(() => page.evaluate(() => appState.auth.user?.email)).toBe("new@example.com");
-  await expect(content).toContainText("¡Hola! 🇬🇹");
+  await expect(content).toContainText("Practice, your way.");
   // Session is persisted for next launch.
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("spanishAuth.v1")).token)).toBe("tok-signup");
 });

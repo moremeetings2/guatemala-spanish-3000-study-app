@@ -1,6 +1,20 @@
 # Hablavos
 
-**Learn the Spanish people actually speak.** Small static PWA (brand name **Hablavos**) built from the study-pack dataset, CSV-fed phrase content, a dedicated everyday-phrases source file, and a curated Guatemalan lexicon source file. Starts with Guatemala; more regions on the roadmap.
+**Learn the Spanish people actually speak.** A free, mobile-friendly Spanish practice PWA with shared vocabulary, conversation phrases, and regional references. The signed-in app starts with Shared Spanish; the existing welcome page is unchanged.
+
+[Live app](https://hablavos.com/) · [GitHub repository](https://github.com/moremeetings2/guatemala-spanish-3000-study-app)
+
+## Learning design
+
+- **Home:** choose a practice area, review due cards or weak spots, or open the tutor.
+- **Words:** unlimited Main 3000 or Essential 200 study, browse/search, and focused quizzes.
+- **Phrases:** unlimited Everyday Speaking or Everyday Conversation practice, with Spanish-first reveal and pronunciation.
+- **Verbs:** starter lessons for hablar and poder, with four tense patterns, three people, examples, audio, and answer checking. These are not a complete grammar course.
+- **Library:** stories, saved cards, My Words, country references, progress, all collections, and resume of the last legacy/filtered study session. Account and voice settings are in the header.
+
+Words and Phrases each preserve their last collection and exact card in the account's local snapshot. Card progress still syncs through the existing API. Country preference and practice bookmarks are local to the account/device, not cross-device settings. Choosing a country changes the reference focus and general tutor context, not the core card IDs or conjugations. All 21 country references are already cached text; there is no pretend download button or claim of 21 complete courses. Pronunciation uses device Spanish voices, not country-specific recordings.
+
+The authenticated shell is in `learning.js` and `learning.css`; `app.js` retains auth, storage, review, quiz, speech, and legacy routes. Both new assets are in the `hablavos-v43` offline cache. Live ads are **off**: no ad scripts, slots, tracking, or paywalls are introduced. `MONETIZATION` records the disabled policy, not a working ad-network integration. See the short [family-facing Word brief](docs/hablavos-product-and-business-brief.docx) and [editable source](docs/hablavos-product-and-business-brief.md) for the proposed revenue strategy and launch prerequisites.
 
 ## What it does
 
@@ -17,7 +31,7 @@
 
 ## Essential 200
 
-Open **You → Essential 200**, then **Study these** or **Quiz these**. On a flashcard, tap **Use** to read and hear the example sentence. Quiz questions and answer choices stay within the essential vocabulary, including when search narrows the questions. Study sessions resume the active card after reopening the app.
+Open **Words → Collection → Essential 200**, then choose **Study**, **Browse**, or **Quiz**. The full filtered view also remains at **Library → Essential 200**. On a flashcard, tap **Use** to read and hear the example sentence. Quiz questions and answer choices stay within the essential vocabulary, including when search narrows the questions. Study sessions resume the active card after reopening the app.
 
 `data/essential_200.json` is the canonical content for this deck and its companion spreadsheet: 200 unique words in ten practical categories, each with an English meaning and a Spanish/English example sentence. It reuses 190 Main 3000 IDs so those cards share progress, and adds ten missing basics with stable `essential-*` IDs. With Everyday Speaking, the app has 4,245 unique built-in cards; Main 3000 still contains exactly 3,000. Selected words use the manifest's reviewed meanings and examples throughout the app, including everyday senses such as *tienda* (store), *carro* (car), and *efectivo* (cash).
 
@@ -27,7 +41,7 @@ Keep exactly 200 distinct words and IDs when editing the manifest. Retain existi
 
 ## Everyday Speaking
 
-Open **You → Everyday Speaking → Study these**. The card starts with only the Spanish phrase. Read it or tap **Listen**, and try to understand it. If you get stuck, tap **Show English** (or the card) to reveal the meaning. **Listen** pronounces the Spanish on either face, using the voice and speed selected in Settings. **English first** remains optional for practicing recall in the other direction. The app does not record or grade your voice.
+Open **Phrases**, which defaults to **Everyday Speaking**. The card starts with only the Spanish phrase. Read it or tap **Listen**, and try to understand it. If you get stuck, tap **Show English** (or the card) to reveal the meaning. **Listen** pronounces the Spanish on either face, using the voice and speed selected in Settings. **English first** remains optional for practicing recall in the other direction. The app does not record or grade your voice.
 
 The first-language choice is remembered separately for each deck. All decks default to Spanish; an explicitly saved English-first choice is preserved until you select **Spanish first**. The active card and study preferences are saved immediately when changed, so closing the whole browser right after a tap does not lose the change. Backgrounding or closing the page also flushes pending updates. **Quiz these** follows the speaking deck's chosen direction and draws answer choices from the same deck. Bilingual reference lists and the welcome-page sample are unchanged.
 
@@ -103,9 +117,22 @@ npm run test:integration
 
 Use `npm run test:integration:headed` for visible browser verification on Chromium and WebKit.
 
+On John's computer, run headed browsers inside **VM AI Projects**, not on the host desktop. There is only one repository. In the VM it is shared at `/Volumes/My Shared Files/Home/Documents/GitHub/guatemala-spanish-3000-study-app`. Use that Home mount, not a second clone or the stale Hablavos shortcut. Compare host/guest file hashes before testing after edits. Set the VM's bundled Node/Python directories on PATH when using `prlctl exec`.
+
+The explicit live-backend smoke test loads `.env` privately, launches a headed browser, logs in through the UI, exercises study/sync and adjacent features, and restores touched progress/deletes temporary words:
+
+```bash
+node tools/verify_learning_live.cjs http://127.0.0.1:3400 chromium
+node tools/verify_learning_live.cjs https://hablavos.com webkit
+```
+
+Run these commands in the VM. The local variant starts/stops its own server. Screenshots stay in ignored `test-results/live-learning/`; credentials are never logged. Do not run live smoke tests concurrently on the same testing account. Ordinary integration tests use isolated backend fixtures and never modify production.
+
 The suite validates deck rendering, phrasebank search, study/review actions,
 quiz flow, pronunciation controls, persistence, storage reconciliation,
 import/export, and the Gemma runtime contract on Chromium and WebKit.
+
+`tests/learning-offline.spec.js` stops its own isolated origin server and checks cached navigation, exact-card resume, lessons, and regional text in both engines. WebKit uses the real stopped origin rather than Playwright's offline flag because of [its upstream service-worker emulation issue](https://github.com/microsoft/playwright/issues/42775); Chromium also enables that flag. No app logic is mocked in this cache test.
 
 ## iPhone use
 

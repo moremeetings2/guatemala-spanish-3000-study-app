@@ -15,13 +15,13 @@ async function bootAsSpeaker(page) {
     navigator.serviceWorker.register = () => Promise.resolve({ update() {}, addEventListener() {} });
   });
   await page.goto('/');
-  await expect(page.getByText('Flashcards', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Practice, your way.' })).toBeVisible();
 }
 
 test.beforeEach(async ({ page }) => bootAsSpeaker(page));
 
 async function openDeck(page, query) {
-  await page.locator('#tab-bar').getByRole('button', { name: /You/ }).click();
+  await page.locator('#tab-bar').getByRole('button', { name: 'Library', exact: true }).click();
   await page.getByText('Everyday Speaking', { exact: true }).click();
   if (query) await page.locator('[data-fid="browse-search"]').fill(query);
 }
@@ -60,7 +60,8 @@ test('reverses the cards and retains direction and the exact card after reload',
   const spanish = await face.textContent();
   expect(english).not.toBe(spanish);
   await page.reload();
-  await page.locator('#tab-bar').getByRole('button', { name: /Study/ }).click();
+  await page.locator('#tab-bar').getByRole('button', { name: 'Library', exact: true }).click();
+  await page.getByRole('button', { name: 'Resume last study session' }).click();
   await expect(face).toHaveText(english);
   await expect(page.getByRole('button', { name: 'English first', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('button', { name: 'Show Spanish', exact: true }).click();
@@ -68,7 +69,7 @@ test('reverses the cards and retains direction and the exact card after reload',
 });
 
 test('sends the Spanish answer to the real browser speech API on either face', async ({ page }) => {
-  await page.getByRole('button', { name: 'settings', exact: true }).click();
+  await page.getByRole('button', { name: 'Account and settings', exact: true }).click();
   await page.getByRole('button', { name: 'Slow', exact: true }).click();
   await page.getByRole('button', { name: 'arrow_back', exact: true }).click();
   await openDeck(page, 'Déjame ver');
@@ -124,7 +125,8 @@ test('saves study choices immediately and restores them after closing the entire
     context = await browser.browserType().launchPersistentContext(profile, { headless, baseURL });
     page = context.pages()[0];
     await bootAsSpeaker(page);
-    await page.locator('#tab-bar').getByRole('button', { name: /Study/ }).click();
+    await page.locator('#tab-bar').getByRole('button', { name: 'Library', exact: true }).click();
+    await page.getByRole('button', { name: 'Resume last study session' }).click();
     await expect(page.locator('[data-fid="study-face"]')).toHaveText(changed.english);
     await expect(page.getByRole('button', { name: 'English first', exact: true })).toHaveAttribute('aria-pressed', 'true');
   } finally {
@@ -137,7 +139,7 @@ test('keeps the English-first preference separate from existing Spanish-first de
   await page.getByRole('button', { name: 'Study these', exact: true }).click();
   await page.getByRole('button', { name: 'English first', exact: true }).click();
   await expect(page.locator('[data-fid="study-face"]')).toHaveText('Let me check.');
-  await page.locator('#tab-bar').getByRole('button', { name: /You/ }).click();
+  await page.locator('#tab-bar').getByRole('button', { name: 'Library', exact: true }).click();
   await page.getByText('Main 3000', { exact: true }).click();
   await page.locator('[data-fid="browse-search"]').fill('hablar');
   await page.getByRole('button', { name: 'Study these', exact: true }).click();
